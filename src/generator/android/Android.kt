@@ -8,9 +8,11 @@ import parser.java8.Java8Lexer
 import parser.java8.Java8Parser
 
 object Android {
-    val result get() = resultBuilder.toString()
+    val dartResult get() = dartResultBuilder.toString()
+    val androidResult get() = androidResultBuilder.toString()
 
-    private val resultBuilder = StringBuilder()
+    private val dartResultBuilder = StringBuilder()
+    private val androidResultBuilder = StringBuilder()
 
     fun generate() {
         val lexer = Java8Lexer(ANTLRFileStream("/Users/yohom/Github/Util/Kotlin/fluttify/src/TbitBle.temp"))
@@ -20,7 +22,8 @@ object Android {
 
         ParseTreeWalker().walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                resultBuilder.append("class ${ctx?.normalClassDeclaration()?.Identifier()}Android {")
+                dartResultBuilder.append("class ${ctx?.normalClassDeclaration()?.Identifier()}Android {\n")
+                dartResultBuilder.append("  final _channel = MethodChannel('test_android_channel');\n")
             }
 
             override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
@@ -31,11 +34,12 @@ object Android {
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType.jsonable()) return
 
-                resultBuilder.append("\n  ${method.returnType} ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {}\n")
+                dartResultBuilder.append("\n  Future<${method.returnType}> ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {\n")
+                dartResultBuilder.append("    _channel.invokeMethod('${method.name}');\n  }\n")
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                resultBuilder.append("}")
+                dartResultBuilder.append("}")
             }
         }, tree)
     }

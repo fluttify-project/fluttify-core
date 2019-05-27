@@ -1,8 +1,8 @@
-import generator.ios.iOS
+import generator.android.Android
 
 fun main() {
-//    Android.generate()
-//    println(Android.result)
-    iOS.generate()
-    println(iOS.result)
+    Android.generate()
+    println(Android.dartResult)
+//    iOS.generate()
+//    println(iOS.dartResult)
 }
