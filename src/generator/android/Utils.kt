@@ -15,13 +15,3 @@ internal fun String.toDartType(): String {
 internal fun String.jsonable(): Boolean {
     return this.toDartType() in listOf("bool", "int", "double", "String", "List", "Map", "void")
 }
-
-internal fun List<Pair<String, String>>.toDartMap(): String {
-    if (isEmpty()) return ""
-
-    val result = StringBuilder()
-    result.append("{")
-    forEach { result.append("${it.first}: ${it.second}, ") }
-    result.append("}")
-    return result.toString()
-}

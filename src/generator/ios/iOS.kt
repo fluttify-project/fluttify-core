@@ -1,5 +1,6 @@
 package generator.ios
 
+import generator.common.toDartMap
 import org.antlr.v4.runtime.ANTLRFileStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -34,7 +35,7 @@ object iOS {
 
 
                 dartResultBuilder.append("\n  Future<${method.returnType}> ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    _channel.invokeMethod('${method.name}');\n  }\n")
+                dartResultBuilder.append("    _channel.invokeMethod('${method.name}', ${method.params.toDartMap()});\n  }\n")
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
