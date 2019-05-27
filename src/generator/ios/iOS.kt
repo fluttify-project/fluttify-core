@@ -8,9 +8,9 @@ import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 
 object iOS {
-    val result get() = resultBuilder.toString()
+    val dartResult get() = dartResultBuilder.toString()
 
-    private val resultBuilder = StringBuilder()
+    private val dartResultBuilder = StringBuilder()
 
     fun generate() {
         val lexer = ObjectiveCLexer(ANTLRFileStream("/Users/yohom/Github/Util/Kotlin/fluttify/src/TbitBluetooth.temp"))
@@ -20,7 +20,8 @@ object iOS {
 
         ParseTreeWalker().walk(object : ObjectiveCParserBaseListener() {
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                resultBuilder.append("class ${ctx?.className?.text}IOS {")
+                dartResultBuilder.append("class ${ctx?.className?.text}IOS {\n")
+                dartResultBuilder.append("  final _channel = MethodChannel('test_ios_channel');\n")
             }
 
             override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
@@ -31,11 +32,13 @@ object iOS {
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType.jsonable()) return
 
-                resultBuilder.append("\n  ${method.returnType} ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {}\n")
+
+                dartResultBuilder.append("\n  Future<${method.returnType}> ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {\n")
+                dartResultBuilder.append("    _channel.invokeMethod('${method.name}');\n  }\n")
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                resultBuilder.append("}")
+                dartResultBuilder.append("}")
             }
         }, tree)
     }
