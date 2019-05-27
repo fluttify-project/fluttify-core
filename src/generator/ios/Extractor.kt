@@ -28,7 +28,7 @@ internal class MethodExtractor(private val context: ObjectiveCParser.MethodDecla
      *
      * Map的键是类型名, 值是变量名
      */
-    val params: List<Pair<String, String>>
+    val formalParams: List<Pair<String, String>>
         get() {
             val result = mutableListOf<Pair<String, String>>()
 

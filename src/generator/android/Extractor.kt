@@ -23,11 +23,11 @@ internal class MethodExtractor(private val context: Java8Parser.MethodDeclaratio
         get() = context.methodHeader().methodDeclarator().Identifier().toString()
 
     /**
-     * 参数列表
+     * 形式参数列表
      *
      * Map的键是类型名, 值是变量名
      */
-    val params: List<Pair<String, String>>
+    val formalParams: List<Pair<String, String>>
         get() {
             val result = mutableListOf<Pair<String, String>>()
 
