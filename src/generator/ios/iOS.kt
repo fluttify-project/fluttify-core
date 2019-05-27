@@ -27,9 +27,9 @@ object iOS {
                 val method = MethodExtractor(ctx!!)
 
                 // 如果参数中有无法直接json序列化的, 就跳过
-//                if (method.params.any { !it.first.jsonable() }) return
+                if (method.params.any { !it.first.jsonable() }) return
                 // 如果返回类型无法直接json序列化的, 就跳过
-//                if (!method.returnType.jsonable()) return
+                if (!method.returnType.jsonable()) return
 
                 resultBuilder.append("\n  ${method.returnType} ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {}\n")
             }

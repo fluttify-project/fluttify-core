@@ -66,6 +66,11 @@ typedef void(^BikeBlock)(BikeState *bikeState,int resultCode);
 +(void)connect:(NSString *)macAddress key:(NSString*)key resultBlock:(BikeBlock)resultBlock;
 
 /**
+ * 连接
+ */
++(void)connect:(NSString *)macAddress key:(NSString*)key;
+
+/**
  * 解锁
  */
 +(void)unlock:(ResultBlock)resultBlock;
