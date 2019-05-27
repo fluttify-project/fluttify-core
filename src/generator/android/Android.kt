@@ -35,7 +35,7 @@ object Android {
                 if (!method.returnType.jsonable()) return
 
                 dartResultBuilder.append("\n  Future<${method.returnType}> ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    _channel.invokeMethod('${method.name}');\n  }\n")
+                dartResultBuilder.append("    _channel.invokeMethod('${method.name}', ${method.params.toDartMap()});\n  }\n")
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
