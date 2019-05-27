@@ -20,11 +20,17 @@ object Android {
 
         ParseTreeWalker().walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                resultBuilder.append("class ${ctx?.normalClassDeclaration()?.Identifier()} {")
+                resultBuilder.append("class ${ctx?.normalClassDeclaration()?.Identifier()}Android {")
             }
 
             override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
                 val method = MethodExtractor(ctx!!)
+
+                // 如果参数中有无法直接json序列化的, 就跳过
+                if (method.params.any { !it.first.jsonable() }) return
+                // 如果返回类型无法直接json序列化的, 就跳过
+                if (!method.returnType.jsonable()) return
+
                 resultBuilder.append("\n  ${method.returnType} ${method.name}(${method.params.joinToString { "${it.first} ${it.second}" }}) {}\n")
             }
 

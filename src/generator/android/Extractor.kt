@@ -2,7 +2,7 @@ package generator.android
 
 import parser.java8.Java8Parser
 
-class MethodExtractor(private val context: Java8Parser.MethodDeclarationContext) {
+internal class MethodExtractor(private val context: Java8Parser.MethodDeclarationContext) {
 
     /**
      * 限定词
@@ -14,7 +14,7 @@ class MethodExtractor(private val context: Java8Parser.MethodDeclarationContext)
      * 返回类型
      */
     val returnType: String
-        get() = context.methodHeader().result().text
+        get() = context.methodHeader().result().text.toDartType()
 
     /**
      * 方法名
@@ -35,17 +35,24 @@ class MethodExtractor(private val context: Java8Parser.MethodDeclarationContext)
                 .methodDeclarator()
                 ?.formalParameterList()
 
+            // 除最后一个参数之外的参数
             parameters
                 ?.formalParameters()
                 ?.formalParameter()
-                ?.forEach { result.add(Pair(it.unannType().text, it.variableDeclaratorId().text)) }
+                ?.forEach {
+                    result.add(Pair(it.unannType().text.toDartType(), it.variableDeclaratorId().text))
+                }
 
-            val lastParamType = parameters?.lastFormalParameter()?.formalParameter()?.unannType()?.text
-            val lastParamVar = parameters?.lastFormalParameter()?.formalParameter()?.variableDeclaratorId()?.text
-            if (lastParamType != null && lastParamVar != null) {
-                result.add(Pair(lastParamType, lastParamVar))
-            }
+            // 最后一个参数
+            parameters
+                ?.lastFormalParameter()
+                ?.formalParameter()
+                ?.run {
+                    result.add(Pair(unannType().text.toDartType(), variableDeclaratorId().text))
+                }
+
             return result
         }
+
 
 }
