@@ -143,7 +143,7 @@ public class Java8Parser extends Parser {
 			"unannClassType_lfno_unannClassOrInterfaceType", "unannInterfaceType", 
 			"unannInterfaceType_lf_unannClassOrInterfaceType", "unannInterfaceType_lfno_unannClassOrInterfaceType", 
 			"unannTypeVariable", "unannArrayType", "methodDeclaration", "methodModifier", 
-			"methodHeader", "dartResult", "methodDeclarator", "formalParameterList",
+			"methodHeader", "androidDartResult", "methodDeclarator", "formalParameterList",
 			"formalParameters", "formalParameter", "variableModifier", "lastFormalParameter", 
 			"receiverParameter", "throws_", "exceptionTypeList", "exceptionType", 
 			"methodBody", "instanceInitializer", "staticInitializer", "constructorDeclaration", 

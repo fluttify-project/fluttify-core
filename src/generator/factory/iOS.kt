@@ -1,4 +1,4 @@
-package generator.ios
+package generator.factory
 
 import Configs.mainObjcClass
 import common.MethodExtractor

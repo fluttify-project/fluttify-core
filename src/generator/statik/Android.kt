@@ -1,4 +1,4 @@
-package generator.android
+package generator.statik
 
 import common.MethodExtractor
 import common.jsonable
@@ -9,23 +9,23 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker
 import parser.java8.Java8BaseListener
 import parser.java8.Java8Lexer
 import parser.java8.Java8Parser
-import preprocess.Analyzer
 import preprocess.Analyzer.javaClassSimpleName
+import preprocess.Analyzer.mainJavaClassPath
 import preprocess.Analyzer.methodChannelName
 
 object Android {
-    val dartResult get() = dartResultBuilder.toString()
+    val androidDartResult get() = dartResultBuilder.toString()
     val kotlinResult get() = javaResultBuilder.toString()
 
     private val dartResultBuilder = StringBuilder()
     private val javaResultBuilder = StringBuilder()
 
-    private val lexer = Java8Lexer(CharStreams.fromFileName(Analyzer.mainJavaClassPath))
+    private val lexer = Java8Lexer(CharStreams.fromFileName(mainJavaClassPath))
     private val parser = Java8Parser(CommonTokenStream(lexer))
     private val tree = parser.compilationUnit()
     private val walker = ParseTreeWalker()
 
-    fun generateDart() {
+    fun generateAndroidDart() {
         walker.walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
                 dartResultBuilder.append("class ${javaClassSimpleName}Android {\n")
