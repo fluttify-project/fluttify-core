@@ -1,4 +1,3 @@
-
 import generator.statik.StaticAndroid
 import generator.statik.StaticIOS
 import preprocess.Analyzer
