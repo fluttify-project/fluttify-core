@@ -1,7 +1,8 @@
 package generator.android
 
-import generator.common.jsonable
-import generator.common.toDartMap
+import common.MethodExtractor
+import common.jsonable
+import common.toDartMap
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
