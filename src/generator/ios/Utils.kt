@@ -11,7 +11,3 @@ internal fun String.toDartType(): String {
         else -> this
     }
 }
-
-internal fun String.jsonable(): Boolean {
-    return this.toDartType() in listOf("bool", "int", "double", "String", "List", "Map", "void")
-}

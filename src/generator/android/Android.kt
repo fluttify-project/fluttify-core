@@ -1,5 +1,6 @@
 package generator.android
 
+import generator.common.jsonable
 import generator.common.toDartMap
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -7,6 +8,9 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker
 import parser.java8.Java8BaseListener
 import parser.java8.Java8Lexer
 import parser.java8.Java8Parser
+import preprocess.Analyzer
+import preprocess.Analyzer.javaClassSimpleName
+import preprocess.Analyzer.methodChannelName
 
 object Android {
     val dartResult get() = dartResultBuilder.toString()
@@ -15,7 +19,7 @@ object Android {
     private val dartResultBuilder = StringBuilder()
     private val javaResultBuilder = StringBuilder()
 
-    private val lexer = Java8Lexer(CharStreams.fromFileName("/Users/yohom/Github/Util/Kotlin/fluttify/src/TbitBle.temp"))
+    private val lexer = Java8Lexer(CharStreams.fromFileName(Analyzer.mainJavaClassPath))
     private val parser = Java8Parser(CommonTokenStream(lexer))
     private val tree = parser.compilationUnit()
     private val walker = ParseTreeWalker()
@@ -23,8 +27,8 @@ object Android {
     fun generateDart() {
         walker.walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append("class ${ctx?.normalClassDeclaration()?.Identifier()}Android {\n")
-                dartResultBuilder.append("  final _channel = MethodChannel('test_android_channel');\n")
+                dartResultBuilder.append("class ${javaClassSimpleName}Android {\n")
+                dartResultBuilder.append("  final _channel = MethodChannel('$methodChannelName');\n")
             }
 
             override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
@@ -36,7 +40,7 @@ object Android {
                 if (!method.returnType.jsonable()) return
 
                 dartResultBuilder.append("\n  Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
+                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
@@ -47,11 +51,8 @@ object Android {
 
     fun generateKotlin() {
         walker.walk(object : Java8BaseListener() {
-            lateinit var className: String
-
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                className = ctx?.normalClassDeclaration()?.Identifier()?.text ?: ""
-                javaResultBuilder.append("class ${className}FlutterPlugin : MethodCallHandler {\n")
+                javaResultBuilder.append("class ${javaClassSimpleName}FlutterPlugin : MethodCallHandler {\n")
                 javaResultBuilder.append("  ${companionObject()}\n")
                 javaResultBuilder.append("\n  override fun onMethodCall(call: MethodCall, result: Result) {\n")
                 javaResultBuilder.append("    val args = call.arguments as Map<String, *>\n\n")
@@ -66,7 +67,7 @@ object Android {
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType.jsonable()) return
 
-                javaResultBuilder.append("\t  \"${method.name}\" -> result.success($className.${method.name}(${method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }}))\n")
+                javaResultBuilder.append("\t  \"${method.name}\" -> result.success($javaClassSimpleName.${method.name}(${method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }}))\n")
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
@@ -80,8 +81,8 @@ object Android {
                     companion object {
                         @JvmStatic
                         fun registerWith(registrar: Registrar) {
-                            val channel = MethodChannel(registrar.messenger(), "test_android_plugin")
-                            channel.setMethodCallHandler(TbitbleFlutterPlugin())
+                            val channel = MethodChannel(registrar.messenger(), "$methodChannelName")
+                            channel.setMethodCallHandler(${javaClassSimpleName}FlutterPlugin())
                         }
                       }
                 """.trimIndent()
