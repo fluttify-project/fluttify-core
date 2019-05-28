@@ -91,7 +91,7 @@ Dependencies/
 
 # fastlane
 #
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generateDart the
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generateIOSDart the
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
@@ -159,7 +159,7 @@ Carthage/Build
 
 # fastlane
 #
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generateDart the
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generateIOSDart the
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
@@ -206,10 +206,10 @@ proguard/
 # Log Files
 *.log
 
-# Android Studio Navigation editor temp files
+# StaticAndroid Studio Navigation editor temp files
 .navigation/
 
-# Android Studio captures folder
+# StaticAndroid Studio captures folder
 captures/
 
 # IntelliJ
@@ -220,7 +220,7 @@ captures/
 .idea/assetWizardSettings.xml
 .idea/dictionaries
 .idea/libraries
-# Android Studio 3 in .gitignore file.
+# StaticAndroid Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml
 # Comment next line if keeping position of elements in Navigation Editor is relevant for you
@@ -231,7 +231,7 @@ captures/
 #*.jks
 #*.keystore
 
-# External native build folder generated in Android Studio 2.2 and later
+# External native build folder generated in StaticAndroid Studio 2.2 and later
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)

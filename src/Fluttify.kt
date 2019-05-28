@@ -1,5 +1,6 @@
-import generator.android.Android
-import generator.ios.iOS
+
+import generator.statik.StaticAndroid
+import generator.statik.StaticIOS
 import preprocess.Analyzer
 import preprocess.JarDecompiler
 
@@ -8,18 +9,18 @@ fun main() {
 
     Analyzer.analyze()
 
-    Android.generateDart()
-    Android.generateKotlin()
-    iOS.generateDart()
-    iOS.generateSwift()
-    println("***************************Android*********************************")
-    println(Android.dartResult)
+    StaticAndroid.generateAndroidDart()
+    StaticAndroid.generateKotlin()
+    StaticIOS.generateIOSDart()
+    StaticIOS.generateSwift()
+    println("***************************StaticAndroid*********************************")
+    println(StaticAndroid.androidDartResult)
     println()
-    println(Android.kotlinResult)
-    println("***************************Android*********************************")
-    println("***************************iOS*********************************")
-    println(iOS.dartResult)
+    println(StaticAndroid.kotlinResult)
+    println("***************************StaticAndroid*********************************")
+    println("***************************StaticIOS*********************************")
+    println(StaticIOS.iOSDartResult)
     println()
-    println(iOS.swiftResult)
-    println("***************************iOS*********************************")
+    println(StaticIOS.swiftResult)
+    println("***************************StaticIOS*********************************")
 }

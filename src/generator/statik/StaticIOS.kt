@@ -1,9 +1,10 @@
-package generator.ios
+package generator.statik
 
 import Configs.mainObjcClass
 import common.MethodExtractor
 import common.jsonable
 import common.toDartMap
+import generator.IIOS
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -13,9 +14,12 @@ import parser.objc.ObjectiveCParserBaseListener
 import preprocess.Analyzer.mainObjcClassPath
 import preprocess.Analyzer.methodChannelName
 
-object iOS {
-    val dartResult get() = dartResultBuilder.toString()
-    val swiftResult get() = swiftResultBuilder.toString()
+/**
+ * iOS端目标类以静态模式创建对象
+ */
+object StaticIOS: IIOS {
+    override val iOSDartResult get() = dartResultBuilder.toString()
+    override val swiftResult get() = swiftResultBuilder.toString()
 
     private val dartResultBuilder = StringBuilder()
     private val swiftResultBuilder = StringBuilder()
@@ -26,7 +30,7 @@ object iOS {
     private val tree = parser.translationUnit()
     private val walker = ParseTreeWalker()
 
-    fun generateDart() {
+    override fun generateIOSDart() {
         walker.walk(object : ObjectiveCParserBaseListener() {
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
                 dartResultBuilder.append("class ${mainObjcClass}IOS {\n")
@@ -51,7 +55,7 @@ object iOS {
         }, tree)
     }
 
-    fun generateSwift() {
+    override fun generateSwift() {
         walker.walk(object : ObjectiveCParserBaseListener() {
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
                 swiftResultBuilder.append("class Swift${mainObjcClass}FlutterPlugin : NSObject, FlutterPlugin {\n")

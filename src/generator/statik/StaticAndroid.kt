@@ -1,34 +1,38 @@
-package generator.android
+package generator.statik
 
 import common.MethodExtractor
 import common.jsonable
 import common.toDartMap
+import generator.IAndroid
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import parser.java8.Java8BaseListener
 import parser.java8.Java8Lexer
 import parser.java8.Java8Parser
-import preprocess.Analyzer
 import preprocess.Analyzer.javaClassSimpleName
+import preprocess.Analyzer.mainJavaClassPath
 import preprocess.Analyzer.methodChannelName
 
-object Android {
-    val dartResult get() = dartResultBuilder.toString()
-    val kotlinResult get() = javaResultBuilder.toString()
+/**
+ * Android端目标类以静态模式创建对象
+ */
+object StaticAndroid: IAndroid {
+    override val androidDartResult get() = dartResultBuilder.toString()
+    override val kotlinResult get() = javaResultBuilder.toString()
 
     private val dartResultBuilder = StringBuilder()
     private val javaResultBuilder = StringBuilder()
 
-    private val lexer = Java8Lexer(CharStreams.fromFileName(Analyzer.mainJavaClassPath))
+    private val lexer = Java8Lexer(CharStreams.fromFileName(mainJavaClassPath))
     private val parser = Java8Parser(CommonTokenStream(lexer))
     private val tree = parser.compilationUnit()
     private val walker = ParseTreeWalker()
 
-    fun generateDart() {
+    override fun generateAndroidDart() {
         walker.walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append("class ${javaClassSimpleName}Android {\n")
+                dartResultBuilder.append("class ${javaClassSimpleName}StaticAndroid {\n")
                 dartResultBuilder.append("  final _channel = MethodChannel('$methodChannelName');\n")
             }
 
@@ -50,7 +54,7 @@ object Android {
         }, tree)
     }
 
-    fun generateKotlin() {
+    override fun generateKotlin() {
         walker.walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
                 javaResultBuilder.append("class ${javaClassSimpleName}FlutterPlugin : MethodCallHandler {\n")
