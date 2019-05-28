@@ -40,7 +40,7 @@ object iOS {
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType.jsonable()) return
 
-                dartResultBuilder.append("\n  Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
+                dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
                 dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
             }
 
