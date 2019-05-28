@@ -10,7 +10,7 @@ import parser.java8.Java8Parser
 
 object Android {
     val dartResult get() = dartResultBuilder.toString()
-    val javaResult get() = javaResultBuilder.toString()
+    val kotlinResult get() = javaResultBuilder.toString()
 
     private val dartResultBuilder = StringBuilder()
     private val javaResultBuilder = StringBuilder()
