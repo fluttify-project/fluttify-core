@@ -20,3 +20,8 @@ fun String.toDartType(): String {
         else -> this
     }
 }
+
+fun String.underscore2Camel(capitalized: Boolean = true): String {
+    val raw = split("_").joinToString("") { it.capitalize() }
+    return if (capitalized) raw else raw.decapitalize()
+}

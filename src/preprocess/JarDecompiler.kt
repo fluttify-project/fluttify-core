@@ -1,7 +1,7 @@
 package preprocess
 
 import Configs.jarPath
-import Configs.projectPath
+import preprocess.Analyzer.projectPath
 import java.io.BufferedReader
 import java.io.InputStreamReader
 

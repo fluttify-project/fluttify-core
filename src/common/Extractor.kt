@@ -4,26 +4,29 @@ import parser.java8.Java8Parser
 import parser.objc.ObjectiveCParser
 
 class MethodExtractor private constructor(
-    private val javaCtx: Java8Parser.MethodDeclarationContext?,
-    private val objcCtx: ObjectiveCParser.MethodDeclarationContext?
+    private val javaMethodDeclarationCtx: Java8Parser.MethodDeclarationContext?,
+    private val objcMethodDeclarationCtx: ObjectiveCParser.MethodDeclarationContext?,
+    private val objcClassMethodDeclarationCtx: ObjectiveCParser.ClassMethodDeclarationContext?
 ) {
 
-    constructor(javaCtx: Java8Parser.MethodDeclarationContext) : this(javaCtx, null)
-    constructor(objcCtx: ObjectiveCParser.MethodDeclarationContext) : this(null, objcCtx)
+    constructor(ctx: Java8Parser.MethodDeclarationContext) : this(ctx, null, null)
+    constructor(ctx: ObjectiveCParser.MethodDeclarationContext) : this(null, ctx, null)
+    constructor(ctx: ObjectiveCParser.ClassMethodDeclarationContext) : this(null, null, ctx)
 
     /**
      * 限定词
      */
     val modifiers: List<String>
-        get() = javaCtx?.methodModifier()?.map { it.text } ?: listOf()
+        get() = javaMethodDeclarationCtx?.methodModifier()?.map { it.text } ?: listOf()
 
     /**
      * 返回类型
      */
     val returnType: String
         get() = when {
-            javaCtx != null -> javaCtx.methodHeader().result().text.toDartType()
-            objcCtx != null -> objcCtx.methodType().typeName().text
+            javaMethodDeclarationCtx != null -> javaMethodDeclarationCtx.methodHeader().result().text.toDartType()
+            objcMethodDeclarationCtx != null -> objcMethodDeclarationCtx.methodType().typeName().text
+            objcClassMethodDeclarationCtx != null -> objcClassMethodDeclarationCtx.methodDeclaration().methodType().typeName().text
             else -> throw IllegalStateException("javaCtx和objcCtx不能同时为null")
         }
 
@@ -32,11 +35,20 @@ class MethodExtractor private constructor(
      */
     val name: String
         get() = when {
-            javaCtx != null -> javaCtx.methodHeader().methodDeclarator().Identifier().toString()
-            objcCtx != null -> objcCtx
+            javaMethodDeclarationCtx != null -> javaMethodDeclarationCtx.methodHeader().methodDeclarator().Identifier().toString()
+            objcMethodDeclarationCtx != null -> objcMethodDeclarationCtx
                 .methodSelector()
                 .selector()
-                ?.text ?: objcCtx
+                ?.text ?: objcMethodDeclarationCtx
+                .methodSelector()
+                .keywordDeclarator()[0]
+                .selector()
+                .text
+            objcClassMethodDeclarationCtx != null -> objcClassMethodDeclarationCtx
+                .methodDeclaration()
+                .methodSelector()
+                .selector()
+                ?.text ?: objcClassMethodDeclarationCtx.methodDeclaration()
                 .methodSelector()
                 .keywordDeclarator()[0]
                 .selector()
@@ -52,10 +64,10 @@ class MethodExtractor private constructor(
     val formalParams: List<Pair<String, String>>
         get() {
             when {
-                javaCtx != null -> {
+                javaMethodDeclarationCtx != null -> {
                     val result = mutableListOf<Pair<String, String>>()
 
-                    val parameters = javaCtx.methodHeader()
+                    val parameters = javaMethodDeclarationCtx.methodHeader()
                         .methodDeclarator()
                         ?.formalParameterList()
 
@@ -77,10 +89,22 @@ class MethodExtractor private constructor(
 
                     return result
                 }
-                objcCtx != null -> {
+                objcMethodDeclarationCtx != null -> {
                     val result = mutableListOf<Pair<String, String>>()
 
-                    objcCtx.methodSelector().keywordDeclarator()
+                    objcMethodDeclarationCtx.methodSelector().keywordDeclarator()
+                        ?.forEach {
+                            result.add(Pair(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
+                        }
+                    return result
+                }
+                objcClassMethodDeclarationCtx != null -> {
+                    val result = mutableListOf<Pair<String, String>>()
+
+                    objcClassMethodDeclarationCtx
+                        .methodDeclaration()
+                        .methodSelector()
+                        .keywordDeclarator()
                         ?.forEach {
                             result.add(Pair(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
                         }

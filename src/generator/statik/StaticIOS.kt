@@ -13,6 +13,7 @@ import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import preprocess.Analyzer.mainObjcClassPath
 import preprocess.Analyzer.methodChannelName
+import preprocess.Analyzer.pluginClassSimpleName
 
 private val lexer = ObjectiveCLexer(CharStreams.fromFileName(mainObjcClassPath))
 private val tokens = CommonTokenStream(lexer)
@@ -32,9 +33,13 @@ object SimpleStaticIOS: IiOS {
 
     override fun generateIOSDart() {
         walker.walk(object : ObjectiveCParserBaseListener() {
+            override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
+                dartResultBuilder.append("import 'dart:async';\n\nimport 'package:flutter/services.dart';\n\n")
+            }
+
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                dartResultBuilder.append("class ${mainObjcClass}IOS {\n")
-                dartResultBuilder.append("  final _channel = MethodChannel('$methodChannelName');\n")
+                dartResultBuilder.append("class ${pluginClassSimpleName}IOS {\n")
+                dartResultBuilder.append("  static final _channel = MethodChannel('$methodChannelName');\n")
             }
 
             override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
@@ -46,7 +51,7 @@ object SimpleStaticIOS: IiOS {
                 if (!method.returnType.jsonable()) return
 
                 dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
+                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}'${if (method.formalParams.isEmpty()) "" else ", "}${method.formalParams.toDartMap()});\n  }\n")
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
@@ -57,15 +62,19 @@ object SimpleStaticIOS: IiOS {
 
     override fun generateSwift() {
         walker.walk(object : ObjectiveCParserBaseListener() {
+            override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
+                swiftResultBuilder.append("import Flutter\nimport UIKit\n\n")
+            }
+
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                swiftResultBuilder.append("class Swift${mainObjcClass}FlutterPlugin : NSObject, FlutterPlugin {\n")
+                swiftResultBuilder.append("class Swift${pluginClassSimpleName}Plugin : NSObject, FlutterPlugin {\n")
                 swiftResultBuilder.append("  ${staticRegister()}\n")
                 swiftResultBuilder.append("\n  public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {\n")
                 swiftResultBuilder.append("    let args = call.arguments as! Dictionary<String, Any>\n\n")
                 swiftResultBuilder.append("    switch call.method {\n")
             }
 
-            override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
+            override fun enterClassMethodDeclaration(ctx: ObjectiveCParser.ClassMethodDeclarationContext?) {
                 val method = MethodExtractor(ctx!!)
 
                 // 如果参数中有无法直接json序列化的, 就跳过
@@ -86,7 +95,7 @@ object SimpleStaticIOS: IiOS {
                 return """
                     public static func register(with registrar: FlutterPluginRegistrar) {
                         let channel = FlutterMethodChannel(name: "$methodChannelName", binaryMessenger: registrar.messenger())
-                        let instance = Swift${mainObjcClass}FlutterPlugin()
+                        let instance = Swift${pluginClassSimpleName}Plugin()
                         registrar.addMethodCallDelegate(instance, channel: channel)
                       }
                 """.trimIndent()

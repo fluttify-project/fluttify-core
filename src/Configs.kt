@@ -1,8 +1,6 @@
+import preprocess.Analyzer.projectPath
+
 object Configs {
-    /**
-     * 当前项目路径
-     */
-    val projectPath: String = System.getProperty("user.dir")
     /**
      * 主类全路径名
      */
@@ -19,4 +17,12 @@ object Configs {
      * framework路径
      */
     val frameworkPath: String = "$projectPath/resource/ios/Tbit.framework"
+    /**
+     * 生成工程的组织名
+     */
+    val outputOrg: String = "com.yibo"
+    /**
+     * 生成工程名称
+     */
+    val outputProjectName: String = "tbitble_flutter"
 }
