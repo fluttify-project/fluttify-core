@@ -79,7 +79,9 @@ object Analyzer {
         javaPackage = mainJavaClass.substringBeforeLast(".")
         javaClassSimpleName = mainJavaClass.substringAfterLast(".")
         mainObjcClassPath = "$frameworkPath/Headers/$mainObjcClass.h"
-        methodChannelName = "$javaPackage/$javaClassSimpleName"
+        // jar的包名采取java包名截取前三段
+        jarPackage = javaPackage.split(".").subList(0, 3).joinToString(".")
+        methodChannelName = "$jarPackage/$javaClassSimpleName"
         pluginClassSimpleName = outputProjectName.underscore2Camel()
         outputPluginDartPath =
             "$projectPath/resource/outputPluginProject/$outputProjectName/lib/$outputProjectName.dart"
@@ -91,8 +93,6 @@ object Analyzer {
                 "/"
             )}/$outputProjectName/${pluginClassSimpleName}Plugin.kt"
         outputPluginAndroidJarDir = "$projectPath/resource/outputPluginProject/$outputProjectName/android/libs"
-        // jar的包名采取java包名截取前三段
-        jarPackage = javaPackage.split(".").subList(0, 3).joinToString(".")
         outputPluginIOSDartPath =
             "$projectPath/resource/outputPluginProject/$outputProjectName/lib/$outputProjectName.ios.dart"
         outputPluginIOSSwiftPath =

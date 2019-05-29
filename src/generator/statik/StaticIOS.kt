@@ -40,7 +40,7 @@ object SimpleStaticIOS: IiOS {
             }
 
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                dartResultBuilder.append(dartClassDeclarationTemp.placeholder("${pluginClassSimpleName}Android"))
+                dartResultBuilder.append(dartClassDeclarationTemp.placeholder("${pluginClassSimpleName}IOS"))
                 dartResultBuilder.append(methodChannelTemp.placeholder(methodChannelName))
             }
 

@@ -27,7 +27,7 @@ const val companionObjectTemp = """
 """
 
 const val kotlinOnMethodCall = """
-    override fun kotlinOnMethodCall(call: MethodCall, result: Result) {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         val args = call.arguments as Map<String, *>
         when (call.method) {"""
 
