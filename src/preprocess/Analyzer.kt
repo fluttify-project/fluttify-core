@@ -49,6 +49,10 @@ object Analyzer {
      */
     var outputPluginAndroidKotlinPath: String? = null
     /**
+     * 生成工程的Android端Jar路径
+     */
+    var outputPluginAndroidJarDir: String? = null
+    /**
      * 生成工程的iOS端Dart文件路径
      */
     var outputPluginIOSDartPath: String? = null
@@ -56,6 +60,10 @@ object Analyzer {
      * 生成工程的iOS端Swift文件路径
      */
     var outputPluginIOSSwiftPath: String? = null
+    /**
+     * 生成工程的iOS端Framework路径
+     */
+    var outputPluginIOSFrameworkPath: String? = null
 
     fun analyze() {
         mainJavaClassPath = "$projectPath/resource/android/decompiled/${mainJavaClass.replace(".", "/")}.java"
@@ -67,7 +75,9 @@ object Analyzer {
         outputPluginDartPath = "$projectPath/resource/outputPluginProject/$outputProjectName/lib/$outputProjectName.dart"
         outputPluginAndroidDartPath = "$projectPath/resource/outputPluginProject/$outputProjectName/lib/$outputProjectName.android.dart"
         outputPluginAndroidKotlinPath = "$projectPath/resource/outputPluginProject/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(".", "/")}/$outputProjectName/${pluginClassSimpleName}Plugin.kt"
+        outputPluginAndroidJarDir = "$projectPath/resource/outputPluginProject/$outputProjectName/android/libs"
         outputPluginIOSDartPath = "$projectPath/resource/outputPluginProject/$outputProjectName/lib/$outputProjectName.ios.dart"
         outputPluginIOSSwiftPath = "$projectPath/resource/outputPluginProject/$outputProjectName/ios/Classes/Swift${pluginClassSimpleName}Plugin.swift"
+        outputPluginIOSFrameworkPath = "$projectPath/resource/outputPluginProject/$outputProjectName/ios"
     }
 }
