@@ -2,11 +2,11 @@ package common.template
 
 const val kotlinPackageImportTemp = """package #__package_name__#
 
-dartPackageImportTemp io.flutter.plugin.common.MethodCall
-dartPackageImportTemp io.flutter.plugin.common.MethodChannel
-dartPackageImportTemp io.flutter.plugin.common.MethodChannel.MethodCallHandler
-dartPackageImportTemp io.flutter.plugin.common.MethodChannel.Result
-dartPackageImportTemp io.flutter.plugin.common.PluginRegistry.Registrar
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.PluginRegistry.Registrar
 """
 
 const val kotlinClassDeclarationTemp = """
