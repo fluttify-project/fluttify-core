@@ -1,10 +1,10 @@
 package common.template
 
-import preprocess.Analyzer.jarPackage
+import Configs.mainJavaClass
 
-val kotlinPackageImportTemp = """package #__package_name__#
+const val kotlinPackageImportTemp = """package #__package_name__#
 
-import $jarPackage.*
+import $mainJavaClass
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -21,7 +21,7 @@ const val companionObjectTemp = """
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
-            channel.setMethodCallHandler(#__plugin_class_simple_name__#}Plugin())
+            channel.setMethodCallHandler(#__plugin_class_simple_name__#Plugin())
         }
     }
 """

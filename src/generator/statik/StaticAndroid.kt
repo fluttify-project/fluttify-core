@@ -48,12 +48,7 @@ object SimpleStaticAndroid : IAndroid {
             override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
                 val method = MethodExtractor(ctx!!)
 
-                // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams.any { !it.first.jsonable() }) return
-                // 如果返回类型无法直接json序列化的, 就跳过
-                if (!method.returnType.jsonable()) return
-                // 跳过不是静态的方法
-                if (!method.modifiers.contains("static")) return
+                if (!isTargetMethod(method)) return
 
                 dartResultBuilder.append(invokeMethodTemp.placeholder(
                     method.returnType,
@@ -86,18 +81,27 @@ object SimpleStaticAndroid : IAndroid {
             override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
                 val method = MethodExtractor(ctx!!)
 
-                // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams.any { !it.first.jsonable() }) return
-                // 如果返回类型无法直接json序列化的, 就跳过
-                if (!method.returnType.jsonable()) return
+                if (!isTargetMethod(method)) return
 
-                kotlinResultBuilder.append(kotlinInvokeResultTemp.placeholder(method.name, javaClassSimpleName, method.name, method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }))
+                kotlinResultBuilder.append(kotlinInvokeResultTemp.placeholder(method.name, javaClassSimpleName, method.name, method.formalParams.joinToString { "args[\"${it.second}\"] as ${it.first}" }))
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
                 kotlinResultBuilder.append(kotlinClassEnd)
             }
         }, tree)
+    }
+
+    private fun isTargetMethod(method: MethodExtractor): Boolean {
+        // 如果参数中有无法直接json序列化的, 就跳过
+        if (method.formalParams.any { !it.first.jsonable() }) return false
+        // 如果返回类型无法直接json序列化的, 就跳过
+        if (!method.returnType.jsonable()) return false
+        // 跳过不是静态的方法
+        if (!method.modifiers.contains("static")) return false
+        // 跳过私有方法
+        if (method.modifiers.contains("private")) return false
+        return true
     }
 }
 
