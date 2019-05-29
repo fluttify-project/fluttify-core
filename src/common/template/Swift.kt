@@ -8,7 +8,7 @@ import $frameworkName
 """
 
 const val swiftClassDeclarationTemp  = """
-class Swift#__class_name__#Plugin : NSObject, FlutterPlugin {"""
+public class Swift#__class_name__#Plugin : NSObject, FlutterPlugin {"""
 
 const val registerTemp = """
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -24,7 +24,11 @@ const val swiftOnMethodCall = """
         switch call.method {"""
 
 const val swiftInvokeResultTemp = """
-            case "#__method_name__#": result(#__main_objc_class__#.#__method_name__#(#__params__#))"""
+        case "#__method_name__#": result(#__main_objc_class__#.#__method_name__#(#__params__#))"""
+
+const val swiftSwitchDefault = """
+        default:
+            result(FlutterMethodNotImplemented)"""
 
 const val swiftClassEnd = """
         }

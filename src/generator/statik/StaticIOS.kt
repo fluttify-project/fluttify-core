@@ -97,6 +97,7 @@ object SimpleStaticIOS: IiOS {
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
+                swiftResultBuilder.append(swiftSwitchDefault)
                 swiftResultBuilder.append(swiftClassEnd)
             }
         }, tree)

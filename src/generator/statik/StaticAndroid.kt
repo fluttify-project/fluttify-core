@@ -87,6 +87,7 @@ object SimpleStaticAndroid : IAndroid {
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
+                kotlinResultBuilder.append(kotlinWhenElse)
                 kotlinResultBuilder.append(kotlinClassEnd)
             }
         }, tree)

@@ -34,6 +34,9 @@ const val kotlinOnMethodCall = """
 const val kotlinInvokeResultTemp = """
             "#__method_name__#" -> result.success(#__java_class_simple_name__#.#__method_name__#(#__params__#))"""
 
+const val kotlinWhenElse = """
+            else -> result.notImplemented()"""
+
 const val kotlinClassEnd = """
          }
     }
