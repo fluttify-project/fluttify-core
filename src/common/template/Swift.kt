@@ -5,8 +5,7 @@ import UIKit
 """
 
 const val swiftClassDeclarationTemp  = """
-class Swift#__class_name__#Plugin : NSObject, FlutterPlugin {
-"""
+class Swift#__class_name__#Plugin : NSObject, FlutterPlugin {"""
 
 const val registerTemp = """
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -25,6 +24,6 @@ const val swiftInvokeResultTemp = """
             case "#__method_name__#": result(#__main_objc_class__#.#__method_name__#(#__params__#))"""
 
 const val swiftClassEnd = """
-         }
+        }
     }
 }"""
