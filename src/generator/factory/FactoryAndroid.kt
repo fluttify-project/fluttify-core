@@ -45,7 +45,7 @@ object FactoryAndroid : IAndroid {
                 if (!method.returnType.jsonable()) return
 
                 dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
+                dartResultBuilder.append("    return _channel.invokeMethodTemp('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
@@ -59,7 +59,7 @@ object FactoryAndroid : IAndroid {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
                 javaResultBuilder.append("class ${javaClassSimpleName}FlutterPlugin : MethodCallHandler {\n")
                 javaResultBuilder.append("  ${companionObject()}\n")
-                javaResultBuilder.append("\n  override fun onMethodCall(call: MethodCall, result: Result) {\n")
+                javaResultBuilder.append("\n  override fun kotlinOnMethodCall(call: MethodCall, result: Result) {\n")
                 javaResultBuilder.append("    val args = call.arguments as Map<String, *>\n\n")
                 javaResultBuilder.append("    when (call.method) {\n")
             }

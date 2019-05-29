@@ -46,7 +46,7 @@ object ObjectIOS : IiOS {
                 if (!method.returnType.jsonable()) return
 
                 dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
+                dartResultBuilder.append("    return _channel.invokeMethodTemp('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {

@@ -37,12 +37,12 @@ object SimpleStaticAndroid : IAndroid {
     override fun generateAndroidDart() {
         walker.walk(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
-                dartResultBuilder.append(`import`)
+                dartResultBuilder.append(dartPackageImportTemp)
             }
 
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append(dartClassDeclaration.placeholder(pluginClassSimpleName))
-                dartResultBuilder.append(methodChannel.placeholder(methodChannelName))
+                dartResultBuilder.append(dartClassDeclarationTemp.placeholder("${pluginClassSimpleName}Android"))
+                dartResultBuilder.append(methodChannelTemp.placeholder(methodChannelName))
             }
 
             override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
@@ -55,7 +55,7 @@ object SimpleStaticAndroid : IAndroid {
                 // 跳过不是静态的方法
                 if (!method.modifiers.contains("static")) return
 
-                dartResultBuilder.append(invodeMethod.placeholder(
+                dartResultBuilder.append(invokeMethodTemp.placeholder(
                     method.returnType,
                     method.name,
                     method.formalParams.joinToString { "${it.first} ${it.second}" },
@@ -66,7 +66,7 @@ object SimpleStaticAndroid : IAndroid {
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append("}")
+                dartResultBuilder.append(dartClassEnd)
             }
         }, tree)
     }
@@ -74,13 +74,13 @@ object SimpleStaticAndroid : IAndroid {
     override fun generateKotlin() {
         walker.walk(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
-                kotlinResultBuilder.append(packageImport.placeholder("$outputOrg.$outputProjectName"))
+                kotlinResultBuilder.append(kotlinPackageImportTemp.placeholder("$outputOrg.$outputProjectName"))
             }
 
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                kotlinResultBuilder.append(kotlinClassDeclaration.placeholder(pluginClassSimpleName))
-                kotlinResultBuilder.append(companionObject.placeholder(methodChannelName, pluginClassSimpleName))
-                kotlinResultBuilder.append(onMethodCall)
+                kotlinResultBuilder.append(kotlinClassDeclarationTemp.placeholder(pluginClassSimpleName))
+                kotlinResultBuilder.append(companionObjectTemp.placeholder(methodChannelName, pluginClassSimpleName))
+                kotlinResultBuilder.append(kotlinOnMethodCall)
             }
 
             override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
@@ -91,11 +91,11 @@ object SimpleStaticAndroid : IAndroid {
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType.jsonable()) return
 
-                kotlinResultBuilder.append(invokeResult.placeholder(method.name, javaClassSimpleName, method.name, method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }))
+                kotlinResultBuilder.append(kotlinInvokeResultTemp.placeholder(method.name, javaClassSimpleName, method.name, method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }))
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                kotlinResultBuilder.append(classEnd)
+                kotlinResultBuilder.append(kotlinClassEnd)
             }
         }, tree)
     }
@@ -128,7 +128,7 @@ object ComplicatedStaticAndroid : IAndroid {
                 if (!method.returnType.jsonable()) return
 
                 dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
+                dartResultBuilder.append("    return _channel.invokeMethodTemp('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
@@ -142,7 +142,7 @@ object ComplicatedStaticAndroid : IAndroid {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
                 javaResultBuilder.append("class ${javaClassSimpleName}FlutterPlugin : MethodCallHandler {\n")
                 javaResultBuilder.append("  ${companionObject()}\n")
-                javaResultBuilder.append("\n  override fun onMethodCall(call: MethodCall, result: Result) {\n")
+                javaResultBuilder.append("\n  override fun kotlinOnMethodCall(call: MethodCall, result: Result) {\n")
                 javaResultBuilder.append("    val args = call.arguments as Map<String, *>\n\n")
                 javaResultBuilder.append("    when (call.method) {\n")
             }

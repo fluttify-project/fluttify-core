@@ -3,6 +3,8 @@ package generator.statik
 import Configs.mainObjcClass
 import common.MethodExtractor
 import common.jsonable
+import common.placeholder
+import common.template.*
 import common.toDartMap
 import generator.IiOS
 import org.antlr.v4.runtime.CharStreams
@@ -34,12 +36,12 @@ object SimpleStaticIOS: IiOS {
     override fun generateIOSDart() {
         walker.walk(object : ObjectiveCParserBaseListener() {
             override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
-                dartResultBuilder.append("import 'dart:async';\n\nimport 'package:flutter/services.dart';\n\n")
+                dartResultBuilder.append(dartPackageImportTemp)
             }
 
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                dartResultBuilder.append("class ${pluginClassSimpleName}IOS {\n")
-                dartResultBuilder.append("  static final _channel = MethodChannel('$methodChannelName');\n")
+                dartResultBuilder.append(dartClassDeclarationTemp.placeholder("${pluginClassSimpleName}Android"))
+                dartResultBuilder.append(methodChannelTemp.placeholder(methodChannelName))
             }
 
             override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
@@ -50,12 +52,18 @@ object SimpleStaticIOS: IiOS {
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType.jsonable()) return
 
-                dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}'${if (method.formalParams.isEmpty()) "" else ", "}${method.formalParams.toDartMap()});\n  }\n")
+                dartResultBuilder.append(invokeMethodTemp.placeholder(
+                    method.returnType,
+                    method.name,
+                    method.formalParams.joinToString { "${it.first} ${it.second}" },
+                    method.name,
+                    if (method.formalParams.isEmpty()) "" else ", ",
+                    method.formalParams.toDartMap()
+                ))
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                dartResultBuilder.append("}")
+                dartResultBuilder.append(dartClassEnd)
             }
         }, tree)
     }
@@ -63,15 +71,13 @@ object SimpleStaticIOS: IiOS {
     override fun generateSwift() {
         walker.walk(object : ObjectiveCParserBaseListener() {
             override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
-                swiftResultBuilder.append("import Flutter\nimport UIKit\n\n")
+                swiftResultBuilder.append(swiftPackageImportTemp)
             }
 
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                swiftResultBuilder.append("class Swift${pluginClassSimpleName}Plugin : NSObject, FlutterPlugin {\n")
-                swiftResultBuilder.append("  ${staticRegister()}\n")
-                swiftResultBuilder.append("\n  public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {\n")
-                swiftResultBuilder.append("    let args = call.arguments as! Dictionary<String, Any>\n\n")
-                swiftResultBuilder.append("    switch call.method {\n")
+                swiftResultBuilder.append(swiftClassDeclarationTemp.placeholder(pluginClassSimpleName))
+                swiftResultBuilder.append(registerTemp.placeholder(methodChannelName, pluginClassSimpleName))
+                swiftResultBuilder.append(swiftOnMethodCall)
             }
 
             override fun enterClassMethodDeclaration(ctx: ObjectiveCParser.ClassMethodDeclarationContext?) {
@@ -82,23 +88,16 @@ object SimpleStaticIOS: IiOS {
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType.jsonable()) return
 
-                swiftResultBuilder.append("\t  case \"${method.name}\": result($mainObjcClass.${method.name}(${method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }}))\n")
+                swiftResultBuilder.append(swiftInvokeResultTemp.placeholder(
+                    method.name,
+                    mainObjcClass,
+                    method.name,
+                    method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }
+                ))
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-                swiftResultBuilder.append("    }\n")
-                swiftResultBuilder.append("  }\n")
-                swiftResultBuilder.append("}")
-            }
-
-            private fun staticRegister(): String {
-                return """
-                    public static func register(with registrar: FlutterPluginRegistrar) {
-                        let channel = FlutterMethodChannel(name: "$methodChannelName", binaryMessenger: registrar.messenger())
-                        let instance = Swift${pluginClassSimpleName}Plugin()
-                        registrar.addMethodCallDelegate(instance, channel: channel)
-                      }
-                """.trimIndent()
+                swiftResultBuilder.append(swiftClassEnd)
             }
         }, tree)
     }
@@ -130,7 +129,7 @@ object ComplicatedStaticIOS: IiOS {
                 if (!method.returnType.jsonable()) return
 
                 dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
-                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
+                dartResultBuilder.append("    return _channel.invokeMethodTemp('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
