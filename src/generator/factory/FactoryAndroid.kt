@@ -32,7 +32,7 @@ object FactoryAndroid : IAndroid {
     override fun generateAndroidDart() {
         walker.walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append("class ${javaClassSimpleName}StaticAndroid {\n")
+                dartResultBuilder.append("class ${javaClassSimpleName}SimpleStaticAndroid {\n")
                 dartResultBuilder.append("  final _channel = MethodChannel('$methodChannelName');\n")
             }
 

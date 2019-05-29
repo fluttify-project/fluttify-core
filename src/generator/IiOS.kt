@@ -1,6 +1,6 @@
 package generator
 
-interface IIOS {
+interface IiOS {
     val iOSDartResult: String
 
     val swiftResult: String

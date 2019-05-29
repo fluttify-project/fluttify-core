@@ -14,25 +14,103 @@ import preprocess.Analyzer.javaClassSimpleName
 import preprocess.Analyzer.mainJavaClassPath
 import preprocess.Analyzer.methodChannelName
 
+private val lexer = Java8Lexer(CharStreams.fromFileName(mainJavaClassPath))
+private val parser = Java8Parser(CommonTokenStream(lexer))
+private val tree = parser.compilationUnit()
+private val walker = ParseTreeWalker()
+
 /**
- * Android端目标类以静态模式创建对象
+ * Android端目标类以静态模式创建对象, 简单接口
  */
-object StaticAndroid: IAndroid {
+object SimpleStaticAndroid: IAndroid {
     override val androidDartResult get() = dartResultBuilder.toString()
     override val kotlinResult get() = javaResultBuilder.toString()
 
     private val dartResultBuilder = StringBuilder()
     private val javaResultBuilder = StringBuilder()
 
-    private val lexer = Java8Lexer(CharStreams.fromFileName(mainJavaClassPath))
-    private val parser = Java8Parser(CommonTokenStream(lexer))
-    private val tree = parser.compilationUnit()
-    private val walker = ParseTreeWalker()
+    override fun generateAndroidDart() {
+        walker.walk(object : Java8BaseListener() {
+            override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
+                dartResultBuilder.append("class ${javaClassSimpleName}SimpleStaticAndroid {\n")
+                dartResultBuilder.append("  final _channel = MethodChannel('$methodChannelName');\n")
+            }
+
+            override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
+                val method = MethodExtractor(ctx!!)
+
+                // 如果参数中有无法直接json序列化的, 就跳过
+                if (method.formalParams.any { !it.first.jsonable() }) return
+                // 如果返回类型无法直接json序列化的, 就跳过
+                if (!method.returnType.jsonable()) return
+
+                dartResultBuilder.append("\n  static Future<${method.returnType}> ${method.name}(${method.formalParams.joinToString { "${it.first} ${it.second}" }}) {\n")
+                dartResultBuilder.append("    return _channel.invokeMethod('${method.name}', ${method.formalParams.toDartMap()});\n  }\n")
+            }
+
+            override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
+                dartResultBuilder.append("}")
+            }
+        }, tree)
+    }
+
+    override fun generateKotlin() {
+        walker.walk(object : Java8BaseListener() {
+            override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
+                javaResultBuilder.append("class ${javaClassSimpleName}FlutterPlugin : MethodCallHandler {\n")
+                javaResultBuilder.append("  ${companionObject()}\n")
+                javaResultBuilder.append("\n  override fun onMethodCall(call: MethodCall, result: Result) {\n")
+                javaResultBuilder.append("    val args = call.arguments as Map<String, *>\n\n")
+                javaResultBuilder.append("    when (call.method) {\n")
+            }
+
+            override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
+                val method = MethodExtractor(ctx!!)
+
+                // 如果参数中有无法直接json序列化的, 就跳过
+                if (method.formalParams.any { !it.first.jsonable() }) return
+                // 如果返回类型无法直接json序列化的, 就跳过
+                if (!method.returnType.jsonable()) return
+
+                javaResultBuilder.append("\t  \"${method.name}\" -> result.success($javaClassSimpleName.${method.name}(${method.formalParams.joinToString { "args[\"${it.second}\"] as! ${it.first}" }}))\n")
+            }
+
+            override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
+                javaResultBuilder.append("    }\n")
+                javaResultBuilder.append("  }\n")
+                javaResultBuilder.append("}")
+            }
+
+            private fun companionObject(): String {
+                return """
+                    companion object {
+                        @JvmStatic
+                        fun registerWith(registrar: Registrar) {
+                            val channel = MethodChannel(registrar.messenger(), "$methodChannelName")
+                            channel.setMethodCallHandler(${javaClassSimpleName}FlutterPlugin())
+                        }
+                      }
+                """.trimIndent()
+            }
+        }, tree)
+    }
+}
+
+
+/**
+ * Android端目标类以静态模式创建对象, 复杂接口
+ */
+object ComplicatedStaticAndroid: IAndroid {
+    override val androidDartResult get() = dartResultBuilder.toString()
+    override val kotlinResult get() = javaResultBuilder.toString()
+
+    private val dartResultBuilder = StringBuilder()
+    private val javaResultBuilder = StringBuilder()
 
     override fun generateAndroidDart() {
         walker.walk(object : Java8BaseListener() {
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append("class ${javaClassSimpleName}StaticAndroid {\n")
+                dartResultBuilder.append("class ${javaClassSimpleName}SimpleStaticAndroid {\n")
                 dartResultBuilder.append("  final _channel = MethodChannel('$methodChannelName');\n")
             }
 

@@ -4,7 +4,7 @@ import Configs.mainObjcClass
 import common.MethodExtractor
 import common.jsonable
 import common.toDartMap
-import generator.IIOS
+import generator.IiOS
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -17,7 +17,7 @@ import preprocess.Analyzer.methodChannelName
 /**
  * iOS端目标类以工厂模式创建对象
  */
-object FactoryIOS: IIOS {
+object FactoryIOS: IiOS {
     override val iOSDartResult get() = dartResultBuilder.toString()
     override val swiftResult get() = swiftResultBuilder.toString()
 
