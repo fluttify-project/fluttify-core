@@ -11,23 +11,23 @@ object Analyzer {
     /**
      * 主java类的路径
      */
-    var mainJavaClassPath: String? = null
+    var mainJavaClassPath: String = ""
     /**
      * 主java类的包名
      */
-    var javaPackage: String? = null
+    var javaPackage: String = ""
     /**
      * 主java类的类名
      */
-    var javaClassSimpleName: String? = null
+    var javaClassSimpleName: String = ""
     /**
      * 主objc类的路径
      */
-    var mainObjcClassPath: String? = null
+    var mainObjcClassPath: String = ""
     /**
      * method channel的名字
      */
-    var methodChannelName: String? = null
+    var methodChannelName: String = ""
     /**
      * 当前项目路径
      */
@@ -35,35 +35,35 @@ object Analyzer {
     /**
      * 生成工程的主类名
      */
-    var pluginClassSimpleName: String? = null
+    var pluginClassSimpleName: String = ""
     /**
      * 生成工程的Dart文件路径
      */
-    var outputPluginDartPath: String? = null
+    var outputPluginDartPath: String = ""
     /**
      * 生成工程的Android端Dart文件路径
      */
-    var outputPluginAndroidDartPath: String? = null
+    var outputPluginAndroidDartPath: String = ""
     /**
      * 生成工程的Android端Kotlin文件路径
      */
-    var outputPluginAndroidKotlinPath: String? = null
+    var outputPluginAndroidKotlinPath: String = ""
     /**
      * 生成工程的Android端Jar路径
      */
-    var outputPluginAndroidJarDir: String? = null
+    var outputPluginAndroidJarDir: String = ""
     /**
      * 生成工程的iOS端Dart文件路径
      */
-    var outputPluginIOSDartPath: String? = null
+    var outputPluginIOSDartPath: String = ""
     /**
      * 生成工程的iOS端Swift文件路径
      */
-    var outputPluginIOSSwiftPath: String? = null
+    var outputPluginIOSSwiftPath: String = ""
     /**
      * 生成工程的iOS端Framework路径
      */
-    var outputPluginIOSFrameworkPath: String? = null
+    var outputPluginIOSFrameworkPath: String = ""
 
     fun analyze() {
         mainJavaClassPath = "$projectPath/resource/android/decompiled/${mainJavaClass.replace(".", "/")}.java"

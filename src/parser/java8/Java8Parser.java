@@ -134,7 +134,7 @@ public class Java8Parser extends Parser {
 			"ambiguousName", "compilationUnit", "packageDeclaration", "packageModifier", 
 			"importDeclaration", "singleTypeImportDeclaration", "typeImportOnDemandDeclaration", 
 			"singleStaticImportDeclaration", "staticImportOnDemandDeclaration", "typeDeclaration", 
-			"classDeclaration", "normalClassDeclaration", "classModifier", "typeParameters", 
+			"kotlinClassDeclaration", "normalClassDeclaration", "classModifier", "typeParameters",
 			"typeParameterList", "superclass", "superinterfaces", "interfaceTypeList", 
 			"classBody", "classBodyDeclaration", "classMemberDeclaration", "fieldDeclaration", 
 			"fieldModifier", "variableDeclaratorList", "variableDeclarator", "variableDeclaratorId", 
