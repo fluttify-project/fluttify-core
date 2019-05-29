@@ -1,6 +1,10 @@
 package common.template
 
-const val kotlinPackageImportTemp = """package #__package_name__#
+import preprocess.Analyzer.jarPackage
+
+val kotlinPackageImportTemp = """package #__package_name__#
+
+import $jarPackage.*
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

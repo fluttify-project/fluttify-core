@@ -1,7 +1,10 @@
 package common.template
 
-const val swiftPackageImportTemp = """import Flutter
+import preprocess.Analyzer.frameworkName
+
+val swiftPackageImportTemp = """import Flutter
 import UIKit
+import $frameworkName
 """
 
 const val swiftClassDeclarationTemp  = """
