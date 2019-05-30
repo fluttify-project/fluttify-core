@@ -206,10 +206,10 @@ proguard/
 # Log Files
 *.log
 
-# SimpleStaticAndroid Studio Navigation editor temp files
+# StaticJsonableAndroid Studio Navigation editor temp files
 .navigation/
 
-# SimpleStaticAndroid Studio captures folder
+# StaticJsonableAndroid Studio captures folder
 captures/
 
 # IntelliJ
@@ -220,7 +220,7 @@ captures/
 .idea/assetWizardSettings.xml
 .idea/dictionaries
 .idea/libraries
-# SimpleStaticAndroid Studio 3 in .gitignore file.
+# StaticJsonableAndroid Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml
 # Comment next line if keeping position of elements in Navigation Editor is relevant for you
@@ -231,7 +231,7 @@ captures/
 #*.jks
 #*.keystore
 
-# External native build folder generated in SimpleStaticAndroid Studio 2.2 and later
+# External native build folder generated in StaticJsonableAndroid Studio 2.2 and later
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
