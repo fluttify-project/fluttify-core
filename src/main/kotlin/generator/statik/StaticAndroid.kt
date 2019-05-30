@@ -100,7 +100,7 @@ object StaticJsonableAndroid : IAndroid {
                 if (method.modifiers.contains("private")) return
 
                 kotlinResultBuilder.append(
-                    kotlinInvokeResultTemp.placeholder(
+                    kotlinJsonableInvokeResultTemp.placeholder(
                         method.name,
                         javaClassSimpleName,
                         method.name,
@@ -179,36 +179,33 @@ object StaticModelAndroid : IAndroid {
 
                 // 跳过不是静态的方法
                 if (!method.modifiers.contains("static")) return
-                // 跳过私有方法
-                if (method.modifiers.contains("private")) return
-                // 如果所有参数类型和返回类型都可以直接json序列化的话, 那么采用[StaticJsonableAndroid]的逻辑
-                if (method.formalParams.all { it.first.jsonable() } && method.returnType.jsonable()) {
-                    kotlinResultBuilder.append(
-                        kotlinInvokeResultTemp.placeholder(
-                            method.name,
-                            javaClassSimpleName,
-                            method.name,
-                            method.formalParams.joinToString { "args[\"${it.second}\"] as ${it.first}" }
-                        )
+                // 跳过私有和废弃方法
+                if (method.modifiers.run { contains("private") || contains("@Deprecated") }) return
+                // 跳过`不是所有参数都是jsonable`的和`有非model参数`的方法
+                if (!method.formalParams.all { it.first.jsonable() }
+                    && method.formalParams.any { !it.first.findPath(jarSourcePath).isModel() })
+                    return
+
+                kotlinResultBuilder.append(
+                    kotlinModelInvokeResultTemp.placeholder(
+                        method.name,
+                        method.formalParams.joinToString("") {
+                            when {
+                                it.first.jsonable() -> {
+                                    "\n\t\t\t\tval ${it.second} = args[\"${it.second}\"] as ${it.first}"
+                                }
+                                it.first.findPath(jarSourcePath).isModel() -> {
+                                    "\n\t\t\t\tval ${it.second} = mapper.readValue(args[\"${it.second}\"] as String, ${it.first}::class.java)"
+                                }
+                                else -> ""
+                            }
+                        },
+                        javaClassSimpleName,
+                        method.name,
+                        method.formalParams.joinToString { it.second },
+                        if (method.returnType.jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
                     )
-                }
-                // 参数类型中有model, 但是返回类型是jsonable
-                else if (!method.formalParams.all { it.first.jsonable() } && method.returnType.jsonable()) {
-                    kotlinResultBuilder.append(
-                        kotlinInvokeResultTemp.placeholder(
-                            method.name,
-                            javaClassSimpleName,
-                            method.name,
-                            method.formalParams.joinToString { "MAPPER.readValue(args[\"${it.second}\"], ${it.first}::class)" }
-                        )
-                    )
-                }
-                // 参数全都为jsonable, 但是返回类型是model
-                else if(method.formalParams.all { it.first.jsonable() } && !method.returnType.jsonable()) {
-
-                }
-
-
+                )
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {

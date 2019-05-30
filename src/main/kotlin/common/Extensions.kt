@@ -6,7 +6,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker
 import parser.java8.Java8BaseListener
 import parser.java8.Java8Lexer
 import parser.java8.Java8Parser
-import preprocess.Analyzer
 import preprocess.Analyzer.jarSourcePath
 import java.io.File
 
@@ -33,7 +32,8 @@ fun String?.jsonable(): Boolean {
         "Uint8List",
         "Int32List",
         "Int64List",
-        "Float64List"
+        "Float64List",
+        "void"
     )
 }
 
@@ -52,6 +52,7 @@ fun String?.toDartType(): String {
         "int[]", "Int[]" -> "Int32List"
         "long[]", "Long[]" -> "Int64List"
         "double[]", "Double[]" -> "Float64List"
+        "void" -> "void"
         null -> "null"
         else -> this
     }
@@ -148,8 +149,8 @@ fun String.isModel(): Boolean {
     return result
 }
 
-fun main() {
-    Analyzer.analyze()
-
-    println("isModel: " + "ConnectObservable".findPath(jarSourcePath).isModel())
-}
+//fun main() {
+//    Analyzer.analyze()
+//
+//    println("isModel: " + "ConnectObservable".findPath(jarSourcePath).isModel())
+//}
