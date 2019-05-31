@@ -2,25 +2,16 @@ package generator.statik
 
 import Configs.outputOrg
 import Configs.outputProjectName
-import common.*
-import common.template.*
+import builtparser.JavaParser
+import common.Temps
+import common.extensions.*
 import generator.IAndroid
-import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.tree.ParseTreeWalker
 import parser.java8.Java8BaseListener
-import parser.java8.Java8Lexer
 import parser.java8.Java8Parser
-import preprocess.Analyzer.jarSourcePath
-import preprocess.Analyzer.javaClassSimpleName
-import preprocess.Analyzer.mainJavaClassPath
-import preprocess.Analyzer.methodChannelName
-import preprocess.Analyzer.pluginClassSimpleName
+import preprocess.Jar
+import preprocess.OutputProject
 
-private val lexer = Java8Lexer(CharStreams.fromFileName(mainJavaClassPath))
-private val parser = Java8Parser(CommonTokenStream(lexer))
-private val tree = parser.compilationUnit()
-private val walker = ParseTreeWalker()
+private val parser = JavaParser(Jar.Decompiled.mainClassPath)
 
 /**
  * Android端目标类以静态模式创建对象
@@ -35,84 +26,78 @@ object StaticJsonableAndroid : IAndroid {
     private val kotlinResultBuilder = StringBuilder()
 
     override fun generateAndroidDart() {
-        walker.walk(object : Java8BaseListener() {
+        parser.walkTree(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
-                dartResultBuilder.append(dartPackageImportTemp)
+                dartResultBuilder.append(Temps.Dart.packageImport)
             }
 
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append(dartClassDeclarationTemp.placeholder("${pluginClassSimpleName}Android"))
-                dartResultBuilder.append(methodChannelTemp.placeholder(methodChannelName))
+                dartResultBuilder.append(Temps.Dart.classDeclaration.placeholder("${OutputProject.classSimpleName}Android"))
+                dartResultBuilder.append(Temps.Dart.methodChannel.placeholder(OutputProject.methodChannel))
             }
 
-            override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
-                val method = MethodExtractor(ctx!!)
-
+            override fun enterMethodDeclaration(method: Java8Parser.MethodDeclarationContext?) {
                 // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams.any { !it.first.jsonable() }) return
+                if (method.formalParams().any { !it.first.jsonable() }) return
                 // 如果返回类型无法直接json序列化的, 就跳过
-                if (!method.returnType.jsonable()) return
-                // 跳过不是静态的方法
-                if (!method.modifiers.contains("static")) return
-                // 跳过私有方法
-                if (method.modifiers.contains("private")) return
+                if (!method.returnType().jsonable()) return
+                // 跳过`不是静态`|`私有`的方法
+                if (!method.isStatic() || method.isPrivate()) return
 
                 dartResultBuilder.append(
-                    invokeMethodTemp.placeholder(
-                        method.returnType,
-                        method.name,
-                        method.formalParams.joinToString { "${it.first} ${it.second}" },
-                        method.name,
-                        if (method.formalParams.isEmpty()) "" else ", ",
-                        method.formalParams.toDartMap()
+                    Temps.Dart.invokeMethod.placeholder(
+                        method.returnType(),
+                        method.name(),
+                        method.formalParams().joinToString { "${it.first} ${it.second}" },
+                        method.name(),
+                        if (method.formalParams().isEmpty()) "" else ", ",
+                        method.formalParams().toDartMap()
                     )
                 )
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append(dartClassEnd)
+                dartResultBuilder.append(Temps.Dart.classEnd)
             }
-        }, tree)
+        })
     }
 
     override fun generateKotlin() {
-        walker.walk(object : Java8BaseListener() {
+        parser.walkTree(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
-                kotlinResultBuilder.append(kotlinPackageImportTemp.placeholder("$outputOrg.$outputProjectName"))
+                kotlinResultBuilder.append(Temps.Kotlin.packageImport.placeholder("$outputOrg.$outputProjectName"))
             }
 
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                kotlinResultBuilder.append(kotlinClassDeclarationTemp.placeholder(pluginClassSimpleName))
-                kotlinResultBuilder.append(companionObjectTemp.placeholder(methodChannelName, pluginClassSimpleName))
-                kotlinResultBuilder.append(kotlinOnMethodCall)
+                kotlinResultBuilder.append(Temps.Kotlin.classDeclaration.placeholder(OutputProject.classSimpleName))
+                kotlinResultBuilder.append(
+                    Temps.Kotlin.companionObject.placeholder(OutputProject.methodChannel, OutputProject.classSimpleName)
+                )
+                kotlinResultBuilder.append(Temps.Kotlin.onMethodCall)
             }
 
-            override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
-                val method = MethodExtractor(ctx!!)
-
+            override fun enterMethodDeclaration(method: Java8Parser.MethodDeclarationContext?) {
                 // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams.any { !it.first.jsonable() }) return
+                if (method.formalParams().any { !it.first.jsonable() }) return
                 // 如果返回类型无法直接json序列化的, 就跳过
-                if (!method.returnType.jsonable()) return
-                // 跳过不是静态的方法
-                if (!method.modifiers.contains("static")) return
-                // 跳过私有方法
-                if (method.modifiers.contains("private")) return
+                if (!method.returnType().jsonable()) return
+                // 跳过`不是静态`|`私有`的方法
+                if (!method.isStatic() || method.isPrivate()) return
 
                 kotlinResultBuilder.append(
-                    kotlinJsonableInvokeResultTemp.placeholder(
-                        method.name,
-                        javaClassSimpleName,
-                        method.name,
-                        method.formalParams.joinToString { "args[\"${it.second}\"] as ${it.first}" })
+                    Temps.Kotlin.jsonableInvokeResult.placeholder(
+                        method.name(),
+                        Jar.Decompiled.mainClassSimpleName,
+                        method.name(),
+                        method.formalParams().joinToString { "args[\"${it.second}\"] as ${it.first}" })
                 )
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                kotlinResultBuilder.append(kotlinWhenElse)
-                kotlinResultBuilder.append(kotlinClassEnd)
+                kotlinResultBuilder.append(Temps.Kotlin.whenElse)
+                kotlinResultBuilder.append(Temps.Kotlin.classEnd)
             }
-        }, tree)
+        })
     }
 }
 
@@ -129,99 +114,88 @@ object StaticModelAndroid : IAndroid {
     private val kotlinResultBuilder = StringBuilder()
 
     override fun generateAndroidDart() {
-        walker.walk(object : Java8BaseListener() {
+        parser.walkTree(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
-                dartResultBuilder.append(dartPackageImportTemp)
+                dartResultBuilder.append(Temps.Dart.packageImport)
             }
 
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append(dartClassDeclarationTemp.placeholder("${pluginClassSimpleName}Android"))
-                dartResultBuilder.append(methodChannelTemp.placeholder(methodChannelName))
+                dartResultBuilder.append(Temps.Dart.classDeclaration.placeholder("${OutputProject.classSimpleName}Android"))
+                dartResultBuilder.append(Temps.Dart.methodChannel.placeholder(OutputProject.methodChannel))
             }
 
-            override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
-                val method = MethodExtractor(ctx!!)
-
-//                if (!isStaticModelMethod(method)) return
-
+            override fun enterMethodDeclaration(method: Java8Parser.MethodDeclarationContext?) {
                 dartResultBuilder.append(
-                    invokeMethodTemp.placeholder(
-                        method.returnType,
-                        method.name,
-                        method.formalParams.joinToString { "${it.first} ${it.second}" },
-                        method.name,
-                        if (method.formalParams.isEmpty()) "" else ", ",
-                        method.formalParams.toDartMap()
+                    Temps.Dart.invokeMethod.placeholder(
+                        method.returnType(),
+                        method.name(),
+                        method.formalParams().joinToString { "${it.first} ${it.second}" },
+                        method.name(),
+                        if (method.formalParams().isEmpty()) "" else ", ",
+                        method.formalParams().toDartMap()
                     )
                 )
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                dartResultBuilder.append(dartClassEnd)
+                dartResultBuilder.append(Temps.Dart.classEnd)
             }
-        }, tree)
+        })
     }
 
     override fun generateKotlin() {
-        walker.walk(object : Java8BaseListener() {
+        parser.walkTree(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
-                kotlinResultBuilder.append(kotlinPackageImportTemp.placeholder("$outputOrg.$outputProjectName"))
+                kotlinResultBuilder.append(Temps.Kotlin.packageImport.placeholder("$outputOrg.$outputProjectName"))
             }
 
             override fun enterClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                kotlinResultBuilder.append(kotlinClassDeclarationTemp.placeholder(pluginClassSimpleName))
-                kotlinResultBuilder.append(companionObjectTemp.placeholder(methodChannelName, pluginClassSimpleName))
-                kotlinResultBuilder.append(kotlinOnMethodCall)
+                kotlinResultBuilder.append(Temps.Kotlin.classDeclaration.placeholder(OutputProject.classSimpleName))
+                kotlinResultBuilder.append(
+                    Temps.Kotlin.companionObject.placeholder(
+                        OutputProject.methodChannel,
+                        OutputProject.classSimpleName
+                    )
+                )
+                kotlinResultBuilder.append(Temps.Kotlin.onMethodCall)
             }
 
-            override fun enterMethodDeclaration(ctx: Java8Parser.MethodDeclarationContext?) {
-                val method = MethodExtractor(ctx!!)
-
+            override fun enterMethodDeclaration(method: Java8Parser.MethodDeclarationContext?) {
                 // 跳过不是静态的方法
-                if (!method.modifiers.contains("static")) return
+                if (!method.isStatic()) return
                 // 跳过私有和废弃方法
-                if (method.modifiers.run { contains("private") || contains("@Deprecated") }) return
+                if (method.run { isPrivate() || isDeprecated() }) return
                 // 跳过`不是所有参数都是jsonable`的和`有非model参数`的方法
-                if (!method.formalParams.all { it.first.jsonable() }
-                    && method.formalParams.any { !it.first.findPath(jarSourcePath).isModel() })
+                if (!method.formalParams().all { it.first.jsonable() }
+                    && method.formalParams().any { Jar.Decompiled.classes[it.first]?.isModel == true })
                     return
 
                 kotlinResultBuilder.append(
-                    kotlinModelInvokeResultTemp.placeholder(
-                        method.name,
-                        method.formalParams.joinToString("") {
+                    Temps.Kotlin.modelInvokeResult.placeholder(
+                        method.name(),
+                        method.formalParams().joinToString("") {
                             when {
                                 it.first.jsonable() -> {
                                     "\n\t\t\t\tval ${it.second} = args[\"${it.second}\"] as ${it.first}"
                                 }
-                                it.first.findPath(jarSourcePath).isModel() -> {
+                                Jar.Decompiled.classes[it.first]?.isModel ?: false -> {
                                     "\n\t\t\t\tval ${it.second} = mapper.readValue(args[\"${it.second}\"] as String, ${it.first}::class.java)"
                                 }
                                 else -> ""
                             }
                         },
-                        javaClassSimpleName,
-                        method.name,
-                        method.formalParams.joinToString { it.second },
-                        if (method.returnType.jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
+                        Jar.Decompiled.mainClassSimpleName,
+                        method.name(),
+                        method.formalParams().joinToString { it.second },
+                        if (method.returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
                     )
                 )
             }
 
             override fun exitClassDeclaration(ctx: Java8Parser.ClassDeclarationContext?) {
-                kotlinResultBuilder.append(kotlinWhenElse)
-                kotlinResultBuilder.append(kotlinClassEnd)
+                kotlinResultBuilder.append(Temps.Kotlin.whenElse)
+                kotlinResultBuilder.append(Temps.Kotlin.classEnd)
             }
-        }, tree)
-    }
-
-    private fun isStaticModelMethod(method: MethodExtractor): Boolean {
-        // 跳过不是静态的方法
-        if (!method.modifiers.contains("static")) return false
-        // 跳过私有方法
-        if (method.modifiers.contains("private")) return false
-        // 如果参数和返回类型有一个不是model的话, 就跳过
-        if (method.formalParams.any { !it.first.findPath(jarSourcePath).isModel() }) return false
-        return true
+        })
     }
 }

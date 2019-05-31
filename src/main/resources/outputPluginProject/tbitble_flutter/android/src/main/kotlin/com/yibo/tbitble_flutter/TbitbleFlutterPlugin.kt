@@ -25,21 +25,26 @@ class TbitbleFlutterPlugin : MethodCallHandler {
     override fun onMethodCall(methodCall: MethodCall, methodResult: Result) {
         val args = methodCall.arguments as Map<String, *>
         when (methodCall.method) {
-            "testModel" -> {
-				val listener = mapper.readValue(args["listener"] as String, BikeState::class.java)
-                val result = TbitBle.testModel(listener)
+            "initialize" -> {
+                val result = TbitBle.initialize(context, adapter)
 
                 methodResult.success(result)
             }
-            "testModel2" -> {
-				val listener = mapper.readValue(args["listener"] as String, BikeState::class.java)
-                val result = TbitBle.testModel2(listener)
+            "setDebugListener" -> {
+                val result = TbitBle.setDebugListener(listener)
 
-                methodResult.success(mapper.convertValue(result, Map::class.java))
+                methodResult.success(result)
             }
             "testJsonable" -> {
 				val a = args["a"] as int
                 val result = TbitBle.testJsonable(a)
+
+                methodResult.success(result)
+            }
+            "connect" -> {
+				val machineId = args["machineId"] as String
+				val key = args["key"] as String
+                val result = TbitBle.connect(machineId, key, resultCallback, stateCallback)
 
                 methodResult.success(result)
             }

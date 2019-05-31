@@ -5,20 +5,9 @@ import com.tbit.tbitblesdk.Bike.TbitBleInstance;
 import com.tbit.tbitblesdk.Bike.TbitDebugListener;
 import com.tbit.tbitblesdk.Bike.TbitListener;
 import com.tbit.tbitblesdk.Bike.model.BikeState;
-import com.tbit.tbitblesdk.Bike.services.command.Command;
-import com.tbit.tbitblesdk.Bike.services.command.callback.SimpleCommonCallback;
 import com.tbit.tbitblesdk.Bike.services.command.callback.StateCallback;
-import com.tbit.tbitblesdk.Bike.services.config.BikeConfig;
-import com.tbit.tbitblesdk.bluetooth.BleGlob;
-import com.tbit.tbitblesdk.bluetooth.scanner.ScannerCallback;
-import com.tbit.tbitblesdk.protocol.Packet;
 import com.tbit.tbitblesdk.protocol.ProtocolAdapter;
-import com.tbit.tbitblesdk.protocol.ProtocolInfo;
-import com.tbit.tbitblesdk.protocol.callback.PacketCallback;
-import com.tbit.tbitblesdk.protocol.callback.ProgressCallback;
 import com.tbit.tbitblesdk.protocol.callback.ResultCallback;
-import com.tbit.tbitblesdk.protocol.callback.RssiCallback;
-import java.io.File;
 
 public class TbitBle {
 

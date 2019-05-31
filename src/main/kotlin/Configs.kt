@@ -1,4 +1,4 @@
-import preprocess.Analyzer.projectPath
+import preprocess.Project
 
 object Configs {
     /**
@@ -8,7 +8,7 @@ object Configs {
     /**
      * jar路径
      */
-    val jarPath: String = "$projectPath/src/main/resources/android/tbitble.jar"
+    val jarPath: String = "${Project.path}/src/main/resources/android/tbitble.jar"
     /**
      * objc主类名
      */
@@ -16,7 +16,7 @@ object Configs {
     /**
      * framework路径
      */
-    val frameworkPath: String = "$projectPath/src/main/resources/ios/Tbit.framework"
+    val frameworkPath: String = "${Project.path}/src/main/resources/ios/Tbit.framework"
     /**
      * 生成工程的组织名
      */
