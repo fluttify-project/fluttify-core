@@ -65,10 +65,7 @@ class #__class_name__#Plugin : MethodCallHandler {
         val args = methodCall.arguments as Map<String, *>
         when (methodCall.method) {"""
 
-        const val jsonableInvokeResult = """
-            "#__method_name__#" -> methodResult.success(#__java_class_simple_name__#.#__method_name__#(#__params__#))"""
-
-        const val modelInvokeResult = """
+        const val methodResult = """
             "#__method_name__#" -> {#__local_params__#
                 val result = #__java_class_simple_name__#.#__method_name__#(#__params__#)
 

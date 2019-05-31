@@ -1,5 +1,6 @@
 package common.extensions
 
+import common.TYPE_NAME
 import parser.java8.Java8Parser
 import parser.objc.ObjectiveCParser
 
@@ -19,6 +20,11 @@ fun Java8Parser.MethodDeclarationContext?.isStatic(): Boolean {
     return modifiers().contains("static")
 }
 
+fun Java8Parser.MethodDeclarationContext?.isInstanceMethod(): Boolean {
+    if (this == null) return false
+    return !isStatic()
+}
+
 fun Java8Parser.MethodDeclarationContext?.isPrivate(): Boolean {
     if (this == null) return false
     return modifiers().contains("private")
@@ -34,9 +40,9 @@ fun Java8Parser.MethodDeclarationContext?.name(): String? {
     return methodHeader().methodDeclarator().Identifier().text
 }
 
-fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Pair<String, String>> {
+fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Pair<TYPE_NAME, String>> {
     if (this == null) return listOf()
-    val result = mutableListOf<Pair<String, String>>()
+    val result = mutableListOf<Pair<TYPE_NAME, String>>()
 
     val parameters = methodHeader()
         .methodDeclarator()

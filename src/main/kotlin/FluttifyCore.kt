@@ -1,19 +1,19 @@
 
-import generator.statik.StaticJsonableAndroid
+import generator.statik.StaticAndroid
 
 fun main() {
 //    JarDecompiler.run { decompile(); unzip() }
 
-    StaticJsonableAndroid.generateAndroidDart()
-    StaticJsonableAndroid.generateKotlin()
-//    StaticModelAndroid.generateAndroidDart()
-//    StaticModelAndroid.generateKotlin()
+//    StaticJsonableAndroid.generateAndroidDart()
+//    StaticJsonableAndroid.generateKotlin()
+    StaticAndroid.generateAndroidDart()
+    StaticAndroid.generateKotlin()
 //    SimpleStaticIOS.generateIOSDart()
 //    SimpleStaticIOS.generateSwift()
 
 
 //    println("***************************StaticJsonableAndroid-Dart*********************************")
-    println(StaticJsonableAndroid.androidDartResult)
+//    println(StaticJsonableAndroid.androidDartResult)
     //region 写入android端dart文件
 //    val androidDartFile = File(androidDartPath)
 //    if (!androidDartFile.exists()) androidDartFile.createNewFile()
@@ -22,7 +22,7 @@ fun main() {
 //    println("***************************StaticJsonableAndroid-Dart*********************************")
 
 //    println("***************************StaticJsonableAndroid-Kotlin*********************************")
-    println(StaticJsonableAndroid.kotlinResult)
+//    println(StaticJsonableAndroid.kotlinResult)
 //    //region 写入kotlin文件
 //    val androidKotlinFile = File(kotlinPath)
 //    if (!androidKotlinFile.exists()) androidKotlinFile.createNewFile()
@@ -40,20 +40,20 @@ fun main() {
 //    println("***************************StaticJsonableAndroid-Kotlin*********************************")
 
 
-//    println("***************************StaticModelAndroid-Dart*********************************")
-//    println(StaticModelAndroid.androidDartResult)
+//    println("***************************StaticAndroid-Dart*********************************")
+    println(StaticAndroid.androidDartResult)
 //    //region 写入android端dart文件
 //    val androidDartFile = File(androidDartPath)
 //    if (!androidDartFile.exists()) androidDartFile.createNewFile()
 //    androidDartFile.writeText(StaticJsonableAndroid.androidDartResult)
 //    //endregion
-//    println("***************************StaticModelAndroid-Dart*********************************")
-//    println("***************************StaticModelAndroid-Kotlin*********************************")
-//    println(StaticModelAndroid.kotlinResult)
+//    println("***************************StaticAndroid-Dart*********************************")
+//    println("***************************StaticAndroid-Kotlin*********************************")
+    println(StaticAndroid.kotlinResult)
     //region 写入kotlin文件
 //    val androidKotlinFile = File(OutputProject.Android.kotlinPath)
 //    if (!androidKotlinFile.exists()) androidKotlinFile.createNewFile()
-//    androidKotlinFile.writeText(StaticModelAndroid.kotlinResult)
+//    androidKotlinFile.writeText(StaticAndroid.kotlinResult)
     //endregion
 
 //    //region 添加jar依赖 只需要把jar文件拷贝到Android工程下即可
@@ -64,7 +64,7 @@ fun main() {
 //        File(jarDir + "/" + jarPath.substringAfterLast("/")).toPath()
 //    )
     //endregion
-//    println("***************************StaticModelAndroid-Kotlin*********************************")
+//    println("***************************StaticAndroid-Kotlin*********************************")
 //
 //
 //    println("***************************SimpleStaticIOS-Dart*********************************")

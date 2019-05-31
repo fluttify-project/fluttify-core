@@ -1,6 +1,6 @@
 package builtparser
 
-import common.model.JavaClassInfo
+import common.model.JavaTypeInfo
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -14,7 +14,7 @@ class JavaParser(private val javaFilePath: String) {
     private val tree = parser.compilationUnit()
     private val walker = ParseTreeWalker()
 
-    fun typeInfo(): JavaClassInfo? {
+    fun typeInfo(): JavaTypeInfo {
         val packageName = tree.packageDeclaration()?.packageName()?.text ?: ""
         var className = ""
 
@@ -38,7 +38,7 @@ class JavaParser(private val javaFilePath: String) {
             }
         }, tree)
 
-        return JavaClassInfo("$packageName.$className", className, javaFilePath)
+        return JavaTypeInfo("$packageName.$className", className, javaFilePath)
     }
 
     fun walkTree(listener: Java8BaseListener) {

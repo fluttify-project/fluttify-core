@@ -1,10 +1,8 @@
 package common.extensions
 
-import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.tree.ParseTreeWalker
+import builtparser.JavaParser
+import common.TYPE_NAME
 import parser.java8.Java8BaseListener
-import parser.java8.Java8Lexer
 import parser.java8.Java8Parser
 import preprocess.Jar
 import java.io.File
@@ -89,54 +87,56 @@ fun String.findPath(rootPath: String): String {
     return result
 }
 
-/**
- * 给一个类的文件名, 判断这个类是否是`model`
- */
-fun String.isModel(): Boolean {
-    if (this.substringAfterLast(".") != "java") return false
+fun TYPE_NAME.isModel(): Boolean {
+    // 如果是可以直接json序列化的, 那么直接就返回true
+    if (jsonable()) return true
 
-    var result = false
+    var isAbstract = false
+    var isSubclass = false
+    var hasDependency = false
+    val fieldJsonable: MutableList<Boolean> = mutableListOf()
 
-    // 判断返回类型是否是复杂类型
-    val lexer = Java8Lexer(CharStreams.fromFileName(this))
-    val parser = Java8Parser(CommonTokenStream(lexer))
-    val tree = parser.compilationUnit()
-    val walker = ParseTreeWalker()
+    val parser = JavaParser(Jar.Decompiled.classes[this]?.path ?: return false)
 
-    walker.walk(object : Java8BaseListener() {
-        override fun enterInterfaceDeclaration(ctx: Java8Parser.InterfaceDeclarationContext?) {
+    parser.walkTree(object : Java8BaseListener() {
+        override fun enterInterfaceDeclaration(`interface`: Java8Parser.InterfaceDeclarationContext?) {
             // 如果是接口, 那么就不是model
-            result = false
-        }
-
-        override fun enterNormalClassDeclaration(ctx: Java8Parser.NormalClassDeclarationContext?) {
-            // 如果类有继承或者实现的话, 暂时认为不是model
-            if (ctx?.superclass() != null || ctx?.superinterfaces() != null) {
-                result = false
-            }
-
-            // 抽象类不是model
-            if (ctx?.classModifier()?.map { it.text }?.contains("abstract") == true) {
-                result = false
+            `interface`?.run {
+                isAbstract = true
             }
         }
 
-        override fun enterConstructorDeclarator(ctx: Java8Parser.ConstructorDeclaratorContext?) {
-            result = ctx?.formalParameterList()
-                ?.formalParameters()
-                ?.formalParameter()
-                ?.isEmpty() ?: true
-        }
+        override fun enterNormalClassDeclaration(`class`: Java8Parser.NormalClassDeclarationContext?) {
+            `class`?.run {
+                // 如果类有继承或者实现的话, 暂时认为不是model
+                isSubclass = `class`.isSubclass()
 
-        override fun enterFieldDeclaration(ctx: Java8Parser.FieldDeclarationContext?) {
-            val fieldType = ctx?.unannType()?.text
-            result = if (!fieldType.jsonable()) {
-                Jar.Decompiled.classes[fieldType]?.path?.isModel() ?: false
-            } else {
-                true
+                // 抽象类不是model
+                isAbstract = `class`.isAbstract()
             }
         }
-    }, tree)
 
-    return result
+        override fun enterConstructorDeclarator(constructor: Java8Parser.ConstructorDeclaratorContext?) {
+            constructor?.run {
+                hasDependency = constructor.hasParameter()
+            }
+        }
+
+        override fun enterFieldDeclaration(field: Java8Parser.FieldDeclarationContext?) {
+            field?.run {
+                if (field.isStatic()) return
+
+                fieldJsonable.add(
+                    if (!field.jsonable()) {
+                        field.typeName()?.isModel() ?: false
+                    } else {
+                        true
+                    }
+                )
+            }
+        }
+    })
+
+    return if (isAbstract || isSubclass || hasDependency || fieldJsonable.isEmpty()) false
+    else fieldJsonable.all { it }
 }

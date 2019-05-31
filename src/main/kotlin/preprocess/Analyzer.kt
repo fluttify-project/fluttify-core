@@ -8,8 +8,9 @@ import Configs.mainObjcClass
 import Configs.outputOrg
 import Configs.outputProjectName
 import builtparser.JavaParser
+import common.TYPE_NAME
 import common.extensions.underscore2Camel
-import common.model.JavaClassInfo
+import common.model.JavaTypeInfo
 import org.apache.commons.io.FileUtils
 import preprocess.Jar.Decompiled.mainClassSimpleName
 import preprocess.Jar.`package`
@@ -52,12 +53,12 @@ object Jar {
         val mainClassSimpleName = mainJavaClass.substringAfterLast(".")
 
         /**
-         * 所有类的信息, key为class simple name, value为对应类的信息
+         * Jar内所有类的信息, key为class simple name, value为对应类的信息
          *
          * 需要遍历反编译后的jar的所有文件来确定所有类的信息
          */
-        val classes: Map<String, JavaClassInfo> by lazy {
-            val result = mutableMapOf<String, JavaClassInfo>()
+        val classes: Map<TYPE_NAME, JavaTypeInfo> by lazy {
+            val result = mutableMapOf<TYPE_NAME, JavaTypeInfo>()
             FileUtils
                 .iterateFiles(File(rootPath), arrayOf("java"), true)
                 .forEach {
