@@ -1,16 +1,18 @@
 package common.extensions
 
-import builtparser.JavaParser
+import common.PATH
 import common.TYPE_NAME
-import parser.java8.Java8BaseListener
-import parser.java8.Java8Parser
 import preprocess.Jar
 import java.io.File
+
+fun String?.log() {
+    if (this == null) println("") else println(this)
+}
 
 /**
  * 是否可序列化
  */
-fun String?.jsonable(): Boolean {
+fun TYPE_NAME?.jsonable(): Boolean {
     return this?.toDartType() in listOf(
         "bool",
         "int",
@@ -30,7 +32,7 @@ fun String?.jsonable(): Boolean {
 /**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
-fun String?.toDartType(): String {
+fun TYPE_NAME?.toDartType(): TYPE_NAME {
     return when (this) {
         "BOOL", "boolean" -> "bool"
         "int" -> "int"
@@ -69,74 +71,28 @@ fun String.placeholder(vararg replacements: String?): String {
 }
 
 /**
- * 给一个类名, 找到其所在路径, [rootPath]为搜索的根路径
+ * 类型名判断是否是model
  */
-fun String.findPath(rootPath: String): String {
-    val jarSourceDir = File(rootPath)
-    var result = ""
-    for (file in jarSourceDir.listFiles() ?: arrayOf()) {
-        if (file.isFile && file.nameWithoutExtension == this) {
-            return file.absolutePath
-        } else if (file.isDirectory) {
-            result = findPath(rootPath + "/" + file.nameWithoutExtension)
-            if (result.isNotEmpty()) {
-                return result
-            }
-        }
-    }
-    return result
-}
-
-fun TYPE_NAME.isModel(): Boolean {
+fun TYPE_NAME.isModelType(): Boolean {
     // 如果是可以直接json序列化的, 那么直接就返回true
     if (jsonable()) return true
 
-    var isAbstract = false
-    var isSubclass = false
-    var hasDependency = false
-    val fieldJsonable: MutableList<Boolean> = mutableListOf()
+    return Jar
+        .Decompiled
+        .classes[this]
+        ?.path
+        ?.toFile()
+        ?.readText()
+        ?.isModel() ?: false
+}
 
-    val parser = JavaParser(Jar.Decompiled.classes[this]?.path ?: return false)
-
-    parser.walkTree(object : Java8BaseListener() {
-        override fun enterInterfaceDeclaration(`interface`: Java8Parser.InterfaceDeclarationContext?) {
-            // 如果是接口, 那么就不是model
-            `interface`?.run {
-                isAbstract = true
-            }
-        }
-
-        override fun enterNormalClassDeclaration(`class`: Java8Parser.NormalClassDeclarationContext?) {
-            `class`?.run {
-                // 如果类有继承或者实现的话, 暂时认为不是model
-                isSubclass = `class`.isSubclass()
-
-                // 抽象类不是model
-                isAbstract = `class`.isAbstract()
-            }
-        }
-
-        override fun enterConstructorDeclarator(constructor: Java8Parser.ConstructorDeclaratorContext?) {
-            constructor?.run {
-                hasDependency = constructor.hasParameter()
-            }
-        }
-
-        override fun enterFieldDeclaration(field: Java8Parser.FieldDeclarationContext?) {
-            field?.run {
-                if (field.isStatic()) return
-
-                fieldJsonable.add(
-                    if (!field.jsonable()) {
-                        field.type()?.isModel() ?: false
-                    } else {
-                        true
-                    }
-                )
-            }
-        }
-    })
-
-    return if (isAbstract || isSubclass || hasDependency || fieldJsonable.isEmpty()) false
-    else fieldJsonable.all { it }
+fun PATH.toFile(): File {
+    val file = File(this)
+    if (!file.exists()) {
+        if (file.isDirectory)
+            file.mkdirs()
+        else if (file.isFile)
+            file.createNewFile()
+    }
+    return file
 }

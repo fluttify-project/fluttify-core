@@ -1,13 +1,23 @@
 package common.extensions
 
+import common.model.Method
 import common.model.Variable
 import parser.java8.Java8Parser
 import parser.objc.ObjectiveCParser
 
 //region Java Method
+fun Java8Parser.MethodDeclarationContext?.method(): Method? {
+    if (this == null) return null
+    return Method(
+        returnType() ?: return null,
+        name() ?: return null,
+        formalParams()
+    )
+}
+
 fun Java8Parser.MethodDeclarationContext?.returnType(): String? {
     if (this == null) return null
-    return methodHeader().result().text
+    return methodHeader()?.result()?.text
 }
 
 fun Java8Parser.MethodDeclarationContext?.modifiers(): List<String> {
@@ -30,6 +40,11 @@ fun Java8Parser.MethodDeclarationContext?.isPrivate(): Boolean {
     return modifiers().contains("private")
 }
 
+fun Java8Parser.MethodDeclarationContext?.isOverrid(): Boolean {
+    if (this == null) return false
+    return modifiers().contains("@Override")
+}
+
 fun Java8Parser.MethodDeclarationContext?.isDeprecated(): Boolean {
     if (this == null) return false
     return modifiers().contains("@Deprecated")
@@ -37,7 +52,7 @@ fun Java8Parser.MethodDeclarationContext?.isDeprecated(): Boolean {
 
 fun Java8Parser.MethodDeclarationContext?.name(): String? {
     if (this == null) return null
-    return methodHeader().methodDeclarator().Identifier().text
+    return methodHeader()?.methodDeclarator()?.Identifier()?.text
 }
 
 fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Variable> {
@@ -72,7 +87,7 @@ fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Variable> {
 //region Objc Instance Method
 fun ObjectiveCParser.MethodDeclarationContext?.returnType(): String? {
     if (this == null) return null
-    return methodType().typeName().text
+    return methodType()?.typeName()?.text
 }
 
 fun ObjectiveCParser.MethodDeclarationContext?.name(): String? {
@@ -81,8 +96,8 @@ fun ObjectiveCParser.MethodDeclarationContext?.name(): String? {
         .selector()
         ?.text ?: methodSelector()
         .keywordDeclarator()[0]
-        .selector()
-        .text
+        ?.selector()
+        ?.text
 }
 
 fun ObjectiveCParser.MethodDeclarationContext?.formalParams(): List<Variable> {

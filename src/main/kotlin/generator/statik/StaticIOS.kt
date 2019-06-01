@@ -35,14 +35,14 @@ object SimpleStaticIOS: IiOS {
 
             override fun enterMethodDeclaration(method: ObjectiveCParser.MethodDeclarationContext?) {
                 // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams().any { !it.first.jsonable() }) return
+                if (method.formalParams().any { !it.type.jsonable() }) return
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType().jsonable()) return
 
                 dartResultBuilder.append(Temps.Dart.invokeMethod.placeholder(
                     method.returnType(),
                     method.name(),
-                    method.formalParams().joinToString { "${it.first} ${it.second}" },
+                    method.formalParams().joinToString { "${it.type} ${it.name}" },
                     method.name(),
                     if (method.formalParams().isEmpty()) "" else ", ",
                     method.formalParams().toDartMap()
@@ -69,7 +69,7 @@ object SimpleStaticIOS: IiOS {
 
             override fun enterClassMethodDeclaration(method: ObjectiveCParser.ClassMethodDeclarationContext?) {
                 // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams().any { !it.first.jsonable() }) return
+                if (method.formalParams().any { !it.type.jsonable() }) return
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType().jsonable()) return
 
@@ -77,7 +77,7 @@ object SimpleStaticIOS: IiOS {
                     method.name(),
                     mainObjcClass,
                     method.name(),
-                    method.formalParams().joinToString { "args[\"${it.second}\"] as! ${it.first}" }
+                    method.formalParams().joinToString { "args[\"${it.name}\"] as! ${it.type}" }
                 ))
             }
 

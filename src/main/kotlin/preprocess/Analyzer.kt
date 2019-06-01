@@ -7,8 +7,9 @@ import Configs.mainJavaClass
 import Configs.mainObjcClass
 import Configs.outputOrg
 import Configs.outputProjectName
-import builtparser.JavaParser
 import common.TYPE_NAME
+import common.extensions.toFile
+import common.extensions.typeInfo
 import common.extensions.underscore2Camel
 import common.model.JavaTypeInfo
 import org.apache.commons.io.FileUtils
@@ -62,10 +63,8 @@ object Jar {
             FileUtils
                 .iterateFiles(File(rootPath), arrayOf("java"), true)
                 .forEach {
-                    val typeInfo = JavaParser(it.absolutePath).typeInfo()
-                    if (typeInfo != null) {
-                        result.putIfAbsent(typeInfo.simpleName, typeInfo)
-                    }
+                    val typeInfo = it.absolutePath.toFile().readText().typeInfo()
+                    result.putIfAbsent(typeInfo.simpleName, typeInfo)
                 }
             result
         }

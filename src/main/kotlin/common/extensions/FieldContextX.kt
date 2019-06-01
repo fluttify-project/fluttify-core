@@ -14,6 +14,18 @@ fun Java8Parser.FieldDeclarationContext?.type(): String? {
     return unannType()?.text
 }
 
+fun Java8Parser.FieldDeclarationContext?.name(): String? {
+    if (this == null) return null
+
+    return variableDeclaratorList()?.variableDeclarator()?.get(0)?.variableDeclaratorId()?.text
+}
+
+fun Java8Parser.FieldDeclarationContext?.value(): String? {
+    if (this == null) return null
+
+    return variableDeclaratorList()?.variableDeclarator()?.get(0)?.variableInitializer()?.text
+}
+
 fun Java8Parser.FieldDeclarationContext?.jsonable(): Boolean {
     if (this == null) return true
 

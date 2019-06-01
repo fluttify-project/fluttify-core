@@ -13,8 +13,8 @@ object Temps {
 import 'package:flutter/services.dart';
 """
 
-        const val classDeclaration = """
-class #__plugin_class_simple_name__# {"""
+        const val classDeclaration = """class #__plugin_class_simple_name__# {
+"""
 
         const val methodChannel = """
   static final _channel = MethodChannel('#__methodChannelName__#');
@@ -27,6 +27,14 @@ class #__plugin_class_simple_name__# {"""
 """
 
         const val classEnd = "}"
+
+        const val field = """
+  #__type__# #__name__# = #__value__#;"""
+
+        const val method = """
+  #__return_type__# #__name__#(#__formal_params__#) {
+#__body__#  }
+"""
     }
 
     object Kotlin {

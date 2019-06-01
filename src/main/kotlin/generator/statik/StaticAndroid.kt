@@ -2,7 +2,6 @@ package generator.statik
 
 import Configs.outputOrg
 import Configs.outputProjectName
-import builtparser.JavaParser
 import common.Temps
 import common.extensions.*
 import generator.IAndroid
@@ -11,7 +10,7 @@ import parser.java8.Java8Parser
 import preprocess.Jar
 import preprocess.OutputProject
 
-private val parser = JavaParser(Jar.Decompiled.mainClassPath)
+private val javaSource = Jar.Decompiled.mainClassPath.toFile().readText()
 
 /**
  * Android端目标类以静态模式创建对象
@@ -26,7 +25,7 @@ object StaticAndroid : IAndroid {
     private val kotlinResultBuilder = StringBuilder()
 
     override fun generateAndroidDart() {
-        parser.walkTree(object : Java8BaseListener() {
+        javaSource.walkTree(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
                 dartResultBuilder.append(Temps.Dart.packageImport)
             }
@@ -42,6 +41,12 @@ object StaticAndroid : IAndroid {
                 // 跳过含有`非model参数`的方法
                 if (!method.formalParams().all { it.type.isModel() }) return
 
+                method.formalParams().forEach {
+                    // 如果参数类型是model, 却不能直接序列化, 那么就需要为其生成相应的dart类
+                    if (it.type.run { isModel() && !jsonable() }) {
+
+                    }
+                }
 
                 dartResultBuilder.append(
                     Temps.Dart.invokeMethod.placeholder(
@@ -62,7 +67,7 @@ object StaticAndroid : IAndroid {
     }
 
     override fun generateKotlin() {
-        parser.walkTree(object : Java8BaseListener() {
+        javaSource.walkTree(object : Java8BaseListener() {
             override fun enterCompilationUnit(ctx: Java8Parser.CompilationUnitContext?) {
                 kotlinResultBuilder.append(Temps.Kotlin.packageImport.placeholder("$outputOrg.$outputProjectName"))
             }
