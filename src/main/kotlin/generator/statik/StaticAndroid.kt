@@ -37,18 +37,17 @@ object StaticAndroid : IAndroid {
             }
 
             override fun enterMethodDeclaration(method: Java8Parser.MethodDeclarationContext?) {
-                // 跳过实例方法
-                if (method.isInstanceMethod()) return
-                // 跳过私有和废弃方法
-                if (method.run { isPrivate() || isDeprecated() }) return
+                // 跳过实例,私有,废弃方法
+                if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
                 // 跳过含有`非model参数`的方法
-                if (!method.formalParams().all { it.first.isModel() }) return
+                if (!method.formalParams().all { it.type.isModel() }) return
+
 
                 dartResultBuilder.append(
                     Temps.Dart.invokeMethod.placeholder(
                         method.returnType(),
                         method.name(),
-                        method.formalParams().joinToString { "${it.first} ${it.second}" },
+                        method.formalParams().joinToString { "${it.type} ${it.name}" },
                         method.name(),
                         if (method.formalParams().isEmpty()) "" else ", ",
                         method.formalParams().toDartMap()
@@ -80,30 +79,28 @@ object StaticAndroid : IAndroid {
             }
 
             override fun enterMethodDeclaration(method: Java8Parser.MethodDeclarationContext?) {
-                // 跳过实例方法
-                if (method.isInstanceMethod()) return
-                // 跳过私有和废弃方法
-                if (method.run { isPrivate() || isDeprecated() }) return
+                // 跳过实例,私有,废弃方法
+                if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
                 // 跳过含有`非model参数`的方法
-                if (!method.formalParams().all { it.first.isModel() }) return
+                if (!method.formalParams().all { it.type.isModel() }) return
 
                 kotlinResultBuilder.append(
                     Temps.Kotlin.methodResult.placeholder(
                         method.name(),
                         method.formalParams().joinToString("") {
                             when {
-                                it.first.jsonable() -> {
-                                    "\n\t\t\t\tval ${it.second} = args[\"${it.second}\"] as ${it.first}"
+                                it.type.jsonable() -> {
+                                    "\n\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type}"
                                 }
-                                it.first.isModel() -> {
-                                    "\n\t\t\t\tval ${it.second} = mapper.readValue(args[\"${it.second}\"] as String, ${it.first}::class.java)"
+                                it.type.isModel() -> {
+                                    "\n\t\t\t\tval ${it.name} = mapper.readValue(args[\"${it.name}\"] as String, ${it.type}::class.java)"
                                 }
                                 else -> ""
                             }
                         },
                         Jar.Decompiled.mainClassSimpleName,
                         method.name(),
-                        method.formalParams().joinToString { it.second },
+                        method.formalParams().joinToString { it.name },
                         if (method.returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
                     )
                 )

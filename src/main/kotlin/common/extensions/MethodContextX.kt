@@ -1,6 +1,6 @@
 package common.extensions
 
-import common.TYPE_NAME
+import common.model.Variable
 import parser.java8.Java8Parser
 import parser.objc.ObjectiveCParser
 
@@ -40,9 +40,9 @@ fun Java8Parser.MethodDeclarationContext?.name(): String? {
     return methodHeader().methodDeclarator().Identifier().text
 }
 
-fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Pair<TYPE_NAME, String>> {
+fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Variable> {
     if (this == null) return listOf()
-    val result = mutableListOf<Pair<TYPE_NAME, String>>()
+    val result = mutableListOf<Variable>()
 
     val parameters = methodHeader()
         .methodDeclarator()
@@ -53,7 +53,7 @@ fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Pair<TYPE_NAME, S
         ?.formalParameters()
         ?.formalParameter()
         ?.forEach {
-            result.add(Pair(it.unannType().text.toDartType(), it.variableDeclaratorId().text))
+            result.add(Variable(it.unannType().text.toDartType(), it.variableDeclaratorId().text))
         }
 
     // 最后一个参数
@@ -61,7 +61,7 @@ fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Pair<TYPE_NAME, S
         ?.lastFormalParameter()
         ?.formalParameter()
         ?.run {
-            result.add(Pair(unannType().text.toDartType(), variableDeclaratorId().text))
+            result.add(Variable(unannType().text.toDartType(), variableDeclaratorId().text))
         }
 
     return result
@@ -85,13 +85,13 @@ fun ObjectiveCParser.MethodDeclarationContext?.name(): String? {
         .text
 }
 
-fun ObjectiveCParser.MethodDeclarationContext?.formalParams(): List<Pair<String, String>> {
+fun ObjectiveCParser.MethodDeclarationContext?.formalParams(): List<Variable> {
     if (this == null) return listOf()
-    val result = mutableListOf<Pair<String, String>>()
+    val result = mutableListOf<Variable>()
 
     methodSelector().keywordDeclarator()
         ?.forEach {
-            result.add(Pair(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
+            result.add(Variable(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
         }
     return result
 }
@@ -116,15 +116,15 @@ fun ObjectiveCParser.ClassMethodDeclarationContext?.name(): String? {
         .text
 }
 
-fun ObjectiveCParser.ClassMethodDeclarationContext?.formalParams(): List<Pair<String, String>> {
+fun ObjectiveCParser.ClassMethodDeclarationContext?.formalParams(): List<Variable> {
     if (this == null) return listOf()
-    val result = mutableListOf<Pair<String, String>>()
+    val result = mutableListOf<Variable>()
 
     methodDeclaration()
         .methodSelector()
         .keywordDeclarator()
         ?.forEach {
-            result.add(Pair(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
+            result.add(Variable(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
         }
     return result
 }

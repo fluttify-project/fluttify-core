@@ -128,7 +128,7 @@ fun TYPE_NAME.isModel(): Boolean {
 
                 fieldJsonable.add(
                     if (!field.jsonable()) {
-                        field.typeName()?.isModel() ?: false
+                        field.type()?.isModel() ?: false
                     } else {
                         true
                     }

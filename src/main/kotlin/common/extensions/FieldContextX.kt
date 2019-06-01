@@ -8,7 +8,7 @@ fun Java8Parser.FieldDeclarationContext?.isStatic(): Boolean {
     return fieldModifier().map { it.text }.contains("static")
 }
 
-fun Java8Parser.FieldDeclarationContext?.typeName(): String? {
+fun Java8Parser.FieldDeclarationContext?.type(): String? {
     if (this == null) return null
 
     return unannType()?.text
