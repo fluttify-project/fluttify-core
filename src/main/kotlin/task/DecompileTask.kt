@@ -1,15 +1,19 @@
 package task
 
 import Configs
-import common.PATH
 import preprocess.Project
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 
-class DecompileTask(private val jarPath: PATH = Configs.jarPath) : Task<PATH, PATH>(jarPath) {
-    override fun process(): PATH {
-        val artifactPath = "${Project.path}/src/main/resources/android/decompiled"
+/**
+ * 反编译Jar任务
+ *
+ * 输入Jar文件[jarFile], 输出反编译后的Jar文件
+ */
+class DecompileTask(private val jarFile: File) : Task<File, File>(jarFile) {
+    override fun process(): File {
+        val artifactPath = "${Project.path}/build/decompiled"
         val decompiledJarFileName = Configs.jarPath.substringAfterLast("/")
         val decompiledJarFile = File("$artifactPath/$decompiledJarFileName")
 
@@ -17,10 +21,12 @@ class DecompileTask(private val jarPath: PATH = Configs.jarPath) : Task<PATH, PA
             decompiledJarFile.delete()
         }
 
-        val process =
-            Runtime.getRuntime().exec("java -jar /usr/local/custom/java/fernflower.jar $jarPath $artifactPath")
+        val process = Runtime
+            .getRuntime()
+            .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 ${jarFile.absolutePath} $artifactPath")
+
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
-        return "$artifactPath/$decompiledJarFileName"
+        return File("$artifactPath/$decompiledJarFileName")
     }
 }

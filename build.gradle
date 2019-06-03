@@ -9,6 +9,7 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -17,7 +18,7 @@ dependencies {
     implementation 'org.antlr:antlr4-runtime:4.7.2'
     implementation 'commons-io:commons-io:2.6'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
-    implementation 'org.antlr:ST4:4.1'
+    implementation "io.reactivex.rxjava2:rxjava:2.2.9"
     testImplementation 'junit:junit:4.12'
 }
 
