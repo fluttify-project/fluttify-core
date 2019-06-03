@@ -1,6 +1,0 @@
-framework module Tbit {
-  umbrella header "Tbit.h"
-
-  export *
-  module * { export * }
-}
