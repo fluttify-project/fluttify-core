@@ -5,9 +5,11 @@ import org.apache.commons.io.FileUtils
 import java.io.File
 
 /**
- * 过滤出所有的模型类 依赖[UnzipTask]
+ * 过滤出所有的模型类
  *
- * 输入为待识别的文件夹[dir], 输出为识别成模型类的文件们
+ * 输入: 待识别的文件夹[dir]
+ * 输出: 识别成模型类的文件们
+ * 依赖: [UnzipTask]
  */
 class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(dir) {
     override fun process(): List<File> {

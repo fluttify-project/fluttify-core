@@ -7,9 +7,11 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 /**
- * 生成初始的输出项目 **没有依赖**
+ * 生成初始的输出项目
  *
- * 输入生成参数[ProjectSpec], 输出项目路径[PATH]
+ * 输入: 生成参数[ProjectSpec]
+ * 输出: 项目路径[PATH]
+ * 依赖: []
  */
 class OutputProjectTask(private val spec: ProjectSpec) : Task<ProjectSpec, PATH>(spec) {
     override fun process(): PATH {

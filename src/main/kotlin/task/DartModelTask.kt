@@ -17,7 +17,9 @@ import java.io.File
 /**
  * Android模型类转换成对应的Dart模型类
  *
- * 输入是Java的模型类文件, 输出是转换后的Dart模型类文件
+ * 输入: Java模型类文件
+ * 输出: Dart模型类文件
+ * 依赖: [RecognizeAndroidModelTask]
  */
 class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(javaModelFile) {
     private val results = mutableListOf<StringBuilder>()

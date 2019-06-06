@@ -7,9 +7,11 @@ import java.io.File
 import java.io.InputStreamReader
 
 /**
- * 反编译Jar任务 **没有依赖**
+ * 反编译Jar任务
  *
- * 输入Jar文件[jarFile], 输出反编译后的Jar文件
+ * 输入: Jar文件[jarFile]
+ * 输出: 反编译后的Jar文件
+ * 依赖: []
  */
 class DecompileTask(private val jarFile: File) : Task<File, File>(jarFile) {
     override fun process(): File {
