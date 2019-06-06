@@ -8,5 +8,5 @@ import common.model.Variable
  */
 fun List<Variable>.toDartMap(): String {
     if (isEmpty()) return ""
-    return joinToString(prefix = "{", postfix = "}") { "\"${it.type}\": ${it.name}" }
+    return joinToString(prefix = "{", postfix = "}") { "\"${it.name}\": ${it.name}" }
 }

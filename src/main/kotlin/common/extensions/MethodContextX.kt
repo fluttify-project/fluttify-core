@@ -3,7 +3,6 @@ package common.extensions
 import common.model.Method
 import common.model.Variable
 import parser.java.JavaParser
-//import parser.java8.Java8Parser
 import parser.objc.ObjectiveCParser
 
 fun JavaParser.MethodDeclarationContext?.method(): Method? {
@@ -23,6 +22,21 @@ fun JavaParser.MethodDeclarationContext?.returnType(): String? {
 fun JavaParser.MethodDeclarationContext?.name(): String? {
     if (this == null) return null
     return IDENTIFIER().text
+}
+
+fun JavaParser.MethodDeclarationContext?.isPrivate(): Boolean {
+    if (this == null) return false
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("private")
+}
+
+fun JavaParser.MethodDeclarationContext?.isDeprecated(): Boolean {
+    if (this == null) return false
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("@Deprecated")
+}
+
+fun JavaParser.MethodDeclarationContext?.isInstanceMethod(): Boolean {
+    if (this == null) return false
+    return !ancestorOf(JavaParser.ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("static")
 }
 
 fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {

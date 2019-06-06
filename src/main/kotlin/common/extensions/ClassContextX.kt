@@ -7,7 +7,7 @@ import parser.java.JavaParser
  */
 fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
     if (this == null) return false
-    return parentOf(JavaParser.TypeDeclarationContext::class).classDeclaration().EXTENDS() != null
+    return ancestorOf(JavaParser.TypeDeclarationContext::class).classDeclaration().EXTENDS() != null
 }
 
 /**
@@ -15,7 +15,7 @@ fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
  */
 fun JavaParser.ClassDeclarationContext?.isAbstract(): Boolean {
     if (this == null) return false
-    return parentOf(JavaParser.TypeDeclarationContext::class).classOrInterfaceModifier().map { it.text }.contains("abstract")
+    return ancestorOf(JavaParser.TypeDeclarationContext::class).classOrInterfaceModifier().map { it.text }.contains("abstract")
 }
 
 /**
@@ -23,5 +23,5 @@ fun JavaParser.ClassDeclarationContext?.isAbstract(): Boolean {
  */
 fun JavaParser.ClassDeclarationContext?.isPublic(): Boolean {
     if (this == null) return false
-    return parentOf(JavaParser.TypeDeclarationContext::class).classOrInterfaceModifier().map { it.text }.contains("public")
+    return ancestorOf(JavaParser.TypeDeclarationContext::class).classOrInterfaceModifier().map { it.text }.contains("public")
 }

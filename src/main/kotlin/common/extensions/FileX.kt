@@ -26,19 +26,19 @@ fun JAVA_FILE.typeInfo(): JavaTypeInfo {
         }
 
         override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
-            if (ctx != null && ctx.parentOf(TypeDeclarationContext::class).isPublic()) {
+            if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class).isPublic()) {
                 className = ctx.IDENTIFIER().text
             }
         }
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext?) {
-            if (ctx != null && ctx.parentOf(TypeDeclarationContext::class).isPublic()) {
+            if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class).isPublic()) {
                 className = ctx.IDENTIFIER().text
             }
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext?) {
-            if (ctx != null && ctx.parentOf(TypeDeclarationContext::class).isPublic()) {
+            if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class).isPublic()) {
                 className = ctx.IDENTIFIER().text
             }
         }
