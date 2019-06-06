@@ -143,7 +143,7 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task
  *
  * 输入: 主Objc类文件
  * 输出: 对应Dart的MethodChannel文件
- * 依赖: [UnzipTask]
+ * 依赖: []
  */
 class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_FILE, DART_FILE>(mainClassFile) {
     override fun process(): DART_FILE {
@@ -195,7 +195,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
  *
  * 输入: 主Objc类文件
  * 输出: 对应Swift的MethodChannel文件
- * 依赖: [UnzipTask]
+ * 依赖: []
  */
 class IOSSwiftStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_FILE, SWIFT_FILE>(mainClassFile) {
     override fun process(): KOTLIN_FILE {
