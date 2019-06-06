@@ -25,7 +25,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
         val javaSource = mainClassFile.readText()
         val dartResultBuilder = StringBuilder()
 
-        File(OutputProject.Dart.androidDartPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.androidDartDirPath).run { if (!exists()) mkdirs() }
 
         javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterCompilationUnit(ctx: JavaParser.CompilationUnitContext?) {
@@ -59,7 +59,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                 dartResultBuilder.append(Temps.Dart.classEnd)
             }
         })
-        return File("${OutputProject.Dart.androidDartPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.androidDartDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartResultBuilder.toString())
@@ -128,7 +128,7 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task
                 kotlinResultBuilder.append(Temps.Kotlin.classEnd)
             }
         })
-        return File(OutputProject.Android.kotlinPath)
+        return File(OutputProject.Android.kotlinFilePath)
             .apply {
                 if (!exists()) createNewFile()
                 writeText(kotlinResultBuilder.toString())
@@ -148,7 +148,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
         val objcSource = mainClassFile.readText()
         val dartResultBuilder = StringBuilder()
 
-        File(OutputProject.Dart.iOSDartPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.iOSDartDirPath).run { if (!exists()) mkdirs() }
 
         objcSource.walkTree(object : ObjectiveCParserBaseListener() {
             override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
@@ -180,7 +180,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
                 dartResultBuilder.append(Temps.Dart.classEnd)
             }
         })
-        return File("${OutputProject.Dart.iOSDartPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.iOSDartDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartResultBuilder.toString())
@@ -230,7 +230,7 @@ class IOSSwiftStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC
                 swiftResultBuilder.append(Temps.Swift.classEnd)
             }
         })
-        return File(OutputProject.iOS.swiftPath)
+        return File(OutputProject.iOS.swiftFilePath)
             .apply {
                 if (!exists()) createNewFile()
                 writeText(swiftResultBuilder.toString())

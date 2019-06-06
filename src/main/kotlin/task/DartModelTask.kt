@@ -29,9 +29,9 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
         val javaContent = javaModelFile.readText()
         val dartModelSource = translate(javaContent)
 
-        File(OutputProject.Dart.androidDartPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.androidDartDirPath).run { if (!exists()) mkdirs() }
 
-        return File("${OutputProject.Dart.androidDartPath}/${javaModelFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.androidDartDirPath}/${javaModelFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartModelSource)

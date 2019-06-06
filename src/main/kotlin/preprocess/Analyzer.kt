@@ -116,12 +116,12 @@ object OutputProject {
         /**
          * 生成工程的Android端Dart文件路径
          */
-        val androidDartPath = "$path/build/output-project/$outputProjectName/lib/android"
+        val androidDartDirPath = "$path/build/output-project/$outputProjectName/lib/android"
 
         /**
          * 生成工程的iOS端Dart文件路径
          */
-        val iOSDartPath = "$path/build/output-project/$outputProjectName/lib/ios"
+        val iOSDartDirPath = "$path/build/output-project/$outputProjectName/lib/ios"
     }
 
     /**
@@ -131,13 +131,13 @@ object OutputProject {
         /**
          * 生成工程的Android端Kotlin文件路径
          */
-        val kotlinPath =
+        val kotlinFilePath =
             "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(".", "/")}/$outputProjectName/${classSimpleName}Plugin.kt"
 
         /**
          * 生成工程的Android端Jar路径
          */
-        val jarDir = "$path/build/output-project/$outputProjectName/android/libs"
+        val jarDirPath = "$path/build/output-project/$outputProjectName/android/libs"
     }
 
     /**
@@ -147,11 +147,11 @@ object OutputProject {
         /**
          * 生成工程的iOS端Swift文件路径
          */
-        val swiftPath = "$path/build/output-project/$outputProjectName/ios/Classes/Swift${classSimpleName}Plugin.swift"
+        val swiftFilePath = "$path/build/output-project/$outputProjectName/ios/Classes/Swift${classSimpleName}Plugin.swift"
 
         /**
          * 生成工程的iOS端Framework路径
          */
-        val frameworkPath = "$path/build/output-project/$outputProjectName/ios"
+        val frameworkDirPath = "$path/build/output-project/$outputProjectName/ios"
     }
 }
