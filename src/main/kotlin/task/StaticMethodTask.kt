@@ -79,8 +79,6 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task
         val javaSource = mainClassFile.readText()
         val kotlinResultBuilder = StringBuilder()
 
-        File(OutputProject.Android.kotlinPath).run { if (!exists()) mkdirs() }
-
         javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterCompilationUnit(ctx: JavaParser.CompilationUnitContext?) {
                 kotlinResultBuilder.append(Temps.Kotlin.packageImport.placeholder("$outputOrg.$outputProjectName"))
@@ -201,8 +199,6 @@ class IOSSwiftStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC
     override fun process(): KOTLIN_FILE {
         val objcSource = mainClassFile.readText()
         val swiftResultBuilder = StringBuilder()
-
-        File(OutputProject.Android.kotlinPath).run { if (!exists()) mkdirs() }
 
         objcSource.walkTree(object : ObjectiveCParserBaseListener() {
             override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
