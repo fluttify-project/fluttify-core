@@ -234,7 +234,7 @@ class IOSSwiftStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC
                 swiftResultBuilder.append(Temps.Swift.classEnd)
             }
         })
-        return File(OutputProject.Android.kotlinPath)
+        return File(OutputProject.iOS.swiftPath)
             .apply {
                 if (!exists()) createNewFile()
                 writeText(swiftResultBuilder.toString())
