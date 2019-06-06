@@ -2,7 +2,7 @@ package common.extensions
 
 import org.junit.Test
 
-class JavaSourceXKtTest {
+class SourceXKtTest {
 
     @Test
     fun isModel() {

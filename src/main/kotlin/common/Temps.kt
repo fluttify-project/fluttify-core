@@ -120,6 +120,6 @@ public class Swift#__class_name__#Plugin : NSObject, FlutterPlugin {"""
         default:
             result(FlutterMethodNotImplemented)"""
 
-        const val classEnd = "\n\n\n}\n\n}\n}"
+        const val classEnd = "\n\t\t}\n\t}\n}"
     }
 }
