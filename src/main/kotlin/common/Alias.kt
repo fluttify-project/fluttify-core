@@ -11,3 +11,4 @@ typealias JAVA_SOURCE = String
 typealias DART_SOURCE = String
 typealias PATH = String
 typealias JAVA_FILE = File
+typealias DART_FILE = File

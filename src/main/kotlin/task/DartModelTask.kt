@@ -4,9 +4,9 @@ import common.DART_SOURCE
 import common.JAVA_SOURCE
 import common.Temps
 import common.extensions.*
+import common.gWalker
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.tree.ParseTreeWalker
 import parser.java.JavaLexer
 import parser.java.JavaParser
 import parser.java.JavaParser.*
@@ -40,9 +40,8 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
         val lexer = JavaLexer(CharStreams.fromString(source))
         val parser = JavaParser(CommonTokenStream(lexer))
         val tree = parser.compilationUnit()
-        val walker = ParseTreeWalker()
 
-        walker.walk(object : JavaParserBaseListener() {
+        gWalker.walk(object : JavaParserBaseListener() {
             //region 普通类
             // 生成类名
             override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
@@ -63,33 +62,7 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             override fun enterVariableDeclarator(ctx: VariableDeclaratorContext?) {
                 ctx?.run {
                     results[currentDepth].append(" ${variableDeclaratorId().text}")
-                    ASSIGN()?.run { results[currentDepth].append(" = ") }
-                    // 如果等号右侧是字面量的话, 直接赋值
-                    variableInitializer()
-                        ?.text
-                        ?.substringAfter("=")
-                        ?.run { if (isLiteral()) results[currentDepth].append(this) }
                 }
-            }
-
-            // 生成数组左方括号和内容
-            override fun enterArrayCreatorRest(ctx: ArrayCreatorRestContext?) {
-                ctx?.run {
-                    results[currentDepth].append("[")
-                    arrayInitializer()?.run {
-                        results[currentDepth].append(variableInitializer().joinToString { it.text.removeSuffix("D") })
-                    }
-                }
-            }
-
-            // 生成数组右方括号
-            override fun exitArrayCreatorRest(ctx: ArrayCreatorRestContext?) {
-                ctx?.run { results[currentDepth].append("]") }
-            }
-
-            // 生成构造器调用
-            override fun enterCreatedName(ctx: CreatedNameContext?) {
-                ctx?.run { if (!text.jsonable()) results[currentDepth].append("$text()") }
             }
 
             // 生成Field的分号
@@ -125,8 +98,6 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             }
             //endregion
         }, tree)
-
-
 
         return results.joinToString("\n")
     }
