@@ -1,7 +1,7 @@
 package common
 
 import Configs.mainJavaClass
-import preprocess.Framework
+import Framework
 
 /**
  * 代码模板

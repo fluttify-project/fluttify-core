@@ -11,7 +11,7 @@ import parser.java.JavaLexer
 import parser.java.JavaParser
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
-import preprocess.OutputProject
+import OutputProject
 import java.io.File
 
 /**

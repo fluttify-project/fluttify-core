@@ -2,7 +2,7 @@ package common.extensions
 
 import common.PATH
 import common.TYPE_NAME
-import preprocess.Jar
+import Jar
 import java.io.File
 
 fun String?.isLiteral(): Boolean {

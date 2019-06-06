@@ -1,7 +1,7 @@
 package task
 
 import Configs
-import preprocess.Project
+import Project
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader

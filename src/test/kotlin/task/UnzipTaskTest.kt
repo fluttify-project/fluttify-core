@@ -2,7 +2,7 @@ package task
 
 import org.junit.Assert
 import org.junit.Test
-import preprocess.Project
+import Project
 import java.io.File
 
 class UnzipTaskTest {

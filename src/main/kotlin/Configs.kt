@@ -1,5 +1,3 @@
-import preprocess.Project
-
 object Configs {
     /**
      * 主类全路径名

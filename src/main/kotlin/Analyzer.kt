@@ -1,21 +1,19 @@
 @file:Suppress("ClassName")
 
-package preprocess
-
 import Configs.frameworkPath
 import Configs.mainJavaClass
 import Configs.mainObjcClass
 import Configs.outputOrg
 import Configs.outputProjectName
+import Jar.Decompiled.mainClassSimpleName
+import Jar.`package`
+import Project.path
 import common.TYPE_NAME
 import common.extensions.toFile
 import common.extensions.typeInfo
 import common.extensions.underscore2Camel
 import common.model.JavaTypeInfo
 import org.apache.commons.io.FileUtils
-import preprocess.Jar.Decompiled.mainClassSimpleName
-import preprocess.Jar.`package`
-import preprocess.Project.path
 import java.io.File
 
 /**
@@ -25,7 +23,7 @@ object Jar {
     /**
      * Jar的包名, 取[javaPackage]前三个字段
      */
-    val `package` = Decompiled.`package`.split(".").subList(0, 3).joinToString(".")
+    val `package` = Jar.Decompiled.`package`.split(".").subList(0, 3).joinToString(".")
 
     /**
      * 反编译后的jar

@@ -2,7 +2,7 @@ package task
 
 import common.PATH
 import common.model.ProjectSpec
-import preprocess.Project
+import Project
 import java.io.BufferedReader
 import java.io.InputStreamReader
 

@@ -1,5 +1,6 @@
 package preprocess
 
+import Jar
 import org.junit.Test
 
 internal class JarTest {

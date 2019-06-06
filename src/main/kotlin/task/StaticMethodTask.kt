@@ -9,8 +9,8 @@ import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
-import preprocess.Jar
-import preprocess.OutputProject
+import Jar
+import OutputProject
 import java.io.File
 
 /**
