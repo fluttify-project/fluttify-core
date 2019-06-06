@@ -1,35 +1,46 @@
 package common.extensions
 
-import parser.java8.Java8Parser
+import parser.java.JavaParser.*
+import parser.java.JavaParser.FieldDeclarationContext
 
-fun Java8Parser.FieldDeclarationContext?.isStatic(): Boolean {
+fun FieldDeclarationContext?.isStatic(): Boolean {
     if (this == null) return false
-
-    return fieldModifier().map { it.text }.contains("static")
+    return parentOf(ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("static")
 }
 
-fun Java8Parser.FieldDeclarationContext?.type(): String? {
+fun FieldDeclarationContext?.type(): String? {
     if (this == null) return null
-
-    return unannType()?.text
+    return typeType()?.text
 }
 
-fun Java8Parser.FieldDeclarationContext?.name(): String? {
+fun FieldDeclarationContext?.name(): String? {
     if (this == null) return null
-
-    return variableDeclaratorList()?.variableDeclarator()?.get(0)?.variableDeclaratorId()?.text
+    return variableDeclarators()?.variableDeclarator()?.get(0)?.variableDeclaratorId()?.text
 }
 
-fun Java8Parser.FieldDeclarationContext?.value(): String? {
+fun FieldDeclarationContext?.value(): String? {
     if (this == null) return null
-
-    return variableDeclaratorList()?.variableDeclarator()?.get(0)?.variableInitializer()?.text
+    return variableDeclarators()
+        ?.variableDeclarator()
+        ?.get(0)
+        ?.variableInitializer()
+        ?.run {
+            return when {
+                arrayInitializer() != null -> {
+                    arrayInitializer().text.replace("{", "[").replace("}", "]")
+                }
+                expression() != null -> {
+                    expression().text
+                }
+                else -> ""
+            }
+        }
 }
 
-fun Java8Parser.FieldDeclarationContext?.jsonable(): Boolean {
+fun FieldDeclarationContext?.jsonable(): Boolean {
     if (this == null) return true
 
-    return unannType()?.text?.toDartType() in listOf(
+    return type()?.toDartType() in listOf(
         "bool",
         "int",
         "double",

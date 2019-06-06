@@ -5,8 +5,13 @@ import common.TYPE_NAME
 import preprocess.Jar
 import java.io.File
 
-fun String?.log() {
-    if (this == null) println("") else println(this)
+fun String?.isLiteral(): Boolean {
+    return when {
+        this == null -> false
+        Regex("(\\d)+").matches(this) -> true
+        this in listOf("null", "nil") -> true
+        else -> false
+    }
 }
 
 /**
@@ -35,7 +40,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
     return when (this) {
         "BOOL", "boolean" -> "bool"
-        "int" -> "int"
+        "int", "Int", "Byte" -> "int"
         "double", "float" -> "double"
         "NSString*", "String" -> "String"
         "NSArray*", "List", "ArrayList" -> "List"
@@ -59,6 +64,27 @@ fun String.underscore2Camel(capitalized: Boolean = true): String {
 }
 
 /**
+ * 下划线风格转为驼峰风格
+ */
+fun String.camel2Underscore(): String {
+    if ("" == trim()) {
+        return ""
+    }
+    val len = this.length
+    val sb = StringBuilder(len)
+    for (i in 0 until len) {
+        val c = this[i]
+        if (Character.isUpperCase(c)) {
+            if (i != 0) sb.append("_")
+            sb.append(Character.toLowerCase(c))
+        } else {
+            sb.append(c)
+        }
+    }
+    return sb.toString()
+}
+
+/**
  * 替换模板字符串中的占位符
  */
 fun String.placeholder(vararg replacements: String?): String {
@@ -67,6 +93,24 @@ fun String.placeholder(vararg replacements: String?): String {
         // 正则表达式: 匹配所有`##`包围的字符, 但是被包围的字符中不能有`#`
         result = result.replaceFirst(Regex("#[^#]*#"), it ?: "")
     }
+    return result
+}
+
+/**
+ * 批量替换字符串 数组分为两部分, 前半部分为被替换的, 后半部分为替换的
+ */
+fun String.replaceBatch(vararg sourcesAndDestination: String): String {
+    if (sourcesAndDestination.size % 2 != 0) throw IllegalArgumentException("参数个数应为偶数个")
+
+    val sources = sourcesAndDestination.asList().subList(0, sourcesAndDestination.size / 2)
+    val destinations =
+        sourcesAndDestination.asList().subList(sourcesAndDestination.size / 2, sourcesAndDestination.size)
+
+    var result = this
+    for (index in 0 until sources.size) {
+        result = result.replace(sources[index], destinations[index])
+    }
+
     return result
 }
 

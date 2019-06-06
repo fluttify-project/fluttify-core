@@ -7,7 +7,7 @@ import java.io.File
 import java.io.InputStreamReader
 
 /**
- * 反编译Jar任务
+ * 反编译Jar任务 **没有依赖**
  *
  * 输入Jar文件[jarFile], 输出反编译后的Jar文件
  */

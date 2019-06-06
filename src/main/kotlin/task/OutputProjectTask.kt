@@ -7,7 +7,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 /**
- * 生成初始的输出项目
+ * 生成初始的输出项目 **没有依赖**
  *
  * 输入生成参数[ProjectSpec], 输出项目路径[PATH]
  */

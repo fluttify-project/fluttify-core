@@ -5,7 +5,7 @@ import java.io.File
 import java.io.InputStreamReader
 
 /**
- * 解压缩反编译Jar任务
+ * 解压缩反编译Jar任务 依赖[DecompileTask]
  */
 class UnzipTask(private val decompiledJarFile: File) : Task<File, File>(decompiledJarFile) {
     override fun process(): File {

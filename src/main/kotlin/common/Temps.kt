@@ -13,7 +13,8 @@ object Temps {
 import 'package:flutter/services.dart';
 """
 
-        const val classDeclaration = """class #__plugin_class_simple_name__# {
+        const val classDeclaration = """
+class #__plugin_class_simple_name__# {
 """
 
         const val methodChannel = """

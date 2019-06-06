@@ -2,81 +2,47 @@ package common.extensions
 
 import common.model.Method
 import common.model.Variable
-import parser.java8.Java8Parser
+import parser.java.JavaParser
+//import parser.java8.Java8Parser
 import parser.objc.ObjectiveCParser
 
-//region Java Method
-fun Java8Parser.MethodDeclarationContext?.method(): Method? {
+fun JavaParser.MethodDeclarationContext?.method(): Method? {
     if (this == null) return null
     return Method(
         returnType() ?: return null,
-        name() ?: return null,
+        IDENTIFIER().text ?: return null,
         formalParams()
     )
 }
 
-fun Java8Parser.MethodDeclarationContext?.returnType(): String? {
+fun JavaParser.MethodDeclarationContext?.returnType(): String? {
     if (this == null) return null
-    return methodHeader()?.result()?.text
+    return typeTypeOrVoid().text
 }
 
-fun Java8Parser.MethodDeclarationContext?.modifiers(): List<String> {
-    if (this == null) return listOf()
-    return methodModifier()?.map { it.text } ?: listOf()
-}
-
-fun Java8Parser.MethodDeclarationContext?.isStatic(): Boolean {
-    if (this == null) return false
-    return modifiers().contains("static")
-}
-
-fun Java8Parser.MethodDeclarationContext?.isInstanceMethod(): Boolean {
-    if (this == null) return false
-    return !isStatic()
-}
-
-fun Java8Parser.MethodDeclarationContext?.isPrivate(): Boolean {
-    if (this == null) return false
-    return modifiers().contains("private")
-}
-
-fun Java8Parser.MethodDeclarationContext?.isOverrid(): Boolean {
-    if (this == null) return false
-    return modifiers().contains("@Override")
-}
-
-fun Java8Parser.MethodDeclarationContext?.isDeprecated(): Boolean {
-    if (this == null) return false
-    return modifiers().contains("@Deprecated")
-}
-
-fun Java8Parser.MethodDeclarationContext?.name(): String? {
+fun JavaParser.MethodDeclarationContext?.name(): String? {
     if (this == null) return null
-    return methodHeader()?.methodDeclarator()?.Identifier()?.text
+    return IDENTIFIER().text
 }
 
-fun Java8Parser.MethodDeclarationContext?.formalParams(): List<Variable> {
+fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {
     if (this == null) return listOf()
     val result = mutableListOf<Variable>()
 
-    val parameters = methodHeader()
-        .methodDeclarator()
-        ?.formalParameterList()
+    val parameters = this.formalParameters().formalParameterList()
 
     // 除最后一个参数之外的参数
     parameters
-        ?.formalParameters()
         ?.formalParameter()
         ?.forEach {
-            result.add(Variable(it.unannType().text.toDartType(), it.variableDeclaratorId().text))
+            result.add(Variable(it.typeType().text.toDartType(), it.variableDeclaratorId().text))
         }
 
     // 最后一个参数
     parameters
         ?.lastFormalParameter()
-        ?.formalParameter()
         ?.run {
-            result.add(Variable(unannType().text.toDartType(), variableDeclaratorId().text))
+            result.add(Variable(typeType().text.toDartType(), variableDeclaratorId().text))
         }
 
     return result

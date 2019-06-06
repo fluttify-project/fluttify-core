@@ -34,13 +34,12 @@ object Jar {
         /**
          * Jar反编译后的源码根路径
          */
-        val rootPath = "$path/src/main/resources/android/decompiled"
+        val rootPath = "$path/build/decompiled"
 
         /**
          * 主java类的路径
          */
-        val mainClassPath =
-            "$path/src/main/resources/android/decompiled/${mainJavaClass.replace(".", "/")}.java"
+        val mainClassPath = "$rootPath/${mainJavaClass.replace(".", "/")}.java"
 
         /**
          * 主java类所在的包名
@@ -63,7 +62,7 @@ object Jar {
             FileUtils
                 .iterateFiles(File(rootPath), arrayOf("java"), true)
                 .forEach {
-                    val typeInfo = it.absolutePath.toFile().readText().typeInfo()
+                    val typeInfo = it.absolutePath.toFile().typeInfo()
                     result.putIfAbsent(typeInfo.simpleName, typeInfo)
                 }
             result
@@ -117,14 +116,12 @@ object OutputProject {
         /**
          * 生成工程的Android端Dart文件路径
          */
-        val androidDartPath =
-            "$path/src/main/resources/outputPluginProject/$outputProjectName/lib/$outputProjectName.android.dart"
+        val androidDartPath = "$path/build/output-project/$outputProjectName/lib/android"
 
         /**
          * 生成工程的iOS端Dart文件路径
          */
-        val iOSDartPath =
-            "$path/src/main/resources/outputPluginProject/$outputProjectName/lib/$outputProjectName.ios.dart"
+        val iOSDartPath = "$path/build/output-project/$outputProjectName/lib/ios"
     }
 
     /**
@@ -135,15 +132,12 @@ object OutputProject {
          * 生成工程的Android端Kotlin文件路径
          */
         val kotlinPath =
-            "$path/src/main/resources/outputPluginProject/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(
-                ".",
-                "/"
-            )}/$outputProjectName/${classSimpleName}Plugin.kt"
+            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(".", "/")}/$outputProjectName/${classSimpleName}Plugin.kt"
 
         /**
          * 生成工程的Android端Jar路径
          */
-        val jarDir = "$path/src/main/resources/outputPluginProject/$outputProjectName/android/libs"
+        val jarDir = "$path/build/output-project/$outputProjectName/android/libs"
     }
 
     /**
@@ -153,20 +147,11 @@ object OutputProject {
         /**
          * 生成工程的iOS端Swift文件路径
          */
-        val swiftPath =
-            "$path/src/main/resources/outputPluginProject/$outputProjectName/ios/Classes/Swift${classSimpleName}Plugin.swift"
+        val swiftPath = "$path/build/output-project/$outputProjectName/ios/Classes/Swift${classSimpleName}Plugin.swift"
 
         /**
          * 生成工程的iOS端Framework路径
          */
-        val frameworkPath = "$path/src/main/resources/outputPluginProject/$outputProjectName/ios"
-    }
-}
-
-private fun orgName(path: String): String {
-    return if (File(path).listFiles { file -> file?.isDirectory == true }.size <= 1) {
-        path
-    } else {
-        orgName(path.substringBeforeLast("/"))
+        val frameworkPath = "$path/build/output-project/$outputProjectName/ios"
     }
 }

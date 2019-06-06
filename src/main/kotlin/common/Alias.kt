@@ -1,5 +1,7 @@
 package common
 
+import java.io.File
+
 /**
  * 类型名 包括类名和接口名
  */
@@ -8,3 +10,4 @@ typealias SOURCE_STRING = String
 typealias JAVA_SOURCE = String
 typealias DART_SOURCE = String
 typealias PATH = String
+typealias JAVA_FILE = File

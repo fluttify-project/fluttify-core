@@ -4,7 +4,7 @@ import org.apache.commons.io.FileUtils
 import java.io.File
 
 /**
- * 清除空文件
+ * 清除空文件 **没有依赖**
  */
 class CleanEmptyTask(private val file: File) : Task<File, File>(file) {
     override fun process(): File {

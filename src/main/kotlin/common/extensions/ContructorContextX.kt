@@ -1,12 +1,8 @@
 package common.extensions
 
-import parser.java8.Java8Parser
+import parser.java.JavaParser
 
-fun Java8Parser.ConstructorDeclaratorContext?.hasParameter(): Boolean {
+fun JavaParser.ConstructorDeclarationContext?.hasParameter(): Boolean {
     if (this == null) return false
-
-    return formalParameterList()
-        ?.formalParameters()
-        ?.formalParameter()
-        ?.isNotEmpty() ?: false
+    return formalParameters().formalParameterList().childCount != 0
 }

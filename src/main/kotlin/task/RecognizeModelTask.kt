@@ -5,7 +5,7 @@ import org.apache.commons.io.FileUtils
 import java.io.File
 
 /**
- * 过滤出所有的模型类
+ * 过滤出所有的模型类 依赖[UnzipTask]
  *
  * 输入为待识别的文件夹[dir], 输出为识别成模型类的文件们
  */
