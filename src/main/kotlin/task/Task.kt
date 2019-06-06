@@ -3,7 +3,7 @@ package task
 abstract class Task<T, R>(input: T) {
     init {
         println("*******************************************************************************")
-        println("任务: ${this::class.simpleName} \n输入: $input")
+        println("* 任务: ${this::class.simpleName} \n* 输入: $input")
         println("*******************************************************************************")
     }
 
