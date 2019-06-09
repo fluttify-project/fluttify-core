@@ -40,6 +40,7 @@ fun JAVA_SOURCE.isModel(): Boolean {
 
         override fun enterConstructorDeclaration(constructor: ConstructorDeclarationContext?) {
             constructor?.run {
+                // 构造器如果有参数, 则不是model
                 hasDependency = constructor.hasParameter()
             }
         }
@@ -50,7 +51,8 @@ fun JAVA_SOURCE.isModel(): Boolean {
                     if (!field.jsonable()) {
                         field.type()?.isModelType() ?: false
                     } else {
-                        true
+                        // 静态属性不作为model的字段
+                        !field.isStatic()
                     }
                 )
             }
