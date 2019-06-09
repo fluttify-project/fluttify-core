@@ -1,7 +1,8 @@
-package task
+package task.common
 
 import common.extensions.isModel
 import org.apache.commons.io.FileUtils
+import task.Task
 import java.io.File
 
 /**

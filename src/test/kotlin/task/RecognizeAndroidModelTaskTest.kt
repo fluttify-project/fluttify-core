@@ -1,6 +1,7 @@
 package task
 
 import org.junit.Test
+import task.common.RecognizeAndroidModelTask
 import java.io.File
 
 class RecognizeAndroidModelTaskTest {

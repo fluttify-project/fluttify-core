@@ -1,4 +1,4 @@
-package task
+package task.common
 
 import OutputProject
 import common.DART_SOURCE
@@ -12,6 +12,7 @@ import parser.java.JavaLexer
 import parser.java.JavaParser
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
+import task.Task
 import java.io.File
 
 /**

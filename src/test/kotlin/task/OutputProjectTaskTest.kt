@@ -3,6 +3,7 @@ package task
 import common.model.ProjectSpec
 import org.junit.Assert
 import org.junit.Test
+import task.common.OutputProjectTask
 
 class OutputProjectTaskTest {
 

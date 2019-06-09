@@ -2,6 +2,7 @@ package task
 
 import common.extensions.toFile
 import org.junit.Test
+import task.statik.IOSSwiftStaticMethodTask
 
 class IOSSwiftStaticMethodTaskTest {
 

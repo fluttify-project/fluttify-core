@@ -1,7 +1,11 @@
 import common.extensions.toFile
 import common.model.ProjectSpec
 import io.reactivex.Observable
-import task.*
+import task.common.*
+import task.statik.AndroidDartStaticMethodTask
+import task.statik.AndroidKotlinStaticMethodTask
+import task.statik.IOSDartStaticMethodTask
+import task.statik.IOSSwiftStaticMethodTask
 import java.io.File
 
 fun main() {

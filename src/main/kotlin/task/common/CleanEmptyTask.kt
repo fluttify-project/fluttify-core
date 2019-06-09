@@ -1,6 +1,7 @@
-package task
+package task.common
 
 import org.apache.commons.io.FileUtils
+import task.Task
 import java.io.File
 
 /**

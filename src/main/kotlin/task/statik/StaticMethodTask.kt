@@ -1,4 +1,4 @@
-package task
+package task.statik
 
 import Configs.mainObjcClass
 import Configs.outputOrg
@@ -11,7 +11,9 @@ import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
+import task.Task
 import java.io.File
+import task.common.UnzipTask
 
 /**
  * 生成Android端Dart静态方法的MethodChannel
@@ -74,7 +76,8 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
  * 输出: 对应Kotlin的MethodChannel文件
  * 依赖: [UnzipTask]
  */
-class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<JAVA_FILE, KOTLIN_FILE>(mainClassFile) {
+class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
+    Task<JAVA_FILE, KOTLIN_FILE>(mainClassFile) {
     override fun process(): KOTLIN_FILE {
         val javaSource = mainClassFile.readText()
         val kotlinResultBuilder = StringBuilder()
@@ -166,14 +169,16 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
                 // 如果返回类型无法直接json序列化的, 就跳过
                 if (!method.returnType().jsonable()) return
 
-                dartResultBuilder.append(Temps.Dart.invokeMethod.placeholder(
-                    method.returnType(),
-                    method.name(),
-                    method.formalParams().joinToString { "${it.type} ${it.name}" },
-                    method.name(),
-                    if (method.formalParams().isEmpty()) "" else ", ",
-                    method.formalParams().toDartMap()
-                ))
+                dartResultBuilder.append(
+                    Temps.Dart.invokeMethod.placeholder(
+                        method.returnType(),
+                        method.name(),
+                        method.formalParams().joinToString { "${it.type} ${it.name}" },
+                        method.name(),
+                        if (method.formalParams().isEmpty()) "" else ", ",
+                        method.formalParams().toDartMap()
+                    )
+                )
             }
 
             override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
@@ -207,7 +212,12 @@ class IOSSwiftStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC
 
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
                 swiftResultBuilder.append(Temps.Swift.classDeclaration.placeholder(OutputProject.classSimpleName))
-                swiftResultBuilder.append(Temps.Swift.register.placeholder(OutputProject.methodChannel, OutputProject.classSimpleName))
+                swiftResultBuilder.append(
+                    Temps.Swift.register.placeholder(
+                        OutputProject.methodChannel,
+                        OutputProject.classSimpleName
+                    )
+                )
                 swiftResultBuilder.append(Temps.Swift.onMethodCall)
             }
 

@@ -1,6 +1,7 @@
-package task
+package task.common
 
 import common.DART_FILE
+import task.Task
 
 /**
  * TODO 由只有字段的Dart Model生成有`fromJson`和`toJson`的model

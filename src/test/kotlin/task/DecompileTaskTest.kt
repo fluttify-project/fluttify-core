@@ -3,6 +3,7 @@ package task
 import Configs
 import org.junit.Assert
 import org.junit.Test
+import task.common.DecompileTask
 import java.io.File
 
 class DecompileTaskTest {

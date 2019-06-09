@@ -1,9 +1,10 @@
-package task
+package task.common
 
 import Project
 import common.PATH
 import common.extensions.toFile
 import common.model.ProjectSpec
+import task.Task
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
