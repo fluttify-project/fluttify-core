@@ -1,5 +1,6 @@
 package task
 
+import OutputProject
 import common.DART_SOURCE
 import common.JAVA_SOURCE
 import common.Temps
@@ -11,7 +12,6 @@ import parser.java.JavaLexer
 import parser.java.JavaParser
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
-import OutputProject
 import java.io.File
 
 /**
@@ -29,9 +29,9 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
         val javaContent = javaModelFile.readText()
         val dartModelSource = translate(javaContent)
 
-        File(OutputProject.Dart.androidDartDirPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.dartAndroidModelDirPath).run { if (!exists()) mkdirs() }
 
-        return File("${OutputProject.Dart.androidDartDirPath}/${javaModelFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.dartAndroidModelDirPath}/${javaModelFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartModelSource)
@@ -63,7 +63,9 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             // 生成Field变量名和等于号(如果需要的话)
             override fun enterVariableDeclarator(ctx: VariableDeclaratorContext?) {
                 ctx?.run {
-                    results[currentDepth].append(" ${variableDeclaratorId().text}")
+                    if (ctx.isChildOf(FieldDeclarationContext::class)) {
+                        results[currentDepth].append(" ${variableDeclaratorId().text}")
+                    }
                 }
             }
 

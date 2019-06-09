@@ -3,14 +3,14 @@ package task
 import Configs.mainObjcClass
 import Configs.outputOrg
 import Configs.outputProjectName
+import Jar
+import OutputProject
 import common.*
 import common.extensions.*
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
-import Jar
-import OutputProject
 import java.io.File
 
 /**
@@ -25,7 +25,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
         val javaSource = mainClassFile.readText()
         val dartResultBuilder = StringBuilder()
 
-        File(OutputProject.Dart.androidDartDirPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.dartAndroidDirPath).run { if (!exists()) mkdirs() }
 
         javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterCompilationUnit(ctx: JavaParser.CompilationUnitContext?) {
@@ -45,7 +45,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
 
                 dartResultBuilder.append(
                     Temps.Dart.invokeMethod.placeholder(
-                        method.returnType(),
+                        method.returnType().toDartType(),
                         method.name(),
                         method.formalParams().joinToString { "${it.type} ${it.name}" },
                         method.name(),
@@ -59,7 +59,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                 dartResultBuilder.append(Temps.Dart.classEnd)
             }
         })
-        return File("${OutputProject.Dart.androidDartDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.dartAndroidDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartResultBuilder.toString())
@@ -148,7 +148,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
         val objcSource = mainClassFile.readText()
         val dartResultBuilder = StringBuilder()
 
-        File(OutputProject.Dart.iOSDartDirPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.dartIOSDirPath).run { if (!exists()) mkdirs() }
 
         objcSource.walkTree(object : ObjectiveCParserBaseListener() {
             override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
@@ -180,7 +180,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
                 dartResultBuilder.append(Temps.Dart.classEnd)
             }
         })
-        return File("${OutputProject.Dart.iOSDartDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.dartIOSDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartResultBuilder.toString())
