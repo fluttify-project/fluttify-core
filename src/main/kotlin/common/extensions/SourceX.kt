@@ -1,10 +1,14 @@
 package common.extensions
 
+import common.DART_SOURCE
 import common.JAVA_SOURCE
 import common.OBJC_SOURCE
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
+import parser.dart.Dart2BaseListener
+import parser.dart.Dart2Lexer
+import parser.dart.Dart2Parser
 import parser.java.JavaLexer
 import parser.java.JavaParser
 import parser.java.JavaParser.*
@@ -85,6 +89,18 @@ fun OBJC_SOURCE.walkTree(listener: ObjectiveCParserBaseListener) {
     val lexer = ObjectiveCLexer(CharStreams.fromString(this))
     val parser = ObjectiveCParser(CommonTokenStream(lexer))
     val tree = parser.translationUnit()
+    val walker = ParseTreeWalker()
+
+    walker.walk(listener, tree)
+}
+
+/**
+ * Dart源码遍历
+ */
+fun DART_SOURCE.walkTree(listener: Dart2BaseListener) {
+    val lexer = Dart2Lexer(CharStreams.fromString(this))
+    val parser = Dart2Parser(CommonTokenStream(lexer))
+    val tree = parser.compilationUnit()
     val walker = ParseTreeWalker()
 
     walker.walk(listener, tree)

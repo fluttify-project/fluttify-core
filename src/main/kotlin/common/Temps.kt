@@ -39,6 +39,24 @@ class #__plugin_class_simple_name__# {
   #__return_type__# #__name__#(#__formal_params__#) {
 #__body__#  }
 """
+        const val fromJson = """
+  static #__class_name__# fromJson(Map<String, dynamic> json) {
+    final bean = #__class_name__#();#__content__#
+    return bean;
+  }
+"""
+        const val toJson = """
+  Map<String, dynamic> toJson() {
+    return {#__content__#
+    }..removeWhere((key, value) => value == null);
+  }
+"""
+        const val toString = """
+  @override
+  String toString() {
+    return JsonEncoder.withIndent('  ').convert(toJson());
+  }
+"""
     }
 
     object Kotlin {

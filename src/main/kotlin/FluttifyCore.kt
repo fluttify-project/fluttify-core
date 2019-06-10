@@ -23,6 +23,8 @@ fun main() {
         .flatMap { Observable.fromIterable(RecognizeAndroidModelTask(it).process()) }
         // 将每个识别出来的android model文件转换成dart model文件, 并写入
         .map { AndroidDartModelTask(it).process() }
+        // 为Model加入fromJson和toJson
+        .map { JsonTask(it).process() }
         // 收成一个List, 避免下游的任务重复执行
         .toList()
         // 生成静态方法的dart method channel
