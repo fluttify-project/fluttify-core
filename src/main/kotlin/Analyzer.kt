@@ -108,28 +108,38 @@ object OutputProject {
     val methodChannel = "$`package`/$mainClassSimpleName"
 
     /**
+     * 输出工程路径
+     */
+    val dirPath = "$path/build/output-project/$outputProjectName"
+
+    /**
      * 输出项目的dart文件相关信息
      */
     object Dart {
         /**
+         * 生成工程的lib路径
+         */
+        val libDirPath = "$path/build/output-project/$outputProjectName/lib"
+
+        /**
          * 生成工程的Android端Dart文件路径
          */
-        val dartAndroidDirPath = "$path/build/output-project/$outputProjectName/lib/android"
+        val dartAndroidDirPath = "$libDirPath/src/android"
 
         /**
          * 生成工程的Android端Dart模型文件路径
          */
-        val dartAndroidModelDirPath = "$path/build/output-project/$outputProjectName/lib/android/model"
+        val dartAndroidModelDirPath = "$libDirPath/src/android/model"
 
         /**
          * 生成工程的iOS端Dart文件路径
          */
-        val dartIOSDirPath = "$path/build/output-project/$outputProjectName/lib/ios"
+        val dartIOSDirPath = "$libDirPath/src/ios"
 
         /**
          * 生成工程的iOS端Dart模型文件路径
          */
-        val dartIOSModelDirPath = "$path/build/output-project/$outputProjectName/lib/ios/model"
+        val dartIOSModelDirPath = "$libDirPath/src/ios/model"
     }
 
     /**

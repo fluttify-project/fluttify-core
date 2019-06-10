@@ -1,7 +1,6 @@
-package task
+package task.common
 
 import org.junit.Test
-import task.common.AndroidDartModelTask
 import java.io.File
 
 class AndroidDartModelTaskTest {

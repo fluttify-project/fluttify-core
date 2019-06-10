@@ -1,4 +1,4 @@
-package task
+package task.common
 
 import common.model.ProjectSpec
 import org.junit.Assert

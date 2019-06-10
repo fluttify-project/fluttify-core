@@ -12,8 +12,8 @@ import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import task.Task
-import java.io.File
 import task.common.UnzipTask
+import java.io.File
 
 /**
  * 生成Android端Dart静态方法的MethodChannel
@@ -42,8 +42,8 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
             override fun enterMethodDeclaration(method: JavaParser.MethodDeclarationContext?) {
                 // 跳过实例,私有,废弃方法
                 if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
-                // 跳过含有`非model参数`的方法
-                if (!method.formalParams().all { it.type.isModelType() }) return
+                // 跳过含有`非model参数`和`非model返回值`的方法
+                if (!method.formalParams().all { it.type.isModelType() } || method.returnType()?.isModelType() != true) return
 
                 dartResultBuilder.append(
                     Temps.Dart.invokeMethod.placeholder(

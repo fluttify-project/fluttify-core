@@ -1,9 +1,8 @@
-package task
+package task.common
 
+import Project
 import org.junit.Assert
 import org.junit.Test
-import Project
-import task.common.UnzipTask
 import java.io.File
 
 class UnzipTaskTest {

@@ -1,16 +1,15 @@
-package task
+package task.statik
 
 import common.extensions.toFile
 import org.junit.Test
-import task.statik.IOSSwiftStaticMethodTask
 
-class IOSSwiftStaticMethodTaskTest {
+class IOSDartStaticMethodTaskTest {
 
     @Test
     fun process() {
         val sourceFile =
             "/Users/yohom/Github/Util/Kotlin/fluttify-core/src/main/resources/ios/Tbit.framework/Headers/TbitBluetooth.h".toFile()
-        val result = IOSSwiftStaticMethodTask(sourceFile).process()
+        val result = IOSDartStaticMethodTask(sourceFile).process()
         println(result.readText())
     }
 }

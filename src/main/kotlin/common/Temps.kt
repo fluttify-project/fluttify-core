@@ -1,5 +1,6 @@
 package common
 
+import Configs
 import Configs.mainJavaClass
 import Framework
 
@@ -13,7 +14,9 @@ object Temps {
 import 'package:flutter/services.dart';
 """
 
-        const val classDeclaration = """
+        val classDeclaration = """import 'dart:typed_data';
+import 'package:${Configs.outputProjectName}/${Configs.outputProjectName}.dart';
+
 class #__plugin_class_simple_name__# {
 """
 

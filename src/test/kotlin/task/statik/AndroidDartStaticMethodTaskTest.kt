@@ -1,8 +1,7 @@
-package task
+package task.statik
 
 import common.extensions.toFile
 import org.junit.Test
-import task.statik.AndroidDartStaticMethodTask
 
 class AndroidDartStaticMethodTaskTest {
 

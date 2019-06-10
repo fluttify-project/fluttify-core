@@ -1,10 +1,9 @@
-package task
+package task.common
 
 import org.apache.commons.io.FileUtils
 import org.junit.Assert
 import org.junit.Test
 import Project
-import task.common.CleanEmptyTask
 import java.io.File
 
 class CleanBlankTaskTest {

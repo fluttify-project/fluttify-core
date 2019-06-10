@@ -33,5 +33,7 @@ fun main() {
         .map { IOSDartStaticMethodTask(Framework.mainClassPath.toFile()).process() }
         // 生成静态方法的swift method channel
         .map { IOSSwiftStaticMethodTask(Framework.mainClassPath.toFile()).process() }
+        // 增加export
+        .map { ExportTask(OutputProject.dirPath.toFile()).process() }
         .subscribe()
 }

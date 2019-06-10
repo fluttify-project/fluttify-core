@@ -1,4 +1,4 @@
-package task
+package task.common
 
 import Configs
 import org.junit.Assert
