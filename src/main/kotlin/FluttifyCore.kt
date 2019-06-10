@@ -13,6 +13,8 @@ fun main() {
         .just(ProjectSpec(org = "com.yibo", name = "tbitble_flutter"))
         // 生成初始目标工程
         .map { OutputProjectTask(it).process() }
+        // 拷贝jar依赖到目标工程
+        .map { AddAndroidDependencyTask(it).process() }
         // 反编译Jar
         .map { DecompileTask(File(Configs.jarPath)).process() }
         // 解压缩反编译Jar

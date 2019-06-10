@@ -30,6 +30,13 @@ class #__plugin_class_simple_name__# {
   }
 """
 
+        const val invokeModelMethod = """
+  static Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+    final result = await _channel.invokeMapMethod<String, dynamic>('#__method_name__#'#__separator__##__actual_params__#);
+    return #__return_type__#.fromJson(result);
+  }
+"""
+
         const val classEnd = "}"
 
         const val field = """
@@ -92,7 +99,7 @@ class #__class_name__#Plugin : MethodCallHandler {
 
         const val onMethodCall = """
     override fun onMethodCall(methodCall: MethodCall, methodResult: Result) {
-        val args = methodCall.arguments as Map<String, *>
+        val args = methodCall.arguments as? Map<String, *> ?: mapOf<String, Any>()
         when (methodCall.method) {"""
 
         const val methodResult = """

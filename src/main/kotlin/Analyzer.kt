@@ -26,6 +26,11 @@ object Jar {
     val `package` = Jar.Decompiled.`package`.split(".").subList(0, 3).joinToString(".")
 
     /**
+     * jar的文件名
+     */
+    val name = Configs.jarPath.substringAfterLast("/")
+
+    /**
      * 反编译后的jar
      */
     object Decompiled {

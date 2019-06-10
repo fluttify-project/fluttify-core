@@ -45,16 +45,30 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                 // 跳过含有`非model参数`和`非model返回值`的方法
                 if (!method.formalParams().all { it.type.isModelType() } || method.returnType()?.isModelType() != true) return
 
-                dartResultBuilder.append(
-                    Temps.Dart.invokeMethod.placeholder(
-                        method.returnType().toDartType(),
-                        method.name(),
-                        method.formalParams().joinToString { "${it.type} ${it.name}" },
-                        method.name(),
-                        if (method.formalParams().isEmpty()) "" else ", ",
-                        method.formalParams().toDartMap()
+                if (method.returnType()?.jsonable() == true) {
+                    dartResultBuilder.append(
+                        Temps.Dart.invokeMethod.placeholder(
+                            method.returnType().toDartType(),
+                            method.name(),
+                            method.formalParams().joinToString { "${it.type} ${it.name}" },
+                            method.name(),
+                            if (method.formalParams().isEmpty()) "" else ", ",
+                            method.formalParams().toDartMap()
+                        )
                     )
-                )
+                } else if (method.returnType()?.isModelType() == true) {
+                    dartResultBuilder.append(
+                        Temps.Dart.invokeModelMethod.placeholder(
+                            method.returnType().toDartType(),
+                            method.name(),
+                            method.formalParams().joinToString { "${it.type} ${it.name}" },
+                            method.name(),
+                            if (method.formalParams().isEmpty()) "" else ", ",
+                            method.formalParams().toDartMap(),
+                            method.returnType().toDartType()
+                        )
+                    )
+                }
             }
 
             override fun exitClassDeclaration(ctx: JavaParser.ClassDeclarationContext?) {
@@ -82,6 +96,8 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
         val javaSource = mainClassFile.readText()
         val kotlinResultBuilder = StringBuilder()
 
+        File(OutputProject.Android.kotlinFilePath).run { if (!exists()) mkdirs() }
+
         javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterCompilationUnit(ctx: JavaParser.CompilationUnitContext?) {
                 kotlinResultBuilder.append(Temps.Kotlin.packageImport.placeholder("$outputOrg.$outputProjectName"))
@@ -101,8 +117,8 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
             override fun enterMethodDeclaration(method: JavaParser.MethodDeclarationContext?) {
                 // 跳过实例, 私有, 废弃方法
                 if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
-                // 跳过含有`非model参数`的方法
-                if (!method.formalParams().all { it.type.isModelType() }) return
+                // 跳过含有`非model参数`和`非model返回值`的方法
+                if (!method.formalParams().all { it.type.isModelType() } || method.returnType()?.isModelType() != true) return
 
                 kotlinResultBuilder.append(
                     Temps.Kotlin.methodResult.placeholder(

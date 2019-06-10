@@ -37,12 +37,20 @@ class JsonTask(private val dartModelFile: DART_FILE) : Task<DART_FILE, DART_FILE
                 ctx?.run {
                     val type = ctx.ancestorOf(Dart2Parser.DeclarationContext::class).dtype().text
                     val name = ctx.identifier().text
-                    if (type.jsonable()) {
-                        fromJson.append("\n    bean.$name = json['$name'] as $type;")
-                        toJson.append("\n      '$name': $name,")
-                    } else {
-                        fromJson.append("\n    if (json['$name'] != null) bean.$name = $type.fromJson(json['$name'] as Map<String, dynamic>);")
-                        toJson.append("\n      '$name': $name.toJson(),")
+                    when {
+                        type.contains("List") -> {
+                            val genericType = type.substring(type.indexOf("<"), type.indexOf(">") + 1)
+                            fromJson.append("\n    bean.$name = (json['$name'] as List).cast$genericType();")
+                            toJson.append("\n      '$name': $name,")
+                        }
+                        type.jsonable() -> {
+                            fromJson.append("\n    bean.$name = json['$name'] as $type;")
+                            toJson.append("\n      '$name': $name,")
+                        }
+                        else -> {
+                            fromJson.append("\n    if (json['$name'] != null) bean.$name = $type.fromJson((json['$name'] as Map).cast<String, dynamic>());")
+                            toJson.append("\n      '$name': $name.toJson(),")
+                        }
                     }
                 }
             }

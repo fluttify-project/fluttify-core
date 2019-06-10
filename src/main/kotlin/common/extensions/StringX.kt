@@ -1,8 +1,8 @@
 package common.extensions
 
+import Jar
 import common.PATH
 import common.TYPE_NAME
-import Jar
 import java.io.File
 
 fun String?.isLiteral(): Boolean {
@@ -26,10 +26,8 @@ fun TYPE_NAME?.jsonable(): Boolean {
         "List",
         "Map",
         "null",
-        "Uint8List",
-        "Int32List",
-        "Int64List",
-        "Float64List",
+        "List<int>",
+        "List<double>",
         "void"
     )
 }
@@ -45,10 +43,10 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "NSString*", "String" -> "String"
         "NSArray*", "List", "ArrayList" -> "List"
         "NSDictionary*", "Map" -> "Map"
-        "byte[]", "Byte[]" -> "Uint8List"
-        "int[]", "Int[]" -> "Int32List"
-        "long[]", "Long[]" -> "Int64List"
-        "double[]", "Double[]" -> "Float64List"
+        "byte[]", "Byte[]" -> "List<int>"
+        "int[]", "Int[]" -> "List<int>"
+        "long[]", "Long[]" -> "List<int>"
+        "double[]", "Double[]" -> "List<double>"
         "void" -> "void"
         null -> "null"
         else -> this
