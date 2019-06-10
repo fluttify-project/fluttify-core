@@ -11,7 +11,7 @@ import parser.dart.Dart2Parser
 import task.Task
 
 /**
- * TODO 由只有字段的Dart Model生成有`fromJson`和`toJson`的model
+ * 由只有字段的Dart Model生成有`fromJson`和`toJson`的model
  *
  * 输入: 只有字段的dart模型文件
  * 输出: 加入了fromJson和toJson方法的模型文件
@@ -28,9 +28,7 @@ class JsonTask(private val dartModelFile: DART_FILE) : Task<DART_FILE, DART_FILE
 
         dartModelContent.walkTree(object : Dart2BaseListener() {
             override fun enterClassDefinition(ctx: Dart2Parser.ClassDefinitionContext?) {
-                ctx?.run {
-                    className = ctx.identifier().text
-                }
+                ctx?.run { className = ctx.identifier().text }
             }
 
             override fun enterInitializedIdentifier(ctx: Dart2Parser.InitializedIdentifierContext?) {
