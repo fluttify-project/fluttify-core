@@ -90,10 +90,10 @@ object Framework {
     val name = frameworkDirPath.substringAfterLast("/").substringBefore(".")
 
     /**
-     * framework中识别出来的objc模型类输出路径 因为objc的模型类可能多个模型类写在一个文件里,
+     * framework中的所有类都单独放一个文件 因为objc的模型类可能多个模型类写在一个文件里,
      * 在识别的时候把它们分散到单独的文件中去, 供下一步处理
      */
-    val recoModelDirPath = "$path/build/objc-models/"
+    val singleClassDirPath = "$path/build/objc-models/"
 
     /**
      * Framework内所有类的信息, key为class simple name, value为对应类的信息
@@ -103,7 +103,7 @@ object Framework {
     val classes: Map<TYPE_NAME, ObjcTypeInfo> by lazy {
         val result = mutableMapOf<TYPE_NAME, ObjcTypeInfo>()
         FileUtils
-            .iterateFiles(File(frameworkDirPath), arrayOf("h"), true)
+            .iterateFiles(singleClassDirPath.file(), null, true)
             .forEach {
                 val typeInfo = it.absolutePath.file().objcTypeInfo()
                 result.putIfAbsent(typeInfo.name, typeInfo)

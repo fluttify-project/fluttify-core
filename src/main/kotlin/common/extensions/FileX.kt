@@ -10,7 +10,6 @@ import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
-import java.io.File
 
 /**
  * Java源码解析
@@ -76,11 +75,15 @@ fun OBJC_FILE.objcTypeInfo(): ObjcTypeInfo {
 
     source.walkTree(object : ObjectiveCParserBaseListener() {
         override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-            ctx?.run { className = ctx.identifier().text }
+            ctx?.run {
+                className = ctx.className.text
+            }
         }
 
         override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext?) {
-            ctx?.run { className = ctx.protocolName().text }
+            ctx?.run {
+                className = ctx.protocolName().text
+            }
         }
 
         override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext?) {

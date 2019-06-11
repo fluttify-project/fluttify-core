@@ -99,7 +99,8 @@ fun OBJC_SOURCE.walkTree(listener: ObjectiveCParserBaseListener) {
 
 /**
  * objc源码判断是否是模型类
- * TODO 2019.6.11
+ *
+ * 源码内只有一个类
  */
 fun OBJC_SOURCE.isObjcModel(): Boolean {
     var isAbstract = false

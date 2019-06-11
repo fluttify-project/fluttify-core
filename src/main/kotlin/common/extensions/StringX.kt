@@ -39,11 +39,11 @@ fun TYPE_NAME?.jsonable(): Boolean {
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
     return when (this) {
         "BOOL", "boolean" -> "bool"
-        "int", "Int", "Byte" -> "int"
-        "double", "float" -> "double"
-        "NSString*", "String" -> "String"
-        "NSArray*", "List", "ArrayList" -> "List"
-        "NSDictionary*", "Map" -> "Map"
+        "int", "Int", "UInt32", "Byte" -> "int"
+        "double", "float", "CGFloat" -> "double"
+        "NSString*", "NSString *", "NSString", "String" -> "String"
+        "NSArray*", "NSArray *", "NSArray", "List", "ArrayList" -> "List"
+        "NSDictionary*", "NSDictionary *", "NSDictionary", "Map" -> "Map"
         "byte[]", "Byte[]" -> "List<int>"
         "int[]", "Int[]" -> "List<int>"
         "long[]", "Long[]" -> "List<int>"
@@ -141,7 +141,7 @@ fun TYPE_NAME.isObjcModelType(): Boolean {
         ?.path
         ?.file()
         ?.readText()
-        ?.isJavaModel() ?: false
+        ?.isObjcModel() ?: false
 }
 
 /**
