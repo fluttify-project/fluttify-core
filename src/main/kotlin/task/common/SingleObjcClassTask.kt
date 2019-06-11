@@ -32,7 +32,7 @@ class SingleObjcClassTask(private val frameworkDir: File) : Task<File, File>(fra
                     })
             }
 
-        val objcClassesDir = Framework.singleClassDirPath.file()
+        val objcClassesDir = Framework.singleClassesDirPath.file()
         slices.forEachIndexed { index, item ->
             val modelFile = "${objcClassesDir.absolutePath}/Class_$index".file()
             modelFile.writeText(item)

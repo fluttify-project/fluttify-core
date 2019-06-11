@@ -1,8 +1,5 @@
 package task.common
 
-import Framework
-import common.OBJC_SOURCE
-import common.extensions.file
 import common.extensions.isJavaModel
 import common.extensions.isObjcModel
 import org.apache.commons.io.FileUtils
@@ -40,30 +37,6 @@ class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(
  */
 class RecognizeIOSModelTask(private val dir: File) : Task<File, List<File>>(dir) {
     override fun process(): List<File> {
-        val result = mutableListOf<File>()
-        val slices = mutableListOf<OBJC_SOURCE>()
-        // 切割每个类到单独的文件中去
-        FileUtils
-            .iterateFiles(dir, arrayOf("h"), true)
-            .forEach { file ->
-                val fileContent = file.readText()
-                slices.addAll(fileContent.split("@interface")
-                    .map {
-                        if (it.contains("@end"))
-                            StringBuilder(it).insert(0, "@interface").toString()
-                        else
-                            it
-                    })
-            }
-
-        slices.forEachIndexed { index, item ->
-            val objcModelDir = Framework.singleClassDirPath.file()
-            val modelFile = "${objcModelDir.absolutePath}/Class_$index".file()
-            modelFile.writeText(item)
-            result.add(modelFile)
-        }
-
-        // 过滤出model文件
-        return result.filter { it.readText().isObjcModel() }
+        return dir.listFiles().filter { it.readText().isObjcModel() }
     }
 }
