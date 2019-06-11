@@ -5,11 +5,11 @@ import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class DecompileTaskTest {
+class DecompileJarTaskTest {
 
     @Test
     fun process() {
-        val decompiledJarFile = DecompileTask(File(Configs.jarFilePath)).process()
+        val decompiledJarFile = DecompileJarTask(File(Configs.jarFilePath)).process()
 
         println(decompiledJarFile.absolutePath)
         Assert.assertTrue(decompiledJarFile.exists())

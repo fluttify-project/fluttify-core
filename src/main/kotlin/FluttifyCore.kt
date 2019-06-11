@@ -16,9 +16,9 @@ fun main() {
         // 拷贝jar依赖到目标工程
         .map { AddAndroidDependencyTask(it).process() }
         // 反编译Jar
-        .map { DecompileTask(File(Configs.jarFilePath)).process() }
+        .map { DecompileJarTask(File(Configs.jarFilePath)).process() }
         // 解压缩反编译Jar
-        .map { UnzipTask(it).process() }
+        .map { UnzipJarTask(it).process() }
         // 清理空文件
         .map { CleanEmptyTask(it).process() }
         // 识别android Model文件

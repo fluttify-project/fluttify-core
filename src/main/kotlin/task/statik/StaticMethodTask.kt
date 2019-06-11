@@ -12,7 +12,7 @@ import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import task.Task
-import task.common.UnzipTask
+import task.common.UnzipJarTask
 import java.io.File
 
 /**
@@ -20,7 +20,7 @@ import java.io.File
  *
  * 输入: 主Java类文件
  * 输出: 对应Dart的MethodChannel文件
- * 依赖: [UnzipTask]
+ * 依赖: [UnzipJarTask]
  */
 class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<JAVA_FILE, DART_FILE>(mainClassFile) {
     override fun process(): DART_FILE {
@@ -88,7 +88,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
  *
  * 输入: 主Java类文件
  * 输出: 对应Kotlin的MethodChannel文件
- * 依赖: [UnzipTask]
+ * 依赖: [UnzipJarTask]
  */
 class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
     Task<JAVA_FILE, KOTLIN_FILE>(mainClassFile) {

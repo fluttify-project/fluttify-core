@@ -10,9 +10,9 @@ import java.io.InputStreamReader
  *
  * 输入: 反编译后的Jar文件
  * 输出: Jar文件对应的文件夹
- * 依赖: [DecompileTask]
+ * 依赖: [DecompileJarTask]
  */
-class UnzipTask(private val decompiledJarFile: File) : Task<File, File>(decompiledJarFile) {
+class UnzipJarTask(private val decompiledJarFile: File) : Task<File, File>(decompiledJarFile) {
     override fun process(): File {
         val decompiledJarPath = decompiledJarFile.absolutePath
         val artifactPath = decompiledJarPath.substringBeforeLast("/")

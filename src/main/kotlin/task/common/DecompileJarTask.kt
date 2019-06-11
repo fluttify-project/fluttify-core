@@ -14,7 +14,7 @@ import java.io.InputStreamReader
  * 输出: 反编译后的Jar文件
  * 依赖: []
  */
-class DecompileTask(private val jarFile: File) : Task<File, File>(jarFile) {
+class DecompileJarTask(private val jarFile: File) : Task<File, File>(jarFile) {
     override fun process(): File {
         val artifactPath = "${Project.path}/build/decompiled"
         val decompiledJarFileName = Configs.jarFilePath.substringAfterLast("/")
