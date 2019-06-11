@@ -15,9 +15,8 @@ import java.io.File
  * 输出: build/objc-classes下的所有文件
  * 依赖: []
  */
-class SingleObjcClassTask(private val frameworkDir: File) : Task<File, List<File>>(frameworkDir) {
-    override fun process(): List<File> {
-        val result = mutableListOf<File>()
+class SingleObjcClassTask(private val frameworkDir: File) : Task<File, File>(frameworkDir) {
+    override fun process(): File {
         val slices = mutableListOf<OBJC_SOURCE>()
         // 切割每个类到单独的文件中去
         FileUtils
@@ -33,13 +32,12 @@ class SingleObjcClassTask(private val frameworkDir: File) : Task<File, List<File
                     })
             }
 
+        val objcClassesDir = Framework.singleClassDirPath.file()
         slices.forEachIndexed { index, item ->
-            val objcModelDir = Framework.singleClassDirPath.file()
-            val modelFile = "${objcModelDir.absolutePath}/Class_$index".file()
+            val modelFile = "${objcClassesDir.absolutePath}/Class_$index".file()
             modelFile.writeText(item)
-            result.add(modelFile)
         }
 
-        return result
+        return objcClassesDir
     }
 }
