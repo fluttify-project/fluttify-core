@@ -5,15 +5,9 @@ import org.junit.Test
 class SourceXKtTest {
 
     @Test
-    fun isModel() {
+    fun isObjcModel() {
+        val objcSource = "/Users/yohom/Github/Util/Kotlin/fluttify-core/src/main/resources/ios/Tbit.framework/Headers/BikeState.h".file().readText()
+        println(objcSource.isObjcModel())
     }
 
-    @Test
-    fun walkTree() {
-    }
-
-    @Test
-    fun varInitializer2Dart() {
-//        println("new double[]{1, a, 3, aa}".varInitializer2Dart())
-    }
 }

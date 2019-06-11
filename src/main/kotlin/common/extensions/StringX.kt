@@ -1,5 +1,6 @@
 package common.extensions
 
+import Framework
 import Jar
 import common.PATH
 import common.TYPE_NAME
@@ -113,9 +114,9 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
 }
 
 /**
- * 类型名判断是否是model
+ * 类型名判断是否是java model
  */
-fun TYPE_NAME.isModelType(): Boolean {
+fun TYPE_NAME.isJavaModelType(): Boolean {
     // 如果是可以直接json序列化的, 那么直接就返回true
     if (jsonable()) return true
 
@@ -123,18 +124,39 @@ fun TYPE_NAME.isModelType(): Boolean {
         .Decompiled
         .classes[this]
         ?.path
-        ?.toFile()
+        ?.file()
         ?.readText()
-        ?.isModel() ?: false
+        ?.isJavaModel() ?: false
 }
 
-fun PATH.toFile(): File {
+/**
+ * 类型名判断是否是objc model
+ */
+fun TYPE_NAME.isObjcModelType(): Boolean {
+    // 如果是可以直接json序列化的, 那么直接就返回true
+    if (jsonable()) return true
+
+    return Framework
+        .classes[this]
+        ?.path
+        ?.file()
+        ?.readText()
+        ?.isJavaModel() ?: false
+}
+
+/**
+ * 路径字符串转为文件
+ *
+ * 如果文件不存在:
+ *     如果路径以"/"结尾, 那么创建文件夹
+ *     如果不以"/"结尾, 那么创建文件
+ * 如果文件存在:
+ *     返回文件
+ */
+fun PATH.file(): File {
     val file = File(this)
     if (!file.exists()) {
-        if (file.isDirectory)
-            file.mkdirs()
-        else if (file.isFile)
-            file.createNewFile()
+        if (endsWith("/")) file.mkdirs() else file.createNewFile()
     }
     return file
 }

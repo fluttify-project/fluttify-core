@@ -6,7 +6,7 @@ object Configs {
     /**
      * jar路径
      */
-    val jarPath: String = "${Project.path}/src/main/resources/android/tbitble.jar"
+    val jarFilePath: String = "${Project.path}/src/main/resources/android/tbitble.jar"
     /**
      * objc主类名
      */
@@ -14,7 +14,7 @@ object Configs {
     /**
      * framework路径
      */
-    val frameworkPath: String = "${Project.path}/src/main/resources/ios/Tbit.framework"
+    val frameworkDirPath: String = "${Project.path}/src/main/resources/ios/Tbit.framework"
     /**
      * 生成工程的组织名
      */

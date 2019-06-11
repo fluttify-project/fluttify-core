@@ -1,16 +1,21 @@
 package common.extensions
 
 import common.JAVA_FILE
+import common.OBJC_FILE
 import common.model.JavaTypeInfo
 import common.model.Method
+import common.model.ObjcTypeInfo
 import common.model.Variable
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
+import parser.objc.ObjectiveCParser
+import parser.objc.ObjectiveCParserBaseListener
+import java.io.File
 
 /**
  * Java源码解析
  */
-fun JAVA_FILE.typeInfo(): JavaTypeInfo {
+fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
     val source = readText()
 
     var packageName = ""
@@ -57,4 +62,65 @@ fun JAVA_FILE.typeInfo(): JavaTypeInfo {
     })
 
     return JavaTypeInfo("$packageName.$className", className, absolutePath, fields, methods)
+}
+
+/**
+ * Objc源码解析
+ */
+fun OBJC_FILE.objcTypeInfo(): ObjcTypeInfo {
+    val source = readText()
+
+    val fields = mutableListOf<Variable>()
+    val methods = mutableListOf<Method>()
+    var className = ""
+
+    source.walkTree(object : ObjectiveCParserBaseListener() {
+        override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
+            ctx?.run { className = ctx.identifier().text }
+        }
+
+        override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext?) {
+            ctx?.run { className = ctx.protocolName().text }
+        }
+
+        override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext?) {
+            ctx?.run {
+                className = ctx.identifier().text
+            }
+        }
+
+        override fun enterClassMethodDeclaration(ctx: ObjectiveCParser.ClassMethodDeclarationContext?) {
+            ctx?.run {
+                val methodDeclaration = ctx.methodDeclaration()
+                methods.add(
+                    Method(
+                        methodDeclaration.returnType()!!,
+                        methodDeclaration.name()!!,
+                        methodDeclaration.formalParams()
+                    )
+                )
+            }
+        }
+
+        override fun enterInstanceMethodDeclaration(ctx: ObjectiveCParser.InstanceMethodDeclarationContext?) {
+            ctx?.run {
+                val methodDeclaration = ctx.methodDeclaration()
+                methods.add(
+                    Method(
+                        methodDeclaration.returnType()!!,
+                        methodDeclaration.name()!!,
+                        methodDeclaration.formalParams()
+                    )
+                )
+            }
+        }
+
+        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext?) {
+            ctx?.run {
+                fields.add(Variable(ctx.type()!!, ctx.name()!!))
+            }
+        }
+    })
+
+    return ObjcTypeInfo(className, absolutePath, fields, methods)
 }

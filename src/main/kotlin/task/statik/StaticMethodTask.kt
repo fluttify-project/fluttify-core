@@ -43,7 +43,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                 // 跳过实例,私有,废弃方法
                 if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
                 // 跳过含有`非model参数`和`非model返回值`的方法
-                if (!method.formalParams().all { it.type.isModelType() } || method.returnType()?.isModelType() != true) return
+                if (!method.formalParams().all { it.type.isJavaModelType() } || method.returnType()?.isJavaModelType() != true) return
 
                 if (method.returnType()?.jsonable() == true) {
                     dartResultBuilder.append(
@@ -56,7 +56,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                             method.formalParams().toDartMap()
                         )
                     )
-                } else if (method.returnType()?.isModelType() == true) {
+                } else if (method.returnType()?.isJavaModelType() == true) {
                     dartResultBuilder.append(
                         Temps.Dart.invokeModelMethod.placeholder(
                             method.returnType().toDartType(),
@@ -118,7 +118,7 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
                 // 跳过实例, 私有, 废弃方法
                 if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
                 // 跳过含有`非model参数`和`非model返回值`的方法
-                if (!method.formalParams().all { it.type.isModelType() } || method.returnType()?.isModelType() != true) return
+                if (!method.formalParams().all { it.type.isJavaModelType() } || method.returnType()?.isJavaModelType() != true) return
 
                 kotlinResultBuilder.append(
                     Temps.Kotlin.methodResult.placeholder(
@@ -128,7 +128,7 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
                                 it.type.jsonable() -> {
                                     "\n\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type}"
                                 }
-                                it.type.isModel() -> {
+                                it.type.isJavaModel() -> {
                                     "\n\t\t\t\tval ${it.name} = mapper.readValue(args[\"${it.name}\"] as String, ${it.type}::class.java)"
                                 }
                                 else -> ""
@@ -179,20 +179,21 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
                 dartResultBuilder.append(Temps.Dart.methodChannel.placeholder(OutputProject.methodChannel))
             }
 
-            override fun enterMethodDeclaration(method: ObjectiveCParser.MethodDeclarationContext?) {
+            override fun enterClassMethodDeclaration(method: ObjectiveCParser.ClassMethodDeclarationContext?) {
+                val methodDeclaration = method?.methodDeclaration() ?: return
                 // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams().any { !it.type.jsonable() }) return
+                if (methodDeclaration.formalParams().any { !it.type.jsonable() }) return
                 // 如果返回类型无法直接json序列化的, 就跳过
-                if (!method.returnType().jsonable()) return
+                if (!methodDeclaration.returnType().jsonable()) return
 
                 dartResultBuilder.append(
                     Temps.Dart.invokeMethod.placeholder(
-                        method.returnType(),
-                        method.name(),
-                        method.formalParams().joinToString { "${it.type} ${it.name}" },
-                        method.name(),
-                        if (method.formalParams().isEmpty()) "" else ", ",
-                        method.formalParams().toDartMap()
+                        methodDeclaration.returnType(),
+                        methodDeclaration.name(),
+                        methodDeclaration.formalParams().joinToString { "${it.type} ${it.name}" },
+                        methodDeclaration.name(),
+                        if (methodDeclaration.formalParams().isEmpty()) "" else ", ",
+                        methodDeclaration.formalParams().toDartMap()
                     )
                 )
             }
@@ -238,16 +239,17 @@ class IOSSwiftStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC
             }
 
             override fun enterClassMethodDeclaration(method: ObjectiveCParser.ClassMethodDeclarationContext?) {
+                val methodDeclaration = method?.methodDeclaration() ?: return
                 // 如果参数中有无法直接json序列化的, 就跳过
-                if (method.formalParams().any { !it.type.jsonable() }) return
+                if (methodDeclaration.formalParams().any { !it.type.jsonable() }) return
                 // 如果返回类型无法直接json序列化的, 就跳过
-                if (!method.returnType().jsonable()) return
+                if (!methodDeclaration.returnType().jsonable()) return
 
                 swiftResultBuilder.append(Temps.Swift.invokeResult.placeholder(
-                    method.name(),
+                    methodDeclaration.name(),
                     mainObjcClass,
-                    method.name(),
-                    method.formalParams().joinToString { "args[\"${it.name}\"] as! ${it.type}" }
+                    methodDeclaration.name(),
+                    methodDeclaration.formalParams().joinToString { "args[\"${it.name}\"] as! ${it.type}" }
                 ))
             }
 

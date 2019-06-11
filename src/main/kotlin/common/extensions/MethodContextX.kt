@@ -63,11 +63,10 @@ fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {
 }
 //endregion
 
-
-//region Objc Instance Method
+//region Objc Method
 fun ObjectiveCParser.MethodDeclarationContext?.returnType(): String? {
     if (this == null) return null
-    return methodType()?.typeName()?.text
+    return methodType().typeName().text
 }
 
 fun ObjectiveCParser.MethodDeclarationContext?.name(): String? {
@@ -76,47 +75,15 @@ fun ObjectiveCParser.MethodDeclarationContext?.name(): String? {
         .selector()
         ?.text ?: methodSelector()
         .keywordDeclarator()[0]
-        ?.selector()
-        ?.text
+        .selector()
+        .text
 }
 
 fun ObjectiveCParser.MethodDeclarationContext?.formalParams(): List<Variable> {
     if (this == null) return listOf()
     val result = mutableListOf<Variable>()
 
-    methodSelector().keywordDeclarator()
-        ?.forEach {
-            result.add(Variable(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
-        }
-    return result
-}
-//endregion
-
-
-//region Objc Class Method
-fun ObjectiveCParser.ClassMethodDeclarationContext?.returnType(): String? {
-    if (this == null) return null
-    return methodDeclaration().methodType().typeName().text
-}
-
-fun ObjectiveCParser.ClassMethodDeclarationContext?.name(): String? {
-    if (this == null) return null
-    return methodDeclaration()
-        .methodSelector()
-        .selector()
-        ?.text ?: methodDeclaration()
-        .methodSelector()
-        .keywordDeclarator()[0]
-        .selector()
-        .text
-}
-
-fun ObjectiveCParser.ClassMethodDeclarationContext?.formalParams(): List<Variable> {
-    if (this == null) return listOf()
-    val result = mutableListOf<Variable>()
-
-    methodDeclaration()
-        .methodSelector()
+    methodSelector()
         .keywordDeclarator()
         ?.forEach {
             result.add(Variable(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))

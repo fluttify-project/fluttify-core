@@ -3,7 +3,7 @@ package task.common
 import Configs
 import Jar
 import common.DART_FILE
-import common.extensions.toFile
+import common.extensions.file
 import org.apache.commons.io.FileUtils
 import task.Task
 import java.io.File
@@ -17,13 +17,13 @@ import java.io.File
  */
 class AddAndroidDependencyTask(private val outputProjectFile: File): Task<File, File>(outputProjectFile) {
     override fun process(): DART_FILE {
-        val libDir = "$outputProjectFile/android/libs".toFile()
-        val targetJarFile = "$libDir/${Jar.name}".toFile()
+        val libDir = "$outputProjectFile/android/libs/".file()
+        val targetJarFile = "$libDir/${Jar.name}".file()
 
         if (!libDir.exists()) libDir.mkdirs()
         if (!targetJarFile.exists()) targetJarFile.createNewFile()
 
-        FileUtils.copyFile(Configs.jarPath.toFile(), targetJarFile)
+        FileUtils.copyFile(Configs.jarFilePath.file(), targetJarFile)
 
         return outputProjectFile
     }

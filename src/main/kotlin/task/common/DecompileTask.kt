@@ -17,7 +17,7 @@ import java.io.InputStreamReader
 class DecompileTask(private val jarFile: File) : Task<File, File>(jarFile) {
     override fun process(): File {
         val artifactPath = "${Project.path}/build/decompiled"
-        val decompiledJarFileName = Configs.jarPath.substringAfterLast("/")
+        val decompiledJarFileName = Configs.jarFilePath.substringAfterLast("/")
         val decompiledJarFile = File("$artifactPath/$decompiledJarFileName")
 
         if (decompiledJarFile.exists()) {

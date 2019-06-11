@@ -1,4 +1,4 @@
-import common.extensions.toFile
+import common.extensions.file
 import common.model.ProjectSpec
 import io.reactivex.Observable
 import task.common.*
@@ -16,7 +16,7 @@ fun main() {
         // 拷贝jar依赖到目标工程
         .map { AddAndroidDependencyTask(it).process() }
         // 反编译Jar
-        .map { DecompileTask(File(Configs.jarPath)).process() }
+        .map { DecompileTask(File(Configs.jarFilePath)).process() }
         // 解压缩反编译Jar
         .map { UnzipTask(it).process() }
         // 清理空文件
@@ -30,14 +30,14 @@ fun main() {
         // 收成一个List, 避免下游的任务重复执行
         .toList()
         // 生成静态方法的dart method channel
-        .map { AndroidDartStaticMethodTask(Jar.Decompiled.mainClassPath.toFile()).process() }
+        .map { AndroidDartStaticMethodTask(Jar.Decompiled.mainClassFilePath.file()).process() }
         // 生成静态方法的kotlin method channel
-        .map { AndroidKotlinStaticMethodTask(Jar.Decompiled.mainClassPath.toFile()).process() }
+        .map { AndroidKotlinStaticMethodTask(Jar.Decompiled.mainClassFilePath.file()).process() }
         // 生成静态方法的dart method channel
-        .map { IOSDartStaticMethodTask(Framework.mainClassPath.toFile()).process() }
+        .map { IOSDartStaticMethodTask(Framework.mainClassFilePath.file()).process() }
         // 生成静态方法的swift method channel
-        .map { IOSSwiftStaticMethodTask(Framework.mainClassPath.toFile()).process() }
+        .map { IOSSwiftStaticMethodTask(Framework.mainClassFilePath.file()).process() }
         // 增加export
-        .map { ExportTask(OutputProject.dirPath.toFile()).process() }
+        .map { ExportTask(OutputProject.dirPath.file()).process() }
         .subscribe()
 }

@@ -1,12 +1,13 @@
 package task.common
 
-import common.extensions.isModel
+import common.extensions.isJavaModel
+import common.extensions.isObjcModel
 import org.apache.commons.io.FileUtils
 import task.Task
 import java.io.File
 
 /**
- * 过滤出所有的模型类
+ * 从java源文件中过滤出所有的模型类
  *
  * 输入: 待识别的文件夹[dir]
  * 输出: 识别成模型类的文件们
@@ -19,7 +20,7 @@ class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(
             .iterateFiles(dir, arrayOf("java"), true)
             .forEach {
                 val fileContent = it.readText()
-                if (fileContent.isModel()) {
+                if (fileContent.isJavaModel()) {
                     result.add(it)
                 }
             }
@@ -28,12 +29,23 @@ class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(
 }
 
 /**
- * 过滤出所有的模型类
+ * 从objc源文件中过滤出所有的模型类
  *
- * 输入为待识别的文件夹[dir], 输出为识别成模型类的文件们
+ * 输入: 待识别的文件夹[dir]
+ * 输出: 识别成模型类的文件们
+ * 依赖: []
  */
 class RecognizeIOSModelTask(private val dir: File) : Task<File, List<File>>(dir) {
     override fun process(): List<File> {
-        return listOf()
+        val result = mutableListOf<File>()
+        FileUtils
+            .iterateFiles(dir, arrayOf(".h"), true)
+            .forEach {
+                val fileContent = it.readText()
+                if (fileContent.isObjcModel()) {
+                    result.add(it)
+                }
+            }
+        return result
     }
 }

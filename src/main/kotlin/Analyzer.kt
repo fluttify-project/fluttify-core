@@ -1,6 +1,6 @@
 @file:Suppress("ClassName")
 
-import Configs.frameworkPath
+import Configs.frameworkDirPath
 import Configs.mainJavaClass
 import Configs.mainObjcClass
 import Configs.outputOrg
@@ -9,10 +9,12 @@ import Jar.Decompiled.mainClassSimpleName
 import Jar.`package`
 import Project.path
 import common.TYPE_NAME
-import common.extensions.toFile
-import common.extensions.typeInfo
+import common.extensions.file
+import common.extensions.javaTypeInfo
+import common.extensions.objcTypeInfo
 import common.extensions.underscore2Camel
 import common.model.JavaTypeInfo
+import common.model.ObjcTypeInfo
 import org.apache.commons.io.FileUtils
 import java.io.File
 
@@ -28,7 +30,7 @@ object Jar {
     /**
      * jar的文件名
      */
-    val name = Configs.jarPath.substringAfterLast("/")
+    val name = Configs.jarFilePath.substringAfterLast("/")
 
     /**
      * 反编译后的jar
@@ -37,22 +39,22 @@ object Jar {
         /**
          * Jar反编译后的源码根路径
          */
-        val rootPath = "$path/build/decompiled"
+        val rootDirPath = "$path/build/decompiled/"
 
         /**
          * 主java类的路径
          */
-        val mainClassPath = "$rootPath/${mainJavaClass.replace(".", "/")}.java"
+        val mainClassFilePath = "$rootDirPath/${mainJavaClass.replace(".", "/")}.java"
 
         /**
          * 主java类所在的包名
          */
 
         val `package` = mainJavaClass.substringBeforeLast(".")
+
         /**
          * 主java类的类名
          */
-
         val mainClassSimpleName = mainJavaClass.substringAfterLast(".")
 
         /**
@@ -63,9 +65,9 @@ object Jar {
         val classes: Map<TYPE_NAME, JavaTypeInfo> by lazy {
             val result = mutableMapOf<TYPE_NAME, JavaTypeInfo>()
             FileUtils
-                .iterateFiles(File(rootPath), arrayOf("java"), true)
+                .iterateFiles(File(rootDirPath), arrayOf("java"), true)
                 .forEach {
-                    val typeInfo = it.absolutePath.toFile().typeInfo()
+                    val typeInfo = it.absolutePath.file().javaTypeInfo()
                     result.putIfAbsent(typeInfo.simpleName, typeInfo)
                 }
             result
@@ -80,12 +82,34 @@ object Framework {
     /**
      * 主objc类的路径
      */
-    val mainClassPath: String = "$frameworkPath/Headers/$mainObjcClass.h"
+    val mainClassFilePath = "$frameworkDirPath/Headers/$mainObjcClass.h"
 
     /**
      * Framework的名字, 没有framework后缀
      */
-    val name = frameworkPath.substringAfterLast("/").substringBefore(".")
+    val name = frameworkDirPath.substringAfterLast("/").substringBefore(".")
+
+    /**
+     * framework中识别出来的objc模型类输出路径 因为objc的模型类可能多个模型类写在一个文件里,
+     * 在识别的时候把它们分散到单独的文件中去, 供下一步处理
+     */
+    val recoModelDirPath = "$path/build/objc-models/"
+
+    /**
+     * Framework内所有类的信息, key为class simple name, value为对应类的信息
+     *
+     * 遍历Headers内的所有类文件
+     */
+    val classes: Map<TYPE_NAME, ObjcTypeInfo> by lazy {
+        val result = mutableMapOf<TYPE_NAME, ObjcTypeInfo>()
+        FileUtils
+            .iterateFiles(File(frameworkDirPath), arrayOf("h"), true)
+            .forEach {
+                val typeInfo = it.absolutePath.file().objcTypeInfo()
+                result.putIfAbsent(typeInfo.name, typeInfo)
+            }
+        result
+    }
 }
 
 /**
@@ -115,7 +139,7 @@ object OutputProject {
     /**
      * 输出工程路径
      */
-    val dirPath = "$path/build/output-project/$outputProjectName"
+    val dirPath = "$path/build/output-project/$outputProjectName/"
 
     /**
      * 输出项目的dart文件相关信息
@@ -124,27 +148,27 @@ object OutputProject {
         /**
          * 生成工程的lib路径
          */
-        val libDirPath = "$path/build/output-project/$outputProjectName/lib"
+        val libDirPath = "$path/build/output-project/$outputProjectName/lib/"
 
         /**
          * 生成工程的Android端Dart文件路径
          */
-        val dartAndroidDirPath = "$libDirPath/src/android"
+        val dartAndroidDirPath = "$libDirPath/src/android/"
 
         /**
          * 生成工程的Android端Dart模型文件路径
          */
-        val dartAndroidModelDirPath = "$libDirPath/src/android/model"
+        val dartAndroidModelDirPath = "$libDirPath/src/android/model/"
 
         /**
          * 生成工程的iOS端Dart文件路径
          */
-        val dartIOSDirPath = "$libDirPath/src/ios"
+        val dartIOSDirPath = "$libDirPath/src/ios/"
 
         /**
          * 生成工程的iOS端Dart模型文件路径
          */
-        val dartIOSModelDirPath = "$libDirPath/src/ios/model"
+        val dartIOSModelDirPath = "$libDirPath/src/ios/model/"
     }
 
     /**
@@ -163,7 +187,7 @@ object OutputProject {
         /**
          * 生成工程的Android端Jar路径
          */
-        val jarDirPath = "$path/build/output-project/$outputProjectName/android/libs"
+        val jarDirPath = "$path/build/output-project/$outputProjectName/android/libs/"
     }
 
     /**
@@ -179,6 +203,6 @@ object OutputProject {
         /**
          * 生成工程的iOS端Framework路径
          */
-        val frameworkDirPath = "$path/build/output-project/$outputProjectName/ios"
+        val frameworkDirPath = "$path/build/output-project/$outputProjectName/ios/"
     }
 }

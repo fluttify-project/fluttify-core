@@ -1,6 +1,6 @@
 package task.common
 
-import common.extensions.toFile
+import common.extensions.file
 import org.junit.Test
 
 class AddAndroidDependencyTaskTest {
@@ -8,6 +8,6 @@ class AddAndroidDependencyTaskTest {
     @Test
     fun process() {
         val path = "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/tbitble_flutter"
-        AddAndroidDependencyTask(path.toFile()).process()
+        AddAndroidDependencyTask(path.file()).process()
     }
 }

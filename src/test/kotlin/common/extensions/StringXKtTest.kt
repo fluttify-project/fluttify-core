@@ -40,4 +40,10 @@ class StringXKtTest {
     fun replaceBatch() {
         Assert.assertTrue("{1, 2, 3}".replaceBatch("{", "}", "[", "]") == "[1, 2, 3]")
     }
+
+    @Test
+    fun toFile() {
+
+        Assert.assertTrue("{1, 2, 3}".replaceBatch("{", "}", "[", "]") == "[1, 2, 3]")
+    }
 }

@@ -17,10 +17,11 @@ import parser.objc.ObjectiveCLexer
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 
+//region Java源码扩展
 /**
  * java源码判断是否是模型类
  */
-fun JAVA_SOURCE.isModel(): Boolean {
+fun JAVA_SOURCE.isJavaModel(): Boolean {
     var isAbstract = false
     var isSubclass = false
     var hasDependency = false
@@ -53,7 +54,7 @@ fun JAVA_SOURCE.isModel(): Boolean {
             field?.run {
                 fieldJsonable.add(
                     if (!field.jsonable()) {
-                        field.type()?.isModelType() ?: false
+                        field.type()?.isJavaModelType() ?: false
                     } else {
                         // 静态属性不作为model的字段
                         !field.isStatic()
@@ -81,7 +82,9 @@ fun JAVA_SOURCE.walkTree(listener: JavaParserBaseListener) {
 
     walker.walk(listener, tree)
 }
+//endregion
 
+//region Objc源码扩展
 /**
  * Objc源码遍历
  */
@@ -95,6 +98,64 @@ fun OBJC_SOURCE.walkTree(listener: ObjectiveCParserBaseListener) {
 }
 
 /**
+ * objc源码判断是否是模型类
+ * TODO 2019.6.11
+ */
+fun OBJC_SOURCE.isObjcModel(): Boolean {
+    var isAbstract = false
+    var isSubclass = false
+    var hasDependency = false
+    val fieldJsonable: MutableList<Boolean> = mutableListOf()
+
+    walkTree(object : ObjectiveCParserBaseListener() {
+        override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext?) {
+            // 如果是接口, 那么就不是model
+            ctx?.run { isAbstract = true }
+        }
+
+        override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
+            ctx?.run {
+                // 如果类有继承, 暂时认为不是model
+                isSubclass = ctx.isSubclass()
+            }
+        }
+
+        override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
+            ctx?.run {
+                // 如果类中含有init方法, 那么就认为含有依赖
+                if (ctx.name()?.contains("init") == true) {
+                    hasDependency = true
+                }
+            }
+        }
+
+        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext?) {
+            ctx?.run {
+                fieldJsonable.add(
+                    if (!ctx.jsonable()) {
+                        ctx.type()?.isObjcModelType() ?: false
+                    } else {
+                        // 静态属性不作为model的字段
+                        !ctx.isStatic()
+                    }
+                )
+            }
+        }
+    })
+
+    return if (isAbstract
+        || isSubclass
+        || hasDependency
+        || fieldJsonable.isEmpty()
+    )
+        false
+    else
+        fieldJsonable.all { it }
+}
+//endregion
+
+//region Dart源码扩展
+/**
  * Dart源码遍历
  */
 fun DART_SOURCE.walkTree(listener: Dart2BaseListener) {
@@ -105,3 +166,4 @@ fun DART_SOURCE.walkTree(listener: Dart2BaseListener) {
 
     walker.walk(listener, tree)
 }
+//endregion

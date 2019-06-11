@@ -2,7 +2,7 @@ package task.common
 
 import Configs
 import common.DART_FILE
-import common.extensions.toFile
+import common.extensions.file
 import org.apache.commons.io.FileUtils
 import task.Task
 import task.statik.AndroidDartStaticMethodTask
@@ -18,8 +18,8 @@ import task.statik.IOSDartStaticMethodTask
  */
 class ExportTask(private val outputProjectDir: DART_FILE) : Task<DART_FILE, DART_FILE>(outputProjectDir) {
     override fun process(): DART_FILE {
-        val dartSrcDir = "${outputProjectDir.absolutePath}/lib/src".toFile()
-        val exportFile = "${outputProjectDir.absolutePath}/lib/${Configs.outputProjectName}.dart".toFile()
+        val dartSrcDir = "${outputProjectDir.absolutePath}/lib/src/".file()
+        val exportFile = "${outputProjectDir.absolutePath}/lib/${Configs.outputProjectName}.dart".file()
 
         val existContent = exportFile.readText()
         val result = StringBuilder()

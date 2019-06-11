@@ -2,7 +2,7 @@ package task.common
 
 import Project
 import common.PATH
-import common.extensions.toFile
+import common.extensions.file
 import common.model.ProjectSpec
 import task.Task
 import java.io.BufferedReader
@@ -26,6 +26,6 @@ class OutputProjectTask(private val spec: ProjectSpec) : Task<ProjectSpec, File>
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
 
-        return outputProjectPath.toFile()
+        return outputProjectPath.file()
     }
 }
