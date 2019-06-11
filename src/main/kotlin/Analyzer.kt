@@ -93,7 +93,7 @@ object Framework {
      * framework中的所有类都单独放一个文件 因为objc的模型类可能多个模型类写在一个文件里,
      * 在识别的时候把它们分散到单独的文件中去, 供下一步处理
      */
-    val singleClassDirPath = "$path/build/objc-models/"
+    val singleClassDirPath = "$path/build/objc-classes/"
 
     /**
      * Framework内所有类的信息, key为class simple name, value为对应类的信息
