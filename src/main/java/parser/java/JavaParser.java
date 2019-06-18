@@ -1,16 +1,13 @@
 package parser.java;
 // Generated from JavaParser.g4 by ANTLR 4.7.2
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.ATN;
-import org.antlr.v4.runtime.atn.ATNDeserializer;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
-import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class JavaParser extends Parser {
@@ -5528,12 +5525,147 @@ public class JavaParser extends Parser {
 	}
 
 	public static class StatementContext extends ParserRuleContext {
-		public BlockContext blockLabel;
-		public ExpressionContext statementExpression;
-		public Token identifierLabel;
+		public StatementContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_statement; }
+	 
+		public StatementContext() { }
+		public void copyFrom(StatementContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class StmtCase5Context extends StatementContext {
+		public TerminalNode DO() { return getToken(JavaParser.DO, 0); }
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
+		}
+		public TerminalNode WHILE() { return getToken(JavaParser.WHILE, 0); }
+		public ParExpressionContext parExpression() {
+			return getRuleContext(ParExpressionContext.class,0);
+		}
+		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
+		public StmtCase5Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase5(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase5(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase5(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase4Context extends StatementContext {
+		public TerminalNode WHILE() { return getToken(JavaParser.WHILE, 0); }
+		public ParExpressionContext parExpression() {
+			return getRuleContext(ParExpressionContext.class,0);
+		}
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
+		}
+		public StmtCase4Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase4(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase4(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase4(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase7Context extends StatementContext {
+		public TerminalNode TRY() { return getToken(JavaParser.TRY, 0); }
+		public ResourceSpecificationContext resourceSpecification() {
+			return getRuleContext(ResourceSpecificationContext.class,0);
+		}
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
+		public List<CatchClauseContext> catchClause() {
+			return getRuleContexts(CatchClauseContext.class);
+		}
+		public CatchClauseContext catchClause(int i) {
+			return getRuleContext(CatchClauseContext.class,i);
+		}
+		public FinallyBlockContext finallyBlock() {
+			return getRuleContext(FinallyBlockContext.class,0);
+		}
+		public StmtCase7Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase7(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase7(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase7(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase6Context extends StatementContext {
+		public TerminalNode TRY() { return getToken(JavaParser.TRY, 0); }
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
+		}
+		public FinallyBlockContext finallyBlock() {
+			return getRuleContext(FinallyBlockContext.class,0);
+		}
+		public List<CatchClauseContext> catchClause() {
+			return getRuleContexts(CatchClauseContext.class);
+		}
+		public CatchClauseContext catchClause(int i) {
+			return getRuleContext(CatchClauseContext.class,i);
+		}
+		public StmtCase6Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase6(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase6(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase6(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase10Context extends StatementContext {
+		public TerminalNode RETURN() { return getToken(JavaParser.RETURN, 0); }
+		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public StmtCase10Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase10(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase10(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase10(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase1Context extends StatementContext {
 		public TerminalNode ASSERT() { return getToken(JavaParser.ASSERT, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -5543,6 +5675,67 @@ public class JavaParser extends Parser {
 		}
 		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
 		public TerminalNode COLON() { return getToken(JavaParser.COLON, 0); }
+		public StmtCase1Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase1(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase1(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase1(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase0Context extends StatementContext {
+		public BlockContext blockLabel;
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
+		}
+		public StmtCase0Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase0(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase0(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase0(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase3Context extends StatementContext {
+		public TerminalNode FOR() { return getToken(JavaParser.FOR, 0); }
+		public TerminalNode LPAREN() { return getToken(JavaParser.LPAREN, 0); }
+		public ForControlContext forControl() {
+			return getRuleContext(ForControlContext.class,0);
+		}
+		public TerminalNode RPAREN() { return getToken(JavaParser.RPAREN, 0); }
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
+		}
+		public StmtCase3Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase3(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase3(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase3(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase2Context extends StatementContext {
 		public TerminalNode IF() { return getToken(JavaParser.IF, 0); }
 		public ParExpressionContext parExpression() {
 			return getRuleContext(ParExpressionContext.class,0);
@@ -5554,28 +5747,168 @@ public class JavaParser extends Parser {
 			return getRuleContext(StatementContext.class,i);
 		}
 		public TerminalNode ELSE() { return getToken(JavaParser.ELSE, 0); }
-		public TerminalNode FOR() { return getToken(JavaParser.FOR, 0); }
-		public TerminalNode LPAREN() { return getToken(JavaParser.LPAREN, 0); }
-		public ForControlContext forControl() {
-			return getRuleContext(ForControlContext.class,0);
+		public StmtCase2Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase2(this);
 		}
-		public TerminalNode RPAREN() { return getToken(JavaParser.RPAREN, 0); }
-		public TerminalNode WHILE() { return getToken(JavaParser.WHILE, 0); }
-		public TerminalNode DO() { return getToken(JavaParser.DO, 0); }
-		public TerminalNode TRY() { return getToken(JavaParser.TRY, 0); }
-		public FinallyBlockContext finallyBlock() {
-			return getRuleContext(FinallyBlockContext.class,0);
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase2(this);
 		}
-		public List<CatchClauseContext> catchClause() {
-			return getRuleContexts(CatchClauseContext.class);
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase2(this);
+			else return visitor.visitChildren(this);
 		}
-		public CatchClauseContext catchClause(int i) {
-			return getRuleContext(CatchClauseContext.class,i);
+	}
+	public static class StmtCase15Context extends StatementContext {
+		public ExpressionContext statementExpression;
+		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
-		public ResourceSpecificationContext resourceSpecification() {
-			return getRuleContext(ResourceSpecificationContext.class,0);
+		public StmtCase15Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase15(this);
 		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase15(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase15(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase16Context extends StatementContext {
+		public Token identifierLabel;
+		public TerminalNode COLON() { return getToken(JavaParser.COLON, 0); }
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
+		}
+		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
+		public StmtCase16Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase16(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase16(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase16(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase11Context extends StatementContext {
+		public TerminalNode THROW() { return getToken(JavaParser.THROW, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
+		public StmtCase11Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase11(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase11(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase11(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase12Context extends StatementContext {
+		public TerminalNode BREAK() { return getToken(JavaParser.BREAK, 0); }
+		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
+		public StmtCase12Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase12(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase12(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase12(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase13Context extends StatementContext {
+		public TerminalNode CONTINUE() { return getToken(JavaParser.CONTINUE, 0); }
+		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
+		public StmtCase13Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase13(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase13(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase13(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase14Context extends StatementContext {
+		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
+		public StmtCase14Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase14(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase14(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase14(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase9Context extends StatementContext {
+		public TerminalNode SYNCHRONIZED() { return getToken(JavaParser.SYNCHRONIZED, 0); }
+		public ParExpressionContext parExpression() {
+			return getRuleContext(ParExpressionContext.class,0);
+		}
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
+		}
+		public StmtCase9Context(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase9(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase9(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase9(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class StmtCase8Context extends StatementContext {
 		public TerminalNode SWITCH() { return getToken(JavaParser.SWITCH, 0); }
+		public ParExpressionContext parExpression() {
+			return getRuleContext(ParExpressionContext.class,0);
+		}
 		public TerminalNode LBRACE() { return getToken(JavaParser.LBRACE, 0); }
 		public TerminalNode RBRACE() { return getToken(JavaParser.RBRACE, 0); }
 		public List<SwitchBlockStatementGroupContext> switchBlockStatementGroup() {
@@ -5590,27 +5923,18 @@ public class JavaParser extends Parser {
 		public SwitchLabelContext switchLabel(int i) {
 			return getRuleContext(SwitchLabelContext.class,i);
 		}
-		public TerminalNode SYNCHRONIZED() { return getToken(JavaParser.SYNCHRONIZED, 0); }
-		public TerminalNode RETURN() { return getToken(JavaParser.RETURN, 0); }
-		public TerminalNode THROW() { return getToken(JavaParser.THROW, 0); }
-		public TerminalNode BREAK() { return getToken(JavaParser.BREAK, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
-		public TerminalNode CONTINUE() { return getToken(JavaParser.CONTINUE, 0); }
-		public StatementContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_statement; }
+		public StmtCase8Context(StatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStatement(this);
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterStmtCase8(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStatement(this);
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase8(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStatement(this);
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase8(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -5625,13 +5949,15 @@ public class JavaParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,108,_ctx) ) {
 			case 1:
+				_localctx = new StmtCase0Context(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(827);
-				((StatementContext)_localctx).blockLabel = block();
+				((StmtCase0Context)_localctx).blockLabel = block();
 				}
 				break;
 			case 2:
+				_localctx = new StmtCase1Context(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(828);
@@ -5655,6 +5981,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new StmtCase2Context(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(836);
@@ -5678,6 +6005,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 4:
+				_localctx = new StmtCase3Context(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(843);
@@ -5693,6 +6021,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 5:
+				_localctx = new StmtCase4Context(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(849);
@@ -5704,6 +6033,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 6:
+				_localctx = new StmtCase5Context(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(853);
@@ -5719,6 +6049,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 7:
+				_localctx = new StmtCase6Context(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(859);
@@ -5768,6 +6099,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 8:
+				_localctx = new StmtCase7Context(_localctx);
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(872);
@@ -5803,6 +6135,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 9:
+				_localctx = new StmtCase8Context(_localctx);
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(884);
@@ -5846,6 +6179,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 10:
+				_localctx = new StmtCase9Context(_localctx);
 				enterOuterAlt(_localctx, 10);
 				{
 				setState(901);
@@ -5857,6 +6191,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 11:
+				_localctx = new StmtCase10Context(_localctx);
 				enterOuterAlt(_localctx, 11);
 				{
 				setState(905);
@@ -5876,6 +6211,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 12:
+				_localctx = new StmtCase11Context(_localctx);
 				enterOuterAlt(_localctx, 12);
 				{
 				setState(910);
@@ -5887,6 +6223,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 13:
+				_localctx = new StmtCase12Context(_localctx);
 				enterOuterAlt(_localctx, 13);
 				{
 				setState(914);
@@ -5906,6 +6243,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 14:
+				_localctx = new StmtCase13Context(_localctx);
 				enterOuterAlt(_localctx, 14);
 				{
 				setState(919);
@@ -5925,6 +6263,7 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 15:
+				_localctx = new StmtCase14Context(_localctx);
 				enterOuterAlt(_localctx, 15);
 				{
 				setState(924);
@@ -5932,19 +6271,21 @@ public class JavaParser extends Parser {
 				}
 				break;
 			case 16:
+				_localctx = new StmtCase15Context(_localctx);
 				enterOuterAlt(_localctx, 16);
 				{
 				setState(925);
-				((StatementContext)_localctx).statementExpression = expression(0);
+				((StmtCase15Context)_localctx).statementExpression = expression(0);
 				setState(926);
 				match(SEMI);
 				}
 				break;
 			case 17:
+				_localctx = new StmtCase16Context(_localctx);
 				enterOuterAlt(_localctx, 17);
 				{
 				setState(928);
-				((StatementContext)_localctx).identifierLabel = match(IDENTIFIER);
+				((StmtCase16Context)_localctx).identifierLabel = match(IDENTIFIER);
 				setState(929);
 				match(COLON);
 				setState(930);
@@ -7013,50 +7354,168 @@ public class JavaParser extends Parser {
 	}
 
 	public static class ExpressionContext extends ParserRuleContext {
-		public Token prefix;
+		public ExpressionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expression; }
+	 
+		public ExpressionContext() { }
+		public void copyFrom(ExpressionContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class ExprCase15Context extends ExpressionContext {
 		public Token bop;
-		public Token postfix;
-		public PrimaryContext primary() {
-			return getRuleContext(PrimaryContext.class,0);
-		}
-		public MethodCallContext methodCall() {
-			return getRuleContext(MethodCallContext.class,0);
-		}
-		public TerminalNode NEW() { return getToken(JavaParser.NEW, 0); }
-		public CreatorContext creator() {
-			return getRuleContext(CreatorContext.class,0);
-		}
-		public TerminalNode LPAREN() { return getToken(JavaParser.LPAREN, 0); }
-		public TypeTypeContext typeType() {
-			return getRuleContext(TypeTypeContext.class,0);
-		}
-		public TerminalNode RPAREN() { return getToken(JavaParser.RPAREN, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public TerminalNode ADD() { return getToken(JavaParser.ADD, 0); }
-		public TerminalNode SUB() { return getToken(JavaParser.SUB, 0); }
-		public TerminalNode INC() { return getToken(JavaParser.INC, 0); }
-		public TerminalNode DEC() { return getToken(JavaParser.DEC, 0); }
-		public TerminalNode TILDE() { return getToken(JavaParser.TILDE, 0); }
-		public TerminalNode BANG() { return getToken(JavaParser.BANG, 0); }
-		public LambdaExpressionContext lambdaExpression() {
-			return getRuleContext(LambdaExpressionContext.class,0);
+		public TerminalNode BITAND() { return getToken(JavaParser.BITAND, 0); }
+		public ExprCase15Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase15(this);
 		}
-		public TerminalNode COLONCOLON() { return getToken(JavaParser.COLONCOLON, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
-		public TypeArgumentsContext typeArguments() {
-			return getRuleContext(TypeArgumentsContext.class,0);
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase15(this);
 		}
-		public ClassTypeContext classType() {
-			return getRuleContext(ClassTypeContext.class,0);
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase15(this);
+			else return visitor.visitChildren(this);
 		}
-		public TerminalNode MUL() { return getToken(JavaParser.MUL, 0); }
-		public TerminalNode DIV() { return getToken(JavaParser.DIV, 0); }
-		public TerminalNode MOD() { return getToken(JavaParser.MOD, 0); }
+	}
+	public static class ExprCase14Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode EQUAL() { return getToken(JavaParser.EQUAL, 0); }
+		public TerminalNode NOTEQUAL() { return getToken(JavaParser.NOTEQUAL, 0); }
+		public ExprCase14Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase14(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase14(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase14(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase17Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode BITOR() { return getToken(JavaParser.BITOR, 0); }
+		public ExprCase17Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase17(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase17(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase17(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase16Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode CARET() { return getToken(JavaParser.CARET, 0); }
+		public ExprCase16Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase16(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase16(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase16(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase19Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode OR() { return getToken(JavaParser.OR, 0); }
+		public ExprCase19Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase19(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase19(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase19(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase18Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode AND() { return getToken(JavaParser.AND, 0); }
+		public ExprCase18Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase18(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase18(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase18(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase11Context extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
 		public List<TerminalNode> LT() { return getTokens(JavaParser.LT); }
 		public TerminalNode LT(int i) {
 			return getToken(JavaParser.LT, i);
@@ -7065,31 +7524,133 @@ public class JavaParser extends Parser {
 		public TerminalNode GT(int i) {
 			return getToken(JavaParser.GT, i);
 		}
+		public ExprCase11Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase11(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase11(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase11(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase10Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode ADD() { return getToken(JavaParser.ADD, 0); }
+		public TerminalNode SUB() { return getToken(JavaParser.SUB, 0); }
+		public ExprCase10Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase10(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase10(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase10(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase13Context extends ExpressionContext {
+		public Token bop;
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TypeTypeContext typeType() {
+			return getRuleContext(TypeTypeContext.class,0);
+		}
+		public TerminalNode INSTANCEOF() { return getToken(JavaParser.INSTANCEOF, 0); }
+		public ExprCase13Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase13(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase13(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase13(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase12Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
 		public TerminalNode LE() { return getToken(JavaParser.LE, 0); }
 		public TerminalNode GE() { return getToken(JavaParser.GE, 0); }
-		public TerminalNode EQUAL() { return getToken(JavaParser.EQUAL, 0); }
-		public TerminalNode NOTEQUAL() { return getToken(JavaParser.NOTEQUAL, 0); }
-		public TerminalNode BITAND() { return getToken(JavaParser.BITAND, 0); }
-		public TerminalNode CARET() { return getToken(JavaParser.CARET, 0); }
-		public TerminalNode BITOR() { return getToken(JavaParser.BITOR, 0); }
-		public TerminalNode AND() { return getToken(JavaParser.AND, 0); }
-		public TerminalNode OR() { return getToken(JavaParser.OR, 0); }
-		public TerminalNode COLON() { return getToken(JavaParser.COLON, 0); }
-		public TerminalNode QUESTION() { return getToken(JavaParser.QUESTION, 0); }
-		public TerminalNode ASSIGN() { return getToken(JavaParser.ASSIGN, 0); }
-		public TerminalNode ADD_ASSIGN() { return getToken(JavaParser.ADD_ASSIGN, 0); }
-		public TerminalNode SUB_ASSIGN() { return getToken(JavaParser.SUB_ASSIGN, 0); }
-		public TerminalNode MUL_ASSIGN() { return getToken(JavaParser.MUL_ASSIGN, 0); }
-		public TerminalNode DIV_ASSIGN() { return getToken(JavaParser.DIV_ASSIGN, 0); }
-		public TerminalNode AND_ASSIGN() { return getToken(JavaParser.AND_ASSIGN, 0); }
-		public TerminalNode OR_ASSIGN() { return getToken(JavaParser.OR_ASSIGN, 0); }
-		public TerminalNode XOR_ASSIGN() { return getToken(JavaParser.XOR_ASSIGN, 0); }
-		public TerminalNode RSHIFT_ASSIGN() { return getToken(JavaParser.RSHIFT_ASSIGN, 0); }
-		public TerminalNode URSHIFT_ASSIGN() { return getToken(JavaParser.URSHIFT_ASSIGN, 0); }
-		public TerminalNode LSHIFT_ASSIGN() { return getToken(JavaParser.LSHIFT_ASSIGN, 0); }
-		public TerminalNode MOD_ASSIGN() { return getToken(JavaParser.MOD_ASSIGN, 0); }
+		public TerminalNode GT() { return getToken(JavaParser.GT, 0); }
+		public TerminalNode LT() { return getToken(JavaParser.LT, 0); }
+		public ExprCase12Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase12(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase12(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase12(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase2Context extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode LBRACK() { return getToken(JavaParser.LBRACK, 0); }
+		public TerminalNode RBRACK() { return getToken(JavaParser.RBRACK, 0); }
+		public ExprCase2Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase2(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase2(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase2(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase1Context extends ExpressionContext {
+		public Token bop;
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
 		public TerminalNode DOT() { return getToken(JavaParser.DOT, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
+		public MethodCallContext methodCall() {
+			return getRuleContext(MethodCallContext.class,0);
+		}
 		public TerminalNode THIS() { return getToken(JavaParser.THIS, 0); }
+		public TerminalNode NEW() { return getToken(JavaParser.NEW, 0); }
 		public InnerCreatorContext innerCreator() {
 			return getRuleContext(InnerCreatorContext.class,0);
 		}
@@ -7103,24 +7664,346 @@ public class JavaParser extends Parser {
 		public NonWildcardTypeArgumentsContext nonWildcardTypeArguments() {
 			return getRuleContext(NonWildcardTypeArgumentsContext.class,0);
 		}
-		public TerminalNode LBRACK() { return getToken(JavaParser.LBRACK, 0); }
-		public TerminalNode RBRACK() { return getToken(JavaParser.RBRACK, 0); }
-		public TerminalNode INSTANCEOF() { return getToken(JavaParser.INSTANCEOF, 0); }
-		public ExpressionContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_expression; }
+		public ExprCase1Context(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExpression(this);
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase1(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExpression(this);
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase1(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExpression(this);
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase1(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase4Context extends ExpressionContext {
+		public TerminalNode NEW() { return getToken(JavaParser.NEW, 0); }
+		public CreatorContext creator() {
+			return getRuleContext(CreatorContext.class,0);
+		}
+		public ExprCase4Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase4(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase4(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase4(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase3Context extends ExpressionContext {
+		public MethodCallContext methodCall() {
+			return getRuleContext(MethodCallContext.class,0);
+		}
+		public ExprCase3Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase3(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase3(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase3(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase0Context extends ExpressionContext {
+		public PrimaryContext primary() {
+			return getRuleContext(PrimaryContext.class,0);
+		}
+		public ExprCase0Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase0(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase0(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase0(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase25Context extends ExpressionContext {
+		public ClassTypeContext classType() {
+			return getRuleContext(ClassTypeContext.class,0);
+		}
+		public TerminalNode COLONCOLON() { return getToken(JavaParser.COLONCOLON, 0); }
+		public TerminalNode NEW() { return getToken(JavaParser.NEW, 0); }
+		public TypeArgumentsContext typeArguments() {
+			return getRuleContext(TypeArgumentsContext.class,0);
+		}
+		public ExprCase25Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase25(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase25(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase25(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase9Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode MUL() { return getToken(JavaParser.MUL, 0); }
+		public TerminalNode DIV() { return getToken(JavaParser.DIV, 0); }
+		public TerminalNode MOD() { return getToken(JavaParser.MOD, 0); }
+		public ExprCase9Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase9(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase9(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase9(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase20Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode COLON() { return getToken(JavaParser.COLON, 0); }
+		public TerminalNode QUESTION() { return getToken(JavaParser.QUESTION, 0); }
+		public ExprCase20Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase20(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase20(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase20(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase22Context extends ExpressionContext {
+		public LambdaExpressionContext lambdaExpression() {
+			return getRuleContext(LambdaExpressionContext.class,0);
+		}
+		public ExprCase22Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase22(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase22(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase22(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase6Context extends ExpressionContext {
+		public Token postfix;
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode INC() { return getToken(JavaParser.INC, 0); }
+		public TerminalNode DEC() { return getToken(JavaParser.DEC, 0); }
+		public ExprCase6Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase6(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase6(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase6(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase5Context extends ExpressionContext {
+		public TerminalNode LPAREN() { return getToken(JavaParser.LPAREN, 0); }
+		public TypeTypeContext typeType() {
+			return getRuleContext(TypeTypeContext.class,0);
+		}
+		public TerminalNode RPAREN() { return getToken(JavaParser.RPAREN, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public ExprCase5Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase5(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase5(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase5(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase21Context extends ExpressionContext {
+		public Token bop;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode ASSIGN() { return getToken(JavaParser.ASSIGN, 0); }
+		public TerminalNode ADD_ASSIGN() { return getToken(JavaParser.ADD_ASSIGN, 0); }
+		public TerminalNode SUB_ASSIGN() { return getToken(JavaParser.SUB_ASSIGN, 0); }
+		public TerminalNode MUL_ASSIGN() { return getToken(JavaParser.MUL_ASSIGN, 0); }
+		public TerminalNode DIV_ASSIGN() { return getToken(JavaParser.DIV_ASSIGN, 0); }
+		public TerminalNode AND_ASSIGN() { return getToken(JavaParser.AND_ASSIGN, 0); }
+		public TerminalNode OR_ASSIGN() { return getToken(JavaParser.OR_ASSIGN, 0); }
+		public TerminalNode XOR_ASSIGN() { return getToken(JavaParser.XOR_ASSIGN, 0); }
+		public TerminalNode RSHIFT_ASSIGN() { return getToken(JavaParser.RSHIFT_ASSIGN, 0); }
+		public TerminalNode URSHIFT_ASSIGN() { return getToken(JavaParser.URSHIFT_ASSIGN, 0); }
+		public TerminalNode LSHIFT_ASSIGN() { return getToken(JavaParser.LSHIFT_ASSIGN, 0); }
+		public TerminalNode MOD_ASSIGN() { return getToken(JavaParser.MOD_ASSIGN, 0); }
+		public ExprCase21Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase21(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase21(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase21(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase8Context extends ExpressionContext {
+		public Token prefix;
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode TILDE() { return getToken(JavaParser.TILDE, 0); }
+		public TerminalNode BANG() { return getToken(JavaParser.BANG, 0); }
+		public ExprCase8Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase8(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase8(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase8(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase24Context extends ExpressionContext {
+		public TypeTypeContext typeType() {
+			return getRuleContext(TypeTypeContext.class,0);
+		}
+		public TerminalNode COLONCOLON() { return getToken(JavaParser.COLONCOLON, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
+		public TerminalNode NEW() { return getToken(JavaParser.NEW, 0); }
+		public TypeArgumentsContext typeArguments() {
+			return getRuleContext(TypeArgumentsContext.class,0);
+		}
+		public ExprCase24Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase24(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase24(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase24(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase7Context extends ExpressionContext {
+		public Token prefix;
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode ADD() { return getToken(JavaParser.ADD, 0); }
+		public TerminalNode SUB() { return getToken(JavaParser.SUB, 0); }
+		public TerminalNode INC() { return getToken(JavaParser.INC, 0); }
+		public TerminalNode DEC() { return getToken(JavaParser.DEC, 0); }
+		public ExprCase7Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase7(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase7(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase7(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ExprCase23Context extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode COLONCOLON() { return getToken(JavaParser.COLONCOLON, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(JavaParser.IDENTIFIER, 0); }
+		public TypeArgumentsContext typeArguments() {
+			return getRuleContext(TypeArgumentsContext.class,0);
+		}
+		public ExprCase23Context(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).enterExprCase23(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase23(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase23(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -7146,18 +8029,28 @@ public class JavaParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,132,_ctx) ) {
 			case 1:
 				{
+				_localctx = new ExprCase0Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+
 				setState(1065);
 				primary();
 				}
 				break;
 			case 2:
 				{
+				_localctx = new ExprCase3Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1066);
 				methodCall();
 				}
 				break;
 			case 3:
 				{
+				_localctx = new ExprCase4Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1067);
 				match(NEW);
 				setState(1068);
@@ -7166,6 +8059,9 @@ public class JavaParser extends Parser {
 				break;
 			case 4:
 				{
+				_localctx = new ExprCase5Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1069);
 				match(LPAREN);
 				setState(1070);
@@ -7178,11 +8074,14 @@ public class JavaParser extends Parser {
 				break;
 			case 5:
 				{
+				_localctx = new ExprCase7Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1074);
-				((ExpressionContext)_localctx).prefix = _input.LT(1);
+				((ExprCase7Context)_localctx).prefix = _input.LT(1);
 				_la = _input.LA(1);
 				if ( !(((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & ((1L << (INC - 83)) | (1L << (DEC - 83)) | (1L << (ADD - 83)) | (1L << (SUB - 83)))) != 0)) ) {
-					((ExpressionContext)_localctx).prefix = (Token)_errHandler.recoverInline(this);
+					((ExprCase7Context)_localctx).prefix = (Token)_errHandler.recoverInline(this);
 				}
 				else {
 					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7195,11 +8094,14 @@ public class JavaParser extends Parser {
 				break;
 			case 6:
 				{
+				_localctx = new ExprCase8Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1076);
-				((ExpressionContext)_localctx).prefix = _input.LT(1);
+				((ExprCase8Context)_localctx).prefix = _input.LT(1);
 				_la = _input.LA(1);
 				if ( !(_la==BANG || _la==TILDE) ) {
-					((ExpressionContext)_localctx).prefix = (Token)_errHandler.recoverInline(this);
+					((ExprCase8Context)_localctx).prefix = (Token)_errHandler.recoverInline(this);
 				}
 				else {
 					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7212,12 +8114,18 @@ public class JavaParser extends Parser {
 				break;
 			case 7:
 				{
+				_localctx = new ExprCase22Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1078);
 				lambdaExpression();
 				}
 				break;
 			case 8:
 				{
+				_localctx = new ExprCase24Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1079);
 				typeType();
 				setState(1080);
@@ -7255,6 +8163,9 @@ public class JavaParser extends Parser {
 				break;
 			case 9:
 				{
+				_localctx = new ExprCase25Context(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(1088);
 				classType();
 				setState(1089);
@@ -7288,15 +8199,15 @@ public class JavaParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,137,_ctx) ) {
 					case 1:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase9Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1097);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
 						setState(1098);
-						((ExpressionContext)_localctx).bop = _input.LT(1);
+						((ExprCase9Context)_localctx).bop = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(((((_la - 87)) & ~0x3f) == 0 && ((1L << (_la - 87)) & ((1L << (MUL - 87)) | (1L << (DIV - 87)) | (1L << (MOD - 87)))) != 0)) ) {
-							((ExpressionContext)_localctx).bop = (Token)_errHandler.recoverInline(this);
+							((ExprCase9Context)_localctx).bop = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7309,15 +8220,15 @@ public class JavaParser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase10Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1100);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
 						setState(1101);
-						((ExpressionContext)_localctx).bop = _input.LT(1);
+						((ExprCase10Context)_localctx).bop = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==ADD || _la==SUB) ) {
-							((ExpressionContext)_localctx).bop = (Token)_errHandler.recoverInline(this);
+							((ExprCase10Context)_localctx).bop = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7330,7 +8241,7 @@ public class JavaParser extends Parser {
 						break;
 					case 3:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase11Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1103);
 						if (!(precpred(_ctx, 15))) throw new FailedPredicateException(this, "precpred(_ctx, 15)");
@@ -7370,15 +8281,15 @@ public class JavaParser extends Parser {
 						break;
 					case 4:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase12Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1114);
 						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
 						setState(1115);
-						((ExpressionContext)_localctx).bop = _input.LT(1);
+						((ExprCase12Context)_localctx).bop = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(((((_la - 71)) & ~0x3f) == 0 && ((1L << (_la - 71)) & ((1L << (GT - 71)) | (1L << (LT - 71)) | (1L << (LE - 71)) | (1L << (GE - 71)))) != 0)) ) {
-							((ExpressionContext)_localctx).bop = (Token)_errHandler.recoverInline(this);
+							((ExprCase12Context)_localctx).bop = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7391,15 +8302,15 @@ public class JavaParser extends Parser {
 						break;
 					case 5:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase14Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1117);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
 						setState(1118);
-						((ExpressionContext)_localctx).bop = _input.LT(1);
+						((ExprCase14Context)_localctx).bop = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==EQUAL || _la==NOTEQUAL) ) {
-							((ExpressionContext)_localctx).bop = (Token)_errHandler.recoverInline(this);
+							((ExprCase14Context)_localctx).bop = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7412,72 +8323,72 @@ public class JavaParser extends Parser {
 						break;
 					case 6:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase15Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1120);
 						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
 						setState(1121);
-						((ExpressionContext)_localctx).bop = match(BITAND);
+						((ExprCase15Context)_localctx).bop = match(BITAND);
 						setState(1122);
 						expression(12);
 						}
 						break;
 					case 7:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase16Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1123);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
 						setState(1124);
-						((ExpressionContext)_localctx).bop = match(CARET);
+						((ExprCase16Context)_localctx).bop = match(CARET);
 						setState(1125);
 						expression(11);
 						}
 						break;
 					case 8:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase17Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1126);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
 						setState(1127);
-						((ExpressionContext)_localctx).bop = match(BITOR);
+						((ExprCase17Context)_localctx).bop = match(BITOR);
 						setState(1128);
 						expression(10);
 						}
 						break;
 					case 9:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase18Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1129);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
 						setState(1130);
-						((ExpressionContext)_localctx).bop = match(AND);
+						((ExprCase18Context)_localctx).bop = match(AND);
 						setState(1131);
 						expression(9);
 						}
 						break;
 					case 10:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase19Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1132);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
 						setState(1133);
-						((ExpressionContext)_localctx).bop = match(OR);
+						((ExprCase19Context)_localctx).bop = match(OR);
 						setState(1134);
 						expression(8);
 						}
 						break;
 					case 11:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase20Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1135);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
 						setState(1136);
-						((ExpressionContext)_localctx).bop = match(QUESTION);
+						((ExprCase20Context)_localctx).bop = match(QUESTION);
 						setState(1137);
 						expression(0);
 						setState(1138);
@@ -7488,15 +8399,15 @@ public class JavaParser extends Parser {
 						break;
 					case 12:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase21Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1141);
 						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
 						setState(1142);
-						((ExpressionContext)_localctx).bop = _input.LT(1);
+						((ExprCase21Context)_localctx).bop = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(((((_la - 70)) & ~0x3f) == 0 && ((1L << (_la - 70)) & ((1L << (ASSIGN - 70)) | (1L << (ADD_ASSIGN - 70)) | (1L << (SUB_ASSIGN - 70)) | (1L << (MUL_ASSIGN - 70)) | (1L << (DIV_ASSIGN - 70)) | (1L << (AND_ASSIGN - 70)) | (1L << (OR_ASSIGN - 70)) | (1L << (XOR_ASSIGN - 70)) | (1L << (MOD_ASSIGN - 70)) | (1L << (LSHIFT_ASSIGN - 70)) | (1L << (RSHIFT_ASSIGN - 70)) | (1L << (URSHIFT_ASSIGN - 70)))) != 0)) ) {
-							((ExpressionContext)_localctx).bop = (Token)_errHandler.recoverInline(this);
+							((ExprCase21Context)_localctx).bop = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7509,12 +8420,12 @@ public class JavaParser extends Parser {
 						break;
 					case 13:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase1Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1144);
 						if (!(precpred(_ctx, 25))) throw new FailedPredicateException(this, "precpred(_ctx, 25)");
 						setState(1145);
-						((ExpressionContext)_localctx).bop = match(DOT);
+						((ExprCase1Context)_localctx).bop = match(DOT);
 						setState(1157);
 						_errHandler.sync(this);
 						switch ( getInterpreter().adaptivePredict(_input,135,_ctx) ) {
@@ -7573,7 +8484,7 @@ public class JavaParser extends Parser {
 						break;
 					case 14:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase2Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1159);
 						if (!(precpred(_ctx, 24))) throw new FailedPredicateException(this, "precpred(_ctx, 24)");
@@ -7587,15 +8498,15 @@ public class JavaParser extends Parser {
 						break;
 					case 15:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase6Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1164);
 						if (!(precpred(_ctx, 20))) throw new FailedPredicateException(this, "precpred(_ctx, 20)");
 						setState(1165);
-						((ExpressionContext)_localctx).postfix = _input.LT(1);
+						((ExprCase6Context)_localctx).postfix = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==INC || _la==DEC) ) {
-							((ExpressionContext)_localctx).postfix = (Token)_errHandler.recoverInline(this);
+							((ExprCase6Context)_localctx).postfix = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -7606,19 +8517,19 @@ public class JavaParser extends Parser {
 						break;
 					case 16:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase13Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1166);
 						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
 						setState(1167);
-						((ExpressionContext)_localctx).bop = match(INSTANCEOF);
+						((ExprCase13Context)_localctx).bop = match(INSTANCEOF);
 						setState(1168);
 						typeType();
 						}
 						break;
 					case 17:
 						{
-						_localctx = new ExpressionContext(_parentctx, _parentState);
+						_localctx = new ExprCase23Context(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(1169);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");

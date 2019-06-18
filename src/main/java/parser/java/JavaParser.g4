@@ -380,23 +380,23 @@ localTypeDeclaration
     ;
 
 statement
-    : blockLabel=block
-    | ASSERT expression (':' expression)? ';'
-    | IF parExpression statement (ELSE statement)?
-    | FOR '(' forControl ')' statement
-    | WHILE parExpression statement
-    | DO statement WHILE parExpression ';'
-    | TRY block (catchClause+ finallyBlock? | finallyBlock)
-    | TRY resourceSpecification block catchClause* finallyBlock?
-    | SWITCH parExpression '{' switchBlockStatementGroup* switchLabel* '}'
-    | SYNCHRONIZED parExpression block
-    | RETURN expression? ';'
-    | THROW expression ';'
-    | BREAK IDENTIFIER? ';'
-    | CONTINUE IDENTIFIER? ';'
-    | SEMI
-    | statementExpression=expression ';'
-    | identifierLabel=IDENTIFIER ':' statement
+    : blockLabel=block                                                      # stmtCase0
+    | ASSERT expression (':' expression)? ';'                               # stmtCase1
+    | IF parExpression statement (ELSE statement)?                          # stmtCase2
+    | FOR '(' forControl ')' statement                                      # stmtCase3
+    | WHILE parExpression statement                                         # stmtCase4
+    | DO statement WHILE parExpression ';'                                  # stmtCase5
+    | TRY block (catchClause+ finallyBlock? | finallyBlock)                 # stmtCase6
+    | TRY resourceSpecification block catchClause* finallyBlock?            # stmtCase7
+    | SWITCH parExpression '{' switchBlockStatementGroup* switchLabel* '}'  # stmtCase8
+    | SYNCHRONIZED parExpression block                                      # stmtCase9
+    | RETURN expression? ';'                                                # stmtCase10
+    | THROW expression ';'                                                  # stmtCase11
+    | BREAK IDENTIFIER? ';'                                                 # stmtCase12
+    | CONTINUE IDENTIFIER? ';'                                              # stmtCase13
+    | SEMI                                                                  # stmtCase14
+    | statementExpression=expression ';'                                    # stmtCase15
+    | identifierLabel=IDENTIFIER ':' statement                              # stmtCase16
     ;
 
 catchClause
@@ -466,7 +466,7 @@ methodCall
     ;
 
 expression
-    : primary
+    : primary                                                   # exprCase0
     | expression bop='.'
       ( IDENTIFIER
       | methodCall
@@ -474,35 +474,35 @@ expression
       | NEW nonWildcardTypeArguments? innerCreator
       | SUPER superSuffix
       | explicitGenericInvocation
-      )
-    | expression '[' expression ']'
-    | methodCall
-    | NEW creator
-    | '(' typeType ')' expression
-    | expression postfix=('++' | '--')
-    | prefix=('+'|'-'|'++'|'--') expression
-    | prefix=('~'|'!') expression
-    | expression bop=('*'|'/'|'%') expression
-    | expression bop=('+'|'-') expression
-    | expression ('<' '<' | '>' '>' '>' | '>' '>') expression
-    | expression bop=('<=' | '>=' | '>' | '<') expression
-    | expression bop=INSTANCEOF typeType
-    | expression bop=('==' | '!=') expression
-    | expression bop='&' expression
-    | expression bop='^' expression
-    | expression bop='|' expression
-    | expression bop='&&' expression
-    | expression bop='||' expression
-    | expression bop='?' expression ':' expression
+      )                                                         # exprCase1
+    | expression '[' expression ']'                             # exprCase2
+    | methodCall                                                # exprCase3
+    | NEW creator                                               # exprCase4
+    | '(' typeType ')' expression                               # exprCase5
+    | expression postfix=('++' | '--')                          # exprCase6
+    | prefix=('+'|'-'|'++'|'--') expression                     # exprCase7
+    | prefix=('~'|'!') expression                               # exprCase8
+    | expression bop=('*'|'/'|'%') expression                   # exprCase9
+    | expression bop=('+'|'-') expression                       # exprCase10
+    | expression ('<' '<' | '>' '>' '>' | '>' '>') expression   # exprCase11
+    | expression bop=('<=' | '>=' | '>' | '<') expression       # exprCase12
+    | expression bop=INSTANCEOF typeType                        # exprCase13
+    | expression bop=('==' | '!=') expression                   # exprCase14
+    | expression bop='&' expression                             # exprCase15
+    | expression bop='^' expression                             # exprCase16
+    | expression bop='|' expression                             # exprCase17
+    | expression bop='&&' expression                            # exprCase18
+    | expression bop='||' expression                            # exprCase19
+    | expression bop='?' expression ':' expression              # exprCase20
     | <assoc=right> expression
       bop=('=' | '+=' | '-=' | '*=' | '/=' | '&=' | '|=' | '^=' | '>>=' | '>>>=' | '<<=' | '%=')
-      expression
-    | lambdaExpression // Java8
+      expression                                                # exprCase21
+    | lambdaExpression                                          # exprCase22 // Java8
 
     // Java 8 methodReference
-    | expression '::' typeArguments? IDENTIFIER
-    | typeType '::' (typeArguments? IDENTIFIER | NEW)
-    | classType '::' typeArguments? NEW
+    | expression '::' typeArguments? IDENTIFIER                 # exprCase23
+    | typeType '::' (typeArguments? IDENTIFIER | NEW)           # exprCase24
+    | classType '::' typeArguments? NEW                         # exprCase25
     ;
 
 // Java8

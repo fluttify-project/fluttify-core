@@ -26,17 +26,26 @@ fun JavaParser.MethodDeclarationContext?.name(): String? {
 
 fun JavaParser.MethodDeclarationContext?.isPrivate(): Boolean {
     if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("private")
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("private") == true
 }
 
 fun JavaParser.MethodDeclarationContext?.isDeprecated(): Boolean {
     if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("@Deprecated")
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("@Deprecated") == true
 }
 
 fun JavaParser.MethodDeclarationContext?.isInstanceMethod(): Boolean {
     if (this == null) return false
-    return !ancestorOf(JavaParser.ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("static")
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("static") != true
 }
 
 fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {

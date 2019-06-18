@@ -7,7 +7,18 @@ import parser.objc.ObjectiveCParser
 //region Java Field
 fun FieldDeclarationContext?.isStatic(): Boolean {
     if (this == null) return false
-    return ancestorOf(ClassBodyDeclarationContext::class).modifier().map { it.text }.contains("static")
+    return ancestorOf(ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("static") == true
+}
+
+fun FieldDeclarationContext?.isPrivate(): Boolean {
+    if (this == null) return false
+    return ancestorOf(ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("private") == true
 }
 
 fun FieldDeclarationContext?.type(): String? {

@@ -33,7 +33,7 @@ class JsonTask(private val dartModelFile: DART_FILE) : Task<DART_FILE, DART_FILE
 
             override fun enterInitializedIdentifier(ctx: Dart2Parser.InitializedIdentifierContext?) {
                 ctx?.run {
-                    val type = ctx.ancestorOf(Dart2Parser.DeclarationContext::class).dtype().text
+                    val type = ctx.ancestorOf(Dart2Parser.DeclarationContext::class)?.dtype()?.text ?: ""
                     val name = ctx.identifier().text
                     when {
                         type.contains("List") -> {

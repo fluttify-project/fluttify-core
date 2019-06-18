@@ -679,15 +679,209 @@ public interface JavaParserListener extends ParseTreeListener {
 	 */
 	void exitLocalTypeDeclaration(JavaParser.LocalTypeDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JavaParser#statement}.
+	 * Enter a parse tree produced by the {@code stmtCase0}
+	 * labeled alternative in {@link JavaParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStatement(JavaParser.StatementContext ctx);
+	void enterStmtCase0(JavaParser.StmtCase0Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link JavaParser#statement}.
+	 * Exit a parse tree produced by the {@code stmtCase0}
+	 * labeled alternative in {@link JavaParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStatement(JavaParser.StatementContext ctx);
+	void exitStmtCase0(JavaParser.StmtCase0Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase1}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase1(JavaParser.StmtCase1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase1}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase1(JavaParser.StmtCase1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase2}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase2(JavaParser.StmtCase2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase2}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase2(JavaParser.StmtCase2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase3}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase3(JavaParser.StmtCase3Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase3}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase3(JavaParser.StmtCase3Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase4}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase4(JavaParser.StmtCase4Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase4}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase4(JavaParser.StmtCase4Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase5}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase5(JavaParser.StmtCase5Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase5}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase5(JavaParser.StmtCase5Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase6}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase6(JavaParser.StmtCase6Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase6}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase6(JavaParser.StmtCase6Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase7}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase7(JavaParser.StmtCase7Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase7}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase7(JavaParser.StmtCase7Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase8}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase8(JavaParser.StmtCase8Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase8}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase8(JavaParser.StmtCase8Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase9}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase9(JavaParser.StmtCase9Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase9}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase9(JavaParser.StmtCase9Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase10}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase10(JavaParser.StmtCase10Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase10}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase10(JavaParser.StmtCase10Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase11}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase11(JavaParser.StmtCase11Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase11}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase11(JavaParser.StmtCase11Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase12}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase12(JavaParser.StmtCase12Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase12}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase12(JavaParser.StmtCase12Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase13}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase13(JavaParser.StmtCase13Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase13}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase13(JavaParser.StmtCase13Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase14}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase14(JavaParser.StmtCase14Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase14}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase14(JavaParser.StmtCase14Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase15}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase15(JavaParser.StmtCase15Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase15}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase15(JavaParser.StmtCase15Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stmtCase16}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtCase16(JavaParser.StmtCase16Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stmtCase16}
+	 * labeled alternative in {@link JavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtCase16(JavaParser.StmtCase16Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link JavaParser#catchClause}.
 	 * @param ctx the parse tree
@@ -829,15 +1023,317 @@ public interface JavaParserListener extends ParseTreeListener {
 	 */
 	void exitMethodCall(JavaParser.MethodCallContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JavaParser#expression}.
+	 * Enter a parse tree produced by the {@code exprCase15}
+	 * labeled alternative in {@link JavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(JavaParser.ExpressionContext ctx);
+	void enterExprCase15(JavaParser.ExprCase15Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link JavaParser#expression}.
+	 * Exit a parse tree produced by the {@code exprCase15}
+	 * labeled alternative in {@link JavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(JavaParser.ExpressionContext ctx);
+	void exitExprCase15(JavaParser.ExprCase15Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase14}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase14(JavaParser.ExprCase14Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase14}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase14(JavaParser.ExprCase14Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase17}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase17(JavaParser.ExprCase17Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase17}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase17(JavaParser.ExprCase17Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase16}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase16(JavaParser.ExprCase16Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase16}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase16(JavaParser.ExprCase16Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase19}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase19(JavaParser.ExprCase19Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase19}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase19(JavaParser.ExprCase19Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase18}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase18(JavaParser.ExprCase18Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase18}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase18(JavaParser.ExprCase18Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase11}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase11(JavaParser.ExprCase11Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase11}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase11(JavaParser.ExprCase11Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase10}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase10(JavaParser.ExprCase10Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase10}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase10(JavaParser.ExprCase10Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase13}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase13(JavaParser.ExprCase13Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase13}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase13(JavaParser.ExprCase13Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase12}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase12(JavaParser.ExprCase12Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase12}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase12(JavaParser.ExprCase12Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase2}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase2(JavaParser.ExprCase2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase2}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase2(JavaParser.ExprCase2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase1}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase1(JavaParser.ExprCase1Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase1}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase1(JavaParser.ExprCase1Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase4}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase4(JavaParser.ExprCase4Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase4}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase4(JavaParser.ExprCase4Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase3}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase3(JavaParser.ExprCase3Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase3}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase3(JavaParser.ExprCase3Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase0}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase0(JavaParser.ExprCase0Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase0}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase0(JavaParser.ExprCase0Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase25}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase25(JavaParser.ExprCase25Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase25}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase25(JavaParser.ExprCase25Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase9}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase9(JavaParser.ExprCase9Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase9}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase9(JavaParser.ExprCase9Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase20}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase20(JavaParser.ExprCase20Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase20}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase20(JavaParser.ExprCase20Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase22}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase22(JavaParser.ExprCase22Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase22}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase22(JavaParser.ExprCase22Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase6}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase6(JavaParser.ExprCase6Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase6}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase6(JavaParser.ExprCase6Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase5}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase5(JavaParser.ExprCase5Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase5}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase5(JavaParser.ExprCase5Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase21}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase21(JavaParser.ExprCase21Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase21}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase21(JavaParser.ExprCase21Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase8}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase8(JavaParser.ExprCase8Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase8}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase8(JavaParser.ExprCase8Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase24}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase24(JavaParser.ExprCase24Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase24}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase24(JavaParser.ExprCase24Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase7}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase7(JavaParser.ExprCase7Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase7}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase7(JavaParser.ExprCase7Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exprCase23}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCase23(JavaParser.ExprCase23Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exprCase23}
+	 * labeled alternative in {@link JavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCase23(JavaParser.ExprCase23Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link JavaParser#lambdaExpression}.
 	 * @param ctx the parse tree

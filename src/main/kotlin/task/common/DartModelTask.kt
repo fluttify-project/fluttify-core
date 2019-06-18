@@ -6,6 +6,7 @@ import common.JAVA_SOURCE
 import common.Temps
 import common.extensions.*
 import common.gWalker
+import common.translator.toDart
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import parser.java.JavaLexer
@@ -45,6 +46,8 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
         val tree = parser.compilationUnit()
 
         gWalker.walk(object : JavaParserBaseListener() {
+            var skip = false
+
             //region 普通类
             // 生成类名
             override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
@@ -55,7 +58,10 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             // 生成Field类型名
             override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
                 field?.run {
-                    if (!type()!!.isJavaModelType()) return
+                    if (!type()!!.isJavaModelType()) {
+                        skip = true
+                        return
+                    }
 
                     results[currentDepth].append("  ${if (isStatic()) "static " else ""}${type().toDartType()}")
                 }
@@ -64,8 +70,17 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             // 生成Field变量名和等于号(如果需要的话)
             override fun enterVariableDeclarator(ctx: VariableDeclaratorContext?) {
                 ctx?.run {
+                    if (skip) return
+
                     if (ctx.isChildOf(FieldDeclarationContext::class)) {
                         results[currentDepth].append(" ${variableDeclaratorId().text}")
+
+                        // 如果是静态变量且有值的话生成值
+                        ctx.ancestorOf(FieldDeclarationContext::class)?.run {
+                            if (isStatic()) {
+                                results[currentDepth].append(" = ${variableInitializer().text}")
+                            }
+                        }
                     }
                 }
             }
@@ -73,9 +88,42 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             // 生成Field的分号
             override fun exitFieldDeclaration(ctx: FieldDeclarationContext?) {
                 ctx?.run {
-                    if (!type()!!.isJavaModelType()) return
-
+                    if (skip) {
+                        skip = false
+                        return
+                    }
                     results[currentDepth].append(";\n")
+                }
+            }
+
+            // 生成方法以及方法体
+            override fun enterMethodDeclaration(method: MethodDeclarationContext?) {
+                method?.run {
+                    if (method.name() in listOf("toString", "toStr")) {
+                        skip = true
+                        return
+                    }
+                    // 参数中有非model参数, 则跳过
+                    if (method.formalParams().any { !it.type.isJavaModelType() }
+                        || method.returnType()?.isJavaModelType() != true) return
+
+                    results[currentDepth].append(
+                        Temps.Dart.method.placeholder(
+                            method.returnType().toDartType(),
+                            method.name(),
+                            method.formalParams().joinToString { "${it.type} ${it.name}" },
+                            method.methodBody()?.block()?.toDart()
+                        )
+                    )
+                }
+            }
+
+            override fun exitMethodDeclaration(ctx: MethodDeclarationContext?) {
+                ctx?.run {
+                    if (skip) {
+                        skip = false
+                        return
+                    }
                 }
             }
 
@@ -105,6 +153,21 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
         }, tree)
 
         return results.joinToString("\n")
+    }
+
+    /**
+     * Java语法的语句转为Dart语法的语句
+     *
+     * 暂时支持赋值语句和return语句
+     */
+    private fun BlockContext.toDart(): DART_SOURCE {
+        val result = StringBuilder("")
+        blockStatement()?.forEach {
+            it.localVariableDeclaration()?.run { result.append("    ${toDart()}") }
+            it.statement()?.run { result.append("    ${toDart()}") }
+            it.localTypeDeclaration()?.run { result.append("    ${toDart()}") }
+        }
+        return result.toString()
     }
 }
 
