@@ -178,7 +178,7 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
  * 输出: Dart模型类文件
  * 依赖: [RecognizeIOSModelTask]
  */
-class DartIOSModelTask(private val javaModelFile: File) : Task<File, File>(javaModelFile) {
+class IOSDartModelTask(private val javaModelFile: File) : Task<File, File>(javaModelFile) {
     private val results = mutableListOf<StringBuilder>()
     private var currentDepth = -1 // 嵌套类深度
 
