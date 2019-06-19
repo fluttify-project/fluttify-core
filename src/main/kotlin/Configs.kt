@@ -6,7 +6,7 @@ object Configs {
     /**
      * jar路径
      */
-    val jarFilePath: String = "${Project.path}/src/main/resources/android/tbitble.jar"
+    val jarFilePath: String = "${Project.path}/src/main/resources/android/BaiduLBS_Android.jar"
     /**
      * objc主类名
      */

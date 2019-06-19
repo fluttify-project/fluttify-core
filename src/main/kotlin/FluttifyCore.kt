@@ -1,3 +1,4 @@
+
 import common.extensions.file
 import common.model.ProjectSpec
 import io.reactivex.Observable
@@ -6,7 +7,6 @@ import task.statik.AndroidDartStaticMethodTask
 import task.statik.AndroidKotlinStaticMethodTask
 import task.statik.IOSDartStaticMethodTask
 import task.statik.IOSSwiftStaticMethodTask
-import java.io.File
 
 fun main() {
     Observable
@@ -15,10 +15,10 @@ fun main() {
         .map { OutputProjectTask(it).process() }
         // 拷贝jar依赖到目标工程
         .map { AddAndroidDependencyTask(it).process() }
-        // 反编译Jar
-        .map { DecompileJarTask(File(Configs.jarFilePath)).process() }
         // 解压缩反编译Jar
         .map { UnzipJarTask(it).process() }
+        // 反编译Jar
+        .map { DecompileClassTask(it).process() }
         // 清理空文件
         .map { CleanEmptyTask(it).process() }
         // 识别android Model文件

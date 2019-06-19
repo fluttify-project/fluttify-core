@@ -117,6 +117,59 @@ class #__class_name__#Plugin : MethodCallHandler {
     }
 }
 """
+        const val platformViewPlugin = """package #__package__#
+
+import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.StandardMessageCodec
+import io.flutter.plugin.platform.PlatformView
+import io.flutter.plugin.platform.PlatformViewFactory
+import io.flutter.plugin.common.PluginRegistry.Registrar
+
+class #__name__#Plugin {
+    companion object {
+        @JvmStatic
+        fun registerWith(registrar: Registrar) {
+            registrar
+                    .platformViewRegistry()
+                    .registerViewFactory("#__package__#/#__view__#", #__view__#Factory(registrar))
+        }
+    }
+}"""
+        const val platformViewFactory = """package #__package__#
+
+import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.StandardMessageCodec
+import io.flutter.plugin.platform.PlatformView
+import io.flutter.plugin.platform.PlatformViewFactory
+import io.flutter.plugin.common.PluginRegistry.Registrar
+
+class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+
+    override fun create(context: Context, id: Int, params: Any?): PlatformView {
+        return #__view__#(context, id, registrar)
+    }
+}"""
+        const val platformView = """package #__package__#
+
+import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.StandardMessageCodec
+import io.flutter.plugin.platform.PlatformView
+import io.flutter.plugin.platform.PlatformViewFactory
+import io.flutter.plugin.common.PluginRegistry.Registrar
+
+class #__view__#(context: Context, private val id: Int, private val registrar: Registrar) : PlatformView {
+
+    private val view = #__native_view__#(context)
+
+    override fun getView(): View = view
+
+    override fun dispose() {
+        MethodChannel(registrar.messenger(), "#__package__#" + id).invokeMethod("dispose", null)
+    }
+}"""
     }
 
     object Swift {

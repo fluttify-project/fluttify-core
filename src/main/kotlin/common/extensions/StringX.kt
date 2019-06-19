@@ -156,7 +156,16 @@ fun TYPE_NAME.isObjcModelType(): Boolean {
 fun PATH.file(): File {
     val file = File(this)
     if (!file.exists()) {
-        if (endsWith("/")) file.mkdirs() else file.createNewFile()
+        if (endsWith("/")) {
+            file.mkdirs()
+        } else {
+            // 如果是文件, 那么获取文件上级文件夹, 检查是否存在, 不存在就先创建文件夹, 再创建文件
+            val dir = File(substringBeforeLast("/"))
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+            file.createNewFile()
+        }
     }
     return file
 }

@@ -12,7 +12,7 @@ import java.io.InputStreamReader
 /**
  * 生成初始的输出项目
  *
- * 输入: 生成参数[ProjectSpec]
+ * 输入: 生成项目的规格[ProjectSpec]
  * 输出: 项目路径[PATH]
  * 依赖: []
  */

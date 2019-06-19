@@ -185,6 +185,24 @@ object OutputProject {
             )}/$outputProjectName/${classSimpleName}Plugin.kt"
 
         /**
+         * PlatformViewFactory文件路径
+         */
+        val platformViewFactoryFilePath =
+            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(
+                ".",
+                "/"
+            )}/$outputProjectName/${classSimpleName}Factory.kt"
+
+        /**
+         * PlatformView文件路径
+         */
+        val platformViewFilePath =
+            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(
+                ".",
+                "/"
+            )}/$outputProjectName/$classSimpleName.kt"
+
+        /**
          * 生成工程的Android端Jar路径
          */
         val jarDirPath = "$path/build/output-project/$outputProjectName/android/libs/"

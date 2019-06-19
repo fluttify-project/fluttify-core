@@ -1,23 +1,24 @@
 package task.common
 
+import Jar
 import task.Task
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 
 /**
- * 解压缩反编译Jar任务
+ * 解压缩Jar任务
  *
  * 输入: 反编译后的Jar文件
- * 输出: Jar文件对应的文件夹
- * 依赖: [DecompileJarTask]
+ * 输出: class文件列表
+ * 依赖: []
  */
-class UnzipJarTask(private val decompiledJarFile: File) : Task<File, File>(decompiledJarFile) {
+class UnzipJarTask(private val jarFile: File) : Task<File, File>(jarFile) {
     override fun process(): File {
-        val decompiledJarPath = decompiledJarFile.absolutePath
-        val artifactPath = decompiledJarPath.substringBeforeLast("/")
+        val jarPath = jarFile.absolutePath
+        val artifactPath = Jar.Decompiled.rootDirPath
 
-        val process = Runtime.getRuntime().exec("unzip -o $decompiledJarPath -d $artifactPath")
+        val process = Runtime.getRuntime().exec("unzip -o $jarPath -d $artifactPath")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
         return File(artifactPath)
