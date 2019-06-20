@@ -2,11 +2,11 @@ package task.`object`.platformview
 
 import Configs.outputOrg
 import Configs.outputProjectName
-import Jar
 import common.JAVA_FILE
 import common.KOTLIN_FILE
 import common.Temps
 import common.extensions.placeholder
+import common.extensions.underscore2Camel
 import task.Task
 
 /**
@@ -20,8 +20,8 @@ class AndroidKotlinFactoryTask(private val factoryFile: JAVA_FILE) : Task<JAVA_F
     override fun process(): KOTLIN_FILE {
         val content = Temps.Kotlin.platformViewFactory.placeholder(
             "$outputOrg.$outputProjectName",
-            Jar.Decompiled.mainClassSimpleName,
-            Jar.Decompiled.mainClassSimpleName
+            outputProjectName.underscore2Camel(),
+            outputProjectName.underscore2Camel()
         )
         return factoryFile.apply { writeText(content) }
     }

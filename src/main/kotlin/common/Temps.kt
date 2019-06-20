@@ -160,14 +160,25 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
+import #__native_view_package__#
+
 class #__view__#(context: Context, private val id: Int, private val registrar: Registrar) : PlatformView {
 
+    private val methodChannel = MethodChannel(registrar.messenger(), "#__package__#" + id)
     private val view = #__native_view__#(context)
+
+    init {
+        methodChannel.setMethodCallHandler { methodCall, result ->
+            when (methodCall.method) {
+
+            }
+        }
+    }
 
     override fun getView(): View = view
 
     override fun dispose() {
-        MethodChannel(registrar.messenger(), "#__package__#" + id).invokeMethod("dispose", null)
+        methodChannel.invokeMethod("dispose", null)
     }
 }"""
     }

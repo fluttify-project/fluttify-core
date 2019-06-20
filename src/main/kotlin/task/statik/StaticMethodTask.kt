@@ -128,7 +128,7 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
                                 it.type.jsonable() -> {
                                     "\n\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type}"
                                 }
-                                it.type.isJavaModel() -> {
+                                Jar.Decompiled.classes[it.type]?.isModel == true -> {
                                     "\n\t\t\t\tval ${it.name} = mapper.readValue(args[\"${it.name}\"] as String, ${it.type}::class.java)"
                                 }
                                 else -> ""

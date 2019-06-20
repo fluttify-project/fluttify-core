@@ -16,14 +16,20 @@ import java.io.File
 class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(dir) {
     override fun process(): List<File> {
         val result = mutableListOf<File>()
-        FileUtils
-            .iterateFiles(dir, arrayOf("java"), true)
-            .forEach {
-                val fileContent = it.readText()
-                if (fileContent.isJavaModel()) {
-                    result.add(it)
+        var lastCycleCount = -1
+
+        // 循环寻找model类, 知道上一次循环和这一次循环的结果一样
+        while (lastCycleCount != result.size) {
+            lastCycleCount = result.size
+            FileUtils
+                .iterateFiles(dir, arrayOf("java"), true)
+                .forEach {
+                    val fileContent = it.readText()
+                    if (fileContent.isJavaModel() && !result.contains(it)) {
+                        result.add(it)
+                    }
                 }
-            }
+        }
         return result
     }
 }

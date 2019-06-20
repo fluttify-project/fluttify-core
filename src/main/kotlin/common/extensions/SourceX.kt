@@ -1,5 +1,6 @@
 package common.extensions
 
+import Jar
 import common.DART_SOURCE
 import common.JAVA_SOURCE
 import common.OBJC_SOURCE
@@ -24,51 +25,65 @@ import parser.objc.ObjectiveCParserBaseListener
 fun JAVA_SOURCE.isJavaModel(): Boolean {
     var isAbstract = false
     var isSubclass = false
-    var hasDependency = false
     val fieldJsonable: MutableList<Boolean> = mutableListOf()
 
+    var skip = false
+
+    var isModel = false
+
+    // 第一轮识别 识别字段全是jsonable的类
     walkTree(object : JavaParserBaseListener() {
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext?) {
+            if (skip) return
             // 如果是接口, 那么就不是model
-            ctx?.run { isAbstract = true }
+            ctx?.run {
+                isAbstract = true
+                skip = true
+            }
         }
 
         override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
+            if (skip) return
             ctx?.run {
+                println(
+                    "正在评估类: ${ctx.IDENTIFIER().text}; 路径: ${Jar.Decompiled.classes[ctx.IDENTIFIER()?.text]?.path ?: ""}"
+                )
                 // 如果类有继承, 暂时认为不是model
                 isSubclass = ctx.isSubclass()
 
                 // 抽象类不是model
                 isAbstract = ctx.isAbstract()
-            }
-        }
 
-        override fun enterConstructorDeclaration(constructor: ConstructorDeclarationContext?) {
-            constructor?.run {
-                // 构造器如果有参数, 则不是model
-                hasDependency = constructor.hasParameter()
+                if (isSubclass || isAbstract) skip = true
             }
         }
 
         override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
+            if (skip) return
             field?.run {
-                fieldJsonable.add(
-                    if (!field.jsonable()) {
-                        field.type()?.isJavaModelType() ?: false
-                    } else {
-                        // 静态属性不作为model的字段
-                        !field.isStatic()
-                    }
-                )
+                // 静态字段不参与判断
+                if (field.isStatic()) return
+                fieldJsonable.add(field.jsonable() || Jar.Decompiled.classes[field.type()]?.isModel == true)
+            }
+        }
+
+        override fun exitClassDeclaration(ctx: ClassDeclarationContext?) {
+            ctx?.run {
+                isModel = if (isAbstract || isSubclass || fieldJsonable.isEmpty())
+                    false
+                else
+                    fieldJsonable.all { it }
+
+                Jar.Decompiled.classes[ctx.IDENTIFIER().text]?.isModel = isModel
+
+                println("${ctx.IDENTIFIER().text} 评估结果: $isModel\n")
+
+                skip = false
             }
         }
     })
 
-    return if (isAbstract
-        || isSubclass
-        || hasDependency
-        || fieldJsonable.isEmpty()
-    ) false else fieldJsonable.all { it }
+    return isModel
 }
 
 /**

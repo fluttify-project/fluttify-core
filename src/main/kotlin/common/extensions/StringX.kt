@@ -39,7 +39,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
     return when (this) {
         "BOOL", "boolean" -> "bool"
-        "int", "Int", "UInt32", "Byte" -> "int"
+        "int", "Int", "UInt32", "Byte", "long" -> "int"
         "double", "float", "CGFloat" -> "double"
         "NSString*", "NSString *", "NSString", "String" -> "String"
         "NSArray*", "NSArray *", "NSArray", "List", "ArrayList" -> "List"
@@ -123,10 +123,7 @@ fun TYPE_NAME.isJavaModelType(): Boolean {
     return Jar
         .Decompiled
         .classes[this]
-        ?.path
-        ?.file()
-        ?.readText()
-        ?.isJavaModel() ?: false
+        ?.isModel == true
 }
 
 /**

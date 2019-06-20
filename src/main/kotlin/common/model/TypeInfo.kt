@@ -24,7 +24,12 @@ abstract class TypeInfo(
     /**
      * 所有的方法
      */
-    open val methods: List<Method>
+    open val methods: List<Method>,
+
+    /**
+     * 是否是model类
+     */
+    open var isModel: Boolean?
 )
 
 /**
@@ -40,8 +45,9 @@ data class JavaTypeInfo(
 
     override val path: String,
     override val fields: List<Variable>,
-    override val methods: List<Method>
-) : TypeInfo(name, path, fields, methods)
+    override val methods: List<Method>,
+    override var isModel: Boolean? = null
+) : TypeInfo(name, path, fields, methods, isModel)
 
 /**
  * Objc类信息
@@ -50,5 +56,6 @@ data class ObjcTypeInfo(
     override val name: String,
     override val path: String,
     override val fields: List<Variable>,
-    override val methods: List<Method>
-) : TypeInfo(name, path, fields, methods)
+    override val methods: List<Method>,
+    override var isModel: Boolean? = null
+) : TypeInfo(name, path, fields, methods, isModel)
