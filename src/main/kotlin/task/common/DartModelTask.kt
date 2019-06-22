@@ -21,7 +21,7 @@ import java.io.File
  *
  * 输入: Java模型类文件
  * 输出: Dart模型类文件
- * 依赖: [RecognizeAndroidModelTask]
+ * 依赖: [AndroidRecognizeModelTask]
  */
 class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(javaModelFile) {
     private val results = mutableListOf<StringBuilder>()
@@ -176,7 +176,7 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
  *
  * 输入: Objc模型类文件
  * 输出: Dart模型类文件
- * 依赖: [RecognizeIOSModelTask]
+ * 依赖: [IOSRecognizeModelTask]
  */
 class IOSDartModelTask(private val javaModelFile: File) : Task<File, File>(javaModelFile) {
     private val results = mutableListOf<StringBuilder>()

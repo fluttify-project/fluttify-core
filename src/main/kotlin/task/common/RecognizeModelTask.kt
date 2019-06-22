@@ -13,7 +13,7 @@ import java.io.File
  * 输出: 识别成模型类的文件们
  * 依赖: [UnzipJarTask]
  */
-class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(dir) {
+class AndroidRecognizeModelTask(private val dir: File) : Task<File, List<File>>(dir) {
     override fun process(): List<File> {
         val result = mutableListOf<File>()
         var lastCycleCount = -1
@@ -44,7 +44,7 @@ class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(
  * 输出: 识别成模型类的文件们
  * 依赖: []
  */
-class RecognizeIOSModelTask(private val dir: File) : Task<File, List<File>>(dir) {
+class IOSRecognizeModelTask(private val dir: File) : Task<File, List<File>>(dir) {
     override fun process(): List<File> {
         return dir.listFiles().filter { it.readText().isObjcModel() }
     }

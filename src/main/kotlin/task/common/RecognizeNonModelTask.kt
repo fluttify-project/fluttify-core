@@ -14,7 +14,7 @@ import java.io.File
  *
  * 输入: 待识别的主类文件
  * 输出: 识别成非模型类的文件们
- * 依赖: [RecognizeAndroidModelTask]
+ * 依赖: [AndroidRecognizeModelTask]
  */
 class RecognizeAndroidNonModelTask(private val mainClassFile: File) : Task<File, List<File>>(mainClassFile) {
     override fun process(): List<File> {

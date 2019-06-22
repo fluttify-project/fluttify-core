@@ -22,7 +22,7 @@ fun main() {
         // 清理空文件
         .map { CleanEmptyTask(it).process() }
         // 识别android Model文件
-        .flatMap { Observable.fromIterable(RecognizeAndroidModelTask(it).process()) }
+        .flatMap { Observable.fromIterable(AndroidRecognizeModelTask(it).process()) }
         // 将每个识别出来的android model文件转换成dart model文件, 并写入
         .map { AndroidDartModelTask(it).process() }
         // 为Model加入fromJson和toJson

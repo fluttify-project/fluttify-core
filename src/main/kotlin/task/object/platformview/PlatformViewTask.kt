@@ -11,7 +11,7 @@ import common.extensions.*
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import task.Task
-import task.common.RecognizeAndroidModelTask
+import task.common.AndroidRecognizeModelTask
 import java.io.File
 
 /**
@@ -19,7 +19,7 @@ import java.io.File
  *
  * 输入: 目标原生View类
  * 输出: 生成内容后的PlatformView文件
- * 依赖: [RecognizeAndroidModelTask]
+ * 依赖: [AndroidRecognizeModelTask]
  */
 class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
     Task<JAVA_FILE, KOTLIN_FILE>(mainClassFile) {
