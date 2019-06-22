@@ -22,7 +22,7 @@ import task.common.OutputProjectTask
 class AndroidKotlinPluginTask(private val mainClassFile: JAVA_FILE) :
     Task<JAVA_FILE, KOTLIN_FILE>(mainClassFile) {
     override fun process(): DART_FILE {
-        val content = Temps.Kotlin.platformViewPlugin.placeholder(
+        val content = Temps.Kotlin.PlatformView.plugin.placeholder(
             "$outputOrg.$outputProjectName",
             OutputProject.classSimpleName,
             "$outputOrg.$outputProjectName",

@@ -43,7 +43,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                 // 跳过实例,私有,废弃方法
                 if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
                 // 跳过含有`非model参数`和`非model返回值`的方法
-                if (!method.formalParams().all { it.type.isJavaModelType() } || method.returnType()?.isJavaModelType() != true) return
+                if (!method.formalParams().all { it.type.isJavaModelType() } || method?.returnType()?.isJavaModelType() != true) return
 
                 if (method.returnType()?.jsonable() == true) {
                     dartResultBuilder.append(
@@ -118,7 +118,7 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
                 // 跳过实例, 私有, 废弃方法
                 if (method.run { isInstanceMethod() || isPrivate() || isDeprecated() }) return
                 // 跳过含有`非model参数`和`非model返回值`的方法
-                if (!method.formalParams().all { it.type.isJavaModelType() } || method.returnType()?.isJavaModelType() != true) return
+                if (!method.formalParams().all { it.type.isJavaModelType() } || method?.returnType()?.isJavaModelType() != true) return
 
                 kotlinResultBuilder.append(
                     Temps.Kotlin.methodBranch.placeholder(

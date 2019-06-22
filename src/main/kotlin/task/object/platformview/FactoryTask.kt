@@ -18,7 +18,7 @@ import task.Task
  */
 class AndroidKotlinFactoryTask(private val factoryFile: JAVA_FILE) : Task<JAVA_FILE, KOTLIN_FILE>(factoryFile) {
     override fun process(): KOTLIN_FILE {
-        val content = Temps.Kotlin.platformViewFactory.placeholder(
+        val content = Temps.Kotlin.PlatformView.factory.placeholder(
             "$outputOrg.$outputProjectName",
             outputProjectName.underscore2Camel(),
             outputProjectName.underscore2Camel()
