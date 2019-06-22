@@ -58,7 +58,7 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             // 生成Field类型名
             override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
                 field?.run {
-                    if (!type()!!.isJavaModelType()) {
+                    if (!type().isJavaModelType()) {
                         skip = true
                         return
                     }
@@ -211,7 +211,7 @@ class IOSDartModelTask(private val javaModelFile: File) : Task<File, File>(javaM
             // 生成Field类型名
             override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
                 field?.run {
-                    if (!type()!!.isJavaModelType()) return
+                    if (!type().isJavaModelType()) return
 
                     results[currentDepth].append("  ${if (isStatic()) "static " else ""}${type().toDartType()}")
                 }
@@ -229,7 +229,7 @@ class IOSDartModelTask(private val javaModelFile: File) : Task<File, File>(javaM
             // 生成Field的分号
             override fun exitFieldDeclaration(ctx: FieldDeclarationContext?) {
                 ctx?.run {
-                    if (!type()!!.isJavaModelType()) return
+                    if (!type().isJavaModelType()) return
 
                     results[currentDepth].append(";\n")
                 }

@@ -9,9 +9,15 @@ import parser.objc.ObjectiveCParser
  */
 fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
     if (this == null) return false
-    return ancestorOf(JavaParser.TypeDeclarationContext::class)
-        ?.classDeclaration()
-        ?.EXTENDS() != null
+    return EXTENDS() != null
+}
+
+/**
+ * 获取父类名称
+ */
+fun JavaParser.ClassDeclarationContext?.superClass(): String? {
+    if (this == null) return null
+    return typeType()?.text
 }
 
 /**

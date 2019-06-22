@@ -121,7 +121,7 @@ class AndroidKotlinStaticMethodTask(private val mainClassFile: JAVA_FILE) :
                 if (!method.formalParams().all { it.type.isJavaModelType() } || method.returnType()?.isJavaModelType() != true) return
 
                 kotlinResultBuilder.append(
-                    Temps.Kotlin.methodResult.placeholder(
+                    Temps.Kotlin.methodBranch.placeholder(
                         method.name(),
                         method.formalParams().joinToString("") {
                             when {

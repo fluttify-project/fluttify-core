@@ -21,9 +21,8 @@ fun FieldDeclarationContext?.isPrivate(): Boolean {
         ?.contains("private") == true
 }
 
-fun FieldDeclarationContext?.type(): String? {
-    if (this == null) return null
-    return typeType()?.text
+fun FieldDeclarationContext.type(): String {
+    return typeType().text
 }
 
 fun FieldDeclarationContext?.name(): String? {
@@ -53,18 +52,7 @@ fun FieldDeclarationContext?.value(): String? {
 fun FieldDeclarationContext?.jsonable(): Boolean {
     if (this == null) return true
 
-    return type()?.toDartType() in listOf(
-        "bool",
-        "int",
-        "double",
-        "String",
-        "List",
-        "Map",
-        "null",
-        "List<int>",
-        "List<double>",
-        "void"
-    )
+    return type().jsonable()
 }
 //endregion
 

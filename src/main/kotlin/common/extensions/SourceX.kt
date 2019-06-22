@@ -4,6 +4,7 @@ import Jar
 import common.DART_SOURCE
 import common.JAVA_SOURCE
 import common.OBJC_SOURCE
+import common.PRESERVED_MODEL
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -12,7 +13,8 @@ import parser.dart.Dart2Lexer
 import parser.dart.Dart2Parser
 import parser.java.JavaLexer
 import parser.java.JavaParser
-import parser.java.JavaParser.*
+import parser.java.JavaParser.ClassDeclarationContext
+import parser.java.JavaParser.FieldDeclarationContext
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCLexer
 import parser.objc.ObjectiveCParser
@@ -23,62 +25,54 @@ import parser.objc.ObjectiveCParserBaseListener
  * java源码判断是否是模型类
  */
 fun JAVA_SOURCE.isJavaModel(): Boolean {
-    var isAbstract = false
-    var isSubclass = false
-    val fieldJsonable: MutableList<Boolean> = mutableListOf()
-
-    var skip = false
+    var parentIsModel = false
+    val fieldAllModel: MutableList<Boolean> = mutableListOf()
+    val memberAllStatic: MutableList<Boolean> = mutableListOf()
 
     var isModel = false
 
-    // 第一轮识别 识别字段全是jsonable的类
     walkTree(object : JavaParserBaseListener() {
-        override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext?) {
-            if (skip) return
-            // 如果是接口, 那么就不是model
-            ctx?.run {
-                isAbstract = true
-                skip = true
-            }
-        }
-
         override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
-            if (skip) return
             ctx?.run {
                 println(
                     "正在评估类: ${ctx.IDENTIFIER().text}; 路径: ${Jar.Decompiled.classes[ctx.IDENTIFIER()?.text]?.path ?: ""}"
                 )
-                // 如果类有继承, 暂时认为不是model
-                isSubclass = ctx.isSubclass()
-
-                // 抽象类不是model
-                isAbstract = ctx.isAbstract()
-
-                if (isSubclass || isAbstract) skip = true
+                // 父类是否是model, 如果是的话, 那么忽略父类的影响, 如果不是的话, 那么当前类也不是model
+                // 如果没有父类, 那么就认为父类是model
+                parentIsModel = ctx.superClass()?.isJavaModelType() == true || ctx.EXTENDS() == null
             }
         }
 
         override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
-            if (skip) return
             field?.run {
-                // 静态字段不参与判断
+                memberAllStatic.add(field.isStatic())
                 if (field.isStatic()) return
-                fieldJsonable.add(field.jsonable() || Jar.Decompiled.classes[field.type()]?.isModel == true)
+
+                fieldAllModel.add(
+                    field.jsonable()
+                            || Jar.Decompiled.classes[type().genericType()]?.isModel == true
+                            || PRESERVED_MODEL.contains(type())
+                )
+            }
+        }
+
+        override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
+            ctx?.run {
+                memberAllStatic.add(!ctx.isInstanceMethod())
             }
         }
 
         override fun exitClassDeclaration(ctx: ClassDeclarationContext?) {
             ctx?.run {
-                isModel = if (isAbstract || isSubclass || fieldJsonable.isEmpty())
-                    false
-                else
-                    fieldJsonable.all { it }
+                println("parentIsModel: $parentIsModel, fieldAllModel: $fieldAllModel, fieldAllStatic: $memberAllStatic")
+
+                isModel = (fieldAllModel.all { it } || fieldAllModel.isEmpty())
+                        && (!memberAllStatic.all { it } || memberAllStatic.isEmpty())
+                        && parentIsModel
 
                 Jar.Decompiled.classes[ctx.IDENTIFIER().text]?.isModel = isModel
 
                 println("${ctx.IDENTIFIER().text} 评估结果: $isModel\n")
-
-                skip = false
             }
         }
     })

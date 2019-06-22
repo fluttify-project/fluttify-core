@@ -3,6 +3,7 @@ package common.extensions
 import Framework
 import Jar
 import common.PATH
+import common.PRESERVED_MODEL
 import common.TYPE_NAME
 import java.io.File
 
@@ -37,20 +38,30 @@ fun TYPE_NAME?.jsonable(): Boolean {
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
+    // 目前只关心java类型, 扩展到ios端后处理oc类型
     return when (this) {
-        "BOOL", "boolean" -> "bool"
-        "int", "Int", "UInt32", "Byte", "long" -> "int"
-        "double", "float", "CGFloat" -> "double"
-        "NSString*", "NSString *", "NSString", "String" -> "String"
-        "NSArray*", "NSArray *", "NSArray", "List", "ArrayList" -> "List"
-        "NSDictionary*", "NSDictionary *", "NSDictionary", "Map" -> "Map"
-        "byte[]", "Byte[]" -> "List<int>"
-        "int[]", "Int[]" -> "List<int>"
-        "long[]", "Long[]" -> "List<int>"
-        "double[]", "Double[]" -> "List<double>"
+        "String" -> "String"
+        "boolean", "Boolean" -> "bool"
+        "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
+        "double", "Double", "float", "Float" -> "double"
+        "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
+        "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
+        "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
+        "Map" -> "Map"
         "void" -> "void"
         null -> "null"
         else -> this
+    }
+}
+
+/**
+ * 获取泛型类型名称
+ */
+fun TYPE_NAME.genericType(): TYPE_NAME {
+    return if (contains("<") && contains(">")) {
+        substringAfter("<").run { substringBefore(">") }
+    } else {
+        this
     }
 }
 
@@ -117,13 +128,19 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
  * 类型名判断是否是java model
  */
 fun TYPE_NAME.isJavaModelType(): Boolean {
+    // 如果是系统知道的模型类, 那么直接返回true
+    if (PRESERVED_MODEL.contains(this)) return true
+
     // 如果是可以直接json序列化的, 那么直接就返回true
     if (jsonable()) return true
 
     return Jar
         .Decompiled
         .classes[this]
-        ?.isModel == true
+        ?.path
+        ?.file()
+        ?.readText()
+        ?.isJavaModel() == true
 }
 
 /**

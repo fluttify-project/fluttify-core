@@ -102,7 +102,7 @@ class #__class_name__#Plugin : MethodCallHandler {
         val args = methodCall.arguments as? Map<String, *> ?: mapOf<String, Any>()
         when (methodCall.method) {"""
 
-        const val methodResult = """
+        const val methodBranch = """
             "#__method_name__#" -> {#__local_params__#
                 val result = #__java_class_simple_name__#.#__method_name__#(#__params__#)
 
@@ -110,14 +110,16 @@ class #__class_name__#Plugin : MethodCallHandler {
             }"""
 
         const val whenElse = """
-            else -> methodResult.notImplemented()"""
+            else -> methodResult.notImplemented()
+        }"""
 
         const val classEnd = """
-        }
     }
 }
 """
-        const val platformViewPlugin = """package #__package__#
+
+        object PlatformView {
+            const val plugin = """package #__package__#
 
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -136,7 +138,8 @@ class #__name__#Plugin {
         }
     }
 }"""
-        const val platformViewFactory = """package #__package__#
+
+            const val factory = """package #__package__#
 
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -151,36 +154,35 @@ class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(
         return #__view__#(context, id, registrar)
     }
 }"""
-        const val platformView = """package #__package__#
 
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.StandardMessageCodec
-import io.flutter.plugin.platform.PlatformView
-import io.flutter.plugin.platform.PlatformViewFactory
-import io.flutter.plugin.common.PluginRegistry.Registrar
+            const val classDeclaration = """
+class #__view__#(context: Context, private val id: Int, private val registrar: Registrar) : PlatformView, MethodCallHandler {
+"""
 
-import #__native_view_package__#
-
-class #__view__#(context: Context, private val id: Int, private val registrar: Registrar) : PlatformView {
-
+            const val channel = """
     private val methodChannel = MethodChannel(registrar.messenger(), "#__package__#" + id)
-    private val view = #__native_view__#(context)
+    private val view = $mainJavaClass(context)
 
     init {
-        methodChannel.setMethodCallHandler { methodCall, result ->
-            when (methodCall.method) {
-
-            }
-        }
+        methodChannel.setMethodCallHandler(this)
     }
+"""
 
+            const val methodBranch = """
+            "#__method_name__#" -> {#__local_params__#
+                val result = view.#__method_name__#(#__params__#)
+
+                methodResult.success(#__result__#)
+            }"""
+
+            const val getViewDispose = """
     override fun getView(): View = view
 
     override fun dispose() {
         methodChannel.invokeMethod("dispose", null)
     }
-}"""
+"""
+        }
     }
 
     object Swift {

@@ -17,9 +17,12 @@ class RecognizeAndroidModelTask(private val dir: File) : Task<File, List<File>>(
     override fun process(): List<File> {
         val result = mutableListOf<File>()
         var lastCycleCount = -1
+        var cycleCount = 0
 
-        // 循环寻找model类, 知道上一次循环和这一次循环的结果一样
+        // 循环寻找model类, 直到上一次循环和这一次循环的结果一样
         while (lastCycleCount != result.size) {
+            println("第${cycleCount++}次循环: 上次循环识别出${result.size}个model")
+
             lastCycleCount = result.size
             FileUtils
                 .iterateFiles(dir, arrayOf("java"), true)
