@@ -4,10 +4,7 @@ import Configs.outputOrg
 import Configs.outputProjectName
 import Jar
 import OutputProject
-import common.IGNORE_METHOD
-import common.JAVA_FILE
-import common.KOTLIN_FILE
-import common.Temps
+import common.*
 import common.extensions.*
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
@@ -19,10 +16,10 @@ import java.io.File
  * 生成PlatformView类, 并输出到文件
  *
  * 输入: 目标原生View类
- * 输出: 生成内容后的PlatformView文件
+ * 输出: 生成内容后的Kotlin PlatformView文件
  * 依赖: [AndroidRecognizeModelTask]
  */
-class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
+class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
     Task<JAVA_FILE, KOTLIN_FILE>(mainClassFile) {
     override fun process(): KOTLIN_FILE {
         val javaSource = mainClassFile.readText()
@@ -49,7 +46,7 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
             }
         })
 
-        // 生成method handler
+        // 生成method handler 需要递归进行
         generate(javaSource, kotlinResultBuilder)
 
         // 生成类的结尾
@@ -73,8 +70,8 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                 method?.run {
                     // 跳过忽略的方法
                     if (name() in IGNORE_METHOD) return
-                    // 跳过私有, 废弃方法
-                    if (isPrivate() || isDeprecated()) return
+                    // 跳过非公有, 废弃, 重载方法
+                    if (!isPublic() || isDeprecated() || isOverride()) return
                     // 跳过含有`非model参数`的方法
                     if (!formalParams().all { it.type.isJavaModelType() }) return
 
@@ -88,10 +85,13 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                             formalParams().joinToString("") {
                                 when {
                                     it.type.jsonable() -> {
-                                        "\n\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type}"
+                                        "\n\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type.capitalize()}"
                                     }
                                     Jar.Decompiled.classes[it.type]?.isModel == true -> {
                                         "\n\t\t\t\tval ${it.name} = mapper.readValue(args[\"${it.name}\"] as String, ${it.type}::class.java)"
+                                    }
+                                    it.type in PRESERVED_MODEL -> {
+                                        it.convertPreservedModel()
                                     }
                                     else -> ""
                                 }
@@ -99,8 +99,26 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                         )
                     )
 
+                    // 静态方法单独处理
+                    if (isStatic()) {
+                        // 返回类型是model
+                        if (returnType()?.isJavaModelType() == true) {
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.staticReturnModel.placeholder(
+                                    className,
+                                    name(),
+                                    formalParams().joinToString { it.name },
+                                    if (returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
+                                )
+                            )
+                            kotlinResultBuilder.append("\n\t\t\t}")
+                        }
+                        return
+                    }
+
                     // 说明是主类上的调用, 不需要使用objectId去取对象
                     if (className == Jar.Decompiled.mainClassSimpleName) {
+                        // 返回类型是model
                         if (returnType()?.isJavaModelType() == true) {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.viewReturnModel.placeholder(
@@ -110,7 +128,9 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                                 )
                             )
                             kotlinResultBuilder.append("\n\t\t\t}")
-                        } else {
+                        }
+                        // 返回类型是ref
+                        else {
                             kotlinResultBuilder.append(Temps.Kotlin.PlatformView.viewReturnRef.placeholder(
                                 name(),
                                 formalParams().joinToString { it.name }
@@ -126,16 +146,21 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                                 ?.run { generate(this, kotlinResultBuilder) }
                         }
                     } else {
+                        // 返回类型是model
                         if (returnType()?.isJavaModelType() == true) {
-                            kotlinResultBuilder.append(Temps.Kotlin.PlatformView.refReturnModel.placeholder(
-                                className,
-                                name(),
-                                formalParams().joinToString { it.name },
-                                if (returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
-                            ))
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.refReturnModel.placeholder(
+                                    className,
+                                    name(),
+                                    formalParams().joinToString { it.name },
+                                    if (returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
+                                )
+                            )
 
                             kotlinResultBuilder.append("\n\t\t\t}")
-                        } else {
+                        }
+                        // 返回类型是ref
+                        else {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.refReturnRef.placeholder(
                                     className,

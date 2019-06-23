@@ -190,3 +190,7 @@ fun PATH.file(): File {
     }
     return file
 }
+
+fun String.builder() : StringBuilder{
+    return StringBuilder(this)
+}

@@ -9,6 +9,7 @@ import common.JAVA_FILE
 import common.KOTLIN_FILE
 import common.Temps
 import common.extensions.placeholder
+import common.extensions.underscore2Camel
 import task.Task
 import task.common.OutputProjectTask
 
@@ -27,7 +28,7 @@ class AndroidKotlinPluginTask(private val mainClassFile: JAVA_FILE) :
             OutputProject.classSimpleName,
             "$outputOrg.$outputProjectName",
             Jar.Decompiled.mainClassSimpleName,
-            Jar.Decompiled.mainClassSimpleName
+            outputProjectName.underscore2Camel(true)
         )
         return mainClassFile.apply { writeText(content) }
     }

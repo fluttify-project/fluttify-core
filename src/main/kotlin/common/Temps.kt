@@ -73,19 +73,21 @@ class #__plugin_class_simple_name__# {
 
 import $mainJavaClass
 
-import com.fasterxml.jackson.databind.refMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 
+import android.content.Context
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import io.flutter.plugin.platform.PlatformView
 """
 
         const val classDeclaration = """
 class #__class_name__#Plugin : MethodCallHandler {
 
-    private val mapper: refMapper = refMapper()
+    private val mapper: objectMapper = objectMapper()
 """
 
         const val companionObject = """
@@ -122,6 +124,7 @@ class #__class_name__#Plugin : MethodCallHandler {
         object PlatformView {
             const val plugin = """package #__package__#
 
+import android.content.Context
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
@@ -142,6 +145,7 @@ class #__name__#Plugin {
 
             const val factory = """package #__package__#
 
+import android.content.Context
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
@@ -157,13 +161,14 @@ class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(
 }"""
 
             const val classDeclaration = """
-class #__view__#(context: Context, private val id: Int, private val registrar: Registrar) : PlatformView, MethodCallHandler {
+class #__view__#(context: Context, id: Int, registrar: Registrar) : PlatformView, MethodCallHandler {
 """
 
             val channel = """
     private val methodChannel = MethodChannel(registrar.messenger(), "#__package__#" + id)
     private val view = ${Jar.Decompiled.mainClassSimpleName}(context)
-    private val refMap = mapOf<Int, Any>()
+    private val refMap = mutableMapOf<Int, Any>()
+    private val mapper: ObjectMapper = ObjectMapper()
 
     init {
         methodChannel.setMethodCallHandler(this)
@@ -172,6 +177,11 @@ class #__view__#(context: Context, private val id: Int, private val registrar: R
 
             const val methodBranchHeader = """
             "#__class_name__#::#__method_name__#" -> {#__local_params__#"""
+
+            const val staticReturnModel = """
+                val result = #__class_name__#.#__method_name__#(#__params__#)
+                
+                methodResult.success(#__result__#)"""
 
             const val viewReturnModel = """
                 val result = view.#__method_name__#(#__params__#)

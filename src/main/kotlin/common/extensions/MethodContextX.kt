@@ -31,7 +31,31 @@ fun JavaParser.MethodDeclarationContext?.isPrivate(): Boolean {
         ?.contains("private") == true
 }
 
+fun JavaParser.MethodDeclarationContext?.isStatic(): Boolean {
+    if (this == null) return false
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("static") == true
+}
+
+fun JavaParser.MethodDeclarationContext?.isPublic(): Boolean {
+    if (this == null) return false
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("public") == true
+}
+
 fun JavaParser.MethodDeclarationContext?.isDeprecated(): Boolean {
+    if (this == null) return false
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("@Deprecated") == true
+}
+
+fun JavaParser.MethodDeclarationContext?.isOverride(): Boolean {
     if (this == null) return false
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()

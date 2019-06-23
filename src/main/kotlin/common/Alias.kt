@@ -10,6 +10,7 @@ typealias TYPE_NAME = String
 typealias JAVA_SOURCE = String
 typealias OBJC_SOURCE = String
 typealias DART_SOURCE = String
+typealias KOTLIN_SOURCE = String
 
 typealias PATH = String
 
