@@ -3,6 +3,7 @@ package common
 import Configs
 import Configs.mainJavaClass
 import Framework
+import Jar
 
 /**
  * 代码模板
@@ -159,9 +160,9 @@ class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(
 class #__view__#(context: Context, private val id: Int, private val registrar: Registrar) : PlatformView, MethodCallHandler {
 """
 
-            const val channel = """
+            val channel = """
     private val methodChannel = MethodChannel(registrar.messenger(), "#__package__#" + id)
-    private val view = $mainJavaClass(context)
+    private val view = ${Jar.Decompiled.mainClassSimpleName}(context)
 
     init {
         methodChannel.setMethodCallHandler(this)
