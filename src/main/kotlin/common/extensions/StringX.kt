@@ -144,6 +144,13 @@ fun TYPE_NAME.isJavaModelType(): Boolean {
 }
 
 /**
+ * 类型名判断是否是java引用类型
+ */
+fun TYPE_NAME.isJavaRefType(): Boolean {
+    return !isJavaModelType()
+}
+
+/**
  * 类型名判断是否是objc model
  */
 fun TYPE_NAME.isObjcModelType(): Boolean {

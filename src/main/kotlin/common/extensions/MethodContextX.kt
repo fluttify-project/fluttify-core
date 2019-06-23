@@ -57,14 +57,14 @@ fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {
     parameters
         ?.formalParameter()
         ?.forEach {
-            result.add(Variable(it.typeType().text.toDartType(), it.variableDeclaratorId().text))
+            result.add(Variable(it.typeType().text, it.variableDeclaratorId().text))
         }
 
     // 最后一个参数
     parameters
         ?.lastFormalParameter()
         ?.run {
-            result.add(Variable(typeType().text.toDartType(), variableDeclaratorId().text))
+            result.add(Variable(typeType().text, variableDeclaratorId().text))
         }
 
     return result

@@ -50,7 +50,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                         Temps.Dart.invokeMethod.placeholder(
                             method.returnType().toDartType(),
                             method.name(),
-                            method.formalParams().joinToString { "${it.type} ${it.name}" },
+                            method.formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
                             method.name(),
                             if (method.formalParams().isEmpty()) "" else ", ",
                             method.formalParams().toDartMap()
@@ -61,7 +61,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                         Temps.Dart.invokeModelMethod.placeholder(
                             method.returnType().toDartType(),
                             method.name(),
-                            method.formalParams().joinToString { "${it.type} ${it.name}" },
+                            method.formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
                             method.name(),
                             if (method.formalParams().isEmpty()) "" else ", ",
                             method.formalParams().toDartMap(),

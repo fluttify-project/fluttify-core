@@ -4,6 +4,7 @@ import Configs.outputOrg
 import Configs.outputProjectName
 import Jar
 import OutputProject
+import common.IGNORE_METHOD
 import common.JAVA_FILE
 import common.KOTLIN_FILE
 import common.Temps
@@ -29,6 +30,7 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
 
         File(OutputProject.Android.kotlinFilePath).run { if (!exists()) mkdirs() }
 
+        // 生成类的开头
         javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterCompilationUnit(ctx: JavaParser.CompilationUnitContext?) {
                 kotlinResultBuilder.append(Temps.Kotlin.packageImport.placeholder("$outputOrg.$outputProjectName"))
@@ -45,43 +47,118 @@ class AndroidPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                 kotlinResultBuilder.append(Temps.Kotlin.PlatformView.getViewDispose)
                 kotlinResultBuilder.append(Temps.Kotlin.onMethodCall)
             }
+        })
 
-            override fun enterMethodDeclaration(method: JavaParser.MethodDeclarationContext?) {
-                // 跳过私有, 废弃方法
-                if (method.run { isPrivate() || isDeprecated() }) return
-                // 跳过含有`非model参数`的方法
-                if (!method.formalParams().all { it.type.isJavaModelType() }) return
+        // 生成method handler
+        generate(javaSource, kotlinResultBuilder)
 
-                kotlinResultBuilder.append(
-                    Temps.Kotlin.PlatformView.methodBranch.placeholder(
-                        method.name(),
-                        method.formalParams().joinToString("") {
-                            when {
-                                it.type.jsonable() -> {
-                                    "\n\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type}"
-                                }
-                                Jar.Decompiled.classes[it.type]?.isModel == true -> {
-                                    "\n\t\t\t\tval ${it.name} = mapper.readValue(args[\"${it.name}\"] as String, ${it.type}::class.java)"
-                                }
-                                else -> ""
-                            }
-                        },
-                        method.name(),
-                        method.formalParams().joinToString { it.name },
-                        if (method?.returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
-                    )
-                )
-            }
-
+        // 生成类的结尾
+        javaSource.walkTree(object : JavaParserBaseListener() {
             override fun exitClassDeclaration(ctx: JavaParser.ClassDeclarationContext?) {
                 kotlinResultBuilder.append(Temps.Kotlin.whenElse)
                 kotlinResultBuilder.append(Temps.Kotlin.classEnd)
             }
         })
+
         return OutputProject
             .Android
             .platformViewFilePath
             .file()
             .apply { writeText(kotlinResultBuilder.toString()) }
+    }
+
+    private fun generate(javaSource: String, kotlinResultBuilder: StringBuilder) {
+        javaSource.walkTree(object : JavaParserBaseListener() {
+            override fun enterMethodDeclaration(method: JavaParser.MethodDeclarationContext?) {
+                method?.run {
+                    // 跳过忽略的方法
+                    if (name() in IGNORE_METHOD) return
+                    // 跳过私有, 废弃方法
+                    if (isPrivate() || isDeprecated()) return
+                    // 跳过含有`非model参数`的方法
+                    if (!formalParams().all { it.type.isJavaModelType() }) return
+
+                    val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text ?: ""
+
+                    // 条件分支的头, 每种情况都是一样的
+                    kotlinResultBuilder.append(
+                        Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
+                            className,
+                            name(),
+                            formalParams().joinToString("") {
+                                when {
+                                    it.type.jsonable() -> {
+                                        "\n\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type}"
+                                    }
+                                    Jar.Decompiled.classes[it.type]?.isModel == true -> {
+                                        "\n\t\t\t\tval ${it.name} = mapper.readValue(args[\"${it.name}\"] as String, ${it.type}::class.java)"
+                                    }
+                                    else -> ""
+                                }
+                            }
+                        )
+                    )
+
+                    // 说明是主类上的调用, 不需要使用objectId去取对象
+                    if (className == Jar.Decompiled.mainClassSimpleName) {
+                        if (returnType()?.isJavaModelType() == true) {
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.viewReturnModel.placeholder(
+                                    name(),
+                                    formalParams().joinToString { it.name },
+                                    if (returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
+                                )
+                            )
+                            kotlinResultBuilder.append("\n\t\t\t}")
+                        } else {
+                            kotlinResultBuilder.append(Temps.Kotlin.PlatformView.viewReturnRef.placeholder(
+                                name(),
+                                formalParams().joinToString { it.name }
+                            ))
+                            kotlinResultBuilder.append("\n\t\t\t}")
+
+                            Jar
+                                .Decompiled
+                                .classes[returnType()]
+                                ?.path
+                                ?.file()
+                                ?.readText()
+                                ?.run { generate(this, kotlinResultBuilder) }
+                        }
+                    } else {
+                        if (returnType()?.isJavaModelType() == true) {
+                            kotlinResultBuilder.append(Temps.Kotlin.PlatformView.refReturnModel.placeholder(
+                                className,
+                                name(),
+                                formalParams().joinToString { it.name },
+                                if (returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
+                            ))
+
+                            kotlinResultBuilder.append("\n\t\t\t}")
+                        } else {
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.refReturnRef.placeholder(
+                                    className,
+                                    name(),
+                                    formalParams().joinToString { it.name },
+                                    if (returnType().jsonable()) "result" else "mapper.convertValue(result, Map::class.java)"
+                                )
+                            )
+
+                            kotlinResultBuilder.append("\n\t\t\t}")
+
+                            Jar
+                                .Decompiled
+                                .classes[returnType()]
+                                ?.path
+                                ?.file()
+                                ?.readText()
+                                ?.run { generate(this, kotlinResultBuilder) }
+                        }
+                    }
+
+                }
+            }
+        })
     }
 }

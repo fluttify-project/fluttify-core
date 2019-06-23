@@ -10,13 +10,13 @@ import java.io.File
 /**
  * 从主类中识别出需要对应dart类的java类
  *
- * 转换对象: 主类中返回非model对象的方法
+ * 转换对象: 主类中返回引用对象的方法
  *
  * 输入: 待识别的主类文件
- * 输出: 识别成非模型类的文件们
+ * 输出: 识别成引用类的文件们
  * 依赖: [AndroidRecognizeModelTask]
  */
-class RecognizeAndroidNonModelTask(private val mainClassFile: File) : Task<File, List<File>>(mainClassFile) {
+class RecognizeAndroidRefTask(private val mainClassFile: File) : Task<File, List<File>>(mainClassFile) {
     override fun process(): List<File> {
         val result = mutableListOf<File>()
         val classContent = mainClassFile.readText()
@@ -26,7 +26,7 @@ class RecognizeAndroidNonModelTask(private val mainClassFile: File) : Task<File,
                 ctx
                     ?.returnType()
                     ?.run {
-                        if (!isJavaModelType()) {
+                        if (isJavaRefType()) {
                             // 因为isJavaModelType内部已经有调用过Jar.Decompiled.classes, 所以可以确定Jar.Decompiled.classes[this]
                             // 是能取到值的
                             Jar
@@ -49,7 +49,7 @@ class RecognizeAndroidNonModelTask(private val mainClassFile: File) : Task<File,
  * 输出: 识别成模型类的文件们
  * 依赖: []
  */
-class RecognizeIOSNonModelTask(private val dir: File) : Task<File, List<File>>(dir) {
+class RecognizeIOSRefTask(private val dir: File) : Task<File, List<File>>(dir) {
     override fun process(): List<File> {
         return dir.listFiles().filter { it.readText().isObjcModel() }
     }

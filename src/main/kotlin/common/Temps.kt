@@ -73,7 +73,7 @@ class #__plugin_class_simple_name__# {
 
 import $mainJavaClass
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.refMapper
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -85,7 +85,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
         const val classDeclaration = """
 class #__class_name__#Plugin : MethodCallHandler {
 
-    private val mapper: ObjectMapper = ObjectMapper()
+    private val mapper: refMapper = refMapper()
 """
 
         const val companionObject = """
@@ -163,18 +163,47 @@ class #__view__#(context: Context, private val id: Int, private val registrar: R
             val channel = """
     private val methodChannel = MethodChannel(registrar.messenger(), "#__package__#" + id)
     private val view = ${Jar.Decompiled.mainClassSimpleName}(context)
+    private val refMap = mapOf<Int, Any>()
 
     init {
         methodChannel.setMethodCallHandler(this)
     }
 """
 
-            const val methodBranch = """
-            "#__method_name__#" -> {#__local_params__#
-                val result = view.#__method_name__#(#__params__#)
+            const val methodBranchHeader = """
+            "#__class_name__#::#__method_name__#" -> {#__local_params__#"""
 
-                methodResult.success(#__result__#)
-            }"""
+            const val viewReturnModel = """
+                val result = view.#__method_name__#(#__params__#)
+                
+                methodResult.success(#__result__#)"""
+
+            const val viewReturnRef = """
+                val result = view.#__method_name__#(#__params__#)
+                
+                val returnRefId = result.hashCode()
+                refMap[returnRefId] = result
+                
+                methodResult.success(returnRefId)"""
+
+            const val refReturnRef = """
+                val callRefId = args["callRefId"] as Int
+                val ref = refMap[callRefId] as #__class_name__#
+
+                val result = ref.#__method_name__#(#__params__#)
+
+                val returnRefId = result.hashCode()
+                refMap[returnRefId] = result
+                
+                methodResult.success(returnRefId)"""
+
+            const val refReturnModel = """
+                val callRefId = args["callRefId"] as Int
+                val ref = refMap[callRefId] as #__class_name__#
+
+                val result = ref.#__method_name__#(#__params__#)
+
+                methodResult.success(#__result__#)"""
 
             const val getViewDispose = """
     override fun getView(): View = view
