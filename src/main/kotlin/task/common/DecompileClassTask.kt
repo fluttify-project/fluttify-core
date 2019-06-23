@@ -21,7 +21,9 @@ class DecompileClassTask(private val classFile: File) : Task<File, JAVA_FILE>(cl
         val process = Runtime
             .getRuntime()
             // -dgs=1 => decompile generic signatures
-            .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=0 ${classFile.absolutePath} $artifactPath")
+            // -din=0 => decompile inner classes
+            // -rsy=1 => hide synthetic class members
+            .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=0 -rsy=1 ${classFile.absolutePath} $artifactPath")
 
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)

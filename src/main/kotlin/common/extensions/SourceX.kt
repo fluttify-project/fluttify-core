@@ -1,10 +1,7 @@
 package common.extensions
 
 import Jar
-import common.DART_SOURCE
-import common.JAVA_SOURCE
-import common.OBJC_SOURCE
-import common.PRESERVED_MODEL
+import common.*
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -23,11 +20,22 @@ import parser.objc.ObjectiveCParserBaseListener
 //region Java源码扩展
 /**
  * java源码判断是否是模型类
+ *
+ * 识别规则:
+ * 判定为true:
+ *   1. 当前类是model, 父类也是model √
+ *   2. 所有字段都是model/jsonable √
+ *   3. 保留的model类 √
+ * 判定为false:
+ *   1. 所有成员(包括字段和方法)都是static √
+ *   2. 任何一个方法参数中含有非model类
  */
 fun JAVA_SOURCE.isJavaModel(): Boolean {
     var parentIsModel = false
-    val fieldAllModel: MutableList<Boolean> = mutableListOf()
-    val memberAllStatic: MutableList<Boolean> = mutableListOf()
+
+    val fieldAllModel = mutableListOf<Boolean>()
+    val memberAllStatic = mutableListOf<Boolean>()
+    val methodArgsAllModel = mutableListOf<Boolean>()
 
     var isModel = false
 
@@ -58,17 +66,22 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
 
         override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
             ctx?.run {
+                // 如果方法名称是在忽略列表里的, 那么就直接跳过
+                if (ctx.name() in IGNORE_METHOD) return
+
                 memberAllStatic.add(!ctx.isInstanceMethod())
+                formalParams().forEach { methodArgsAllModel.add(it.isModel()) }
             }
         }
 
         override fun exitClassDeclaration(ctx: ClassDeclarationContext?) {
             ctx?.run {
-                println("parentIsModel: $parentIsModel, fieldAllModel: $fieldAllModel, fieldAllStatic: $memberAllStatic")
+                println("parentIsModel: $parentIsModel, fieldAllModel: $fieldAllModel, fieldAllStatic: $memberAllStatic, methodArgsAllModel: $methodArgsAllModel")
 
                 isModel = (fieldAllModel.all { it } || fieldAllModel.isEmpty())
                         && (!memberAllStatic.all { it } || memberAllStatic.isEmpty())
                         && parentIsModel
+                        && (methodArgsAllModel.all { it } || methodArgsAllModel.isEmpty())
 
                 Jar.Decompiled.classes[ctx.IDENTIFIER().text]?.isModel = isModel
 
