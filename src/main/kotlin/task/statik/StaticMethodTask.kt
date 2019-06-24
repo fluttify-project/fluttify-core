@@ -27,7 +27,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
         val javaSource = mainClassFile.readText()
         val dartResultBuilder = StringBuilder()
 
-        File(OutputProject.Dart.dartAndroidDirPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.androidDirPath).run { if (!exists()) mkdirs() }
 
         javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterCompilationUnit(ctx: JavaParser.CompilationUnitContext?) {
@@ -75,7 +75,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                 dartResultBuilder.append(Temps.Dart.classEnd)
             }
         })
-        return File("${OutputProject.Dart.dartAndroidDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.androidDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartResultBuilder.toString())
@@ -167,7 +167,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
         val objcSource = mainClassFile.readText()
         val dartResultBuilder = StringBuilder()
 
-        File(OutputProject.Dart.dartIOSDirPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.iOSDirPath).run { if (!exists()) mkdirs() }
 
         objcSource.walkTree(object : ObjectiveCParserBaseListener() {
             override fun enterTranslationUnit(ctx: ObjectiveCParser.TranslationUnitContext?) {
@@ -202,7 +202,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
                 dartResultBuilder.append(Temps.Dart.classEnd)
             }
         })
-        return File("${OutputProject.Dart.dartIOSDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.iOSDirPath}/${mainClassFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartResultBuilder.toString())

@@ -187,3 +187,32 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
         })
     }
 }
+
+/**
+ * 生成PlatformView的Dart类, 并输出到文件
+ *
+ * 输入: 目标原生View类
+ * 输出: 生成内容后的Dart PlatformView文件
+ * 依赖: [AndroidRecognizeModelTask]
+ */
+class AndroidDartPlatformViewTask(private val dartPlatformViewFile: JAVA_FILE) :
+    Task<JAVA_FILE, DART_FILE>(dartPlatformViewFile) {
+    override fun process(): DART_FILE {
+        val dartResultBuilder = StringBuilder()
+
+        dartResultBuilder.append(
+            Temps.Dart.androidView.placeholder(
+                Jar.Decompiled.mainClassSimpleName,
+                Jar.Decompiled.mainClassSimpleName,
+                Jar.Decompiled.mainClassSimpleName,
+                Jar.Decompiled.mainClassSimpleName,
+                "$outputOrg/${Jar.Decompiled.mainClassSimpleName}",
+                Jar.Decompiled.mainClassSimpleName
+            )
+        )
+
+        return dartPlatformViewFile
+            .apply { writeText(dartResultBuilder.toString()) }
+    }
+}
+

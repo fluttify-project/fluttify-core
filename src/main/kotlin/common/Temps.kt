@@ -65,6 +65,76 @@ class #__plugin_class_simple_name__# {
     return JsonEncoder.withIndent('  ').convert(toJson());
   }
 """
+        const val androidView = """import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:${Configs.outputProjectName}/${Configs.outputProjectName}.dart';
+
+typedef void PlatformViewCreatedCallback(Android#__android_view__#Controller controller);
+
+class Android#__android_view__# extends StatelessWidget {
+  const Android#__android_view__#({
+    Key key,
+    this.onAndroid#__android_view__#Created,
+  }) : super(key: key);
+  
+  final PlatformViewCreatedCallback onViewCreated;
+  
+  @override
+  Widget build(BuildContext context) {
+    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
+      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+    ].toSet();
+
+    final messageCodec = StandardMessageCodec();
+    return AndroidView(
+      viewType: '#__view_type__#',
+      gestureRecognizers: gestureRecognizers,
+      onPlatformViewCreated: _onViewCreated,
+      creationParamsCodec: messageCodec,
+    );
+  }
+
+  void _onViewCreated(int id) {
+    final controller = Android#__android_view__#Controller.withId(id);
+    if (onViewCreated != null) {
+      onViewCreated(controller);
+    }
+  }
+}
+"""
+        const val uiKitView = """import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+
+class Android#__uikit_view__# extends StatelessWidget {
+  const Android#__uikit_view__#({
+    Key key,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
+      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+    ].toSet();
+
+    final messageCodec = StandardMessageCodec();
+    return UiKitView(
+      viewType: #__view_type__#,
+      gestureRecognizers: gestureRecognizers,
+      creationParamsCodec: messageCodec,
+    );
+  }
+}
+"""
     }
 
     object Kotlin {

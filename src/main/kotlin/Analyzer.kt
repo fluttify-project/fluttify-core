@@ -9,10 +9,7 @@ import Jar.Decompiled.mainClassSimpleName
 import Jar.`package`
 import Project.path
 import common.TYPE_NAME
-import common.extensions.file
-import common.extensions.javaTypeInfo
-import common.extensions.objcTypeInfo
-import common.extensions.underscore2Camel
+import common.extensions.*
 import common.model.JavaTypeInfo
 import common.model.ObjcTypeInfo
 import org.apache.commons.io.FileUtils
@@ -153,22 +150,27 @@ object OutputProject {
         /**
          * 生成工程的Android端Dart文件路径
          */
-        val dartAndroidDirPath = "$libDirPath/src/android/"
+        val androidDirPath = "$libDirPath/src/android/"
+
+        /**
+         * 生成工程的Android端PlatformView的Dart文件路径
+         */
+        val androidPlatformViewFilePath = "${androidDirPath}android_${mainClassSimpleName.camel2Underscore()}.dart"
 
         /**
          * 生成工程的Android端Dart模型文件路径
          */
-        val dartAndroidModelDirPath = "$libDirPath/src/android/model/"
+        val androidModelDirPath = "$libDirPath/src/android/model/"
 
         /**
          * 生成工程的iOS端Dart文件路径
          */
-        val dartIOSDirPath = "$libDirPath/src/ios/"
+        val iOSDirPath = "$libDirPath/src/ios/"
 
         /**
          * 生成工程的iOS端Dart模型文件路径
          */
-        val dartIOSModelDirPath = "$libDirPath/src/ios/model/"
+        val iOSModelDirPath = "$libDirPath/src/ios/model/"
     }
 
     /**

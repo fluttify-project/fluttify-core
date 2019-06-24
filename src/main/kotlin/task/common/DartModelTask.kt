@@ -28,9 +28,9 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
         val javaContent = javaModelFile.readText()
         val dartModelSource = translate(javaContent)
 
-        File(OutputProject.Dart.dartAndroidModelDirPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.androidModelDirPath).run { if (!exists()) mkdirs() }
 
-        return "${OutputProject.Dart.dartAndroidModelDirPath}/${javaModelFile.nameWithoutExtension.replace("$", "_").camel2Underscore()}.dart".file()
+        return "${OutputProject.Dart.androidModelDirPath}/${javaModelFile.nameWithoutExtension.replace("$", "_").camel2Underscore()}.dart".file()
             .apply { writeText(dartModelSource) }
     }
 
@@ -187,9 +187,9 @@ class IOSDartModelTask(private val javaModelFile: File) : Task<File, File>(javaM
         val javaContent = javaModelFile.readText()
         val dartModelSource = translate(javaContent)
 
-        File(OutputProject.Dart.dartAndroidModelDirPath).run { if (!exists()) mkdirs() }
+        File(OutputProject.Dart.androidModelDirPath).run { if (!exists()) mkdirs() }
 
-        return File("${OutputProject.Dart.dartAndroidModelDirPath}/${javaModelFile.nameWithoutExtension.camel2Underscore()}.dart")
+        return File("${OutputProject.Dart.androidModelDirPath}/${javaModelFile.nameWithoutExtension.camel2Underscore()}.dart")
             .apply {
                 if (!exists()) createNewFile()
                 writeText(dartModelSource)
