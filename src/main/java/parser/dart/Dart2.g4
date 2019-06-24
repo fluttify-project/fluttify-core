@@ -34,6 +34,12 @@ grammar Dart2;
 
 compilationUnit: libraryDefinition | partDeclaration;
 
+STATIC:              'static';
+FINAL:               'final';
+CONST:               'const';
+VAR:                 'var';
+VOID:                'void';
+
 WHITESPACE
 //  : ('\t' | ' ' | NEWLINE)+   -> skip
   :  [ \t\r\n\u000C]+ -> skip

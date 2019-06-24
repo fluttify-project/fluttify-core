@@ -1,4 +1,5 @@
-package parser.dart;// Generated from Dart2.g4 by ANTLR 4.7.2
+package parser.dart;
+// Generated from Dart2.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
