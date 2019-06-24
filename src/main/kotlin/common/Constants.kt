@@ -13,5 +13,14 @@ val IGNORE_METHOD = listOf(
     "toString",
     "equals",
     "writeToParcel",
-    "describeContents"
+    "describeContents",
+    "recycle",
+    "hashCode"
+)
+
+/**
+ * 忽略的字段
+ */
+val IGNORE_FIELD = listOf(
+    "CREATOR"
 )

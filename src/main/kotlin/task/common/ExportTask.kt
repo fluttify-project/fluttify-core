@@ -9,7 +9,6 @@ import task.statik.AndroidDartStaticMethodTask
 import task.statik.IOSDartStaticMethodTask
 
 /**
- * TODO 生成export文件, 引入需要导出的文件, 以及import进所有需要的文件
  * 需要引入的内容为android端的主类和模型类以及ios端的主类和模型类
  *
  * 输入: 目标工程文件夹

@@ -39,6 +39,17 @@ fun JavaParser.MethodDeclarationContext?.isStatic(): Boolean {
         ?.contains("static") == true
 }
 
+/**
+ * 判断当前方法是否被混淆
+ *
+ * 规则:
+ *   1. 方法名长度只有1
+ */
+fun JavaParser.MethodDeclarationContext?.isObfuscated(): Boolean {
+    if (this == null) return false
+    return name()?.length == 1
+}
+
 fun JavaParser.MethodDeclarationContext?.isPublic(): Boolean {
     if (this == null) return false
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)

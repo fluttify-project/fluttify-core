@@ -1,11 +1,8 @@
 package task.common
 
 import OutputProject
-import common.DART_SOURCE
-import common.JAVA_SOURCE
-import common.Temps
+import common.*
 import common.extensions.*
-import common.gWalker
 import common.translator.toDart
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -33,11 +30,8 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
 
         File(OutputProject.Dart.dartAndroidModelDirPath).run { if (!exists()) mkdirs() }
 
-        return File("${OutputProject.Dart.dartAndroidModelDirPath}/${javaModelFile.nameWithoutExtension.camel2Underscore()}.dart")
-            .apply {
-                if (!exists()) createNewFile()
-                writeText(dartModelSource)
-            }
+        return "${OutputProject.Dart.dartAndroidModelDirPath}/${javaModelFile.nameWithoutExtension.replace("$", "_").camel2Underscore()}.dart".file()
+            .apply { writeText(dartModelSource) }
     }
 
     private fun translate(source: JAVA_SOURCE): DART_SOURCE {
@@ -73,11 +67,16 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
                     if (skip) return
 
                     if (ctx.isChildOf(FieldDeclarationContext::class)) {
+                        if (variableDeclaratorId().text in IGNORE_FIELD) {
+                            skip = true
+                            return
+                        }
+
                         results[currentDepth].append(" ${variableDeclaratorId().text}")
 
-                        // 如果是静态变量且有值的话生成值
+                        // 如果是静态变量且值是字面量的话生成值
                         ctx.ancestorOf(FieldDeclarationContext::class)?.run {
-                            if (isStatic()) {
+                            if (isStatic() && variableInitializer()?.text?.contains(".") == false) {
                                 results[currentDepth].append(" = ${variableInitializer().text}")
                             }
                         }
@@ -99,19 +98,21 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             // 生成方法以及方法体
             override fun enterMethodDeclaration(method: MethodDeclarationContext?) {
                 method?.run {
-                    if (method.name() in listOf("toString", "toStr")) {
+                    if (name() in IGNORE_METHOD
+                        || isStatic()
+                        || isObfuscated()
+                        || method.formalParams().any { !it.type.isJavaModelType() }
+                        || method.returnType()?.isJavaModelType() != true
+                    ) {
                         skip = true
                         return
                     }
-                    // 参数中有非model参数, 则跳过
-                    if (method.formalParams().any { !it.type.isJavaModelType() }
-                        || method.returnType()?.isJavaModelType() != true) return
 
                     results[currentDepth].append(
                         Temps.Dart.method.placeholder(
                             method.returnType().toDartType(),
                             method.name(),
-                            method.formalParams().joinToString { "${it.type} ${it.name}" },
+                            method.formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
                             method.methodBody()?.block()?.toDart()
                         )
                     )

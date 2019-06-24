@@ -15,7 +15,7 @@ object Temps {
 import 'package:flutter/services.dart';
 """
 
-        val classDeclaration = """import 'dart:typed_data';
+        const val classDeclaration = """import 'dart:typed_data';
 import 'package:${Configs.outputProjectName}/${Configs.outputProjectName}.dart';
 
 class #__plugin_class_simple_name__# {

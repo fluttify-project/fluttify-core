@@ -49,6 +49,8 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
         "Map" -> "Map"
         "void" -> "void"
+        "Bundle" -> "Map"
+        "Bitmap" -> "Uint8List"
         null -> "null"
         else -> this
     }
@@ -100,8 +102,8 @@ fun String.camel2Underscore(): String {
 fun String.placeholder(vararg replacements: String?): String {
     var result = this
     replacements.forEach {
-        // 正则表达式: 匹配所有`##`包围的字符, 但是被包围的字符中不能有`#`
-        result = result.replaceFirst(Regex("#[^#]*#"), it ?: "")
+        // 正则表达式: 匹配所有`##`包围的字符, 但是被包围的字符中不能有`#` 如果replacement中有`$`符号时, 会报错, 替换掉`$`
+        result = result.replaceFirst(Regex("#[^#]*#"), it?.replace("\$", "_") ?: "")
     }
     return result
 }
@@ -191,6 +193,6 @@ fun PATH.file(): File {
     return file
 }
 
-fun String.builder() : StringBuilder{
+fun String.builder(): StringBuilder {
     return StringBuilder(this)
 }
