@@ -158,6 +158,11 @@ object OutputProject {
         val androidPlatformViewFilePath = "${androidDirPath}android_${mainClassSimpleName.camel2Underscore()}.dart"
 
         /**
+         * 生成工程的Android端PlatformViewController的Dart文件路径
+         */
+        val androidPlatformViewControllerFilePath = "${androidDirPath}android_${mainClassSimpleName.camel2Underscore()}_controller.dart"
+
+        /**
          * 生成工程的Android端Dart模型文件路径
          */
         val androidModelDirPath = "$libDirPath/src/android/model/"

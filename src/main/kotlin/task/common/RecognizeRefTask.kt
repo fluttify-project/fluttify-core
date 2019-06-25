@@ -1,6 +1,7 @@
 package task.common
 
 import Jar
+import common.JAVA_FILE
 import common.extensions.*
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
@@ -16,12 +17,12 @@ import java.io.File
  * 输出: 识别成引用类的文件们
  * 依赖: [AndroidRecognizeModelTask]
  */
-class RecognizeAndroidRefTask(private val mainClassFile: File) : Task<File, List<File>>(mainClassFile) {
+class RecognizeAndroidRefTask(private val mainClassFile: JAVA_FILE) : Task<JAVA_FILE, List<JAVA_FILE>>(mainClassFile) {
     override fun process(): List<File> {
         val result = mutableListOf<File>()
-        val classContent = mainClassFile.readText()
+        val javaSource = mainClassFile.readText()
 
-        classContent.walkTree(object : JavaParserBaseListener() {
+        javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
                 ctx
                     ?.returnType()

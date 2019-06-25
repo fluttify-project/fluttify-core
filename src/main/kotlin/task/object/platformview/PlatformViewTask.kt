@@ -1,7 +1,5 @@
 package task.`object`.platformview
 
-import Configs.outputOrg
-import Configs.outputProjectName
 import Jar
 import OutputProject
 import common.*
@@ -30,17 +28,12 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
         // 生成类的开头
         javaSource.walkTree(object : JavaParserBaseListener() {
             override fun enterCompilationUnit(ctx: JavaParser.CompilationUnitContext?) {
-                kotlinResultBuilder.append(Temps.Kotlin.packageImport.placeholder("$outputOrg.$outputProjectName"))
+                kotlinResultBuilder.append(Temps.Kotlin.packageImport)
             }
 
             override fun enterClassDeclaration(ctx: JavaParser.ClassDeclarationContext?) {
-                kotlinResultBuilder.append(Temps.Kotlin.PlatformView.classDeclaration.placeholder(OutputProject.classSimpleName))
-                kotlinResultBuilder.append(
-                    Temps.Kotlin.PlatformView.channel.placeholder(
-                        "$outputOrg.$outputProjectName",
-                        OutputProject.classSimpleName
-                    )
-                )
+                kotlinResultBuilder.append(Temps.Kotlin.PlatformView.classDeclaration)
+                kotlinResultBuilder.append(Temps.Kotlin.PlatformView.channel)
                 kotlinResultBuilder.append(Temps.Kotlin.PlatformView.getViewDispose)
                 kotlinResultBuilder.append(Temps.Kotlin.onMethodCall)
             }
@@ -200,16 +193,7 @@ class AndroidDartPlatformViewTask(private val dartPlatformViewFile: JAVA_FILE) :
     override fun process(): DART_FILE {
         val dartResultBuilder = StringBuilder()
 
-        dartResultBuilder.append(
-            Temps.Dart.androidView.placeholder(
-                Jar.Decompiled.mainClassSimpleName,
-                Jar.Decompiled.mainClassSimpleName,
-                Jar.Decompiled.mainClassSimpleName,
-                Jar.Decompiled.mainClassSimpleName,
-                "$outputOrg/${Jar.Decompiled.mainClassSimpleName}",
-                Jar.Decompiled.mainClassSimpleName
-            )
-        )
+        dartResultBuilder.append(Temps.Dart.AndroidView.androidView)
 
         return dartPlatformViewFile
             .apply { writeText(dartResultBuilder.toString()) }

@@ -137,8 +137,10 @@ class AndroidDartModelTask(private val javaModelFile: File) : Task<File, File>(j
             //region Enum类
             // 生成枚举类名
             override fun enterEnumDeclaration(`enum`: EnumDeclarationContext?) {
-                results.add(StringBuilder())
-                enum?.run { results[++currentDepth].append("\nenum ${enum.IDENTIFIER()} {\n") }
+                enum?.run {
+                    results.add(StringBuilder())
+                    results[++currentDepth].append("\nenum ${enum.IDENTIFIER()} {\n")
+                }
             }
 
             // 生成枚举值

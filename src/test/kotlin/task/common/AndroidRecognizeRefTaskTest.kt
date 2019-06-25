@@ -4,7 +4,7 @@ import Jar
 import common.extensions.file
 import org.junit.Test
 
-class RecognizeAndroidRefTaskTest {
+class AndroidRecognizeRefTaskTest {
 
     @Test
     fun process() {

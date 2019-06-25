@@ -1,14 +1,18 @@
 package task.common
 
 import common.extensions.file
+import org.apache.commons.io.FileUtils
 import org.junit.Test
 
 class JsonTaskTest {
 
     @Test
     fun process() {
-        val sourcePath = "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/tbitble_flutter/lib/src/android/model/bike_state.dart"
-        val result = JsonTask(sourcePath.file()).process()
-        println(result.readText())
+        val sourceDir =
+            "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter/lib/src/android/model/".file()
+        FileUtils.iterateFiles(sourceDir, arrayOf("dart"), true).forEach {
+            val result = DartfmtTask(JsonTask(it).process()).process()
+            println(result.readText())
+        }
     }
 }

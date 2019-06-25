@@ -15,7 +15,7 @@ class AndroidObfuscatedModelTask(private val modelFileList: List<File>) : Task<L
         return modelFileList.filter { file ->
             // 把文件名按`$`分开(内部类的情况, 如果不是内部类的话那么就会得到原本的文件名, 不影响)
             // 如果切分后的文件名内含有只有一个字母的类, 那么就认为是混淆类
-            !file.nameWithoutExtension.split("$").any { it.length == 1 }
+            !file.nameWithoutExtension.split("$").any { it.length <= 2 }
         }
     }
 }

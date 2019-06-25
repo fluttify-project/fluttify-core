@@ -20,6 +20,5 @@ class AndroidDartModelTaskTest {
             .toList()
             .map { ExportTask(OutputProject.dirPath.file()).process() }
             .subscribe()
-//            .forEach { println(it.readText()) }
     }
 }

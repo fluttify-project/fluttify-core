@@ -34,6 +34,7 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
     var parentIsModel = false
 
     val fieldAllModel = mutableListOf<Boolean>()
+    val fieldAllStatic = mutableListOf<Boolean>()
     val memberAllStatic = mutableListOf<Boolean>()
     val methodArgsAllModel = mutableListOf<Boolean>()
 
@@ -53,6 +54,7 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
 
         override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
             field?.run {
+                fieldAllStatic.add(field.isStatic())
                 memberAllStatic.add(field.isStatic())
                 if (field.isStatic()) return
 
@@ -80,6 +82,7 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
 
                 isModel = (fieldAllModel.all { it } || fieldAllModel.isEmpty())
                         && (!memberAllStatic.all { it } || memberAllStatic.isEmpty())
+                        && (!fieldAllStatic.all { it } || fieldAllStatic.isEmpty())
                         && parentIsModel
                         && (methodArgsAllModel.all { it } || methodArgsAllModel.isEmpty())
 
@@ -87,6 +90,10 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
 
                 println("${ctx.IDENTIFIER().text} 评估结果: $isModel\n")
             }
+        }
+
+        override fun enterEnumDeclaration(ctx: JavaParser.EnumDeclarationContext?) {
+            ctx?.run { isModel = true }
         }
     })
 

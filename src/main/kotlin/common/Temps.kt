@@ -1,9 +1,11 @@
 package common
 
-import Configs
 import Configs.mainJavaClass
+import Configs.outputOrg
+import Configs.outputProjectName
 import Framework
 import Jar
+import OutputProject
 
 /**
  * 代码模板
@@ -11,12 +13,14 @@ import Jar
 object Temps {
     object Dart {
         const val packageImport = """import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:$outputProjectName/$outputProjectName.dart';
 """
 
         const val classDeclaration = """import 'dart:typed_data';
-import 'package:${Configs.outputProjectName}/${Configs.outputProjectName}.dart';
+import 'package:$outputProjectName/$outputProjectName.dart';
 
 class #__plugin_class_simple_name__# {
 """
@@ -65,21 +69,24 @@ class #__plugin_class_simple_name__# {
     return JsonEncoder.withIndent('  ').convert(toJson());
   }
 """
-        const val androidView = """import 'dart:convert';
+
+        object AndroidView {
+            val androidView = """import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:${Configs.outputProjectName}/${Configs.outputProjectName}.dart';
+import 'package:$outputProjectName/$outputProjectName.dart';
 
-typedef void PlatformViewCreatedCallback(Android#__android_view__#Controller controller);
+typedef void PlatformViewCreatedCallback(Android${OutputProject.classSimpleName}Controller controller);
 
-class Android#__android_view__# extends StatelessWidget {
-  const Android#__android_view__#({
+class Android${OutputProject.classSimpleName} extends StatelessWidget {
+  const Android${OutputProject.classSimpleName}({
     Key key,
-    this.onAndroid#__android_view__#Created,
+    this.onViewCreated,
   }) : super(key: key);
   
   final PlatformViewCreatedCallback onViewCreated;
@@ -92,7 +99,7 @@ class Android#__android_view__# extends StatelessWidget {
 
     final messageCodec = StandardMessageCodec();
     return AndroidView(
-      viewType: '#__view_type__#',
+      viewType: '$outputOrg/${OutputProject.classSimpleName}',
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
       creationParamsCodec: messageCodec,
@@ -100,13 +107,50 @@ class Android#__android_view__# extends StatelessWidget {
   }
 
   void _onViewCreated(int id) {
-    final controller = Android#__android_view__#Controller.withId(id);
+    final controller = Android${OutputProject.classSimpleName}Controller.withId(id);
     if (onViewCreated != null) {
       onViewCreated(controller);
     }
   }
 }
 """
+            val androidViewController = """
+class Android${OutputProject.classSimpleName}Controller {
+  final MethodChannel _channel;
+
+  Android${OutputProject.classSimpleName}Controller.withId(int id)
+      : _channel = MethodChannel('$outputOrg/${OutputProject.classSimpleName}' + id.toString());
+"""
+
+            const val androidViewRef = """
+class #__ref_class__# {
+  #__ref_class__#.withRefId(this.refId, this._channel);
+  
+  final MethodChannel _channel;
+  final int refId;
+"""
+
+            const val jsonInJsonOut = """
+  Future<#__return_type__#> #__method_name__#(#__formal_params__#) {
+    return _channel.invokeMethod('#__method_name__#'#__separator__##__actual_params__#);
+  }
+"""
+
+            const val modelInModelOut = """
+  Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+    final result = await _channel.invokeMapMethod<String, dynamic>('#__method_name__#'#__separator__##__actual_params__#);
+    return #__return_type__#.fromJson(result);
+  }
+"""
+
+            const val modelInRefOut = """
+  Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+    final resultRefId = await _channel.invokeMethod('#__method_name__#'#__separator__##__actual_params__#);
+    return #__return_type__#.withRefId(resultRefId, _channel);
+  }
+"""
+        }
+
         const val uiKitView = """import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -139,7 +183,7 @@ class Android#__uikit_view__# extends StatelessWidget {
 
     object Kotlin {
 
-        const val packageImport = """package #__package_name__#
+        const val packageImport = """package $outputOrg.$outputProjectName
 
 import $mainJavaClass
 
@@ -192,7 +236,7 @@ class #__class_name__#Plugin : MethodCallHandler {
 """
 
         object PlatformView {
-            const val plugin = """package #__package__#
+            val plugin = """package $outputOrg.$outputProjectName
 
 import android.content.Context
 import io.flutter.plugin.common.EventChannel
@@ -202,18 +246,18 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class #__name__#Plugin {
+class ${OutputProject.classSimpleName}Plugin {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             registrar
                     .platformViewRegistry()
-                    .registerViewFactory("#__package__#/#__view__#", #__view__#Factory(registrar))
+                    .registerViewFactory("$outputOrg.$outputProjectName/${OutputProject.classSimpleName}", ${OutputProject.classSimpleName}Factory(registrar))
         }
     }
 }"""
 
-            const val factory = """package #__package__#
+            val factory = """package $outputOrg.$outputProjectName
 
 import android.content.Context
 import io.flutter.plugin.common.EventChannel
@@ -223,19 +267,19 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class ${OutputProject.classSimpleName}Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
 
     override fun create(context: Context, id: Int, params: Any?): PlatformView {
-        return #__view__#(context, id, registrar)
+        return ${OutputProject.classSimpleName}(context, id, registrar)
     }
 }"""
 
-            const val classDeclaration = """
-class #__view__#(context: Context, id: Int, registrar: Registrar) : PlatformView, MethodCallHandler {
+            val classDeclaration = """
+class ${OutputProject.classSimpleName}(context: Context, id: Int, registrar: Registrar) : PlatformView, MethodCallHandler {
 """
 
             val channel = """
-    private val methodChannel = MethodChannel(registrar.messenger(), "#__package__#" + id)
+    private val methodChannel = MethodChannel(registrar.messenger(), "$outputOrg.$outputProjectName" + id)
     private val view = ${Jar.Decompiled.mainClassSimpleName}(context)
     private val refMap = mutableMapOf<Int, Any>()
     private val mapper: ObjectMapper = ObjectMapper()
@@ -267,8 +311,8 @@ class #__view__#(context: Context, id: Int, registrar: Registrar) : PlatformView
                 methodResult.success(returnRefId)"""
 
             const val refReturnRef = """
-                val callRefId = args["callRefId"] as Int
-                val ref = refMap[callRefId] as #__class_name__#
+                val refId = args["refId"] as Int
+                val ref = refMap[refId] as #__class_name__#
 
                 val result = ref.#__method_name__#(#__params__#)
 
@@ -278,8 +322,8 @@ class #__view__#(context: Context, id: Int, registrar: Registrar) : PlatformView
                 methodResult.success(returnRefId)"""
 
             const val refReturnModel = """
-                val callRefId = args["callRefId"] as Int
-                val ref = refMap[callRefId] as #__class_name__#
+                val refId = args["refId"] as Int
+                val ref = refMap[refId] as #__class_name__#
 
                 val result = ref.#__method_name__#(#__params__#)
 
