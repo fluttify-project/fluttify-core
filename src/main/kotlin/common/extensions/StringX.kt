@@ -33,8 +33,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
         "List<double>",
         "Uint8List",
         "Uint32List",
-        "Uint64List",
-        "void"
+        "Uint64List"
     )
 }
 
@@ -53,9 +52,9 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
         "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
         "Map" -> "Map"
-        "void" -> "void"
         "Bundle" -> "Map<String,dynamic>"
         "Bitmap" -> "Uint8List"
+        "void" -> "String"
         null -> "null"
         else -> this
     }

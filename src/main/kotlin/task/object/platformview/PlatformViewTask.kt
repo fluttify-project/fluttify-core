@@ -105,6 +105,24 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                                 )
                             )
                             kotlinResultBuilder.append("\n\t\t\t}")
+                        } else if (returnType() == "void") {
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.staticReturnVoid.placeholder(
+                                    className,
+                                    name(),
+                                    formalParams().joinToString { it.name }
+                                )
+                            )
+                            kotlinResultBuilder.append("\n\t\t\t}")
+                        } else if (returnType()?.isJavaRefType() == true) {
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.staticReturnRef.placeholder(
+                                    className,
+                                    name(),
+                                    formalParams().joinToString { it.name }
+                                )
+                            )
+                            kotlinResultBuilder.append("\n\t\t\t}")
                         }
                         return
                     }
@@ -122,8 +140,18 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                             )
                             kotlinResultBuilder.append("\n\t\t\t}")
                         }
+                        // 返回void
+                        else if (returnType() == "void") {
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.viewReturnVoid.placeholder(
+                                    name(),
+                                    formalParams().joinToString { it.name }
+                                )
+                            )
+                            kotlinResultBuilder.append("\n\t\t\t}")
+                        }
                         // 返回类型是ref
-                        else {
+                        else if (returnType()?.isJavaRefType() == true) {
                             kotlinResultBuilder.append(Temps.Kotlin.PlatformView.viewReturnRef.placeholder(
                                 name(),
                                 formalParams().joinToString { it.name }
@@ -137,6 +165,8 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                                 ?.file()
                                 ?.readText()
                                 ?.run { generate(this, kotlinResultBuilder) }
+                        } else {
+                            ""
                         }
                     } else {
                         // 返回类型是model
@@ -152,8 +182,19 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
 
                             kotlinResultBuilder.append("\n\t\t\t}")
                         }
+                        // 返回void
+                        else if (returnType() == "void") {
+                            kotlinResultBuilder.append(
+                                Temps.Kotlin.PlatformView.refReturnVoid.placeholder(
+                                    className,
+                                    name(),
+                                    formalParams().joinToString { it.name }
+                                )
+                            )
+                            kotlinResultBuilder.append("\n\t\t\t}")
+                        }
                         // 返回类型是ref
-                        else {
+                        else if (returnType()?.isJavaRefType() == true) {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.refReturnRef.placeholder(
                                     className,
@@ -172,6 +213,8 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                                 ?.file()
                                 ?.readText()
                                 ?.run { generate(this, kotlinResultBuilder) }
+                        } else {
+                            ""
                         }
                     }
 

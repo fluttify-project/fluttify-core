@@ -19,16 +19,16 @@ import task.Task
  * 输出: 生成内容后的PlatformViewController Dart文件
  * 依赖: [AndroidKotlinPluginTask]
  */
-class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE) :
+class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
     Task<JAVA_FILE, DART_FILE>(mainClassFile) {
     override fun process(): DART_FILE {
         val javaSource = mainClassFile.readText()
 
-        generate(javaSource, OutputProject.Dart.androidPlatformViewControllerFilePath.file())
+        generate(javaSource, OutputProject.Dart.androidDartControllerFilePath.file())
 
         return OutputProject
             .Dart
-            .androidPlatformViewControllerFilePath
+            .androidDartControllerFilePath
             .file()
     }
 
@@ -62,16 +62,20 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                     // 跳过含有`非model参数`的方法
                     if (!formalParams().all { it.type.isJavaModelType() }) return
 
+                    val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text ?: ""
+
                     // 当前所在类不是主类
                     if (ctx.ancestorOf(JavaParser.ClassDeclarationContext::class)
                             ?.IDENTIFIER()
-                            ?.text != Jar.Decompiled.mainClassSimpleName) {
+                            ?.text != Jar.Decompiled.mainClassSimpleName
+                    ) {
                         if (returnType()?.jsonable() == true) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.jsonInJsonOut.placeholder(
                                     returnType().toDartType(),
                                     name(),
                                     formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
+                                    className,
                                     name(),
                                     ", ",
                                     formalParams()
@@ -86,6 +90,7 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                                     returnType().toDartType(),
                                     name(),
                                     formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
+                                    className,
                                     name(),
                                     ", ",
                                     formalParams()
@@ -101,6 +106,7 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                                     returnType().toDartType(),
                                     name(),
                                     formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
+                                    className,
                                     name(),
                                     ", ",
                                     formalParams()
@@ -111,6 +117,7 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                                 )
                             )
 
+                            // 如果返回类是引用类型, 那么需要递归进行
                             Jar
                                 .Decompiled
                                 .classes[returnType()]
@@ -123,14 +130,16 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                         } else {
                             ""
                         }
-
-                    } else {
+                    }
+                    // 当前类是主类
+                    else {
                         if (returnType()?.jsonable() == true) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.jsonInJsonOut.placeholder(
                                     returnType().toDartType(),
                                     name(),
                                     formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
+                                    className,
                                     name(),
                                     if (formalParams().isEmpty()) "" else ", ",
                                     formalParams().toDartMap()
@@ -142,6 +151,7 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                                     returnType().toDartType(),
                                     name(),
                                     formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
+                                    className,
                                     name(),
                                     if (formalParams().isEmpty()) "" else ", ",
                                     formalParams().toDartMap(),
@@ -154,6 +164,7 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                                     returnType().toDartType(),
                                     name(),
                                     formalParams().joinToString { "${it.type.toDartType()} ${it.name}" },
+                                    className,
                                     name(),
                                     if (formalParams().isEmpty()) "" else ", ",
                                     formalParams().toDartMap(),
@@ -161,6 +172,7 @@ class AndroidDartPlatformViewControllerTask(private val mainClassFile: JAVA_FILE
                                 )
                             )
 
+                            // 如果返回类是引用类型, 那么需要递归进行
                             Jar
                                 .Decompiled
                                 .classes[returnType()]
