@@ -6,7 +6,6 @@ import Configs.mainObjcClass
 import Configs.outputOrg
 import Configs.outputProjectName
 import Jar.Decompiled.mainClassSimpleName
-import Jar.`package`
 import Project.path
 import common.TYPE_NAME
 import common.extensions.*
@@ -131,7 +130,7 @@ object OutputProject {
     /**
      * methodChannel名称
      */
-    val methodChannel = "$`package`/$mainClassSimpleName"
+    val methodChannel = "$outputOrg/$classSimpleName"
 
     /**
      * 输出工程路径

@@ -101,6 +101,47 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
 }
 
 /**
+ * 所有成员都是静态
+ */
+fun JAVA_SOURCE.allMemberStatic(): Boolean {
+    val memberAllStatic = mutableListOf<Boolean>()
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
+            field?.run {
+                memberAllStatic.add(field.isStatic())
+            }
+        }
+
+        override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
+            ctx?.run {
+                // 如果方法名称是在忽略列表里的, 那么就直接跳过
+                if (ctx.name() in IGNORE_METHOD) return
+
+                memberAllStatic.add(!ctx.isInstanceMethod())
+            }
+        }
+    })
+    return memberAllStatic.all { it }
+}
+
+/**
+ * 是否有公有的构造器
+ */
+fun JAVA_SOURCE.publicConstructor(): Boolean {
+    val constructorIsPublic = mutableListOf<Boolean>()
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterConstructorDeclaration(ctx: JavaParser.ConstructorDeclarationContext?) {
+            ctx?.run {
+                constructorIsPublic.add(isPublic())
+            }
+        }
+    })
+    return constructorIsPublic.any { it } || constructorIsPublic.isEmpty()
+}
+
+/**
  * Java源码遍历
  */
 fun JAVA_SOURCE.walkTree(listener: JavaParserBaseListener) {

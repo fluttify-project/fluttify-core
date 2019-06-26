@@ -36,7 +36,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
 
             override fun enterClassDeclaration(ctx: JavaParser.ClassDeclarationContext?) {
                 dartResultBuilder.append(Temps.Dart.classDeclaration.placeholder("${OutputProject.classSimpleName}Android"))
-                dartResultBuilder.append(Temps.Dart.methodChannel.placeholder(OutputProject.methodChannel))
+                dartResultBuilder.append(Temps.Dart.methodChannel)
             }
 
             override fun enterMethodDeclaration(method: JavaParser.MethodDeclarationContext?) {
@@ -176,7 +176,7 @@ class IOSDartStaticMethodTask(private val mainClassFile: OBJC_FILE) : Task<OBJC_
 
             override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
                 dartResultBuilder.append(Temps.Dart.classDeclaration.placeholder("${OutputProject.classSimpleName}IOS"))
-                dartResultBuilder.append(Temps.Dart.methodChannel.placeholder(OutputProject.methodChannel))
+                dartResultBuilder.append(Temps.Dart.methodChannel)
             }
 
             override fun enterClassMethodDeclaration(method: ObjectiveCParser.ClassMethodDeclarationContext?) {

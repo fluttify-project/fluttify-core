@@ -18,8 +18,7 @@ fun JavaParser.MethodDeclarationContext.returnType(): String? {
     return typeTypeOrVoid().text
 }
 
-fun JavaParser.MethodDeclarationContext?.name(): String? {
-    if (this == null) return null
+fun JavaParser.MethodDeclarationContext.name(): String {
     return IDENTIFIER().text
 }
 

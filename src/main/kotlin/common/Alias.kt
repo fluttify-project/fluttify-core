@@ -19,3 +19,5 @@ typealias OBJC_FILE = File
 typealias DART_FILE = File
 typealias KOTLIN_FILE = File
 typealias SWIFT_FILE = File
+
+typealias DIR = File

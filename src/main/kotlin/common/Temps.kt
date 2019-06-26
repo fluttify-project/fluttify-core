@@ -6,7 +6,7 @@ import Configs.outputProjectName
 import Framework
 import Jar
 import OutputProject
-import common.extensions.underscore2Camel
+import OutputProject.methodChannel
 
 /**
  * 代码模板
@@ -22,12 +22,25 @@ import 'package:$outputProjectName/$outputProjectName.dart';
 
         const val classDeclaration = """import 'dart:typed_data';
 import 'package:$outputProjectName/$outputProjectName.dart';
+import 'package:flutter/services.dart';
 
-class #__plugin_class_simple_name__# {
+// ignore_for_file: non_constant_identifier_names
+class #__class_name__# {
+  #__class_name__#.withRefId(this.refId);
+
+  final int refId;
 """
 
-        const val methodChannel = """
-  static final _channel = MethodChannel('#__methodChannelName__#');
+        const val privateConstructor = """
+  #__class_name__#._();"""
+
+        const val newInstanceConstructor = """
+  #__class_name__#.newInstance() {
+     _channel.invokeMethod('#__class_name__#::newInstance');
+  }"""
+
+        val methodChannel = """
+  static final _channel = MethodChannel('${OutputProject.methodChannel}');
 """
 
         const val invokeMethod = """
@@ -51,6 +64,19 @@ class #__plugin_class_simple_name__# {
         const val method = """
   #__return_type__# #__name__#(#__formal_params__#) {
 #__body__#  }
+"""
+
+        const val interfaceMethodJsonable = """  
+  #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) {
+    return _channel.invokeMethod('#__class___#::#__method__#'#__separator__##__actual_params__#);
+  }
+"""
+
+        const val interfaceMethodRef = """  
+  #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) async {
+    final resultRefId = await _channel.invokeMethod('#__class_name__#::#__method_name__#'#__separator__##__actual_params__#);
+    return #__return_type__#.withRefId(resultRefId, _channel);
+  }
 """
         const val fromJson = """
   static #__class_name__# fromJson(Map<String, dynamic> json) {
@@ -100,7 +126,7 @@ class Android${OutputProject.classSimpleName} extends StatelessWidget {
 
     final messageCodec = StandardMessageCodec();
     return AndroidView(
-      viewType: '$outputOrg.$outputProjectName/${OutputProject.classSimpleName}',
+      viewType: '$methodChannel/${OutputProject.classSimpleName}',
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
       creationParamsCodec: messageCodec,
@@ -120,7 +146,7 @@ class Android${OutputProject.classSimpleName}Controller {
   final MethodChannel _channel;
 
   Android${OutputProject.classSimpleName}Controller.withId(int id)
-      : _channel = MethodChannel('$outputOrg/${OutputProject.classSimpleName}' + id.toString());
+      : _channel = MethodChannel('$methodChannel' + id.toString());
 """
 
             const val androidViewRef = """
@@ -180,6 +206,22 @@ class Android#__uikit_view__# extends StatelessWidget {
   }
 }
 """
+        object ObjectCreator {
+            const val classDeclare = """import 'package:flutter/services.dart';
+
+import 'package:$outputProjectName/$outputProjectName.dart';
+
+class ObjectCreator {
+  static final _channel = MethodChannel('$outputOrg/ObjectCreator');"""
+
+            const val creator = """
+  static #__class_name__# create#__class_name__#(#__formal_params__#) async {
+    final int refId = await _channel.invokeMethod('ObjectCreator::create#__class_name__#'#__separator__##__params__#);
+    return #__class_name__#.withRefId(refId);
+  }"""
+
+            const val classDeclareEnd = """}"""
+        }
     }
 
     object Kotlin {
@@ -253,7 +295,7 @@ class ${OutputProject.classSimpleName}Plugin {
         fun registerWith(registrar: Registrar) {
             registrar
                     .platformViewRegistry()
-                    .registerViewFactory("$outputOrg.$outputProjectName/${OutputProject.classSimpleName}", ${OutputProject.classSimpleName}Factory(registrar))
+                    .registerViewFactory("$methodChannel/${OutputProject.classSimpleName}", ${OutputProject.classSimpleName}Factory(registrar))
         }
     }
 }"""
@@ -280,7 +322,7 @@ class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : Platform
 """
 
             val channel = """
-    private val methodChannel = MethodChannel(registrar.messenger(), "$outputOrg/${outputProjectName.underscore2Camel()}" + id)
+    private val methodChannel = MethodChannel(registrar.messenger(), "$methodChannel" + id)
     private val view = ${Jar.Decompiled.mainClassSimpleName}(registrar.activity())
     private val refMap = mutableMapOf<Int, Any>()
     private val mapper: ObjectMapper = ObjectMapper()

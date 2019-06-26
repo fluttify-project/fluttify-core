@@ -6,10 +6,12 @@ import common.model.JavaTypeInfo
 import common.model.Method
 import common.model.ObjcTypeInfo
 import common.model.Variable
+import org.apache.commons.io.FileUtils
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
+import java.io.File
 
 /**
  * Java源码解析
@@ -126,4 +128,21 @@ fun OBJC_FILE.objcTypeInfo(): ObjcTypeInfo {
     })
 
     return ObjcTypeInfo(className, absolutePath, fields, methods)
+}
+
+fun File.iterate(fileSuffix: String, recursive: Boolean = true, forEach: (File) -> Unit) {
+    FileUtils
+        .iterateFiles(this, arrayOf(fileSuffix), recursive)
+        .forEach { forEach(it) }
+}
+
+/**
+ * 判断一个文件是否是被混淆过的
+ *
+ * 规则为判断文件名长度是否是1或者2且仅包含小写字母
+ */
+fun File.isObfuscated(): Boolean {
+    val types = nameWithoutExtension.split("$")
+    val regex = Regex("[a-z]{1,2}")
+    return types.any { regex.matches(it) }
 }
