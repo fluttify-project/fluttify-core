@@ -25,6 +25,7 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
     var className = ""
     var isCallback = false
     var isEnum = false
+    var isInterface = false
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext?) {
@@ -43,6 +44,7 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
             if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
                 className = ctx.IDENTIFIER().text
                 isCallback = true
+                isInterface = true
             }
         }
 
@@ -67,13 +69,14 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
     })
 
     return JavaTypeInfo(
-        "$packageName.$className",
+        "$packageName.${className.replace("$", ".")}",
         className,
         absolutePath,
         fields,
         methods,
         isCallback = isCallback,
-        isEnum = isEnum
+        isEnum = isEnum,
+        isInterface = isInterface
     )
 }
 

@@ -11,7 +11,7 @@ import parser.java.JavaParserBaseListener
 import task.Task
 
 /**
- * 生成Java文件的Dart接口
+ * 生成Java文件的Dart接口文件
  *
  * 输入: Java文件
  * 输出: 生成接口后的Dart文件
@@ -126,9 +126,9 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         return params
             .filter { !it.isUnknownType() }
             .joinToString { variable ->
-                Jar
-                    .Decompiled
-                    .classes[variable.type]
+                variable
+                    .type
+                    .javaTypeInfo()
                     ?.run {
                         // 如果参数是回调类, 那么把类拆成lambda, 并作为参数传入
                         if (isCallback == true) {

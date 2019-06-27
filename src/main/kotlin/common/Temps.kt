@@ -313,7 +313,7 @@ class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : Platform
             val channel = """
     private val methodChannel = MethodChannel(registrar.messenger(), "$methodChannel" + id)
     private val view = ${Jar.Decompiled.mainClassSimpleName}(registrar.activity())
-    private val refMap = mutableMapOf<Int, Any>()
+    private val REF_MAP = mutableMapOf<Int, Any>()
     private val mapper: ObjectMapper = ObjectMapper()
 
     init {
@@ -324,68 +324,79 @@ class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : Platform
             const val methodBranchHeader = """
             "#__class_name__#::#__method_name__#" -> {#__local_params__#"""
 
-            const val staticReturnModel = """
-                val result = #__class_name__#.#__method_name__#(#__params__#)
+            const val staticReturnJsonable = """
+                        val result = #__class_name__#.#__method_name__#(#__params__#)
                 
-                methodResult.success(#__result__#)"""
+                        methodResult.success(result)"""
 
             const val staticReturnVoid = """
-                #__class_name__#.#__method_name__#(#__params__#)
+                        #__class_name__#.#__method_name__#(#__params__#)
                 
-                methodResult.success("success")"""
+                        methodResult.success("success")"""
 
             const val staticReturnRef = """
-                val result = #__class_name__#.#__method_name__#(#__params__#)
+                        val result = #__class_name__#.#__method_name__#(#__params__#)
                 
-                val returnRefId = result.hashCode()
-                refMap[returnRefId] = result
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
                 
-                methodResult.success(returnRefId)"""
+                        methodResult.success(returnRefId)"""
 
             const val viewReturnModel = """
-                val result = view.#__method_name__#(#__params__#)
+                        val result = view.#__method_name__#(#__params__#)
                 
-                methodResult.success(#__result__#)"""
+                        methodResult.success(#__result__#)"""
 
             const val viewReturnRef = """
-                val result = view.#__method_name__#(#__params__#)
+                        val result = view.#__method_name__#(#__params__#)
                 
-                val returnRefId = result.hashCode()
-                refMap[returnRefId] = result
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
                 
-                methodResult.success(returnRefId)"""
+                        methodResult.success(returnRefId)"""
 
             const val viewReturnVoid = """
-                view.#__method_name__#(#__params__#)
+                        view.#__method_name__#(#__params__#)
                 
-                methodResult.success("success")"""
+                        methodResult.success("success")"""
 
             const val refReturnRef = """
-                val refId = args["refId"] as Int
-                val ref = refMap[refId] as #__class_name__#
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
+                        
+                        val result = ref.#__method_name__#(#__params__#)
+                        
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
+                        
+                        methodResult.success(returnRefId)"""
 
-                val result = ref.#__method_name__#(#__params__#)
+            const val callback = """
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
+                        
+                        val result = ref.#__method_name__#(#__params__#)
+                        
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
+                        
+                        methodResult.success(returnRefId)"""
 
-                val returnRefId = result.hashCode()
-                refMap[returnRefId] = result
-                
-                methodResult.success(returnRefId)"""
+            const val refReturnJsonable = """
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
 
-            const val refReturnModel = """
-                val refId = args["refId"] as Int
-                val ref = refMap[refId] as #__class_name__#
+                        val result = ref.#__method_name__#(#__params__#)
 
-                val result = ref.#__method_name__#(#__params__#)
-
-                methodResult.success(#__result__#)"""
+                        methodResult.success(result)"""
 
             const val refReturnVoid = """
-                val refId = args["refId"] as Int
-                val ref = refMap[refId] as #__class_name__#
-
-                ref.#__method_name__#(#__params__#)
-
-                methodResult.success("success")"""
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
+                        
+                        ref.#__method_name__#(#__params__#)
+                        
+                        methodResult.success("success")"""
 
             const val getViewDispose = """
     override fun getView(): View = view

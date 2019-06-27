@@ -96,7 +96,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                         // 返回类型是model
                         if (returnType().isJavaModelType()) {
                             kotlinResultBuilder.append(
-                                Temps.Kotlin.PlatformView.staticReturnModel.placeholder(
+                                Temps.Kotlin.PlatformView.staticReturnJsonable.placeholder(
                                     className,
                                     name(),
                                     formalParams().joinToString { it.name },
@@ -171,7 +171,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                         // 返回类型是model
                         if (returnType().isJavaModelType()) {
                             kotlinResultBuilder.append(
-                                Temps.Kotlin.PlatformView.refReturnModel.placeholder(
+                                Temps.Kotlin.PlatformView.refReturnJsonable.placeholder(
                                     className,
                                     name(),
                                     formalParams().joinToString { it.name },

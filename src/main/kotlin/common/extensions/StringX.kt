@@ -5,6 +5,7 @@ import Jar
 import common.PATH
 import common.PRESERVED_MODEL
 import common.TYPE_NAME
+import common.model.JavaTypeInfo
 import java.io.File
 
 fun String?.isLiteral(): Boolean {
@@ -67,6 +68,16 @@ fun TYPE_NAME.innerClass(): String {
 }
 
 /**
+ * 转kotlin类型
+ */
+fun TYPE_NAME.toKotlinType(): String {
+    return when (this) {
+        "void" -> "Unit"
+        else -> this.capitalize()
+    }
+}
+
+/**
  * 判断一个类名是否是被混淆过的
  *
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母
@@ -105,6 +116,13 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
             }
         }
     }.replace("$", "_")
+}
+
+/**
+ * 从java类型获取类型信息
+ */
+fun TYPE_NAME.javaTypeInfo(): JavaTypeInfo? {
+    return Jar.Decompiled.classes[this]
 }
 
 /**
