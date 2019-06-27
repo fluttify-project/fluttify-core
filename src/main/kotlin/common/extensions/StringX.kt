@@ -31,10 +31,50 @@ fun TYPE_NAME?.jsonable(): Boolean {
         "null",
         "List<int>",
         "List<double>",
+        "List<String>",
         "Uint8List",
         "Uint32List",
         "Uint64List"
     )
+}
+
+/**
+ * 是否是集合类型
+ */
+fun TYPE_NAME.isList(): Boolean {
+    return Regex("\\w*List<\\w*>").matches(this)
+}
+
+/**
+ * 是否是未知类型, 即非当前sdk内的类
+ */
+fun TYPE_NAME.isUnknownType(): Boolean {
+    return !(Jar.Decompiled.classes.containsKey(this) || jsonable())
+}
+
+/**
+ * 是否是枚举类
+ */
+fun TYPE_NAME.isEnum(): Boolean {
+    return Jar.Decompiled.classes[this]?.isEnum == true
+}
+
+/**
+ * 获取内部类的类名, 如果没有内部类的话, 那么就使用原名
+ */
+fun TYPE_NAME.innerClass(): String {
+    return substringAfterLast("$")
+}
+
+/**
+ * 判断一个类名是否是被混淆过的
+ *
+ * 规则为判断文件名长度是否是1或者2且仅包含小写字母
+ */
+fun TYPE_NAME.isObfuscated(): Boolean {
+    val types = split("$")
+    val regex = Regex("[a-z]{1,2}")
+    return types.any { regex.matches(it) }
 }
 
 /**
@@ -49,6 +89,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "double", "Double", "float", "Float" -> "double"
         "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
         "ArrayList<String>" -> "List<String>"
+        "List<String>" -> "List<String>"
         "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
         "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
         "Map" -> "Map"
@@ -56,8 +97,14 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "Bitmap" -> "Uint8List"
         "void" -> "String"
         null -> "null"
-        else -> this
-    }
+        else -> {
+            if (Regex("ArrayList<\\w*>").matches(this)) {
+                removePrefix("Array")
+            } else {
+                this
+            }
+        }
+    }.replace("$", "_")
 }
 
 /**

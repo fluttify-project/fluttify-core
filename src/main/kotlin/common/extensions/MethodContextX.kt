@@ -8,13 +8,13 @@ import parser.objc.ObjectiveCParser
 fun JavaParser.MethodDeclarationContext?.method(): Method? {
     if (this == null) return null
     return Method(
-        returnType() ?: return null,
+        returnType(),
         IDENTIFIER().text ?: return null,
         formalParams()
     )
 }
 
-fun JavaParser.MethodDeclarationContext.returnType(): String? {
+fun JavaParser.MethodDeclarationContext.returnType(): String {
     return typeTypeOrVoid().text
 }
 
@@ -44,9 +44,8 @@ fun JavaParser.MethodDeclarationContext?.isStatic(): Boolean {
  * 规则:
  *   1. 方法名长度只有1
  */
-fun JavaParser.MethodDeclarationContext?.isObfuscated(): Boolean {
-    if (this == null) return false
-    return name()?.length == 1
+fun JavaParser.MethodDeclarationContext.isObfuscated(): Boolean {
+    return name().length == 1
 }
 
 fun JavaParser.MethodDeclarationContext?.isPublic(): Boolean {

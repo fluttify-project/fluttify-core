@@ -23,6 +23,8 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
     val fields = mutableListOf<Variable>()
     val methods = mutableListOf<Method>()
     var className = ""
+    var isCallback = false
+    var isEnum = false
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext?) {
@@ -40,18 +42,20 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext?) {
             if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
                 className = ctx.IDENTIFIER().text
+                isCallback = true
             }
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext?) {
             if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
                 className = ctx.IDENTIFIER().text
+                isEnum = true
             }
         }
 
         override fun enterMethodDeclaration(ctx: MethodDeclarationContext?) {
             ctx?.run {
-                methods.add(Method(ctx.returnType()!!, ctx.name()!!, ctx.formalParams()))
+                methods.add(Method(ctx.returnType(), ctx.name(), ctx.formalParams()))
             }
         }
 
@@ -62,7 +66,15 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
         }
     })
 
-    return JavaTypeInfo("$packageName.$className", className, absolutePath, fields, methods)
+    return JavaTypeInfo(
+        "$packageName.$className",
+        className,
+        absolutePath,
+        fields,
+        methods,
+        isCallback = isCallback,
+        isEnum = isEnum
+    )
 }
 
 /**
@@ -134,15 +146,4 @@ fun File.iterate(fileSuffix: String, recursive: Boolean = true, forEach: (File) 
     FileUtils
         .iterateFiles(this, arrayOf(fileSuffix), recursive)
         .forEach { forEach(it) }
-}
-
-/**
- * 判断一个文件是否是被混淆过的
- *
- * 规则为判断文件名长度是否是1或者2且仅包含小写字母
- */
-fun File.isObfuscated(): Boolean {
-    val types = nameWithoutExtension.split("$")
-    val regex = Regex("[a-z]{1,2}")
-    return types.any { regex.matches(it) }
 }

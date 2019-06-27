@@ -31,14 +31,6 @@ class #__class_name__# {
   final int refId;
 """
 
-        const val privateConstructor = """
-  #__class_name__#._();"""
-
-        const val newInstanceConstructor = """
-  #__class_name__#.newInstance() {
-     _channel.invokeMethod('#__class_name__#::newInstance');
-  }"""
-
         val methodChannel = """
   static final _channel = MethodChannel('${OutputProject.methodChannel}');
 """
@@ -68,28 +60,25 @@ class #__class_name__# {
 
         const val interfaceMethodJsonable = """  
   #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) {
-    return _channel.invokeMethod('#__class___#::#__method__#'#__separator__##__actual_params__#);
+    final result = _channel.invokeMethod('#__class___#::#__method__#'#__separator__##__actual_params__#);
+    return result;
   }
 """
 
         const val interfaceMethodRef = """  
   #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) async {
     final resultRefId = await _channel.invokeMethod('#__class_name__#::#__method_name__#'#__separator__##__actual_params__#);
-    return #__return_type__#.withRefId(resultRefId, _channel);
+    return #__return_type__#.withRefId(resultRefId);
   }
 """
-        const val fromJson = """
-  static #__class_name__# fromJson(Map<String, dynamic> json) {
-    final bean = #__class_name__#();#__content__#
-    return bean;
+
+        const val interfaceMethodRefList = """  
+  #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) async {
+    final resultRefIdList = await _channel.invokeMethod('#__class_name__#::#__method_name__#'#__separator__##__actual_params__#);
+    return (resultRefIdList as List).map((it) => #__return_type__#.withRefId(it));
   }
 """
-        const val toJson = """
-  Map<String, dynamic> toJson() {
-    return {#__content__#
-    }..removeWhere((key, value) => value == null);
-  }
-"""
+
         const val toString = """
   @override
   String toString() {
@@ -215,7 +204,7 @@ class ObjectCreator {
   static final _channel = MethodChannel('$outputOrg/ObjectCreator');"""
 
             const val creator = """
-  static #__class_name__# create#__class_name__#(#__formal_params__#) async {
+  static Future<#__class_name__#> create#__class_name__#(#__formal_params__#) async {
     final int refId = await _channel.invokeMethod('ObjectCreator::create#__class_name__#'#__separator__##__params__#);
     return #__class_name__#.withRefId(refId);
   }"""

@@ -45,7 +45,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                 // 跳过含有`非model参数`和`非model返回值`的方法
                 if (!method.formalParams().all { it.type.isJavaModelType() } || method?.returnType()?.isJavaModelType() != true) return
 
-                if (method.returnType()?.jsonable() == true) {
+                if (method.returnType().jsonable()) {
                     dartResultBuilder.append(
                         Temps.Dart.invokeMethod.placeholder(
                             method.returnType().toDartType(),
@@ -56,7 +56,7 @@ class AndroidDartStaticMethodTask(private val mainClassFile: JAVA_FILE) : Task<J
                             method.formalParams().toDartMap()
                         )
                     )
-                } else if (method.returnType()?.isJavaModelType() == true) {
+                } else if (method.returnType().isJavaModelType()) {
                     dartResultBuilder.append(
                         Temps.Dart.invokeModelMethod.placeholder(
                             method.returnType().toDartType(),

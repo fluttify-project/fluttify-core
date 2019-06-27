@@ -69,7 +69,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                             ?.IDENTIFIER()
                             ?.text != Jar.Decompiled.mainClassSimpleName
                     ) {
-                        if (returnType()?.jsonable() == true) {
+                        if (returnType().jsonable()) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.jsonInJsonOut.placeholder(
                                     returnType().toDartType(),
@@ -84,7 +84,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                                         .toDartMap()
                                 )
                             )
-                        } else if (returnType()?.isJavaModelType() == true) {
+                        } else if (returnType().isJavaModelType()) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.modelInModelOut.placeholder(
                                     returnType().toDartType(),
@@ -100,7 +100,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                                     returnType().toDartType()
                                 )
                             )
-                        } else if (returnType()?.isJavaRefType() == true) {
+                        } else if (returnType().isJavaRefType()) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.modelInRefOut.placeholder(
                                     returnType().toDartType(),
@@ -133,7 +133,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                     }
                     // 当前类是主类
                     else {
-                        if (returnType()?.jsonable() == true) {
+                        if (returnType().jsonable()) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.jsonInJsonOut.placeholder(
                                     returnType().toDartType(),
@@ -145,7 +145,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                                     formalParams().toDartMap()
                                 )
                             )
-                        } else if (returnType()?.isJavaModelType() == true) {
+                        } else if (returnType().isJavaModelType()) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.modelInModelOut.placeholder(
                                     returnType().toDartType(),

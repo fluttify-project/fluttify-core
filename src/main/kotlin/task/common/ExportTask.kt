@@ -13,7 +13,7 @@ import task.statik.IOSDartStaticMethodTask
  *
  * 输入: 目标工程文件夹
  * 输出: 加入export后的目标工程文件夹
- * 依赖: [AndroidDartStaticMethodTask], [IOSDartStaticMethodTask], [AndroidDartModelTask]
+ * 依赖: [AndroidDartStaticMethodTask], [IOSDartStaticMethodTask]
  */
 class ExportTask(private val outputProjectDir: DART_FILE) : Task<DART_FILE, DART_FILE>(outputProjectDir) {
     override fun process(): DART_FILE {

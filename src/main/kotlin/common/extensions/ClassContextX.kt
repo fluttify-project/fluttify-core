@@ -1,6 +1,9 @@
 package common.extensions
 
+import common.gWalker
+import common.model.Variable
 import parser.java.JavaParser
+import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 
 //region Java类扩展
@@ -34,12 +37,57 @@ fun JavaParser.ClassDeclarationContext?.isAbstract(): Boolean {
 /**
  * 是否public
  */
-fun JavaParser.ClassDeclarationContext?.isPublic(): Boolean {
-    if (this == null) return false
+fun JavaParser.ClassDeclarationContext.isPublic(): Boolean {
     return ancestorOf(JavaParser.TypeDeclarationContext::class)
         ?.classOrInterfaceModifier()
         ?.map { it.text }
         ?.contains("public") == true
+}
+
+/**
+ * 是否public
+ */
+fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<String> {
+    val result = mutableListOf<String>()
+
+    gWalker.walk(object : JavaParserBaseListener() {
+        val existMethod = mutableListOf<String>()
+
+        override fun enterInterfaceMethodDeclaration(ctx: JavaParser.InterfaceMethodDeclarationContext?) {
+            ctx?.run {
+                val allParams = mutableListOf<Variable>()
+
+                val parametersContext = formalParameters().formalParameterList()
+
+                // 除最后一个参数之外的参数
+                parametersContext
+                    ?.formalParameter()
+                    ?.forEach {
+                        allParams.add(Variable(it.typeType().text, it.variableDeclaratorId().text))
+                    }
+
+                // 最后一个参数
+                parametersContext
+                    ?.lastFormalParameter()
+                    ?.run {
+                        allParams.add(Variable(typeType().text, variableDeclaratorId().text))
+                    }
+
+                val returnType = typeTypeOrVoid().text.toDartType()
+                // 处理java中重载的情况
+                val methodName =
+                    if (IDENTIFIER().text in existMethod) "${IDENTIFIER().text}_${allParams.joinToString("_") { it.type }}" else IDENTIFIER().text
+                val paramsString = allParams.joinToString { "${it.type.toDartType()} ${it.name}" }
+
+                if (allParams.all { !it.isUnknownType() }) {
+                    result.add("$returnType $methodName($paramsString)")
+                    existMethod.add(IDENTIFIER().text)
+                }
+            }
+        }
+    }, this)
+
+    return result
 }
 //endregion
 

@@ -142,6 +142,20 @@ fun JAVA_SOURCE.publicConstructor(): Boolean {
 }
 
 /**
+ * 是否是回调类, 目前只识别interface文件
+ */
+fun JAVA_SOURCE.isCallback(): Boolean {
+    var result = false
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterInterfaceDeclaration(ctx: JavaParser.InterfaceDeclarationContext?) {
+            result = true
+        }
+    })
+    return result
+}
+
+/**
  * Java源码遍历
  */
 fun JAVA_SOURCE.walkTree(listener: JavaParserBaseListener) {

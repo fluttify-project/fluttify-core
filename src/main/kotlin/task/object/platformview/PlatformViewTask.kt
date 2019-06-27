@@ -7,7 +7,6 @@ import common.extensions.*
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import task.Task
-import task.common.AndroidRecognizeModelTask
 import java.io.File
 
 /**
@@ -95,7 +94,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                     // 静态方法单独处理
                     if (isStatic()) {
                         // 返回类型是model
-                        if (returnType()?.isJavaModelType() == true) {
+                        if (returnType().isJavaModelType()) {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.staticReturnModel.placeholder(
                                     className,
@@ -114,7 +113,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                                 )
                             )
                             kotlinResultBuilder.append("\n\t\t\t}")
-                        } else if (returnType()?.isJavaRefType() == true) {
+                        } else if (returnType().isJavaRefType()) {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.staticReturnRef.placeholder(
                                     className,
@@ -130,7 +129,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                     // 说明是主类上的调用, 不需要使用objectId去取对象
                     if (className == Jar.Decompiled.mainClassSimpleName) {
                         // 返回类型是model
-                        if (returnType()?.isJavaModelType() == true) {
+                        if (returnType().isJavaModelType()) {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.viewReturnModel.placeholder(
                                     name(),
@@ -151,7 +150,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                             kotlinResultBuilder.append("\n\t\t\t}")
                         }
                         // 返回类型是ref
-                        else if (returnType()?.isJavaRefType() == true) {
+                        else if (returnType().isJavaRefType()) {
                             kotlinResultBuilder.append(Temps.Kotlin.PlatformView.viewReturnRef.placeholder(
                                 name(),
                                 formalParams().joinToString { it.name }
@@ -170,7 +169,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                         }
                     } else {
                         // 返回类型是model
-                        if (returnType()?.isJavaModelType() == true) {
+                        if (returnType().isJavaModelType()) {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.refReturnModel.placeholder(
                                     className,
@@ -194,7 +193,7 @@ class AndroidKotlinPlatformViewTask(private val mainClassFile: JAVA_FILE) :
                             kotlinResultBuilder.append("\n\t\t\t}")
                         }
                         // 返回类型是ref
-                        else if (returnType()?.isJavaRefType() == true) {
+                        else if (returnType().isJavaRefType()) {
                             kotlinResultBuilder.append(
                                 Temps.Kotlin.PlatformView.refReturnRef.placeholder(
                                     className,

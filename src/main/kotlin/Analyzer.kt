@@ -64,7 +64,7 @@ object Jar {
                 .iterateFiles(File(rootDirPath), arrayOf("java"), true)
                 .forEach {
                     val typeInfo = it.javaTypeInfo()
-                    result.putIfAbsent(typeInfo.simpleName, typeInfo)
+                    result.putIfAbsent(typeInfo.simpleName.substringAfterLast("\$"), typeInfo)
                 }
             result
         }

@@ -22,15 +22,18 @@ class ObjectCreatorTask(private val dir: DIR) : Task<DIR, DART_FILE>(dir) {
         dartBuilder.appendln(Temps.Dart.ObjectCreator.classDeclare)
 
         dir.iterate("java") {
-            if (!it.isObfuscated() && it.readText().run { publicConstructor() && !allMemberStatic() }) {
+            if (!it.nameWithoutExtension.isObfuscated()
+                && it.readText().run { publicConstructor() && !allMemberStatic() }) {
                 println("处理文件: $it")
                 Jar.Decompiled.classes[it.nameWithoutExtension]?.run {
                     dartBuilder.appendln(
                         Temps.Dart.ObjectCreator.creator.placeholder(
                             simpleName,
                             simpleName,
-                            "", simpleName,
-                            "", "",
+                            "",
+                            simpleName,
+                            "",
+                            "",
                             simpleName
                         )
                     )
