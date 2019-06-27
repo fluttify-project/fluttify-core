@@ -1,6 +1,6 @@
 package task.common
 
-import Project
+import OutputProject
 import org.apache.commons.io.FileUtils
 import org.junit.Assert
 import org.junit.Test
@@ -10,7 +10,7 @@ class CleanBlankTaskTest {
 
     @Test
     fun process() {
-        val testDir = File("${Project.path}/build/decompiled")
+        val testDir = File(OutputProject.dirPath)
         val nonEmptyDir = CleanEmptyTask(testDir).process()
         println(nonEmptyDir)
 

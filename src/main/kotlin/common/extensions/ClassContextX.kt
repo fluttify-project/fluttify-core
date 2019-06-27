@@ -1,6 +1,7 @@
 package common.extensions
 
 import common.gWalker
+import common.model.Lambda
 import common.model.Variable
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
@@ -47,8 +48,8 @@ fun JavaParser.ClassDeclarationContext.isPublic(): Boolean {
 /**
  * 是否public
  */
-fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<String> {
-    val result = mutableListOf<String>()
+fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<Lambda> {
+    val result = mutableListOf<Lambda>()
 
     gWalker.walk(object : JavaParserBaseListener() {
         val existMethod = mutableListOf<String>()
@@ -75,12 +76,13 @@ fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<String> {
 
                 val returnType = typeTypeOrVoid().text.toDartType()
                 // 处理java中重载的情况
-                val methodName =
-                    if (IDENTIFIER().text in existMethod) "${IDENTIFIER().text}_${allParams.joinToString("_") { it.type }}" else IDENTIFIER().text
-                val paramsString = allParams.joinToString { "${it.type.toDartType()} ${it.name}" }
+                val methodName = if (IDENTIFIER().text in existMethod)
+                    "${IDENTIFIER().text}_${allParams.joinToString("_") { it.type }}"
+                else
+                    IDENTIFIER().text
 
                 if (allParams.all { !it.isUnknownType() }) {
-                    result.add("$returnType $methodName($paramsString)")
+                    result.add(Lambda(returnType, methodName, allParams))
                     existMethod.add(IDENTIFIER().text)
                 }
             }

@@ -4,6 +4,7 @@ import Jar
 import OutputProject
 import common.*
 import common.extensions.*
+import common.model.Lambda
 import common.model.Variable
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
@@ -17,6 +18,9 @@ import task.Task
  * 依赖: [DecompileClassTask]
  */
 class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_FILE>(javaFile) {
+
+    private val lambdas: MutableList<Lambda> = mutableListOf()
+
     override fun process(): DART_FILE {
         val javaSource = javaFile.readText()
 
@@ -41,6 +45,9 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
 
             override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
                 ctx?.run {
+                    // 每进入一个方法, 就清空lambda列表
+                    lambdas.clear()
+
                     if (!isPublic()
                         || name() in IGNORE_METHOD
                         || formalParams().any { it.isUnknownType() || it.type.isObfuscated() }
@@ -119,29 +126,35 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         return params
             .filter { !it.isUnknownType() }
             .joinToString { variable ->
-                Jar.Decompiled.classes[variable.type]?.path?.file()?.readText()?.run {
-                    // 如果参数是回调类, 那么把类拆成lambda, 并作为参数传入
-                    if (isCallback()) {
-                        val result = StringBuilder()
+                Jar
+                    .Decompiled
+                    .classes[variable.type]
+                    ?.run {
+                        // 如果参数是回调类, 那么把类拆成lambda, 并作为参数传入
+                        if (isCallback == true) {
+                            val result = StringBuilder()
 
-                        walkTree(object : JavaParserBaseListener() {
-                            override fun enterInterfaceDeclaration(ctx: JavaParser.InterfaceDeclarationContext?) {
-                                ctx?.run {
-                                    val lambdas = interface2lambdas()
-                                    if (lambdas.isNotEmpty()) {
-                                        result.append(lambdas.joinToString(prefix = "{", postfix = ",}"))
+                            path
+                                .file()
+                                .readText()
+                                .walkTree(object : JavaParserBaseListener() {
+                                    override fun enterInterfaceDeclaration(ctx: JavaParser.InterfaceDeclarationContext?) {
+                                        ctx?.run {
+                                            lambdas.addAll(interface2lambdas())
+                                            if (lambdas.isNotEmpty()) {
+                                                result.append(lambdas.joinToString(prefix = "{", postfix = ",}"))
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        })
+                                })
 
-                        result.toString()
-                    }
-                    // 普通Ref类
-                    else {
-                        "${variable.type.toDartType()} ${variable.name}"
-                    }
-                } ?: "${variable.type.toDartType()} ${variable.name}" // jsonable类
+                            result.toString()
+                        }
+                        // 普通Ref类
+                        else {
+                            "${variable.type.toDartType()} ${variable.name}"
+                        }
+                    } ?: "${variable.type.toDartType()} ${variable.name}" // jsonable类
             }
     }
 
@@ -165,6 +178,35 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         resultBuilder.append(
             "final result = await _channel.invokeMethod('${className.toDartType()}::$methodName', $actualParams);"
         )
+
+        lambdas.forEachIndexed { index, lambda ->
+            if (index == 0) {
+                resultBuilder.append(
+                    """_channel.setMethodCallHandler((methodCall) { 
+                            final args = methodCall.arguments as Map<String, dynamic>; 
+                            switch (methodCall.method) {"""
+                )
+            }
+
+            resultBuilder.append(
+                """
+            case '$className::${methodName}_Callback::${lambda.methodName}':
+              ${lambda.methodName}(${lambda.formalParams.joinToString {
+                    if (it.jsonable()) {
+                        "args['${it.name}']"
+                    } else {
+                        "${it.type}.withRefId(args['${it.name}'])"
+                    }
+                }});
+              break;"""
+            )
+
+            if (index == lambdas.lastIndex) {
+
+                resultBuilder.append("""default: break; } });""")
+            }
+        }
+
 
         return resultBuilder.toString()
     }
