@@ -140,21 +140,42 @@ fun JavaParser.InterfaceMethodDeclarationContext?.isInstanceMethod(): Boolean {
 fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {
     if (this == null) return listOf()
     val result = mutableListOf<Variable>()
-
-    val parameters = this.formalParameters().formalParameterList()
+    val parameters = formalParameters().formalParameterList()
 
     // 除最后一个参数之外的参数
     parameters
         ?.formalParameter()
-        ?.forEach {
-            result.add(Variable(it.typeType().text, it.variableDeclaratorId().text))
+        ?.forEach { formalParam ->
+            val paramType = formalParam.typeType().text
+            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?.importDeclaration()
+                ?.firstOrNull {
+                    !paramType.jsonable()
+                            && it.qualifiedName().text.length >= paramType.length
+                            && it.qualifiedName()
+                        .text
+                        .run { substring(length - paramType.length, length) } == paramType
+                }
+                ?.qualifiedName()?.text ?: paramType
+            result.add(Variable(typeFullName, formalParam.variableDeclaratorId().text))
         }
 
     // 最后一个参数
     parameters
         ?.lastFormalParameter()
         ?.run {
-            result.add(Variable(typeType().text, variableDeclaratorId().text))
+            val paramType = typeType().text
+            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?.importDeclaration()
+                ?.firstOrNull {
+                    !paramType.jsonable()
+                            && it.qualifiedName().text.length >= paramType.length
+                            && it.qualifiedName()
+                        .text
+                        .run { substring(length - paramType.length, length) } == paramType
+                }
+                ?.qualifiedName()?.text ?: paramType
+            result.add(Variable(typeFullName, variableDeclaratorId().text))
         }
 
     return result
@@ -169,15 +190,37 @@ fun JavaParser.InterfaceMethodDeclarationContext?.formalParams(): List<Variable>
     // 除最后一个参数之外的参数
     parameters
         ?.formalParameter()
-        ?.forEach {
-            result.add(Variable(it.typeType().text, it.variableDeclaratorId().text))
+        ?.forEach { formalParam ->
+            val paramType = formalParam.typeType().text
+            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?.importDeclaration()
+                ?.firstOrNull {
+                    !paramType.jsonable()
+                            && it.qualifiedName().text.length >= paramType.length
+                            && it.qualifiedName()
+                        .text
+                        .run { substring(length - paramType.length, length) } == paramType
+                }
+                ?.qualifiedName()?.text ?: paramType
+            result.add(Variable(typeFullName, formalParam.variableDeclaratorId().text))
         }
 
     // 最后一个参数
     parameters
         ?.lastFormalParameter()
         ?.run {
-            result.add(Variable(typeType().text, variableDeclaratorId().text))
+            val paramType = typeType().text
+            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?.importDeclaration()
+                ?.firstOrNull {
+                    !paramType.jsonable()
+                            && it.qualifiedName().text.length >= paramType.length
+                            && it.qualifiedName()
+                        .text
+                        .run { substring(length - paramType.length, length) } == paramType
+                }
+                ?.qualifiedName()?.text ?: paramType
+            result.add(Variable(typeFullName, variableDeclaratorId().text))
         }
 
     return result

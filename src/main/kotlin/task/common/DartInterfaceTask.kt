@@ -25,6 +25,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         val javaSource = javaFile.readText()
 
         val dartBuilder = StringBuilder()
+        val androidViewBuilder = StringBuilder()
         val methodList = mutableListOf<String>()
 
         javaSource.walkTree(object : JavaParserBaseListener() {
@@ -40,6 +41,18 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                         )
                     )
                     dartBuilder.append(Temps.Dart.methodChannel)
+
+                    if (superClass() in listOf("View", "ViewGroup")) {
+                        androidViewBuilder.append(
+                            Temps.Dart.AndroidView.androidView.placeholder(
+                                IDENTIFIER().text,
+                                IDENTIFIER().text,
+                                IDENTIFIER().text,
+                                IDENTIFIER().text,
+                                IDENTIFIER().text
+                            )
+                        )
+                    }
                 }
             }
 
@@ -78,7 +91,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                     methodBuilder.append(")")
                     methodBuilder.append(" async {")
                     // 4. 方法体
-                    methodBuilder.append(methodBodyString(className, methodName, params))
+                    methodBuilder.append(methodBodyString(isStatic(), className, methodName, params))
                     // 5. 返回值
                     methodBuilder.append(returnString(returnType().toDartType()))
                     methodBuilder.append("}")
@@ -112,6 +125,10 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                 }
             }
         })
+
+        if (androidViewBuilder.toString().isNotBlank()) {
+            OutputProject.Dart.androidPlatformViewFilePath.file().writeText(androidViewBuilder.toString())
+        }
 
         return "${OutputProject.Dart.androidDirPath}${javaFile.toRelativeString(Jar.Decompiled.rootDirPath.file()).substringBeforeLast(
             "."
@@ -161,10 +178,13 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
     /**
      * 方法体拼接字符串
      */
-    private fun methodBodyString(className: String, methodName: String, params: List<Variable>): String {
+    private fun methodBodyString(isStatic: Boolean, className: String, methodName: String, params: List<Variable>): String {
         val resultBuilder = StringBuilder("")
 
-        val removeCallbackParam = params.filter { !it.isCallback() }
+        val removeCallbackParam = params
+                .filter { !it.isCallback() }
+                .toMutableList()
+                .apply { if (!isStatic) add(Variable("int", "refId")) }
 
         val actualParams = removeCallbackParam.toDartMap {
             when {

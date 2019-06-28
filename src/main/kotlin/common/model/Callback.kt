@@ -55,7 +55,8 @@ data class CallbackMethod(
                     mapOf<String, Any?>(
                         ${formalParams.joinToString(",\n") { "\"${it.name}\" to ${if (it.type.jsonable()) it.name else "${it.name}.hashCode()"}" }}
                     )
-                )   
+                )
+                ${if (returnType.toKotlinType() == "Boolean") "\nreturn true" else ""}
             }
         """
     }

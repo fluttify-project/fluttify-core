@@ -97,10 +97,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:$outputProjectName/$outputProjectName.dart';
 
-typedef void PlatformViewCreatedCallback(Android${OutputProject.classSimpleName}Controller controller);
+typedef void PlatformViewCreatedCallback(#__view__# controller);
 
-class Android${OutputProject.classSimpleName} extends StatelessWidget {
-  const Android${OutputProject.classSimpleName}({
+class Android#__view__# extends StatelessWidget {
+  const Android#__view__#({
     Key key,
     this.onViewCreated,
   }) : super(key: key);
@@ -115,7 +115,7 @@ class Android${OutputProject.classSimpleName} extends StatelessWidget {
 
     final messageCodec = StandardMessageCodec();
     return AndroidView(
-      viewType: '$methodChannel/${OutputProject.classSimpleName}',
+      viewType: '$outputOrg/#__view__#',
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
       creationParamsCodec: messageCodec,
@@ -123,7 +123,7 @@ class Android${OutputProject.classSimpleName} extends StatelessWidget {
   }
 
   void _onViewCreated(int id) {
-    final controller = Android${OutputProject.classSimpleName}Controller.withId(id);
+    final controller = #__view__#.withRefId(id);
     if (onViewCreated != null) {
       onViewCreated(controller);
     }
@@ -289,9 +289,11 @@ class ${OutputProject.classSimpleName}Plugin {
     }
 }"""
 
-            val factory = """package $outputOrg.$outputProjectName
+            const val factory = """package $outputOrg.$outputProjectName
 
 import android.content.Context
+import android.view.View
+
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
@@ -299,10 +301,18 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class ${OutputProject.classSimpleName}Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
 
     override fun create(context: Context, id: Int, params: Any?): PlatformView {
-        return ${OutputProject.classSimpleName}(context, id, registrar)
+        return object : PlatformView {
+            private val view = #__view__#(registrar.activity())
+
+            override fun getView(): View = view
+
+            override fun dispose() {
+                REF_MAP.remove(hashCode())
+            }
+        }
     }
 }"""
 

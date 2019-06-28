@@ -126,6 +126,24 @@ fun JAVA_SOURCE.allMemberStatic(): Boolean {
 }
 
 /**
+ * 是否是View
+ */
+fun JAVA_SOURCE.isView(): Boolean {
+    var isView = false
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
+            ctx?.run {
+                if (superClass() in listOf("View", "ViewGroup")) {
+                    isView = true
+                }
+            }
+        }
+    })
+    return isView
+}
+
+/**
  * 是否有公有的构造器
  */
 fun JAVA_SOURCE.publicConstructor(): Boolean {

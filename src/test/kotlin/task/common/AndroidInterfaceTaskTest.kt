@@ -7,7 +7,7 @@ class AndroidInterfaceTaskTest {
 
     @Test
     fun process() {
-        val file = AndroidInterfaceTask("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/decompiled/com/baidu/mapapi/synchronization".file()).process()
+        val file = AndroidInterfaceTask("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/decompiled/com/".file()).process()
         println(file.readText())
     }
 }

@@ -2,7 +2,6 @@ package task.common
 
 import Configs.outputOrg
 import Configs.outputProjectName
-import Jar
 import OutputProject
 import OutputProject.classSimpleName
 import OutputProject.methodChannel
@@ -12,19 +11,24 @@ import common.model.Callback
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import task.Task
+import java.io.File
 
 /**
  * Android端接口生成
  *
- * 输入: jar所在文件夹
- * 输出: 生成后的plugin文件
+ * 输入: java文件
+ * 输出: 对应的method channel文件
  * 依赖: [DecompileClassTask]
  */
 class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir) {
     override fun process(): KOTLIN_FILE {
         val resultBuilder = StringBuilder("")
+        // package
+        resultBuilder.appendln(packageString())
         // import
-        resultBuilder.append(importString())
+        resultBuilder.appendln(importList().joinToString("\n"))
+        // REF_MAP
+        resultBuilder.appendln(refMapString())
         // 头部固定代码
         resultBuilder.append(headerString())
 
@@ -34,12 +38,25 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                 resultBuilder.append(generateForFile(it))
             }
         }
-
-        // 尾部
         resultBuilder.append(
             """
                     }
                 }
+        """
+        )
+
+        jarDir.iterate("java") {
+            if (it.readText().isView()) {
+                if (it.readText().isView()) {
+                    resultBuilder.appendln(registerPlatformFactory(it))
+                    generatePlatformView(it)
+                }
+            }
+        }
+
+        // 尾部
+        resultBuilder.append(
+            """
         }
     }
 }"""
@@ -48,36 +65,27 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
         return OutputProject.Android.kotlinFilePath.file().apply { writeText(resultBuilder.toString()) }
     }
 
-    private fun importString(): String {
-        val importBuilder = StringBuilder(
-            """package $outputOrg.$outputProjectName
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.PluginRegistry.Registrar
-"""
+    private fun packageString(): String {
+        return "package $outputOrg.$outputProjectName"
+    }
+
+    private fun importList(): List<String> {
+        return listOf(
+            "import io.flutter.plugin.common.MethodChannel",
+            "import io.flutter.plugin.common.PluginRegistry.Registrar"
         )
+    }
 
-        jarDir.iterate("java") {
-            if (!it.nameWithoutExtension.isObfuscated()) {
-                importBuilder.appendln(Jar.Decompiled.classes[it.nameWithoutExtension]?.name?.run { "import $this" }
-                    ?: "")
-            }
-        }
-
-        return importBuilder.toString()
+    private fun refMapString(): String {
+        return "val REF_MAP = mutableMapOf<Int, Any>()"
     }
 
     private fun headerString(): String {
         return """
-val REF_MAP = mutableMapOf<Int, Any>()
-
 class ${classSimpleName}Plugin {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            registrar
-                    .platformViewRegistry()
-                    .registerViewFactory("$methodChannel", ${classSimpleName}Factory(registrar))
-
             val channel = MethodChannel(registrar.messenger(), "$methodChannel")
             channel.setMethodCallHandler { methodCall, methodResult ->
                 val args = methodCall.arguments as? Map<String, *> ?: mapOf()
@@ -101,7 +109,7 @@ class ${classSimpleName}Plugin {
 
                         val methodBuilder = StringBuilder("")
 
-                        val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text ?: ""
+                        val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullClassName() ?: ""
                         val params = formalParams().filter { it.type !in PRESERVED_CLASS }.toMutableList()
                         var methodName = name()
                         // 处理java方法重载的情况
@@ -184,7 +192,7 @@ class ${classSimpleName}Plugin {
                                 // 返回void
                                 returnType() == "void" -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.refReturnVoid.placeholder(
-                                        className,
+                                        className.replace("_", "."),
                                         methodName,
                                         formalParams().joinToString {
                                             if (!it.isCallback())
@@ -197,7 +205,7 @@ class ${classSimpleName}Plugin {
                                 )
                                 returnType().jsonable() -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.refReturnJsonable.placeholder(
-                                        className,
+                                        className.replace("_", "."),
                                         methodName,
                                         formalParams().joinToString {
                                             if (!it.isCallback())
@@ -211,7 +219,7 @@ class ${classSimpleName}Plugin {
                                 // 返回类型是ref
                                 else -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.refReturnRef.placeholder(
-                                        className,
+                                        className.replace("_", "."),
                                         methodName,
                                         formalParams().joinToString {
                                             if (!it.isCallback())
@@ -231,5 +239,23 @@ class ${classSimpleName}Plugin {
             })
 
         return resultBuilder.toString()
+    }
+
+    private fun registerPlatformFactory(viewFile: File): String {
+        val javaTypeInfo = viewFile.javaTypeInfo()
+        return """
+            registrar
+                    .platformViewRegistry()
+                    .registerViewFactory("${javaTypeInfo.name}", ${javaTypeInfo.simpleName}Factory(registrar))
+        """
+    }
+
+    private fun generatePlatformView(javaFile: JAVA_FILE) {
+        val platformViewSource =
+            Temps.Kotlin.PlatformView.factory.placeholder(javaFile.nameWithoutExtension, javaFile.nameWithoutExtension)
+
+        "${OutputProject.Android.kotlinDirPath}${javaFile.nameWithoutExtension}Factory.kt".file().run {
+            writeText(platformViewSource)
+        }
     }
 }

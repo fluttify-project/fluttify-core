@@ -46,6 +46,17 @@ fun JavaParser.ClassDeclarationContext.isPublic(): Boolean {
 }
 
 /**
+ * 全名
+ */
+fun JavaParser.ClassDeclarationContext.fullClassName(): String {
+    val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
+        ?.packageDeclaration()
+        ?.qualifiedName()
+        ?.text ?: ""
+    return "$packageName.${IDENTIFIER().text}"
+}
+
+/**
  * 是否public
  */
 fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<Lambda> {

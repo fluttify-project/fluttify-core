@@ -71,10 +71,7 @@ fun TYPE_NAME.innerClass(): String {
  * 转kotlin类型
  */
 fun TYPE_NAME.toKotlinType(): String {
-    return when (this) {
-        "void" -> "Unit"
-        else -> this.capitalize()
-    }
+    return if (this == "void") "Unit" else if (jsonable()) capitalize() else this
 }
 
 /**
@@ -234,6 +231,13 @@ fun TYPE_NAME.isObjcModelType(): Boolean {
         ?.file()
         ?.readText()
         ?.isObjcModel() ?: false
+}
+
+/**
+ * 包名转换为路径
+ */
+fun String.package2Path(): String {
+    return replace(".", File.separator)
 }
 
 /**

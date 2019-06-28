@@ -28,13 +28,13 @@ class ObjectCreatorTask(private val dir: DIR) : Task<DIR, DART_FILE>(dir) {
                 Jar.Decompiled.classes[it.nameWithoutExtension]?.run {
                     dartBuilder.appendln(
                         Temps.Dart.ObjectCreator.creator.placeholder(
-                            simpleName,
-                            simpleName,
+                            name,
+                            name,
                             "",
-                            simpleName,
+                            name,
                             "",
                             "",
-                            simpleName
+                            name
                         )
                     )
                 }

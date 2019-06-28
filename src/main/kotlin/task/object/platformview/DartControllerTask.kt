@@ -124,7 +124,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                                 ?.run {
                                     generate(
                                         path.file().readText(),
-                                        (OutputProject.Dart.androidDirPath + simpleName.camel2Underscore() + ".dart").file()
+                                        (OutputProject.Dart.androidDirPath + name.camel2Underscore() + ".dart").file()
                                     )
                                 }
                         } else {
@@ -158,7 +158,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                                     returnType().toDartType()
                                 )
                             )
-                        } else if (returnType()?.isJavaRefType() == true) {
+                        } else if (returnType().isJavaRefType()) {
                             dartResultBuilder.append(
                                 Temps.Dart.AndroidView.modelInRefOut.placeholder(
                                     returnType().toDartType(),
@@ -179,7 +179,7 @@ class AndroidDartControllerTask(private val mainClassFile: JAVA_FILE) :
                                 ?.run {
                                     generate(
                                         path.file().readText(),
-                                        (OutputProject.Dart.androidDirPath + simpleName.camel2Underscore() + ".dart").file()
+                                        (OutputProject.Dart.androidDirPath + name.camel2Underscore() + ".dart").file()
                                     )
                                 }
                         } else {
