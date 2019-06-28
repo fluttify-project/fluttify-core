@@ -6,8 +6,7 @@ import parser.java.JavaParser
 /**
  * 判断构造器是否含有非jsonable的参数
  */
-fun JavaParser.ConstructorDeclarationContext?.hasNonJsonableParameter(): Boolean {
-    if (this == null) return false
+fun JavaParser.ConstructorDeclarationContext.hasNonJsonableParameter(): Boolean {
     val result = mutableListOf<Variable>()
 
     val parameters = this.formalParameters().formalParameterList()
@@ -26,5 +25,15 @@ fun JavaParser.ConstructorDeclarationContext?.hasNonJsonableParameter(): Boolean
             result.add(Variable(typeType().text.toDartType(), variableDeclaratorId().text))
         }
 
-    return result.any { !it.jsonable() }
+    return result.any { !it.type.jsonable() }
+}
+
+/**
+ * 是否是公有构造器
+ */
+fun JavaParser.ConstructorDeclarationContext.isPublic(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("public") ?: false
 }

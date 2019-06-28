@@ -6,7 +6,6 @@ import Configs.mainObjcClass
 import Configs.outputOrg
 import Configs.outputProjectName
 import Jar.Decompiled.mainClassSimpleName
-import Jar.`package`
 import Project.path
 import common.TYPE_NAME
 import common.extensions.*
@@ -65,7 +64,7 @@ object Jar {
                 .iterateFiles(File(rootDirPath), arrayOf("java"), true)
                 .forEach {
                     val typeInfo = it.javaTypeInfo()
-                    result.putIfAbsent(typeInfo.simpleName, typeInfo)
+                    result.putIfAbsent(typeInfo.name.replace("$", "."), typeInfo)
                 }
             result
         }
@@ -131,7 +130,7 @@ object OutputProject {
     /**
      * methodChannel名称
      */
-    val methodChannel = "$`package`/$mainClassSimpleName"
+    val methodChannel = "$outputOrg/$classSimpleName"
 
     /**
      * 输出工程路径
@@ -160,7 +159,8 @@ object OutputProject {
         /**
          * 生成工程的Android端PlatformViewController的Dart文件路径
          */
-        val androidDartControllerFilePath = "${androidDirPath}android_${mainClassSimpleName.camel2Underscore()}_controller.dart"
+        val androidDartControllerFilePath =
+            "${androidDirPath}android_${mainClassSimpleName.camel2Underscore()}_controller.dart"
 
         /**
          * 生成工程的Android端Dart模型文件路径
@@ -183,31 +183,28 @@ object OutputProject {
      */
     object Android {
         /**
+         * 生成工程的Android端Kotlin路径
+         */
+        val kotlinDirPath =
+            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.package2Path()}/$outputProjectName/"
+
+        /**
          * 生成工程的Android端Kotlin文件路径
          */
         val kotlinFilePath =
-            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(
-                ".",
-                "/"
-            )}/$outputProjectName/${classSimpleName}Plugin.kt"
+            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.package2Path()}/$outputProjectName/${classSimpleName}Plugin.kt"
 
         /**
          * PlatformViewFactory文件路径
          */
         val platformViewFactoryFilePath =
-            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(
-                ".",
-                "/"
-            )}/$outputProjectName/${classSimpleName}Factory.kt"
+            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.package2Path()}/$outputProjectName/${classSimpleName}Factory.kt"
 
         /**
          * PlatformView文件路径
          */
         val platformViewFilePath =
-            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.replace(
-                ".",
-                "/"
-            )}/$outputProjectName/$classSimpleName.kt"
+            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.package2Path()}/$outputProjectName/$classSimpleName.kt"
 
         /**
          * 生成工程的Android端Jar路径

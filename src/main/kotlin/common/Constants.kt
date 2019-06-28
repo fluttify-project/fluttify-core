@@ -15,7 +15,16 @@ val IGNORE_METHOD = listOf(
     "writeToParcel",
     "describeContents",
     "recycle",
-    "hashCode"
+    "hashCode",
+    "addView",
+    "removeView"
+)
+
+/**
+ * 保留的类
+ */
+val PRESERVED_CLASS = listOf(
+    "Context"
 )
 
 /**
@@ -23,4 +32,11 @@ val IGNORE_METHOD = listOf(
  */
 val IGNORE_FIELD = listOf(
     "CREATOR"
+)
+
+/**
+ * 忽略的类
+ */
+val IGNORE_CLASS = listOf(
+    "Fragment"
 )

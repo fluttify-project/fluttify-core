@@ -5,6 +5,7 @@ import Jar
 import common.PATH
 import common.PRESERVED_MODEL
 import common.TYPE_NAME
+import common.model.JavaTypeInfo
 import java.io.File
 
 fun String?.isLiteral(): Boolean {
@@ -31,10 +32,73 @@ fun TYPE_NAME?.jsonable(): Boolean {
         "null",
         "List<int>",
         "List<double>",
+        "List<String>",
         "Uint8List",
         "Uint32List",
         "Uint64List"
     )
+}
+
+/**
+ * 是否是集合类型
+ */
+fun TYPE_NAME.isList(): Boolean {
+    return Regex("\\w*List<\\w*>").matches(this)
+}
+
+/**
+ * 是否是未知类型, 即非当前sdk内的类
+ */
+fun TYPE_NAME.isUnknownType(): Boolean {
+    return !(Jar.Decompiled.classes.containsKey(this) || jsonable())
+}
+
+/**
+ * 是否是枚举类
+ */
+fun TYPE_NAME.isEnum(): Boolean {
+    return Jar.Decompiled.classes[this]?.isEnum == true
+}
+
+/**
+ * 获取内部类的类名, 如果没有内部类的话, 那么就使用原名
+ */
+fun TYPE_NAME.innerClass(): String {
+    return substringAfterLast("$")
+}
+
+/**
+ * 获取内部类的类名, 如果没有内部类的话, 那么就使用原名
+ */
+fun TYPE_NAME.isModel(): Boolean {
+    return jsonable()
+            || Jar.Decompiled.classes[this]?.isModel == true
+            || this in PRESERVED_MODEL
+}
+
+/**
+ * 简写类名
+ */
+fun TYPE_NAME.simpleName(): String {
+    return substringAfterLast(".")
+}
+
+/**
+ * 转kotlin类型
+ */
+fun TYPE_NAME.toKotlinType(): String {
+    return if (this == "void") "Unit" else if (jsonable()) capitalize() else this
+}
+
+/**
+ * 判断一个类名是否是被混淆过的
+ *
+ * 规则为判断文件名长度是否是1或者2且仅包含小写字母
+ */
+fun TYPE_NAME.isObfuscated(): Boolean {
+    val type = replace("$", ".").substringAfterLast(".")
+    val regex = Regex("[a-z]{1,2}")
+    return regex.matches(type)
 }
 
 /**
@@ -49,15 +113,29 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "double", "Double", "float", "Float" -> "double"
         "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
         "ArrayList<String>" -> "List<String>"
+        "List<String>" -> "List<String>"
         "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
         "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
         "Map" -> "Map"
-        "Bundle" -> "Map<String,dynamic>"
-        "Bitmap" -> "Uint8List"
+//        "Bundle" -> "Map<String,dynamic>"
+//        "Bitmap" -> "Uint8List"
         "void" -> "String"
         null -> "null"
-        else -> this
-    }
+        else -> {
+            if (Regex("ArrayList<\\w*>").matches(this)) {
+                removePrefix("Array")
+            } else {
+                this
+            }
+        }
+    }.replace("$", ".").replace(".", "_")
+}
+
+/**
+ * 从java类型获取类型信息
+ */
+fun TYPE_NAME.javaTypeInfo(): JavaTypeInfo? {
+    return Jar.Decompiled.classes[this]
 }
 
 /**
@@ -169,6 +247,13 @@ fun TYPE_NAME.isObjcModelType(): Boolean {
         ?.file()
         ?.readText()
         ?.isObjcModel() ?: false
+}
+
+/**
+ * 包名转换为路径
+ */
+fun String.package2Path(): String {
+    return replace(".", File.separator)
 }
 
 /**

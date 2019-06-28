@@ -6,7 +6,7 @@ import Configs.outputProjectName
 import Framework
 import Jar
 import OutputProject
-import common.extensions.underscore2Camel
+import OutputProject.methodChannel
 
 /**
  * 代码模板
@@ -22,12 +22,17 @@ import 'package:$outputProjectName/$outputProjectName.dart';
 
         const val classDeclaration = """import 'dart:typed_data';
 import 'package:$outputProjectName/$outputProjectName.dart';
+import 'package:flutter/services.dart';
 
-class #__plugin_class_simple_name__# {
+// ignore_for_file: non_constant_identifier_names, camel_case_types
+class #__class_name__# {
+  #__class_name__#.withRefId(this.refId);
+
+  final int refId;
 """
 
-        const val methodChannel = """
-  static final _channel = MethodChannel('#__methodChannelName__#');
+        val methodChannel = """
+  static final _channel = MethodChannel('${OutputProject.methodChannel}');
 """
 
         const val invokeMethod = """
@@ -52,18 +57,28 @@ class #__plugin_class_simple_name__# {
   #__return_type__# #__name__#(#__formal_params__#) {
 #__body__#  }
 """
-        const val fromJson = """
-  static #__class_name__# fromJson(Map<String, dynamic> json) {
-    final bean = #__class_name__#();#__content__#
-    return bean;
+
+        const val interfaceMethodJsonable = """  
+  #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) {
+    final result = _channel.invokeMethod('#__class___#::#__method__#'#__separator__##__actual_params__#);
+    return result;
   }
 """
-        const val toJson = """
-  Map<String, dynamic> toJson() {
-    return {#__content__#
-    }..removeWhere((key, value) => value == null);
+
+        const val interfaceMethodRef = """  
+  #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) async {
+    final resultRefId = await _channel.invokeMethod('#__class_name__#::#__method_name__#'#__separator__##__actual_params__#);
+    return #__return_type__#.withRefId(resultRefId);
   }
 """
+
+        const val interfaceMethodRefList = """  
+  #__modifier__#Future<#__return_type__#> #__name__#(#__formal_params__#) async {
+    final resultRefIdList = await _channel.invokeMethod('#__class_name__#::#__method_name__#'#__separator__##__actual_params__#);
+    return (resultRefIdList as List).map((it) => #__return_type__#.withRefId(it));
+  }
+"""
+
         const val toString = """
   @override
   String toString() {
@@ -82,10 +97,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:$outputProjectName/$outputProjectName.dart';
 
-typedef void PlatformViewCreatedCallback(Android${OutputProject.classSimpleName}Controller controller);
+typedef void PlatformViewCreatedCallback(#__view__# controller);
 
-class Android${OutputProject.classSimpleName} extends StatelessWidget {
-  const Android${OutputProject.classSimpleName}({
+class #__view__#_Android extends StatelessWidget {
+  const #__view__#_Android({
     Key key,
     this.onViewCreated,
   }) : super(key: key);
@@ -100,7 +115,7 @@ class Android${OutputProject.classSimpleName} extends StatelessWidget {
 
     final messageCodec = StandardMessageCodec();
     return AndroidView(
-      viewType: '$outputOrg.$outputProjectName/${OutputProject.classSimpleName}',
+      viewType: '$outputOrg/#__view__#',
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
       creationParamsCodec: messageCodec,
@@ -108,7 +123,7 @@ class Android${OutputProject.classSimpleName} extends StatelessWidget {
   }
 
   void _onViewCreated(int id) {
-    final controller = Android${OutputProject.classSimpleName}Controller.withId(id);
+    final controller = #__view__#.withRefId(id);
     if (onViewCreated != null) {
       onViewCreated(controller);
     }
@@ -116,11 +131,11 @@ class Android${OutputProject.classSimpleName} extends StatelessWidget {
 }
 """
             val androidViewController = """
-class Android${OutputProject.classSimpleName}Controller {
+class ${OutputProject.classSimpleName}Controller_Android {
   final MethodChannel _channel;
 
-  Android${OutputProject.classSimpleName}Controller.withId(int id)
-      : _channel = MethodChannel('$outputOrg/${OutputProject.classSimpleName}' + id.toString());
+  ${OutputProject.classSimpleName}Controller_Android.withId(int id)
+      : _channel = MethodChannel('$methodChannel' + id.toString());
 """
 
             const val androidViewRef = """
@@ -180,6 +195,22 @@ class Android#__uikit_view__# extends StatelessWidget {
   }
 }
 """
+        object ObjectCreator {
+            const val classDeclare = """import 'package:flutter/services.dart';
+
+import 'package:$outputProjectName/$outputProjectName.dart';
+
+class ObjectCreator {
+  static final _channel = MethodChannel('$outputOrg/ObjectCreator');"""
+
+            const val creator = """
+  static Future<#__class_name__#> create#__class_name__#(#__formal_params__#) async {
+    final int refId = await _channel.invokeMethod('ObjectCreator::create#__class_name__#'#__separator__##__params__#);
+    return #__class_name__#.withRefId(refId);
+  }"""
+
+            const val classDeclareEnd = """}"""
+        }
     }
 
     object Kotlin {
@@ -217,7 +248,7 @@ class #__class_name__#Plugin : MethodCallHandler {
 
         const val onMethodCall = """
     override fun onMethodCall(methodCall: MethodCall, methodResult: Result) {
-        val args = methodCall.arguments as? Map<String, *> ?: mapOf<String, Any>()
+        val args = methodCall.arguments as? Map<String, Any> ?: mapOf<String, Any>()
         when (methodCall.method) {"""
 
         const val methodBranch = """
@@ -228,8 +259,7 @@ class #__class_name__#Plugin : MethodCallHandler {
             }"""
 
         const val whenElse = """
-            else -> methodResult.notImplemented()
-        }"""
+            else -> methodResult.notImplemented()"""
 
         const val classEnd = """
     }
@@ -253,14 +283,16 @@ class ${OutputProject.classSimpleName}Plugin {
         fun registerWith(registrar: Registrar) {
             registrar
                     .platformViewRegistry()
-                    .registerViewFactory("$outputOrg.$outputProjectName/${OutputProject.classSimpleName}", ${OutputProject.classSimpleName}Factory(registrar))
+                    .registerViewFactory("$methodChannel/${OutputProject.classSimpleName}", ${OutputProject.classSimpleName}Factory(registrar))
         }
     }
 }"""
 
-            val factory = """package $outputOrg.$outputProjectName
+            const val factory = """package $outputOrg.$outputProjectName
 
 import android.content.Context
+import android.view.View
+
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
@@ -268,10 +300,18 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class ${OutputProject.classSimpleName}Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
 
     override fun create(context: Context, id: Int, params: Any?): PlatformView {
-        return ${OutputProject.classSimpleName}(context, id, registrar)
+        return object : PlatformView {
+            private val view = #__view__#(registrar.activity())
+
+            override fun getView(): View = view.apply { REF_MAP[id] = this }
+
+            override fun dispose() {
+                REF_MAP.remove(id)
+            }
+        }
     }
 }"""
 
@@ -280,9 +320,9 @@ class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : Platform
 """
 
             val channel = """
-    private val methodChannel = MethodChannel(registrar.messenger(), "$outputOrg/${outputProjectName.underscore2Camel()}" + id)
+    private val methodChannel = MethodChannel(registrar.messenger(), "$methodChannel" + id)
     private val view = ${Jar.Decompiled.mainClassSimpleName}(registrar.activity())
-    private val refMap = mutableMapOf<Int, Any>()
+    private val REF_MAP = mutableMapOf<Int, Any>()
     private val mapper: ObjectMapper = ObjectMapper()
 
     init {
@@ -293,68 +333,79 @@ class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : Platform
             const val methodBranchHeader = """
             "#__class_name__#::#__method_name__#" -> {#__local_params__#"""
 
-            const val staticReturnModel = """
-                val result = #__class_name__#.#__method_name__#(#__params__#)
+            const val staticReturnJsonable = """
+                        val result = #__class_name__#.#__method_name__#(#__params__#)
                 
-                methodResult.success(#__result__#)"""
+                        methodResult.success(result)"""
 
             const val staticReturnVoid = """
-                #__class_name__#.#__method_name__#(#__params__#)
+                        #__class_name__#.#__method_name__#(#__params__#)
                 
-                methodResult.success("success")"""
+                        methodResult.success("success")"""
 
             const val staticReturnRef = """
-                val result = #__class_name__#.#__method_name__#(#__params__#)
+                        val result = #__class_name__#.#__method_name__#(#__params__#)
                 
-                val returnRefId = result.hashCode()
-                refMap[returnRefId] = result
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
                 
-                methodResult.success(returnRefId)"""
+                        methodResult.success(returnRefId)"""
 
             const val viewReturnModel = """
-                val result = view.#__method_name__#(#__params__#)
+                        val result = view.#__method_name__#(#__params__#)
                 
-                methodResult.success(#__result__#)"""
+                        methodResult.success(#__result__#)"""
 
             const val viewReturnRef = """
-                val result = view.#__method_name__#(#__params__#)
+                        val result = view.#__method_name__#(#__params__#)
                 
-                val returnRefId = result.hashCode()
-                refMap[returnRefId] = result
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
                 
-                methodResult.success(returnRefId)"""
+                        methodResult.success(returnRefId)"""
 
             const val viewReturnVoid = """
-                view.#__method_name__#(#__params__#)
+                        view.#__method_name__#(#__params__#)
                 
-                methodResult.success("success")"""
+                        methodResult.success("success")"""
 
             const val refReturnRef = """
-                val refId = args["refId"] as Int
-                val ref = refMap[refId] as #__class_name__#
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
+                        
+                        val result = ref.#__method_name__#(#__params__#)
+                        
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
+                        
+                        methodResult.success(returnRefId)"""
 
-                val result = ref.#__method_name__#(#__params__#)
+            const val callback = """
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
+                        
+                        val result = ref.#__method_name__#(#__params__#)
+                        
+                        val returnRefId = result.hashCode()
+                        REF_MAP[returnRefId] = result
+                        
+                        methodResult.success(returnRefId)"""
 
-                val returnRefId = result.hashCode()
-                refMap[returnRefId] = result
-                
-                methodResult.success(returnRefId)"""
+            const val refReturnJsonable = """
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
 
-            const val refReturnModel = """
-                val refId = args["refId"] as Int
-                val ref = refMap[refId] as #__class_name__#
+                        val result = ref.#__method_name__#(#__params__#)
 
-                val result = ref.#__method_name__#(#__params__#)
-
-                methodResult.success(#__result__#)"""
+                        methodResult.success(result)"""
 
             const val refReturnVoid = """
-                val refId = args["refId"] as Int
-                val ref = refMap[refId] as #__class_name__#
-
-                ref.#__method_name__#(#__params__#)
-
-                methodResult.success("success")"""
+                        val refId = args["refId"] as Int
+                        val ref = REF_MAP[refId] as #__class_name__#
+                        
+                        ref.#__method_name__#(#__params__#)
+                        
+                        methodResult.success("success")"""
 
             const val getViewDispose = """
     override fun getView(): View = view

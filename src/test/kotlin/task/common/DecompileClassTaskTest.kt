@@ -10,7 +10,7 @@ class DecompileClassTaskTest {
     @Test
     fun process() {
         FileUtils.iterateFiles(
-            "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/decompiled/com".file(),
+            "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/decompiled/com/".file(),
             arrayOf("class"),
             true
         ).forEach {

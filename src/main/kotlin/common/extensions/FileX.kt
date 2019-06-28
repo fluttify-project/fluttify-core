@@ -6,10 +6,12 @@ import common.model.JavaTypeInfo
 import common.model.Method
 import common.model.ObjcTypeInfo
 import common.model.Variable
+import org.apache.commons.io.FileUtils
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
+import java.io.File
 
 /**
  * Java源码解析
@@ -21,6 +23,9 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
     val fields = mutableListOf<Variable>()
     val methods = mutableListOf<Method>()
     var className = ""
+    var isCallback = false
+    var isEnum = false
+    var isInterface = false
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext?) {
@@ -38,18 +43,21 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext?) {
             if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
                 className = ctx.IDENTIFIER().text
+                isCallback = true
+                isInterface = true
             }
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext?) {
             if (ctx != null && ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
                 className = ctx.IDENTIFIER().text
+                isEnum = true
             }
         }
 
         override fun enterMethodDeclaration(ctx: MethodDeclarationContext?) {
             ctx?.run {
-                methods.add(Method(ctx.returnType()!!, ctx.name()!!, ctx.formalParams()))
+                methods.add(Method(ctx.returnType(), ctx.name(), ctx.formalParams()))
             }
         }
 
@@ -60,7 +68,15 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
         }
     })
 
-    return JavaTypeInfo("$packageName.$className", className, absolutePath, fields, methods)
+    return JavaTypeInfo(
+        "$packageName.${className.replace("$", ".")}",
+        absolutePath,
+        fields,
+        methods,
+        isCallback = isCallback,
+        isEnum = isEnum,
+        isInterface = isInterface
+    )
 }
 
 /**
@@ -126,4 +142,10 @@ fun OBJC_FILE.objcTypeInfo(): ObjcTypeInfo {
     })
 
     return ObjcTypeInfo(className, absolutePath, fields, methods)
+}
+
+fun File.iterate(fileSuffix: String, recursive: Boolean = true, forEach: (File) -> Unit) {
+    FileUtils
+        .iterateFiles(this, arrayOf(fileSuffix), recursive)
+        .forEach { forEach(it) }
 }

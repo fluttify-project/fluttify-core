@@ -21,14 +21,6 @@ fun main() {
         .map { DecompileClassTask(it).process() }
         // 清理空文件
         .map { CleanEmptyTask(it).process() }
-        // 识别android Model文件
-        .flatMap { Observable.fromIterable(AndroidRecognizeModelTask(it).process()) }
-        // 将每个识别出来的android model文件转换成dart model文件, 并写入
-        .map { AndroidDartModelTask(it).process() }
-        // 为Model加入fromJson和toJson
-        .map { JsonTask(it).process() }
-        // 收成一个List, 避免下游的任务重复执行
-        .toList()
         // 生成静态方法的dart method channel
         .map { AndroidDartStaticMethodTask(Jar.Decompiled.mainClassFilePath.file()).process() }
         // 生成静态方法的kotlin method channel

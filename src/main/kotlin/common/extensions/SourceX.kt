@@ -72,7 +72,7 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
                 if (ctx.name() in IGNORE_METHOD) return
 
                 memberAllStatic.add(!ctx.isInstanceMethod())
-                formalParams().forEach { methodArgsAllModel.add(it.isModel()) }
+                formalParams().forEach { methodArgsAllModel.add(it.type.isModel()) }
             }
         }
 
@@ -100,6 +100,98 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
     return isModel
 }
 
+fun JAVA_SOURCE.classContext(): JavaParser.ClassDeclarationContext {
+    return parser().classDeclaration()
+}
+
+fun JAVA_SOURCE.methodContext(): JavaParser.MethodDeclarationContext {
+    return parser().methodDeclaration()
+}
+
+/**
+ * 所有成员都是静态
+ */
+fun JAVA_SOURCE.allMemberStatic(): Boolean {
+    val memberAllStatic = mutableListOf<Boolean>()
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
+            field?.run {
+                memberAllStatic.add(field.isStatic())
+            }
+        }
+
+        override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
+            ctx?.run {
+                // 如果方法名称是在忽略列表里的, 那么就直接跳过
+                if (ctx.name() in IGNORE_METHOD) return
+
+                memberAllStatic.add(!ctx.isInstanceMethod())
+            }
+        }
+    })
+    return memberAllStatic.all { it }
+}
+
+/**
+ * 是否是View
+ */
+fun JAVA_SOURCE.isView(): Boolean {
+    var isView = false
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
+            ctx?.run {
+                if (superClass() in listOf("View", "ViewGroup")) {
+                    isView = true
+                }
+            }
+        }
+    })
+    return isView
+}
+
+/**
+ * 是否是忽略的类
+ */
+fun JAVA_SOURCE.isIgnore(): Boolean {
+    var isIgnore = false
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
+            ctx?.run {
+                if (superClass() in IGNORE_CLASS) {
+                    isIgnore = true
+                }
+            }
+        }
+    })
+    return isIgnore
+}
+
+/**
+ * 是否有公有的构造器
+ */
+fun JAVA_SOURCE.publicConstructor(): Boolean {
+    val constructorIsPublic = mutableListOf<Boolean>()
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterConstructorDeclaration(ctx: JavaParser.ConstructorDeclarationContext?) {
+            ctx?.run {
+                constructorIsPublic.add(isPublic())
+            }
+        }
+    })
+    return constructorIsPublic.any { it } || constructorIsPublic.isEmpty()
+}
+
+/**
+ * 是否是回调类, 目前只识别interface文件
+ */
+fun TYPE_NAME.isCallback(): Boolean {
+    return Jar.Decompiled.classes[this]?.isCallback == true
+}
+
 /**
  * Java源码遍历
  */
@@ -110,6 +202,14 @@ fun JAVA_SOURCE.walkTree(listener: JavaParserBaseListener) {
     val walker = ParseTreeWalker()
 
     walker.walk(listener, tree)
+}
+
+/**
+ * 获取解析器
+ */
+fun JAVA_SOURCE.parser(): JavaParser {
+    val lexer = JavaLexer(CharStreams.fromString(this))
+    return JavaParser(CommonTokenStream(lexer))
 }
 //endregion
 
