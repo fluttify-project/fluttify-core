@@ -70,7 +70,6 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
 
     return JavaTypeInfo(
         "$packageName.${className.replace("$", ".")}",
-        className,
         absolutePath,
         fields,
         methods,

@@ -68,6 +68,22 @@ fun TYPE_NAME.innerClass(): String {
 }
 
 /**
+ * 获取内部类的类名, 如果没有内部类的话, 那么就使用原名
+ */
+fun TYPE_NAME.isModel(): Boolean {
+    return jsonable()
+            || Jar.Decompiled.classes[this]?.isModel == true
+            || this in PRESERVED_MODEL
+}
+
+/**
+ * 简写类名
+ */
+fun TYPE_NAME.simpleName(): String {
+    return substringAfterLast(".")
+}
+
+/**
  * 转kotlin类型
  */
 fun TYPE_NAME.toKotlinType(): String {
@@ -80,9 +96,9 @@ fun TYPE_NAME.toKotlinType(): String {
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母
  */
 fun TYPE_NAME.isObfuscated(): Boolean {
-    val types = split("$")
+    val type = replace("$", ".").substringAfterLast(".")
     val regex = Regex("[a-z]{1,2}")
-    return types.any { regex.matches(it) }
+    return regex.matches(type)
 }
 
 /**
@@ -101,8 +117,8 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
         "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
         "Map" -> "Map"
-        "Bundle" -> "Map<String,dynamic>"
-        "Bitmap" -> "Uint8List"
+//        "Bundle" -> "Map<String,dynamic>"
+//        "Bitmap" -> "Uint8List"
         "void" -> "String"
         null -> "null"
         else -> {
@@ -112,7 +128,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
                 this
             }
         }
-    }.replace("$", "_")
+    }.replace("$", ".").replace(".", "_")
 }
 
 /**

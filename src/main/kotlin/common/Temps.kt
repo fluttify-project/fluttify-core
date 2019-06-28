@@ -24,7 +24,7 @@ import 'package:$outputProjectName/$outputProjectName.dart';
 import 'package:$outputProjectName/$outputProjectName.dart';
 import 'package:flutter/services.dart';
 
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, camel_case_types
 class #__class_name__# {
   #__class_name__#.withRefId(this.refId);
 
@@ -99,8 +99,8 @@ import 'package:$outputProjectName/$outputProjectName.dart';
 
 typedef void PlatformViewCreatedCallback(#__view__# controller);
 
-class Android#__view__# extends StatelessWidget {
-  const Android#__view__#({
+class #__view__#_Android extends StatelessWidget {
+  const #__view__#_Android({
     Key key,
     this.onViewCreated,
   }) : super(key: key);
@@ -131,10 +131,10 @@ class Android#__view__# extends StatelessWidget {
 }
 """
             val androidViewController = """
-class Android${OutputProject.classSimpleName}Controller {
+class ${OutputProject.classSimpleName}Controller_Android {
   final MethodChannel _channel;
 
-  Android${OutputProject.classSimpleName}Controller.withId(int id)
+  ${OutputProject.classSimpleName}Controller_Android.withId(int id)
       : _channel = MethodChannel('$methodChannel' + id.toString());
 """
 
@@ -248,7 +248,7 @@ class #__class_name__#Plugin : MethodCallHandler {
 
         const val onMethodCall = """
     override fun onMethodCall(methodCall: MethodCall, methodResult: Result) {
-        val args = methodCall.arguments as? Map<String, *> ?: mapOf<String, Any>()
+        val args = methodCall.arguments as? Map<String, Any> ?: mapOf<String, Any>()
         when (methodCall.method) {"""
 
         const val methodBranch = """
@@ -259,8 +259,7 @@ class #__class_name__#Plugin : MethodCallHandler {
             }"""
 
         const val whenElse = """
-            else -> methodResult.notImplemented()
-        }"""
+            else -> methodResult.notImplemented()"""
 
         const val classEnd = """
     }
@@ -307,10 +306,10 @@ class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(
         return object : PlatformView {
             private val view = #__view__#(registrar.activity())
 
-            override fun getView(): View = view
+            override fun getView(): View = view.apply { REF_MAP[id] = this }
 
             override fun dispose() {
-                REF_MAP.remove(hashCode())
+                REF_MAP.remove(id)
             }
         }
     }

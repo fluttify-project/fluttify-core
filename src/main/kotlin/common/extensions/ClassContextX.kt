@@ -2,7 +2,6 @@ package common.extensions
 
 import common.gWalker
 import common.model.Lambda
-import common.model.Variable
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
@@ -48,16 +47,27 @@ fun JavaParser.ClassDeclarationContext.isPublic(): Boolean {
 /**
  * 全名
  */
-fun JavaParser.ClassDeclarationContext.fullClassName(): String {
+fun JavaParser.ClassDeclarationContext.fullName(): String {
     val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
         ?.packageDeclaration()
         ?.qualifiedName()
         ?.text ?: ""
-    return "$packageName.${IDENTIFIER().text}"
+    return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
 }
 
 /**
- * 是否public
+ * 全名
+ */
+fun JavaParser.EnumDeclarationContext.fullName(): String {
+    val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
+        ?.packageDeclaration()
+        ?.qualifiedName()
+        ?.text ?: ""
+    return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
+}
+
+/**
+ * interface转lambda
  */
 fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<Lambda> {
     val result = mutableListOf<Lambda>()
@@ -67,33 +77,15 @@ fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<Lambda> {
 
         override fun enterInterfaceMethodDeclaration(ctx: JavaParser.InterfaceMethodDeclarationContext?) {
             ctx?.run {
-                val allParams = mutableListOf<Variable>()
-
-                val parametersContext = formalParameters().formalParameterList()
-
-                // 除最后一个参数之外的参数
-                parametersContext
-                    ?.formalParameter()
-                    ?.forEach {
-                        allParams.add(Variable(it.typeType().text, it.variableDeclaratorId().text))
-                    }
-
-                // 最后一个参数
-                parametersContext
-                    ?.lastFormalParameter()
-                    ?.run {
-                        allParams.add(Variable(typeType().text, variableDeclaratorId().text))
-                    }
-
                 val returnType = typeTypeOrVoid().text.toDartType()
                 // 处理java中重载的情况
                 val methodName = if (IDENTIFIER().text in existMethod)
-                    "${IDENTIFIER().text}_${allParams.joinToString("_") { it.type }}"
+                    "${IDENTIFIER().text}_${formalParams().joinToString("_") { it.type.toDartType() }}"
                 else
                     IDENTIFIER().text
 
-                if (allParams.all { !it.isUnknownType() }) {
-                    result.add(Lambda(returnType, methodName, allParams))
+                if (formalParams().all { !it.type.isUnknownType() }) {
+                    result.add(Lambda(returnType, methodName, formalParams()))
                     existMethod.add(IDENTIFIER().text)
                 }
             }

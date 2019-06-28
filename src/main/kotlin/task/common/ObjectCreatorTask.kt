@@ -1,6 +1,5 @@
 package task.common
 
-import Jar
 import OutputProject
 import common.DART_FILE
 import common.DIR
@@ -23,21 +22,20 @@ class ObjectCreatorTask(private val dir: DIR) : Task<DIR, DART_FILE>(dir) {
 
         dir.iterate("java") {
             if (!it.nameWithoutExtension.isObfuscated()
-                && it.readText().run { publicConstructor() && !allMemberStatic() }) {
+                && it.readText().run { publicConstructor() && !allMemberStatic() }
+            ) {
                 println("处理文件: $it")
-                Jar.Decompiled.classes[it.nameWithoutExtension]?.run {
-                    dartBuilder.appendln(
-                        Temps.Dart.ObjectCreator.creator.placeholder(
-                            name,
-                            name,
-                            "",
-                            name,
-                            "",
-                            "",
-                            name
-                        )
+                dartBuilder.appendln(
+                    Temps.Dart.ObjectCreator.creator.placeholder(
+                        it.javaTypeInfo().name.toDartType(),
+                        it.javaTypeInfo().name.toDartType(),
+                        "",
+                        it.javaTypeInfo().name.toDartType(),
+                        "",
+                        "",
+                        it.javaTypeInfo().name.toDartType()
                     )
-                }
+                )
             }
         }
 

@@ -25,7 +25,7 @@ fun JavaParser.ConstructorDeclarationContext.hasNonJsonableParameter(): Boolean 
             result.add(Variable(typeType().text.toDartType(), variableDeclaratorId().text))
         }
 
-    return result.any { !it.jsonable() }
+    return result.any { !it.type.jsonable() }
 }
 
 /**

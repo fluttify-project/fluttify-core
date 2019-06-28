@@ -1,7 +1,5 @@
 package common.model
 
-import common.TYPE_NAME
-
 /**
  * 类信息 Java类和Objc类公用
  */
@@ -52,12 +50,6 @@ abstract class TypeInfo(
  */
 data class JavaTypeInfo(
     override val name: String,
-
-    /**
-     * 去除包名的类名
-     */
-    val simpleName: TYPE_NAME,
-
     override val path: String,
     override val fields: List<Variable>,
     override val methods: List<Method>,

@@ -33,3 +33,10 @@ val PRESERVED_CLASS = listOf(
 val IGNORE_FIELD = listOf(
     "CREATOR"
 )
+
+/**
+ * 忽略的类
+ */
+val IGNORE_CLASS = listOf(
+    "Fragment"
+)

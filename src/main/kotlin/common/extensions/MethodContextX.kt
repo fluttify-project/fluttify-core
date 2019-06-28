@@ -24,11 +24,31 @@ fun JavaParser.InterfaceMethodDeclarationContext?.method(): Method? {
 }
 
 fun JavaParser.MethodDeclarationContext.returnType(): String {
-    return typeTypeOrVoid().text
+    val paramType = typeTypeOrVoid().text
+    return ancestorOf(JavaParser.CompilationUnitContext::class)
+        ?.importDeclaration()
+        ?.firstOrNull {
+            !paramType.jsonable()
+                    && it.qualifiedName().text.length >= paramType.length
+                    && it.qualifiedName()
+                .text
+                .run { substring(length - paramType.length, length) } == paramType
+        }
+        ?.qualifiedName()?.text ?: paramType
 }
 
 fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
-    return typeTypeOrVoid().text
+    val paramType = typeTypeOrVoid().text
+    return ancestorOf(JavaParser.CompilationUnitContext::class)
+        ?.importDeclaration()
+        ?.firstOrNull {
+            !paramType.jsonable()
+                    && it.qualifiedName().text.length >= paramType.length
+                    && it.qualifiedName()
+                .text
+                .run { substring(length - paramType.length, length) } == paramType
+        }
+        ?.qualifiedName()?.text ?: paramType
 }
 
 fun JavaParser.MethodDeclarationContext.name(): String {

@@ -34,10 +34,8 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                 ctx?.run {
                     dartBuilder.append(
                         Temps.Dart.classDeclaration.placeholder(
-                            IDENTIFIER().text,
-                            IDENTIFIER().text,
-                            IDENTIFIER().text,
-                            IDENTIFIER().text
+                            fullName().toDartType(),
+                            fullName().toDartType()
                         )
                     )
                     dartBuilder.append(Temps.Dart.methodChannel)
@@ -45,11 +43,11 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                     if (superClass() in listOf("View", "ViewGroup")) {
                         androidViewBuilder.append(
                             Temps.Dart.AndroidView.androidView.placeholder(
-                                IDENTIFIER().text,
-                                IDENTIFIER().text,
-                                IDENTIFIER().text,
-                                IDENTIFIER().text,
-                                IDENTIFIER().text
+                                fullName().toDartType(),
+                                fullName().toDartType(),
+                                fullName().toDartType(),
+                                fullName(),
+                                fullName().toDartType()
                             )
                         )
                     }
@@ -63,13 +61,13 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
 
                     if (!isPublic()
                         || name() in IGNORE_METHOD
-                        || formalParams().any { it.isUnknownType() || it.type.isObfuscated() }
+                        || formalParams().any { it.type.isUnknownType() || it.type.isObfuscated() }
                         || returnType().run { isUnknownType() || isObfuscated() }
                     ) return
 
                     val methodBuilder = StringBuilder()
 
-                    val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text ?: ""
+                    val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullName() ?: ""
                     val params = formalParams().filter { it.type !in PRESERVED_CLASS }.toMutableList()
                     var methodName = name()
                     // 处理java方法重载的情况
@@ -93,7 +91,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                     // 4. 方法体
                     methodBuilder.append(methodBodyString(isStatic(), className, methodName, params))
                     // 5. 返回值
-                    methodBuilder.append(returnString(returnType().toDartType()))
+                    methodBuilder.append(returnString(returnType()))
                     methodBuilder.append("}")
 
                     dartBuilder.append(methodBuilder.toString())
@@ -109,7 +107,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
 
             override fun enterEnumDeclaration(ctx: JavaParser.EnumDeclarationContext?) {
                 ctx?.run {
-                    dartBuilder.append("enum ${IDENTIFIER().text.toDartType()} {")
+                    dartBuilder.append("enum ${fullName().toDartType()} {")
                 }
             }
 
@@ -141,7 +139,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
      */
     private fun formalParamsString(params: List<Variable>): String {
         return params
-            .filter { !it.isUnknownType() }
+            .filter { !it.type.isUnknownType() }
             .joinToString { variable ->
                 variable
                     .type
@@ -178,32 +176,40 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
     /**
      * 方法体拼接字符串
      */
-    private fun methodBodyString(isStatic: Boolean, className: String, methodName: String, params: List<Variable>): String {
+    private fun methodBodyString(
+        isStatic: Boolean,
+        className: String,
+        methodName: String,
+        params: List<Variable>
+    ): String {
         val resultBuilder = StringBuilder("")
 
         val removeCallbackParam = params
-                .filter { !it.isCallback() }
-                .toMutableList()
-                .apply { if (!isStatic) add(Variable("int", "refId")) }
+            .filter { !it.type.isCallback() }
+            .toMutableList()
+            .apply { if (!isStatic) add(Variable("int", "refId")) }
 
         val actualParams = removeCallbackParam.toDartMap {
             when {
+                it.type.isEnum() -> "${it.name}.index"
                 it.type.isList() -> "${it.name}.map((it) => it.refId).toList()"
                 it.type.jsonable() -> it.name
-                it.isEnum() -> "${it.name}.index"
                 else -> "${it.name}.refId"
             }
         }
 
         resultBuilder.append(
-            "final result = await _channel.invokeMethod('${className.toDartType()}::$methodName', $actualParams);"
+            "final result = await _channel.invokeMethod('$className::$methodName', $actualParams);"
         )
 
         lambdas.forEachIndexed { index, lambda ->
             if (index == 0) {
                 resultBuilder.append(
                     """_channel.setMethodCallHandler((methodCall) { 
-                            final args = methodCall.arguments as Map<String, dynamic>; 
+                            final args = methodCall.arguments as Map; 
+                            final refId = args['refId'] as int; 
+                            if (refId != this.refId) return;
+
                             switch (methodCall.method) {"""
                 )
             }
@@ -211,23 +217,22 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
             resultBuilder.append(
                 """
             case '$className::${methodName}_Callback::${lambda.methodName}':
-              ${lambda.methodName}(${lambda.formalParams.joinToString {
-                    if (it.jsonable()) {
+              if (${lambda.methodName} != null) {
+                ${lambda.methodName}(${lambda.formalParams.joinToString {
+                    if (it.type.jsonable()) {
                         "args['${it.name}']"
                     } else {
-                        "${it.type}.withRefId(args['${it.name}'])"
+                        "${it.type.toDartType()}.withRefId(args['${it.name}'])"
                     }
                 }});
+              }
               break;"""
             )
 
             if (index == lambdas.lastIndex) {
-
                 resultBuilder.append("""default: break; } });""")
             }
         }
-
-
         return resultBuilder.toString()
     }
 

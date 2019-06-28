@@ -72,7 +72,7 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
                 if (ctx.name() in IGNORE_METHOD) return
 
                 memberAllStatic.add(!ctx.isInstanceMethod())
-                formalParams().forEach { methodArgsAllModel.add(it.isModel()) }
+                formalParams().forEach { methodArgsAllModel.add(it.type.isModel()) }
             }
         }
 
@@ -98,6 +98,14 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
     })
 
     return isModel
+}
+
+fun JAVA_SOURCE.classContext(): JavaParser.ClassDeclarationContext {
+    return parser().classDeclaration()
+}
+
+fun JAVA_SOURCE.methodContext(): JavaParser.MethodDeclarationContext {
+    return parser().methodDeclaration()
 }
 
 /**
@@ -144,6 +152,24 @@ fun JAVA_SOURCE.isView(): Boolean {
 }
 
 /**
+ * 是否是忽略的类
+ */
+fun JAVA_SOURCE.isIgnore(): Boolean {
+    var isIgnore = false
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
+            ctx?.run {
+                if (superClass() in IGNORE_CLASS) {
+                    isIgnore = true
+                }
+            }
+        }
+    })
+    return isIgnore
+}
+
+/**
  * 是否有公有的构造器
  */
 fun JAVA_SOURCE.publicConstructor(): Boolean {
@@ -162,15 +188,8 @@ fun JAVA_SOURCE.publicConstructor(): Boolean {
 /**
  * 是否是回调类, 目前只识别interface文件
  */
-fun JAVA_SOURCE.isCallback(): Boolean {
-    var result = false
-
-    walkTree(object : JavaParserBaseListener() {
-        override fun enterInterfaceDeclaration(ctx: JavaParser.InterfaceDeclarationContext?) {
-            result = true
-        }
-    })
-    return result
+fun TYPE_NAME.isCallback(): Boolean {
+    return Jar.Decompiled.classes[this]?.isCallback == true
 }
 
 /**
@@ -183,6 +202,14 @@ fun JAVA_SOURCE.walkTree(listener: JavaParserBaseListener) {
     val walker = ParseTreeWalker()
 
     walker.walk(listener, tree)
+}
+
+/**
+ * 获取解析器
+ */
+fun JAVA_SOURCE.parser(): JavaParser {
+    val lexer = JavaLexer(CharStreams.fromString(this))
+    return JavaParser(CommonTokenStream(lexer))
 }
 //endregion
 

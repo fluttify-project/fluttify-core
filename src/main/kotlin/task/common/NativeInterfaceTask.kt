@@ -34,10 +34,11 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
 
         // body
         jarDir.iterate("java") {
-            if (!it.nameWithoutExtension.isObfuscated()) {
+            if (!it.nameWithoutExtension.isObfuscated() && !it.readText().isIgnore()) {
                 resultBuilder.append(generateForFile(it))
             }
         }
+        resultBuilder.append(Temps.Kotlin.whenElse)
         resultBuilder.append(
             """
                     }
@@ -88,7 +89,7 @@ class ${classSimpleName}Plugin {
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "$methodChannel")
             channel.setMethodCallHandler { methodCall, methodResult ->
-                val args = methodCall.arguments as? Map<String, *> ?: mapOf()
+                val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
                 when (methodCall.method) {"""
     }
 
@@ -103,13 +104,13 @@ class ${classSimpleName}Plugin {
                     ctx?.run {
                         if (!isPublic()
                             || name() in IGNORE_METHOD
-                            || formalParams().any { it.isUnknownType() || it.type.isObfuscated() }
+                            || formalParams().any { it.type.isUnknownType() || it.type.isObfuscated() }
                             || returnType().run { isUnknownType() || isObfuscated() }
                         ) return
 
                         val methodBuilder = StringBuilder("")
 
-                        val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullClassName() ?: ""
+                        val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullName() ?: ""
                         val params = formalParams().filter { it.type !in PRESERVED_CLASS }.toMutableList()
                         var methodName = name()
                         // 处理java方法重载的情况
@@ -124,7 +125,7 @@ class ${classSimpleName}Plugin {
                                 className,
                                 methodName,
                                 formalParams()
-                                    .filter { !it.isCallback() }
+                                    .filter { !it.type.isCallback() }
                                     .joinToString("") {
                                         when {
                                             it.type.jsonable() -> {
@@ -150,7 +151,7 @@ class ${classSimpleName}Plugin {
                                         className,
                                         methodName,
                                         formalParams().joinToString {
-                                            if (!it.isCallback())
+                                            if (!it.type.isCallback())
                                                 it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
@@ -163,7 +164,7 @@ class ${classSimpleName}Plugin {
                                         className,
                                         methodName,
                                         formalParams().joinToString {
-                                            if (!it.isCallback())
+                                            if (!it.type.isCallback())
                                                 it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
@@ -176,7 +177,7 @@ class ${classSimpleName}Plugin {
                                         className,
                                         methodName,
                                         formalParams().joinToString {
-                                            if (!it.isCallback())
+                                            if (!it.type.isCallback())
                                                 it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
@@ -195,7 +196,7 @@ class ${classSimpleName}Plugin {
                                         className.replace("_", "."),
                                         methodName,
                                         formalParams().joinToString {
-                                            if (!it.isCallback())
+                                            if (!it.type.isCallback())
                                                 it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
@@ -208,7 +209,7 @@ class ${classSimpleName}Plugin {
                                         className.replace("_", "."),
                                         methodName,
                                         formalParams().joinToString {
-                                            if (!it.isCallback())
+                                            if (!it.type.isCallback())
                                                 it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
@@ -222,7 +223,7 @@ class ${classSimpleName}Plugin {
                                         className.replace("_", "."),
                                         methodName,
                                         formalParams().joinToString {
-                                            if (!it.isCallback())
+                                            if (!it.type.isCallback())
                                                 it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
@@ -246,13 +247,13 @@ class ${classSimpleName}Plugin {
         return """
             registrar
                     .platformViewRegistry()
-                    .registerViewFactory("${javaTypeInfo.name}", ${javaTypeInfo.simpleName}Factory(registrar))
+                    .registerViewFactory("$outputOrg/${javaTypeInfo.name}", ${javaTypeInfo.name.simpleName()}Factory(registrar))
         """
     }
 
     private fun generatePlatformView(javaFile: JAVA_FILE) {
         val platformViewSource =
-            Temps.Kotlin.PlatformView.factory.placeholder(javaFile.nameWithoutExtension, javaFile.nameWithoutExtension)
+            Temps.Kotlin.PlatformView.factory.placeholder(javaFile.nameWithoutExtension, javaFile.javaTypeInfo().name)
 
         "${OutputProject.Android.kotlinDirPath}${javaFile.nameWithoutExtension}Factory.kt".file().run {
             writeText(platformViewSource)
