@@ -1,11 +1,10 @@
-package task.common
+package task
 
 import Configs
 import Jar
 import common.DART_FILE
 import common.extensions.file
 import org.apache.commons.io.FileUtils
-import task.Task
 import java.io.File
 
 /**

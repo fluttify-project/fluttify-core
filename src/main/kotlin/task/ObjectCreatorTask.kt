@@ -1,11 +1,10 @@
-package task.common
+package task
 
 import OutputProject
 import common.DART_FILE
 import common.DIR
 import common.Temps
 import common.extensions.*
-import task.Task
 
 /**
  * 生成对象创建者的类

@@ -1,8 +1,9 @@
-package task.common
+package task
 
 import common.model.ProjectSpec
 import org.junit.Assert
 import org.junit.Test
+import task.OutputProjectTask
 
 class OutputProjectTaskTest {
 

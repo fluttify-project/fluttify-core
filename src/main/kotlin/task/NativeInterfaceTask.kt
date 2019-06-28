@@ -1,4 +1,4 @@
-package task.common
+package task
 
 import Configs.outputOrg
 import Configs.outputProjectName
@@ -10,7 +10,6 @@ import common.extensions.*
 import common.model.Callback
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
-import task.Task
 import java.io.File
 
 /**

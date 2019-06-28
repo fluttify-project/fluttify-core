@@ -2,7 +2,7 @@
 import common.extensions.file
 import common.model.ProjectSpec
 import io.reactivex.Observable
-import task.common.*
+import task.*
 import task.statik.AndroidDartStaticMethodTask
 import task.statik.AndroidKotlinStaticMethodTask
 import task.statik.IOSDartStaticMethodTask

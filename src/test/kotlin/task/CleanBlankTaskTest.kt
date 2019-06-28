@@ -1,4 +1,4 @@
-package task.common
+package task
 
 import OutputProject
 import org.apache.commons.io.FileUtils

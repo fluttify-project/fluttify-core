@@ -1,4 +1,4 @@
-package task.common
+package task
 
 import Jar
 import task.Task

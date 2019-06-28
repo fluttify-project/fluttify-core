@@ -1,6 +1,7 @@
-package task.common
+package task
 
 import org.junit.Test
+import task.ExportTask
 import java.io.File
 
 class ExportTaskTest {

@@ -1,8 +1,7 @@
-package task.common
+package task
 
 import common.JAVA_FILE
 import common.extensions.file
-import task.Task
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader

@@ -1,4 +1,4 @@
-package task.common
+package task
 
 import Jar
 import OutputProject
@@ -8,7 +8,6 @@ import common.model.Lambda
 import common.model.Variable
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
-import task.Task
 
 /**
  * 生成Java文件的Dart接口文件

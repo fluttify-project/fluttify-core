@@ -1,10 +1,9 @@
-package task.common
+package task
 
 import Framework
 import common.OBJC_SOURCE
 import common.extensions.file
 import org.apache.commons.io.FileUtils
-import task.Task
 import java.io.File
 
 /**

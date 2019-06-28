@@ -1,4 +1,4 @@
-package task.common
+package task
 
 import Project
 import common.PATH

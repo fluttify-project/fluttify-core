@@ -1,4 +1,4 @@
-package task.common
+package task
 
 import Configs
 import common.extensions.file

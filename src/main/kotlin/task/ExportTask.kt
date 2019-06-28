@@ -1,10 +1,9 @@
-package task.common
+package task
 
 import Configs
 import common.DART_FILE
 import common.extensions.file
 import org.apache.commons.io.FileUtils
-import task.Task
 import task.statik.AndroidDartStaticMethodTask
 import task.statik.IOSDartStaticMethodTask
 

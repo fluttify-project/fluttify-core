@@ -1,4 +1,4 @@
-package task.common
+package task
 
 import common.extensions.file
 import org.junit.Test
