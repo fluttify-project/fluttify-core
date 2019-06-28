@@ -205,7 +205,8 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         lambdas.forEachIndexed { index, lambda ->
             if (index == 0) {
                 resultBuilder.append(
-                    """_channel.setMethodCallHandler((methodCall) { 
+                    """MethodChannel('$className::${methodName}_Callback' + refId.toString())
+                        .setMethodCallHandler((methodCall) { 
                             final args = methodCall.arguments as Map; 
                             final refId = args['refId'] as int; 
                             if (refId != this.refId) return;

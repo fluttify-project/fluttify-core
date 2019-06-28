@@ -36,6 +36,7 @@ data class Callback(val callerClass: String, val callerMethod: String, val class
             }
 
         return """object : $className${if (isInterface) "" else "()"} {
+                val callbackChannel = MethodChannel(registrar.messenger(), "$callerClass::${callerMethod}_Callback" + refId)
                 ${callbackMethodList.joinToString("\n")}
             }
         """
@@ -54,7 +55,7 @@ data class CallbackMethod(
             .apply { add(Variable("int", "refId")) }
             .joinToString(",\n") { "\"${it.name}\" to ${if (it.type.jsonable()) it.name else "${it.name}.hashCode().apply { REF_MAP[this] = ${it.name} }"}" }
         return """override fun $methodName(${formalParams.joinToString { "${it.name}: ${it.type.toKotlinType()}" }}): ${returnType.toKotlinType()} {
-            channel.invokeMethod(
+            callbackChannel.invokeMethod(
                     "${callerInfo}_Callback::$methodName",
                     mapOf<String, Any?>(
                         $returnData
