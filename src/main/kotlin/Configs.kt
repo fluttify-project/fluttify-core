@@ -1,23 +1,13 @@
 object Configs {
     /**
-     * 主类全路径名
-     */
-    const val mainJavaClass: String = "com.baidu.mapapi.map.MapView"
-
-    /**
      * jar路径
      */
-    val jarFilePath: String = "${Project.path}/src/main/resources/android/BaiduLBS_Android.jar"
-
-    /**
-     * objc主类名
-     */
-    const val mainObjcClass: String = "TbitBluetooth"
+    val jarFilePath: String = "${Project.path}/src/main/resources/library/android/BaiduLBS_Android.jar"
 
     /**
      * framework路径
      */
-    val frameworkDirPath: String = "${Project.path}/src/main/resources/ios/Tbit.framework"
+    val frameworkDirPath: String = "${Project.path}/src/main/resources/library/ios/Tbit.framework"
 
     /**
      * 生成工程的组织名

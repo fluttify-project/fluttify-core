@@ -58,7 +58,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:$outputProjectName/$outputProjectName.dart';
 
-typedef void PlatformViewCreatedCallback(#__view__# controller);
+typedef void #__view__#CreatedCallback(#__view__# controller);
 
 class #__view__#_Android extends StatelessWidget {
   const #__view__#_Android({
@@ -66,7 +66,7 @@ class #__view__#_Android extends StatelessWidget {
     this.onViewCreated,
   }) : super(key: key);
   
-  final PlatformViewCreatedCallback onViewCreated;
+  final #__view__#CreatedCallback onViewCreated;
   
   @override
   Widget build(BuildContext context) {

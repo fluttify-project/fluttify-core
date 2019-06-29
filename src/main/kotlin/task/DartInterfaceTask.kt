@@ -1,7 +1,7 @@
 package task
 
 import Jar
-import OutputProject
+import OutputProject.Dart.androidDirPath
 import common.*
 import common.extensions.*
 import common.model.Lambda
@@ -42,9 +42,11 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                     if (superClass() in listOf("View", "ViewGroup")) {
                         androidViewBuilder.append(
                             Temps.Dart.AndroidView.androidView.placeholder(
+                                fullName().simpleName(),
                                 fullName().toDartType(),
                                 fullName().toDartType(),
                                 fullName().toDartType(),
+                                fullName().simpleName(),
                                 fullName(),
                                 fullName().toDartType()
                             )
@@ -185,10 +187,10 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         })
 
         if (androidViewBuilder.toString().isNotBlank()) {
-            OutputProject.Dart.androidPlatformViewFilePath.file().writeText(androidViewBuilder.toString())
+            "${androidDirPath}android_${javaFile.javaTypeInfo().name.simpleName().camel2Underscore()}.dart".file().writeText(androidViewBuilder.toString())
         }
 
-        return "${OutputProject.Dart.androidDirPath}${javaFile.toRelativeString(Jar.Decompiled.rootDirPath.file()).substringBeforeLast(
+        return "$androidDirPath${javaFile.toRelativeString(Jar.Decompiled.rootDirPath.file()).substringBeforeLast(
             "."
         ).replace("$", "_")}.dart".file()
             .apply { writeText(dartBuilder.toString()) }
