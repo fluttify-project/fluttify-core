@@ -63,7 +63,7 @@ fun JAVA_FILE.javaTypeInfo(): JavaTypeInfo {
 
         override fun enterFieldDeclaration(ctx: FieldDeclarationContext?) {
             ctx?.run {
-                fields.add(Variable(ctx.type(), ctx.name()!!))
+                fields.add(Variable(ctx.type(), ctx.name()))
             }
         }
     })

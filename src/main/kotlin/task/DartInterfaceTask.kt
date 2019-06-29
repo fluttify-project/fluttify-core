@@ -53,6 +53,67 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                 }
             }
 
+            override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext?) {
+                ctx?.run {
+                    if (!isPublic()
+                        || name().isObfuscated()
+                        || type().isObfuscated()
+                        || isStatic()
+                        || type().isUnknownType()
+                    ) return
+
+                    val methodBuilder = StringBuilder()
+
+                    val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullName() ?: ""
+
+                    val setterMethodName = "set${name().capitalize()}"
+                    val getterMethodName = "get${name().capitalize()}"
+
+                    if (!isFinal()) {
+                        // Setter
+                        // 0. 方法修饰
+                        methodBuilder.append("\n")
+                        methodBuilder.append(if (isStatic()) "static " else "")
+                        // 1. 返回类型
+                        methodBuilder.append("Future<void>")
+                        methodBuilder.append(" ")
+                        // 2. 方法名
+                        methodBuilder.append(setterMethodName)
+                        methodBuilder.append("(")
+                        // 3. 形参
+                        methodBuilder.append("${type().toDartType()} ${name()}")
+                        methodBuilder.append(") async ")
+                        methodBuilder.append(" {")
+                        // 4. 方法体
+                        methodBuilder.append(methodBodyString(isStatic(), className, setterMethodName, listOf(Variable(type(), name()))))
+                        methodBuilder.append("}")
+                    }
+
+                    // Getter
+                    // 0. 方法修饰
+                    methodBuilder.append("\n")
+                    methodBuilder.append(if (isStatic()) "static " else "")
+                    // 1. 返回类型
+                    methodBuilder.append("Future<${type().toDartType()}>")
+                    methodBuilder.append(" ")
+                    // 2. 方法名
+                    methodBuilder.append(getterMethodName)
+                    methodBuilder.append("(")
+                    // 3. 形参
+                    methodBuilder.append(") async ")
+                    methodBuilder.append(" {")
+                    // 4. 方法体
+                    methodBuilder.append(methodBodyString(isStatic(), className, getterMethodName, listOf()))
+                    // 5. 返回值
+                    methodBuilder.append(returnString(type()))
+                    methodBuilder.append("}")
+
+                    dartBuilder.append(methodBuilder.toString())
+                    methodList.add(setterMethodName)
+                    methodList.add(getterMethodName)
+                }
+            }
+
             override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
                 ctx?.run {
                     // 每进入一个方法, 就清空lambda列表
@@ -183,19 +244,18 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
     ): String {
         val resultBuilder = StringBuilder("")
 
-        val removeCallbackParam = params
+        val actualParams = params
             .filter { !it.type.isCallback() }
             .toMutableList()
             .apply { if (!isStatic) add(Variable("int", "refId")) }
-
-        val actualParams = removeCallbackParam.toDartMap {
-            when {
-                it.type.isEnum() -> "${it.name}.index"
-                it.type.isList() -> "${it.name}.map((it) => it.refId).toList()"
-                it.type.jsonable() -> it.name
-                else -> "${it.name}.refId"
+            .toDartMap {
+                when {
+                    it.type.isEnum() -> "${it.name}.index"
+                    it.type.isList() -> "${it.name}.map((it) => it.refId).toList()"
+                    it.type.jsonable() -> it.name
+                    else -> "${it.name}.refId"
+                }
             }
-        }
 
         resultBuilder.append(
             "final result = await _channel.invokeMethod('$className::$methodName', $actualParams);"

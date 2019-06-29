@@ -98,7 +98,7 @@ fun TYPE_NAME.toKotlinType(): String {
 fun TYPE_NAME.isObfuscated(): Boolean {
     val type = replace("$", ".").substringAfterLast(".")
     val regex = Regex("[a-z]{1,2}")
-    return regex.matches(type)
+    return regex.matches(type) || regex.matches(this)
 }
 
 /**

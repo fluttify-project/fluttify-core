@@ -10,7 +10,7 @@ class CleanBlankTaskTest {
 
     @Test
     fun process() {
-        val testDir = File(OutputProject.dirPath)
+        val testDir = File(OutputProject.Dart.libDirPath)
         val nonEmptyDir = CleanEmptyTask(testDir).process()
         println(nonEmptyDir)
 

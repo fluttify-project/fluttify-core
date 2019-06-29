@@ -7,6 +7,7 @@ import common.TYPE_NAME
  */
 data class Lambda(val returnType: TYPE_NAME, val methodName: String, val formalParams: List<Variable>) {
     override fun toString(): String {
-        return "$returnType $methodName(${formalParams.joinToString()})"
+        // 返回类型统一使用void好了, 这样可以利用协程
+        return "void $methodName(${formalParams.joinToString()})"
     }
 }

@@ -1,5 +1,6 @@
 package common.extensions
 
+import parser.java.JavaParser
 import parser.java.JavaParser.ClassBodyDeclarationContext
 import parser.java.JavaParser.FieldDeclarationContext
 import parser.objc.ObjectiveCParser
@@ -21,14 +22,37 @@ fun FieldDeclarationContext?.isPrivate(): Boolean {
         ?.contains("private") == true
 }
 
-fun FieldDeclarationContext.type(): String {
-    return typeType().text
+fun FieldDeclarationContext.isPublic(): Boolean {
+    return ancestorOf(ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("public") == true
 }
 
-fun FieldDeclarationContext?.name(): String? {
-    if (this == null) return null
-    return variableDeclarators()?.variableDeclarator()?.get(0)?.variableDeclaratorId()?.text
+fun FieldDeclarationContext.type(): String {
+    val simpleType = typeType().text
+    return ancestorOf(JavaParser.CompilationUnitContext::class)
+        ?.importDeclaration()
+        ?.firstOrNull {
+            !simpleType.jsonable()
+                    && it.qualifiedName().text.length >= simpleType.length
+                    && it.qualifiedName()
+                .text
+                .replace("$", ".")
+                .run { substringAfterLast(".") } == simpleType
+        }
+        ?.qualifiedName()?.text ?: simpleType
 }
+
+fun FieldDeclarationContext.name(): String {
+    return variableDeclarators()?.variableDeclarator()?.get(0)?.variableDeclaratorId()?.text ?: ""
+}
+
+fun FieldDeclarationContext.isFinal(): Boolean {
+    return ancestorOf(ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.map { it.text }
+        ?.contains("final") == true}
 
 fun FieldDeclarationContext?.value(): String? {
     if (this == null) return null

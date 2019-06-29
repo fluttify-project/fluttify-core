@@ -28,6 +28,18 @@ class #__class_name__# {
 
         const val classEnd = "}"
 
+        const val getter = """
+            Future<#__class_name__#> get#__field__#() {
+                
+            }
+        """
+
+        const val setter = """
+            Future<void> set#__field__#() {
+                
+            }
+        """
+
         const val toString = """
   @override
   String toString() {
@@ -138,6 +150,12 @@ class #__class_name__#Plugin : MethodCallHandler {
 """
 
         const val whenElse = """
+                    else -> methodResult.notImplemented()"""
+
+        const val getter = """
+                    else -> methodResult.notImplemented()"""
+
+        const val setter = """
                     else -> methodResult.notImplemented()"""
 
         object PlatformView {

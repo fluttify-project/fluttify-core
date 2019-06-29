@@ -104,6 +104,89 @@ class ${classSimpleName}Plugin {
         javaFile
             .readText()
             .walkTree(object : JavaParserBaseListener() {
+                override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext?) {
+                    ctx?.run {
+                        if (!isPublic()
+                            || name().isObfuscated()
+                            || type().run { isObfuscated() || isUnknownType() || !jsonable() }
+                            || isStatic()
+                        ) return
+
+                        val methodBuilder = StringBuilder()
+
+                        val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullName() ?: ""
+
+                        val setterMethodName = "set${name().capitalize()}"
+                        val getterMethodName = "get${name().capitalize()}"
+
+                        val setterHandlerMethodName =
+                            "handle${javaFile.javaTypeInfo().name.replace("$", ".").replace(
+                                ".",
+                                "_"
+                            )}_$setterMethodName"
+                        val getterHandlerMethodName =
+                            "handle${javaFile.javaTypeInfo().name.replace("$", ".").replace(
+                                ".",
+                                "_"
+                            )}_$getterMethodName"
+
+                        if (!isFinal()) {
+                            methodBuilder.append("\t\tprivate fun $setterHandlerMethodName(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {")
+                            // Setter
+                            // 解析参数
+                            methodBuilder.append(
+                                "\n\t\t\tval ${name()} = args[\"${name()}\"] as ${type().capitalize().replace(
+                                    "[]",
+                                    "Array"
+                                )}"
+                            )
+                            // 返回void
+                            methodBuilder.append(
+                                """
+            val refId = args["refId"] as Int
+            val ref = REF_MAP[refId] as $className
+                                
+            ref.${name()} = ${name()}
+            methodResult.success("success")"""
+                            )
+                            methodBuilder.appendln("\n\t\t}")
+
+                            resultBuilder.append(
+                                Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
+                                    className,
+                                    setterMethodName,
+                                    "$setterHandlerMethodName(registrar, args, methodResult)"
+                                )
+                            )
+                        }
+
+                        // Getter
+                        // 返回void
+                        methodBuilder.append("\t\tprivate fun $getterHandlerMethodName(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {")
+                        methodBuilder.append(
+                            """
+            val refId = args["refId"] as Int
+            val ref = REF_MAP[refId] as $className
+                                
+            methodResult.success(ref.${name()})"""
+                        )
+                        methodBuilder.appendln("\n\t\t}")
+
+                        resultBuilder.append(
+                            Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
+                                className,
+                                getterMethodName,
+                                "$getterHandlerMethodName(registrar, args, methodResult)"
+                            )
+                        )
+
+                        methodHandlers.add(methodBuilder.toString())
+
+                        methodList.add(setterMethodName)
+                        methodList.add(getterMethodName)
+                    }
+                }
+
                 override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
                     ctx?.run {
                         if (!isPublic()
@@ -134,7 +217,10 @@ class ${classSimpleName}Plugin {
                                 .joinToString("") {
                                     when {
                                         it.type.jsonable() -> {
-                                            "\n\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type.capitalize().replace("[]", "Array")}"
+                                            "\n\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type.capitalize().replace(
+                                                "[]",
+                                                "Array"
+                                            )}"
                                         }
                                         it.type in PRESERVED_MODEL -> {
                                             it.convertPreservedModel()
