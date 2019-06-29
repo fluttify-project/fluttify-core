@@ -4,8 +4,6 @@ import Configs
 import common.DART_FILE
 import common.extensions.file
 import org.apache.commons.io.FileUtils
-import task.statik.AndroidDartStaticMethodTask
-import task.statik.IOSDartStaticMethodTask
 
 /**
  * 需要引入的内容为android端的主类和模型类以及ios端的主类和模型类

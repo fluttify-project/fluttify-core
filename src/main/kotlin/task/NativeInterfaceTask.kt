@@ -20,6 +20,8 @@ import java.io.File
  * 依赖: [DecompileClassTask]
  */
 class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir) {
+    private val methodHandlers = mutableListOf<String>()
+
     override fun process(): KOTLIN_FILE {
         val resultBuilder = StringBuilder("")
         // package
@@ -53,11 +55,13 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                 }
             }
         }
+        resultBuilder.append("\t\t}\n\n")
+
+        resultBuilder.append(methodHandlers.joinToString("\n"))
 
         // 尾部
         resultBuilder.append(
             """
-        }
     }
 }"""
         )
@@ -82,6 +86,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
 
     private fun headerString(): String {
         return """
+@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 class ${classSimpleName}Plugin {
     companion object {
         @JvmStatic
@@ -117,28 +122,31 @@ class ${classSimpleName}Plugin {
                             methodName =
                                 "${methodName}_${params.joinToString("") { it.type.toDartType().capitalize() }}"
                         }
+                        val handlerMethodName =
+                            "handle${javaFile.javaTypeInfo().name.replace("$", ".").replace(".", "_")}_$methodName"
+
+                        methodBuilder.append("\t\tprivate fun $handlerMethodName(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {")
 
                         // 解析参数
                         methodBuilder.append(
-                            Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
-                                className,
-                                methodName,
-                                formalParams()
-                                    .filter { !it.type.isCallback() }
-                                    .joinToString("") {
-                                        when {
-                                            it.type.jsonable() -> {
-                                                "\n\t\t\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type.capitalize()}"
-                                            }
-                                            it.type in PRESERVED_MODEL -> {
-                                                it.convertPreservedModel()
-                                            }
-                                            else -> {
-                                                "\n\t\t\t\t\tval ${it.name} = REF_MAP[args[\"${it.name}\"] as Int] as ${it.type}"
-                                            }
+                            formalParams()
+                                .filter { !it.type.isCallback() }
+                                .joinToString("") {
+                                    when {
+                                        it.type.jsonable() -> {
+                                            "\n\t\t\tval ${it.name} = args[\"${it.name}\"] as ${it.type.capitalize().replace("[]", "Array")}"
+                                        }
+                                        it.type in PRESERVED_MODEL -> {
+                                            it.convertPreservedModel()
+                                        }
+                                        it.type.isEnum() -> {
+                                            "\n\t\t\tval ${it.name} = ${it.type}.values()[args[\"${it.name}\"] as Int]"
+                                        }
+                                        else -> {
+                                            "\n\t\t\tval ${it.name} = REF_MAP[args[\"${it.name}\"] as Int] as ${it.type}"
                                         }
                                     }
-                            )
+                                }
                         )
 
                         // 静态方法单独处理
@@ -148,7 +156,8 @@ class ${classSimpleName}Plugin {
                                 returnType() == "void" -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.staticReturnVoid.placeholder(
                                         className,
-                                        methodName,
+                                        // 方法体内调用的时候, 要用原始的方法名
+                                        name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
                                                 it.name
@@ -161,7 +170,8 @@ class ${classSimpleName}Plugin {
                                 returnType().jsonable() -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.staticReturnJsonable.placeholder(
                                         className,
-                                        methodName,
+                                        // 方法体内调用的时候, 要用原始的方法名
+                                        name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
                                                 it.name
@@ -174,7 +184,8 @@ class ${classSimpleName}Plugin {
                                 returnType().isJavaRefType() -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.staticReturnRef.placeholder(
                                         className,
-                                        methodName,
+                                        // 方法体内调用的时候, 要用原始的方法名
+                                        name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
                                                 it.name
@@ -185,7 +196,7 @@ class ${classSimpleName}Plugin {
                                     )
                                 )
                             }
-                            methodBuilder.append("\n\t\t\t}")
+                            methodBuilder.appendln("\n\t\t}")
                         } else {
                             // 返回类型是jsonable
                             when {
@@ -193,7 +204,8 @@ class ${classSimpleName}Plugin {
                                 returnType() == "void" -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.refReturnVoid.placeholder(
                                         className.replace("_", "."),
-                                        methodName,
+                                        // 方法体内调用的时候, 要用原始的方法名
+                                        name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
                                                 it.name
@@ -206,7 +218,8 @@ class ${classSimpleName}Plugin {
                                 returnType().jsonable() -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.refReturnJsonable.placeholder(
                                         className.replace("_", "."),
-                                        methodName,
+                                        // 方法体内调用的时候, 要用原始的方法名
+                                        name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
                                                 it.name
@@ -220,7 +233,8 @@ class ${classSimpleName}Plugin {
                                 else -> methodBuilder.append(
                                     Temps.Kotlin.PlatformView.refReturnRef.placeholder(
                                         className.replace("_", "."),
-                                        methodName,
+                                        // 方法体内调用的时候, 要用原始的方法名
+                                        name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
                                                 it.name
@@ -231,9 +245,18 @@ class ${classSimpleName}Plugin {
                                     )
                                 )
                             }
-                            methodBuilder.append("\n\t\t\t}")
+                            methodBuilder.appendln("\n\t\t}")
                         }
-                        resultBuilder.append(methodBuilder.toString())
+                        methodHandlers.add(methodBuilder.toString())
+
+                        resultBuilder.append(
+                            Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
+                                className,
+                                methodName,
+                                "$handlerMethodName(registrar, args, methodResult)"
+                            )
+                        )
+                        methodList.add(methodName)
                     }
                 }
             })

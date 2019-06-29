@@ -17,8 +17,8 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
  */
 fun Variable.convertPreservedModel(): KOTLIN_SOURCE {
     return when (type) {
-        "Bundle" -> "\n\t\t\t\t\t\t\tval $name = Bundle()"
-        "Bitmap" -> "\n\t\t\t\t\t\t\tval $name = (args[\"$name\"] as? ByteArray)?.run { BitmapFactory.decodeByteArray(this, 0, size) }"
+        "Bundle" -> "\n\t\t\tval $name = Bundle()"
+        "Bitmap" -> "\n\t\t\tval $name = (args[\"$name\"] as? ByteArray)?.run { BitmapFactory.decodeByteArray(this, 0, size) }"
         else -> ""
     }
 }

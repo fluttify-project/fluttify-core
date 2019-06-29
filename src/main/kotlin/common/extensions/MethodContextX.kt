@@ -101,55 +101,7 @@ fun JavaParser.MethodDeclarationContext?.isPublic(): Boolean {
         ?.contains("public") == true
 }
 
-fun JavaParser.InterfaceMethodDeclarationContext?.isPublic(): Boolean {
-    if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("public") == true
-}
-
-fun JavaParser.MethodDeclarationContext?.isDeprecated(): Boolean {
-    if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("@Deprecated") == true
-}
-
-fun JavaParser.InterfaceMethodDeclarationContext?.isDeprecated(): Boolean {
-    if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("@Deprecated") == true
-}
-
-fun JavaParser.MethodDeclarationContext?.isOverride(): Boolean {
-    if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("@Deprecated") == true
-}
-
-fun JavaParser.InterfaceMethodDeclarationContext?.isOverride(): Boolean {
-    if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("@Deprecated") == true
-}
-
 fun JavaParser.MethodDeclarationContext?.isInstanceMethod(): Boolean {
-    if (this == null) return false
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("static") != true
-}
-
-fun JavaParser.InterfaceMethodDeclarationContext?.isInstanceMethod(): Boolean {
     if (this == null) return false
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
@@ -174,7 +126,8 @@ fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {
                             && it.qualifiedName().text.length >= paramType.length
                             && it.qualifiedName()
                         .text
-                        .run { substring(length - paramType.length, length) } == paramType
+                        .replace("$", ".")
+                        .run { substringAfterLast(".")} == paramType
                 }
                 ?.qualifiedName()?.text ?: paramType
             result.add(Variable(typeFullName, formalParam.variableDeclaratorId().text))
@@ -192,7 +145,8 @@ fun JavaParser.MethodDeclarationContext?.formalParams(): List<Variable> {
                             && it.qualifiedName().text.length >= paramType.length
                             && it.qualifiedName()
                         .text
-                        .run { substring(length - paramType.length, length) } == paramType
+                        .replace("$", ".")
+                        .run { substringAfterLast(".")} == paramType
                 }
                 ?.qualifiedName()?.text ?: paramType
             result.add(Variable(typeFullName, variableDeclaratorId().text))
@@ -219,7 +173,8 @@ fun JavaParser.InterfaceMethodDeclarationContext?.formalParams(): List<Variable>
                             && it.qualifiedName().text.length >= paramType.length
                             && it.qualifiedName()
                         .text
-                        .run { substring(length - paramType.length, length) } == paramType
+                        .replace("$", ".")
+                        .run { substringAfterLast(".")} == paramType
                 }
                 ?.qualifiedName()?.text ?: paramType
             result.add(Variable(typeFullName, formalParam.variableDeclaratorId().text))
@@ -237,7 +192,8 @@ fun JavaParser.InterfaceMethodDeclarationContext?.formalParams(): List<Variable>
                             && it.qualifiedName().text.length >= paramType.length
                             && it.qualifiedName()
                         .text
-                        .run { substring(length - paramType.length, length) } == paramType
+                        .replace("$", ".")
+                        .run { substringAfterLast(".")} == paramType
                 }
                 ?.qualifiedName()?.text ?: paramType
             result.add(Variable(typeFullName, variableDeclaratorId().text))
