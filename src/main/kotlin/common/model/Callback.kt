@@ -10,12 +10,12 @@ import parser.java.JavaParserBaseListener
  */
 data class Callback(val callerClass: String, val callerMethod: String, val className: String) {
     override fun toString(): String {
-        val isInterface = className.javaTypeInfo()?.isInterface == true
+        val isInterface = className.javaType()?.typeType == TypeType.Interface
 
         val callbackMethodList = mutableListOf<CallbackMethod>()
 
         className
-            .javaTypeInfo()
+            .javaType()
             ?.path
             ?.file()
             ?.readText()

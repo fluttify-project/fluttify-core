@@ -1,12 +1,12 @@
 
 import common.extensions.file
-import common.model.ProjectSpec
+import common.model.Project
 import io.reactivex.Observable
 import task.*
 
 fun main() {
     Observable
-        .just(ProjectSpec(org = "com.yibo", name = "tbitble_flutter"))
+        .just(Project(org = "com.yibo", name = "tbitble_flutter"))
         // 生成初始目标工程
         .map { OutputProjectTask(it).process() }
         // 拷贝jar依赖到目标工程

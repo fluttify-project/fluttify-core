@@ -5,7 +5,8 @@ import Jar
 import common.PATH
 import common.PRESERVED_MODEL
 import common.TYPE_NAME
-import common.model.JavaTypeInfo
+import common.model.Type
+import common.model.TypeType
 import java.io.File
 
 fun String?.isLiteral(): Boolean {
@@ -43,37 +44,22 @@ fun TYPE_NAME?.jsonable(): Boolean {
  * 是否是集合类型
  */
 fun TYPE_NAME.isList(): Boolean {
-    return Regex("\\w*List<\\w*>").matches(this)
+    return Regex("\\w*List<(\\w*|.*)>").matches(this)
 }
 
 /**
  * 是否是未知类型, 即非当前sdk内的类
  */
 fun TYPE_NAME.isUnknownType(): Boolean {
-    return !(Jar.Decompiled.classes.containsKey(this) || jsonable())
+    return !(Jar.Decompiled.CLASSES.containsKey(genericType()) || jsonable())
+            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownType() } } } == true
 }
 
 /**
  * 是否是枚举类
  */
 fun TYPE_NAME.isEnum(): Boolean {
-    return Jar.Decompiled.classes[this]?.isEnum == true
-}
-
-/**
- * 获取内部类的类名, 如果没有内部类的话, 那么就使用原名
- */
-fun TYPE_NAME.innerClass(): String {
-    return substringAfterLast("$")
-}
-
-/**
- * 获取内部类的类名, 如果没有内部类的话, 那么就使用原名
- */
-fun TYPE_NAME.isModel(): Boolean {
-    return jsonable()
-            || Jar.Decompiled.classes[this]?.isModel == true
-            || this in PRESERVED_MODEL
+    return Jar.Decompiled.CLASSES[this]?.typeType == TypeType.Enum
 }
 
 /**
@@ -134,8 +120,8 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
 /**
  * 从java类型获取类型信息
  */
-fun TYPE_NAME.javaTypeInfo(): JavaTypeInfo? {
-    return Jar.Decompiled.classes[this]
+fun TYPE_NAME.javaType(): Type? {
+    return Jar.Decompiled.CLASSES[this]
 }
 
 /**
@@ -220,7 +206,7 @@ fun TYPE_NAME.isJavaModelType(): Boolean {
 
     return Jar
         .Decompiled
-        .classes[this]
+        .CLASSES[this]
         ?.path
         ?.file()
         ?.readText()
@@ -242,7 +228,7 @@ fun TYPE_NAME.isObjcModelType(): Boolean {
     if (jsonable()) return true
 
     return Framework
-        .classes[this]
+        .CLASSES[this]
         ?.path
         ?.file()
         ?.readText()
@@ -284,4 +270,29 @@ fun PATH.file(): File {
 
 fun String.builder(): StringBuilder {
     return StringBuilder(this)
+}
+
+fun String.replaceParagraph(oldValue: String, newValue: String): String {
+    val oldValueLine = lines().firstOrNull { it.contains(oldValue) } ?: ""
+
+    // 计算首行的缩进
+    val indent = StringBuilder("")
+    for (char in oldValueLine) {
+        if (char.isWhitespace()) {
+            indent.append(" ")
+        } else {
+            break
+        }
+    }
+
+    return lines().joinToString("\n") {
+        if (it.contains(oldValue))
+            newValue
+                .lines()
+                .joinToString("\n") { line ->
+                    line.prependIndent(indent.toString())
+                }
+        else
+            it
+    }
 }

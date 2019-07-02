@@ -1,13 +1,18 @@
 package task
 
+import Configs.outputOrg
+import Configs.outputProjectName
 import Jar
 import OutputProject.Dart.androidDirPath
-import common.*
+import OutputProject.methodChannel
+import common.DART_FILE
+import common.IGNORE_METHOD
+import common.JAVA_FILE
+import common.Tmpl
 import common.extensions.*
-import common.model.Lambda
+import common.model.Method
+import common.model.TypeType
 import common.model.Variable
-import parser.java.JavaParser
-import parser.java.JavaParserBaseListener
 
 /**
  * 生成Java文件的Dart接口文件
@@ -18,176 +23,85 @@ import parser.java.JavaParserBaseListener
  */
 class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_FILE>(javaFile) {
 
-    private val lambdas: MutableList<Lambda> = mutableListOf()
-
     override fun process(): DART_FILE {
-        val javaSource = javaFile.readText()
-
         val dartBuilder = StringBuilder()
         val androidViewBuilder = StringBuilder()
-        val methodList = mutableListOf<String>()
 
-        javaSource.walkTree(object : JavaParserBaseListener() {
-
-            override fun enterClassDeclaration(ctx: JavaParser.ClassDeclarationContext?) {
-                ctx?.run {
-                    dartBuilder.append(
-                        Temps.Dart.classDeclaration.placeholder(
-                            fullName().toDartType(),
-                            fullName().toDartType()
-                        )
-                    )
-                    dartBuilder.append(Temps.Dart.methodChannel)
-
-                    if (superClass() in listOf("View", "ViewGroup")) {
-                        androidViewBuilder.append(
-                            Temps.Dart.AndroidView.androidView.placeholder(
-                                fullName().simpleName(),
-                                fullName().toDartType(),
-                                fullName().toDartType(),
-                                fullName().toDartType(),
-                                fullName().simpleName(),
-                                fullName(),
-                                fullName().toDartType()
-                            )
-                        )
-                    }
+        javaFile.javaType()
+            .run {
+                // 普通类
+                if (typeType == TypeType.Class) {
+                    val classString = Tmpl.Dart.classBuilder
+                        // 导入当前所在包的所有文件
+                        .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
+                        // 类名
+                        .replace("#__class_name__#", name.toDartType())
+                        // method channel名称
+                        .replace("#__method_channel__#", methodChannel)
+                        // 方法们
+                        .replaceParagraph("#__methods__#", methods
+                            // 过滤掉混淆, 未知参数类型, 未知返回类型的方法
+                            .filter {
+                                !it.name.isObfuscated()
+                                        && it.formalParams.all { !(it.type.isUnknownType() || it.type.isObfuscated()) }
+                                        && !it.returnType.run { isObfuscated() || isUnknownType() }
+                                        && it.name !in IGNORE_METHOD
+                            }
+                            .distinctBy { it.name }
+                            .joinToString("\n") {
+                                Tmpl.Dart.methodBuilder
+                                    // 返回类型
+                                    .replace("#__return_type__#", it.returnType.toDartType())
+                                    // 方法名
+                                    .replace("#__method__#", it.name)
+                                    // 形参
+                                    .replace(
+                                        "#__formal_params__#",
+                                        it.formalParams.joinToString { it.toDartString() })
+                                    // 返回语句
+                                    .replace("#__return_statement__#", returnString(it.returnType))
+                                    // 方法体的语句
+                                    .replaceParagraph(
+                                        "#__statements__#", methodBodyString(
+                                            it.isStatic,
+                                            name,
+                                            it.name,
+                                            it.formalParams,
+                                            it.formalParams
+                                                .filter { it.type.isCallback() }
+                                                .flatMap { Jar.Decompiled.CLASSES[it.type]!!.methods }
+                                        )
+                                    )
+                            })
+                    dartBuilder.append(classString)
                 }
-            }
-
-            override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext?) {
-                ctx?.run {
-                    if (!isPublic()
-                        || name().isObfuscated()
-                        || type().isObfuscated()
-                        || isStatic()
-                        || type().isUnknownType()
-                    ) return
-
-                    val methodBuilder = StringBuilder()
-
-                    val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullName() ?: ""
-
-                    val setterMethodName = "set${name().capitalize()}"
-                    val getterMethodName = "get${name().capitalize()}"
-
-                    if (!isFinal()) {
-                        // Setter
-                        // 0. 方法修饰
-                        methodBuilder.append("\n")
-                        methodBuilder.append(if (isStatic()) "static " else "")
-                        // 1. 返回类型
-                        methodBuilder.append("Future<void>")
-                        methodBuilder.append(" ")
-                        // 2. 方法名
-                        methodBuilder.append(setterMethodName)
-                        methodBuilder.append("(")
-                        // 3. 形参
-                        methodBuilder.append("${type().toDartType()} ${name()}")
-                        methodBuilder.append(") async ")
-                        methodBuilder.append(" {")
-                        // 4. 方法体
-                        methodBuilder.append(methodBodyString(isStatic(), className, setterMethodName, listOf(Variable(type(), name()))))
-                        methodBuilder.append("}")
-                    }
-
-                    // Getter
-                    // 0. 方法修饰
-                    methodBuilder.append("\n")
-                    methodBuilder.append(if (isStatic()) "static " else "")
-                    // 1. 返回类型
-                    methodBuilder.append("Future<${type().toDartType()}>")
-                    methodBuilder.append(" ")
-                    // 2. 方法名
-                    methodBuilder.append(getterMethodName)
-                    methodBuilder.append("(")
-                    // 3. 形参
-                    methodBuilder.append(") async ")
-                    methodBuilder.append(" {")
-                    // 4. 方法体
-                    methodBuilder.append(methodBodyString(isStatic(), className, getterMethodName, listOf()))
-                    // 5. 返回值
-                    methodBuilder.append(returnString(type()))
-                    methodBuilder.append("}")
-
-                    dartBuilder.append(methodBuilder.toString())
-                    methodList.add(setterMethodName)
-                    methodList.add(getterMethodName)
+                // 枚举类
+                else if (typeType == TypeType.Enum) {
+                    val classString = Tmpl.Dart.enumBuilder
+                        // 类名
+                        .replace("#__enum_name__#", name.toDartType())
+                        // 枚举值
+                        .replaceParagraph("#__enum_constant__#", this.fields.joinToString(",\n") { it.type })
+                    dartBuilder.append(classString)
                 }
+
+                val androidViewString = if (superClass in listOf("View", "ViewGroup")) {
+                    Tmpl.Dart.androidViewBuilder
+                        // 导入当前所在包的所有文件
+                        .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
+                        // PlatformView的简写类名
+                        .replace("#__view_simple_name__#", name.simpleName())
+                        // PlatformView的类名
+                        .replace("#__view__#", name.toDartType())
+                        // 输出工程的组织名称
+                        .replace("#__org__#", outputOrg)
+                } else ""
+                androidViewBuilder.append(androidViewString)
             }
-
-            override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
-                ctx?.run {
-                    // 每进入一个方法, 就清空lambda列表
-                    lambdas.clear()
-
-                    if (!isPublic()
-                        || name() in IGNORE_METHOD
-                        || formalParams().any { it.type.isUnknownType() || it.type.isObfuscated() }
-                        || returnType().run { isUnknownType() || isObfuscated() }
-                    ) return
-
-                    val methodBuilder = StringBuilder()
-
-                    val className = ancestorOf(JavaParser.ClassDeclarationContext::class)?.fullName() ?: ""
-                    val params = formalParams().filter { it.type !in PRESERVED_CLASS }.toMutableList()
-                    var methodName = name()
-                    // 处理java方法重载的情况
-                    if (methodName in methodList) {
-                        methodName = "${methodName}_${params.joinToString("") { it.type.toDartType().capitalize() }}"
-                    }
-
-                    // 0. 方法修饰
-                    methodBuilder.append("\n")
-                    methodBuilder.append(if (isStatic()) "static " else "")
-                    // 1. 返回类型
-                    methodBuilder.append("Future<${returnType().toDartType()}>")
-                    methodBuilder.append(" ")
-                    // 2. 方法名
-                    methodBuilder.append(methodName)
-                    methodBuilder.append("(")
-                    // 3. 形参
-                    methodBuilder.append(formalParamsString(params))
-                    methodBuilder.append(")")
-                    methodBuilder.append(" async {")
-                    // 4. 方法体
-                    methodBuilder.append(methodBodyString(isStatic(), className, methodName, params))
-                    // 5. 返回值
-                    methodBuilder.append(returnString(returnType()))
-                    methodBuilder.append("}")
-
-                    dartBuilder.append(methodBuilder.toString())
-                    methodList.add(name())
-                }
-            }
-
-            override fun exitClassDeclaration(ctx: JavaParser.ClassDeclarationContext?) {
-                ctx?.run {
-                    dartBuilder.append(Temps.Dart.classEnd)
-                }
-            }
-
-            override fun enterEnumDeclaration(ctx: JavaParser.EnumDeclarationContext?) {
-                ctx?.run {
-                    dartBuilder.append("enum ${fullName().toDartType()} {")
-                }
-            }
-
-            override fun enterEnumConstant(ctx: JavaParser.EnumConstantContext?) {
-                ctx?.run {
-                    dartBuilder.append("${IDENTIFIER().text},")
-                }
-            }
-
-            override fun exitEnumDeclaration(ctx: JavaParser.EnumDeclarationContext?) {
-                ctx?.run {
-                    dartBuilder.append("}")
-                }
-            }
-        })
 
         if (androidViewBuilder.toString().isNotBlank()) {
-            "${androidDirPath}android_${javaFile.javaTypeInfo().name.simpleName().camel2Underscore()}.dart".file().writeText(androidViewBuilder.toString())
+            "${androidDirPath}android_${javaFile.javaType().name.simpleName().camel2Underscore()}.dart".file()
+                .writeText(androidViewBuilder.toString())
         }
 
         return "$androidDirPath${javaFile.toRelativeString(Jar.Decompiled.rootDirPath.file()).substringBeforeLast(
@@ -197,52 +111,14 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
     }
 
     /**
-     * 形参列表拼接字符串
-     */
-    private fun formalParamsString(params: List<Variable>): String {
-        return params
-            .filter { !it.type.isUnknownType() }
-            .joinToString { variable ->
-                variable
-                    .type
-                    .javaTypeInfo()
-                    ?.run {
-                        // 如果参数是回调类, 那么把类拆成lambda, 并作为参数传入
-                        if (isCallback == true) {
-                            val result = StringBuilder()
-
-                            path
-                                .file()
-                                .readText()
-                                .walkTree(object : JavaParserBaseListener() {
-                                    override fun enterInterfaceDeclaration(ctx: JavaParser.InterfaceDeclarationContext?) {
-                                        ctx?.run {
-                                            lambdas.addAll(interface2lambdas())
-                                            if (lambdas.isNotEmpty()) {
-                                                result.append(lambdas.joinToString(prefix = "{", postfix = ",}"))
-                                            }
-                                        }
-                                    }
-                                })
-
-                            result.toString()
-                        }
-                        // 普通Ref类
-                        else {
-                            "${variable.type.toDartType()} ${variable.name}"
-                        }
-                    } ?: "${variable.type.toDartType()} ${variable.name}" // jsonable类
-            }
-    }
-
-    /**
      * 方法体拼接字符串
      */
     private fun methodBodyString(
         isStatic: Boolean,
         className: String,
         methodName: String,
-        params: List<Variable>
+        params: List<Variable>,
+        callbacks: List<Method>
     ): String {
         val resultBuilder = StringBuilder("")
 
@@ -260,41 +136,43 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
             }
 
         resultBuilder.append(
-            "final result = await _channel.invokeMethod('$className::$methodName', $actualParams);"
+            "final result = await _channel.invokeMethod('$className::$methodName', $actualParams);\n"
         )
 
-        lambdas.forEachIndexed { index, lambda ->
-            if (index == 0) {
-                resultBuilder.append(
-                    """MethodChannel('$className::${methodName}_Callback' + refId.toString())
+        callbacks
+            .distinctBy { it.name }
+            .forEachIndexed { index, lambda ->
+                if (index == 0) {
+                    resultBuilder.append(
+                        """MethodChannel('$className::${methodName}_Callback' + refId.toString())
                         .setMethodCallHandler((methodCall) { 
                             final args = methodCall.arguments as Map; 
                             final refId = args['refId'] as int; 
                             if (refId != this.refId) return;
 
                             switch (methodCall.method) {"""
-                )
-            }
+                    )
+                }
 
-            resultBuilder.append(
-                """
-            case '$className::${methodName}_Callback::${lambda.methodName}':
-              if (${lambda.methodName} != null) {
-                ${lambda.methodName}(${lambda.formalParams.joinToString {
-                    if (it.type.jsonable()) {
-                        "args['${it.name}']"
-                    } else {
-                        "${it.type.toDartType()}.withRefId(args['${it.name}'])"
-                    }
-                }});
+                resultBuilder.append(
+                    """
+            case '$className::${methodName}_Callback::${lambda.name}':
+              if (${lambda.name} != null) {
+                ${lambda.name}(${lambda.formalParams.joinToString {
+                        if (it.type.jsonable()) {
+                            "args['${it.name}']"
+                        } else {
+                            "${it.type.toDartType()}.withRefId(args['${it.name}'])"
+                        }
+                    }});
               }
               break;"""
-            )
+                )
 
-            if (index == lambdas.lastIndex) {
-                resultBuilder.append("""default: break; } });""")
+                if (index == callbacks.distinctBy { it.name }.lastIndex) {
+                    resultBuilder.append("""default: break; } });""")
+                }
             }
-        }
         return resultBuilder.toString()
     }
 
@@ -307,20 +185,20 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         if (returnType.jsonable()) {
             if (returnType.isList()) {
                 resultBuilder.append(
-                    "return (result as List).cast<${returnType.genericType().toDartType()}>();"
+                    "(result as List).cast<${returnType.genericType().toDartType()}>()"
                 )
             } else {
-                resultBuilder.append("return result;")
+                resultBuilder.append("result")
             }
         } else if (returnType.isEnum()) {
-            resultBuilder.append("return ${returnType.toDartType()}.values[result];")
+            resultBuilder.append("${returnType.toDartType()}.values[result]")
         } else {
             if (returnType.isList()) {
                 resultBuilder.append(
-                    "return (result as List).map((it) => ${returnType.genericType().toDartType()}.withRefId(it));"
+                    "(result as List).map((it) => ${returnType.genericType().toDartType()}.withRefId(it))"
                 )
             } else {
-                resultBuilder.append("return ${returnType.toDartType()}.withRefId(result);")
+                resultBuilder.append("${returnType.toDartType()}.withRefId(result)")
             }
         }
 

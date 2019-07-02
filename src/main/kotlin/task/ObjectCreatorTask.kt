@@ -3,7 +3,7 @@ package task
 import OutputProject
 import common.DART_FILE
 import common.DIR
-import common.Temps
+import common.Tmpl
 import common.extensions.*
 
 /**
@@ -17,7 +17,7 @@ class ObjectCreatorTask(private val dir: DIR) : Task<DIR, DART_FILE>(dir) {
     override fun process(): DART_FILE {
         val dartBuilder = StringBuilder()
 
-        dartBuilder.appendln(Temps.Dart.ObjectCreator.classDeclare)
+        dartBuilder.appendln(Tmpl.Dart.ObjectCreator.classDeclare)
 
         dir.iterate("java") {
             if (!it.nameWithoutExtension.isObfuscated()
@@ -25,20 +25,20 @@ class ObjectCreatorTask(private val dir: DIR) : Task<DIR, DART_FILE>(dir) {
             ) {
                 println("处理文件: $it")
                 dartBuilder.appendln(
-                    Temps.Dart.ObjectCreator.creator.placeholder(
-                        it.javaTypeInfo().name.toDartType(),
-                        it.javaTypeInfo().name.toDartType(),
+                    Tmpl.Dart.ObjectCreator.creator.placeholder(
+                        it.javaType().name.toDartType(),
+                        it.javaType().name.toDartType(),
                         "",
-                        it.javaTypeInfo().name.toDartType(),
+                        it.javaType().name.toDartType(),
                         "",
                         "",
-                        it.javaTypeInfo().name.toDartType()
+                        it.javaType().name.toDartType()
                     )
                 )
             }
         }
 
-        dartBuilder.appendln(Temps.Dart.ObjectCreator.classDeclareEnd)
+        dartBuilder.appendln(Tmpl.Dart.ObjectCreator.classDeclareEnd)
 
         return "${OutputProject.Dart.libDirPath}src/object_creator.dart".file()
             .apply { writeText(dartBuilder.toString()) }

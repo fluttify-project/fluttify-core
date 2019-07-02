@@ -1,6 +1,6 @@
 package common.model
 
-data class ProjectSpec(
+data class Project(
     val org: String,
     val name: String
 )

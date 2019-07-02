@@ -4,12 +4,24 @@ import Configs.outputOrg
 import Configs.outputProjectName
 import Framework
 import OutputProject
+import Project
+import common.extensions.file
+
+val tmplDir = "${Project.path}/src/main/resources/tmpl"
 
 /**
  * 代码模板
  */
-object Temps {
+object Tmpl {
     object Dart {
+
+        val classBuilder by lazy { "$tmplDir/class.dart.tmpl".file().readText() }
+
+        val enumBuilder by lazy { "$tmplDir/enum.dart.tmpl".file().readText() }
+
+        val androidViewBuilder by lazy { "$tmplDir/android_view.dart.tmpl".file().readText() }
+
+        val methodBuilder by lazy { "$tmplDir/method.dart.tmpl".file().readText() }
 
         const val classDeclaration = """import 'dart:typed_data';
 import 'package:$outputProjectName/$outputProjectName.dart';

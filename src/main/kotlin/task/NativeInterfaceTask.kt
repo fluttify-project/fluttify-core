@@ -39,7 +39,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                 resultBuilder.append(generateForFile(it))
             }
         }
-        resultBuilder.append(Temps.Kotlin.whenElse)
+        resultBuilder.append(Tmpl.Kotlin.whenElse)
         resultBuilder.append(
             """
                     }
@@ -120,12 +120,12 @@ class ${classSimpleName}Plugin {
                         val getterMethodName = "get${name().capitalize()}"
 
                         val setterHandlerMethodName =
-                            "handle${javaFile.javaTypeInfo().name.replace("$", ".").replace(
+                            "handle${javaFile.javaType().name.replace("$", ".").replace(
                                 ".",
                                 "_"
                             )}_$setterMethodName"
                         val getterHandlerMethodName =
-                            "handle${javaFile.javaTypeInfo().name.replace("$", ".").replace(
+                            "handle${javaFile.javaType().name.replace("$", ".").replace(
                                 ".",
                                 "_"
                             )}_$getterMethodName"
@@ -152,7 +152,7 @@ class ${classSimpleName}Plugin {
                             methodBuilder.appendln("\n\t\t}")
 
                             resultBuilder.append(
-                                Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
+                                Tmpl.Kotlin.PlatformView.methodBranchHeader.placeholder(
                                     className,
                                     setterMethodName,
                                     "$setterHandlerMethodName(registrar, args, methodResult)"
@@ -173,7 +173,7 @@ class ${classSimpleName}Plugin {
                         methodBuilder.appendln("\n\t\t}")
 
                         resultBuilder.append(
-                            Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
+                            Tmpl.Kotlin.PlatformView.methodBranchHeader.placeholder(
                                 className,
                                 getterMethodName,
                                 "$getterHandlerMethodName(registrar, args, methodResult)"
@@ -206,7 +206,7 @@ class ${classSimpleName}Plugin {
                                 "${methodName}_${params.joinToString("") { it.type.toDartType().capitalize() }}"
                         }
                         val handlerMethodName =
-                            "handle${javaFile.javaTypeInfo().name.replace("$", ".").replace(".", "_")}_$methodName"
+                            "handle${javaFile.javaType().name.replace("$", ".").replace(".", "_")}_$methodName"
 
                         methodBuilder.append("\t\tprivate fun $handlerMethodName(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {")
 
@@ -240,7 +240,7 @@ class ${classSimpleName}Plugin {
                             // 返回类型是jsonable
                             when {
                                 returnType() == "void" -> methodBuilder.append(
-                                    Temps.Kotlin.PlatformView.staticReturnVoid.placeholder(
+                                    Tmpl.Kotlin.PlatformView.staticReturnVoid.placeholder(
                                         className,
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -254,7 +254,7 @@ class ${classSimpleName}Plugin {
                                     )
                                 )
                                 returnType().jsonable() -> methodBuilder.append(
-                                    Temps.Kotlin.PlatformView.staticReturnJsonable.placeholder(
+                                    Tmpl.Kotlin.PlatformView.staticReturnJsonable.placeholder(
                                         className,
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -268,7 +268,7 @@ class ${classSimpleName}Plugin {
                                     )
                                 )
                                 returnType().isJavaRefType() -> methodBuilder.append(
-                                    Temps.Kotlin.PlatformView.staticReturnRef.placeholder(
+                                    Tmpl.Kotlin.PlatformView.staticReturnRef.placeholder(
                                         className,
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -288,7 +288,7 @@ class ${classSimpleName}Plugin {
                             when {
                                 // 返回void
                                 returnType() == "void" -> methodBuilder.append(
-                                    Temps.Kotlin.PlatformView.refReturnVoid.placeholder(
+                                    Tmpl.Kotlin.PlatformView.refReturnVoid.placeholder(
                                         className.replace("_", "."),
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -302,7 +302,7 @@ class ${classSimpleName}Plugin {
                                     )
                                 )
                                 returnType().jsonable() -> methodBuilder.append(
-                                    Temps.Kotlin.PlatformView.refReturnJsonable.placeholder(
+                                    Tmpl.Kotlin.PlatformView.refReturnJsonable.placeholder(
                                         className.replace("_", "."),
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -317,7 +317,7 @@ class ${classSimpleName}Plugin {
                                 )
                                 // 返回类型是ref
                                 else -> methodBuilder.append(
-                                    Temps.Kotlin.PlatformView.refReturnRef.placeholder(
+                                    Tmpl.Kotlin.PlatformView.refReturnRef.placeholder(
                                         className.replace("_", "."),
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -336,7 +336,7 @@ class ${classSimpleName}Plugin {
                         methodHandlers.add(methodBuilder.toString())
 
                         resultBuilder.append(
-                            Temps.Kotlin.PlatformView.methodBranchHeader.placeholder(
+                            Tmpl.Kotlin.PlatformView.methodBranchHeader.placeholder(
                                 className,
                                 methodName,
                                 "$handlerMethodName(registrar, args, methodResult)"
@@ -351,7 +351,7 @@ class ${classSimpleName}Plugin {
     }
 
     private fun registerPlatformFactory(viewFile: File): String {
-        val javaTypeInfo = viewFile.javaTypeInfo()
+        val javaTypeInfo = viewFile.javaType()
         return """
             registrar
                     .platformViewRegistry()
@@ -361,7 +361,7 @@ class ${classSimpleName}Plugin {
 
     private fun generatePlatformView(javaFile: JAVA_FILE) {
         val platformViewSource =
-            Temps.Kotlin.PlatformView.factory.placeholder(javaFile.nameWithoutExtension, javaFile.javaTypeInfo().name)
+            Tmpl.Kotlin.PlatformView.factory.placeholder(javaFile.nameWithoutExtension, javaFile.javaType().name)
 
         "${OutputProject.Android.kotlinDirPath}${javaFile.nameWithoutExtension}Factory.kt".file().run {
             writeText(platformViewSource)

@@ -1,5 +1,6 @@
 package common.model
 
+import Jar
 import common.TYPE_NAME
 import common.extensions.toDartType
 
@@ -8,6 +9,32 @@ import common.extensions.toDartType
  */
 data class Variable(val type: TYPE_NAME, val name: String) {
     override fun toString(): String {
-        return "${type.toDartType()} $name"
+        // 如果变量类型是接口, 那么就需要展开
+        return if (Jar.Decompiled.CLASSES[type]?.typeType == TypeType.Interface) {
+            Jar.Decompiled
+                .CLASSES[type]
+                ?.methods
+                ?.distinctBy { it.name }
+                ?.joinToString { it.toDartString() } ?: ""
+        }
+        // 普通变量
+        else {
+            "$type $name"
+        }
+    }
+
+    fun toDartString(): String {
+        // 如果变量类型是接口, 那么就需要展开
+        return if (Jar.Decompiled.CLASSES[type]?.typeType == TypeType.Interface) {
+            Jar.Decompiled
+                .CLASSES[type]
+                ?.methods
+                ?.distinctBy { it.name }
+                ?.joinToString { it.toDartString() } ?: ""
+        }
+        // 普通变量
+        else {
+            "${type.toDartType()} $name"
+        }
     }
 }
