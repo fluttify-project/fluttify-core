@@ -1,16 +1,15 @@
 @file:Suppress("ClassName")
 
 import Configs.frameworkDirPath
-import Configs.mainJavaClass
-import Configs.mainObjcClass
 import Configs.outputOrg
 import Configs.outputProjectName
-import Jar.Decompiled.mainClassSimpleName
 import Project.path
 import common.TYPE_NAME
-import common.extensions.*
-import common.model.JavaTypeInfo
-import common.model.ObjcTypeInfo
+import common.extensions.file
+import common.extensions.javaType
+import common.extensions.package2Path
+import common.extensions.underscore2Camel
+import common.model.Type
 import org.apache.commons.io.FileUtils
 import java.io.File
 
@@ -18,11 +17,6 @@ import java.io.File
  * 目标jar
  */
 object Jar {
-    /**
-     * Jar的包名, 取[javaPackage]前三个字段
-     */
-    val `package` = Jar.Decompiled.`package`.split(".").subList(0, 3).joinToString(".")
-
     /**
      * jar的文件名
      */
@@ -38,32 +32,16 @@ object Jar {
         val rootDirPath = "$path/build/decompiled/"
 
         /**
-         * 主java类的路径
-         */
-        val mainClassFilePath = "$rootDirPath/${mainJavaClass.replace(".", "/")}.java"
-
-        /**
-         * 主java类所在的包名
-         */
-
-        val `package` = mainJavaClass.substringBeforeLast(".")
-
-        /**
-         * 主java类的类名
-         */
-        val mainClassSimpleName = mainJavaClass.substringAfterLast(".")
-
-        /**
          * Jar内所有类的信息, key为class simple name, value为对应类的信息
          *
          * 需要遍历反编译后的jar的所有文件来确定所有类的信息
          */
-        val classes: Map<TYPE_NAME, JavaTypeInfo> by lazy {
-            val result = mutableMapOf<TYPE_NAME, JavaTypeInfo>()
+        val CLASSES: Map<TYPE_NAME, Type> by lazy {
+            val result = mutableMapOf<TYPE_NAME, Type>()
             FileUtils
                 .iterateFiles(File(rootDirPath), arrayOf("java"), true)
                 .forEach {
-                    val typeInfo = it.javaTypeInfo()
+                    val typeInfo = it.javaType()
                     result.putIfAbsent(typeInfo.name.replace("$", "."), typeInfo)
                 }
             result
@@ -76,11 +54,6 @@ object Jar {
  */
 object Framework {
     /**
-     * 主objc类的路径
-     */
-    val mainClassFilePath = "$frameworkDirPath/Headers/$mainObjcClass.h"
-
-    /**
      * Framework的名字, 没有framework后缀
      */
     val name = frameworkDirPath.substringAfterLast("/").substringBefore(".")
@@ -89,19 +62,19 @@ object Framework {
      * framework中的所有类都单独放一个文件 因为objc的模型类可能多个模型类写在一个文件里,
      * 在识别的时候把它们分散到单独的文件中去, 供下一步处理
      */
-    val singleClassesDirPath = "$path/build/objc-classes/"
+    val singleClassesDirPath = "$path/build/objc-CLASSES/"
 
     /**
      * Framework内所有类的信息, key为class simple name, value为对应类的信息
      *
      * 遍历Headers内的所有类文件
      */
-    val classes: Map<TYPE_NAME, ObjcTypeInfo> by lazy {
-        val result = mutableMapOf<TYPE_NAME, ObjcTypeInfo>()
+    val CLASSES: Map<TYPE_NAME, Type> by lazy {
+        val result = mutableMapOf<TYPE_NAME, Type>()
         FileUtils
             .iterateFiles(singleClassesDirPath.file(), null, true)
             .forEach {
-                val typeInfo = it.absolutePath.file().objcTypeInfo()
+                val typeInfo = it.absolutePath.file().javaType()
                 result.putIfAbsent(typeInfo.name, typeInfo)
             }
         result
@@ -154,13 +127,7 @@ object OutputProject {
         /**
          * 生成工程的Android端PlatformView的Dart文件路径
          */
-        val androidPlatformViewFilePath = "${androidDirPath}android_${mainClassSimpleName.camel2Underscore()}.dart"
-
-        /**
-         * 生成工程的Android端PlatformViewController的Dart文件路径
-         */
-        val androidDartControllerFilePath =
-            "${androidDirPath}android_${mainClassSimpleName.camel2Underscore()}_controller.dart"
+        val androidPlatformViewFilePath = "${androidDirPath}android_${outputProjectName}.dart"
 
         /**
          * 生成工程的Android端Dart模型文件路径
@@ -193,18 +160,6 @@ object OutputProject {
          */
         val kotlinFilePath =
             "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.package2Path()}/$outputProjectName/${classSimpleName}Plugin.kt"
-
-        /**
-         * PlatformViewFactory文件路径
-         */
-        val platformViewFactoryFilePath =
-            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.package2Path()}/$outputProjectName/${classSimpleName}Factory.kt"
-
-        /**
-         * PlatformView文件路径
-         */
-        val platformViewFilePath =
-            "$path/build/output-project/$outputProjectName/android/src/main/kotlin/${outputOrg.package2Path()}/$outputProjectName/$classSimpleName.kt"
 
         /**
          * 生成工程的Android端Jar路径

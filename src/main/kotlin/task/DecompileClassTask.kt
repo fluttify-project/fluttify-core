@@ -20,7 +20,7 @@ class DecompileClassTask(private val classFile: File) : Task<File, JAVA_FILE>(cl
         val process = Runtime
             .getRuntime()
             // -dgs=1 => decompile generic signatures
-            // -din=0 => decompile inner classes
+            // -din=0 => decompile inner CLASSES
             // -rsy=1 => hide synthetic class members
             // -hdc=1 => hide empty default constructor
             .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=0 -rsy=1 -hdc=0 ${classFile.absolutePath} $artifactPath")

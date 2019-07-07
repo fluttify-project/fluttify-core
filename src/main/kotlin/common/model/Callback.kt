@@ -10,12 +10,12 @@ import parser.java.JavaParserBaseListener
  */
 data class Callback(val callerClass: String, val callerMethod: String, val className: String) {
     override fun toString(): String {
-        val isInterface = className.javaTypeInfo()?.isInterface == true
+        val isInterface = className.javaType()?.typeType == TypeType.Interface
 
         val callbackMethodList = mutableListOf<CallbackMethod>()
 
         className
-            .javaTypeInfo()
+            .javaType()
             ?.path
             ?.file()
             ?.readText()
@@ -52,7 +52,12 @@ data class CallbackMethod(
     override fun toString(): String {
         val returnData = formalParams
             .toMutableList()
-            .apply { add(Variable("int", "refId")) }
+            .apply { add(Variable(
+                null,
+                null,
+                null,
+                "int",
+                "refId")) }
             .joinToString(",\n") { "\t\t\t\t\t\t\t\t\"${it.name}\" to ${if (it.type.jsonable()) it.name else "${it.name}.hashCode().apply { REF_MAP[this] = ${it.name} }"}" }
         return """              
                 override fun $methodName(${formalParams.joinToString { "${it.name}: ${it.type.toKotlinType()}" }}): ${returnType.toKotlinType()} {

@@ -18,8 +18,7 @@ fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
 /**
  * 获取父类名称
  */
-fun JavaParser.ClassDeclarationContext?.superClass(): String? {
-    if (this == null) return null
+fun JavaParser.ClassDeclarationContext.superClass(): String? {
     return typeType()?.text
 }
 
