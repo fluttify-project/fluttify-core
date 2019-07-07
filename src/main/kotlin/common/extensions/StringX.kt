@@ -48,6 +48,13 @@ fun TYPE_NAME.isList(): Boolean {
 }
 
 /**
+ * 是否是集合类型
+ */
+fun TYPE_NAME.isArrayList(): Boolean {
+    return Regex("ArrayList<(\\w*|.*)>").matches(this)
+}
+
+/**
  * 是否是未知类型, 即非当前sdk内的类
  */
 fun TYPE_NAME.isUnknownType(): Boolean {

@@ -1,0 +1,28 @@
+package #__package_name__#
+
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.PluginRegistry.Registrar
+
+val REF_MAP = mutableMapOf<Int, Any>()
+
+@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
+class #__plugin_in_name__#Plugin {
+    companion object {
+        @JvmStatic
+        fun registerWith(registrar: Registrar) {
+            val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
+
+            channel.setMethodCallHandler { methodCall, methodResult ->
+                val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
+                when (methodCall.method) {
+                    #__dispatcher__#
+                    else -> methodResult.notImplemented()
+                    }
+                }
+
+            #__platform_views__#
+		}
+
+		#__handlers__#
+    }
+}

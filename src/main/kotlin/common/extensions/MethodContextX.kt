@@ -154,7 +154,11 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                     null,
                     true,
                     null,
-                    if (formalParam.typeType().text.isList()) "List<$typeFullName>" else typeFullName,
+                    when {
+                        formalParam.typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
+                        formalParam.typeType().text.isList() -> "List<$typeFullName>"
+                        else -> typeFullName
+                    },
                     formalParam.variableDeclaratorId().text
                 )
             )
@@ -181,7 +185,11 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                     false,
                     true,
                     null,
-                    if (typeType().text.isList()) "List<$typeFullName>" else typeFullName,
+                    when {
+                        typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
+                        typeType().text.isList() -> "List<$typeFullName>"
+                        else -> typeFullName
+                    },
                     variableDeclaratorId().text
                 )
             )
@@ -216,7 +224,11 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                     false,
                     true,
                     null,
-                    if (formalParam.typeType().text.isList()) "List<$typeFullName>" else typeFullName,
+                    when {
+                        formalParam.typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
+                        formalParam.typeType().text.isList() -> "List<$typeFullName>"
+                        else -> typeFullName
+                    },
                     formalParam.variableDeclaratorId().text
                 )
             )
@@ -243,7 +255,11 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                     false,
                     true,
                     null,
-                    if (typeType().text.isList()) "List<$typeFullName>" else typeFullName,
+                    when {
+                        typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
+                        typeType().text.isList() -> "List<$typeFullName>"
+                        else -> typeFullName
+                    },
                     variableDeclaratorId().text
                 )
             )

@@ -1,0 +1,26 @@
+package #__package_name__#
+
+import android.content.Context
+import android.view.View
+
+import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.StandardMessageCodec
+import io.flutter.plugin.platform.PlatformView
+import io.flutter.plugin.platform.PlatformViewFactory
+import io.flutter.plugin.common.PluginRegistry.Registrar
+
+class #__factory_name__#Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+
+    override fun create(context: Context, id: Int, params: Any?): PlatformView {
+        return object : PlatformView {
+            private val view = #__native_view__#(registrar.activity())
+
+            override fun getView(): View = view.apply { REF_MAP[id] = this }
+
+            override fun dispose() {
+                REF_MAP.remove(id)
+            }
+        }
+    }
+}

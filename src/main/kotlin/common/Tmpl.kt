@@ -15,133 +15,22 @@ val tmplDir = "${Project.path}/src/main/resources/tmpl"
 object Tmpl {
     object Dart {
 
-        val classBuilder by lazy { "$tmplDir/class.dart.tmpl".file().readText() }
+        val classBuilder by lazy { "$tmplDir/dart/class.dart.tmpl".file().readText() }
 
-        val enumBuilder by lazy { "$tmplDir/enum.dart.tmpl".file().readText() }
+        val enumBuilder by lazy { "$tmplDir/dart/enum.dart.tmpl".file().readText() }
 
-        val callbackBuilder by lazy { "$tmplDir/callback.stmt.dart.tmpl".file().readText() }
+        val callbackBuilder by lazy { "$tmplDir/dart/callback.stmt.dart.tmpl".file().readText() }
 
-        val callbackCaseBuilder by lazy { "$tmplDir/callback_case.stmt.dart.tmpl".file().readText() }
+        val callbackCaseBuilder by lazy { "$tmplDir/dart/callback_case.stmt.dart.tmpl".file().readText() }
 
-        val androidViewBuilder by lazy { "$tmplDir/android_view.dart.tmpl".file().readText() }
+        val androidViewBuilder by lazy { "$tmplDir/dart/android_view.dart.tmpl".file().readText() }
 
-        val methodBuilder by lazy { "$tmplDir/method.dart.tmpl".file().readText() }
+        val methodBuilder by lazy { "$tmplDir/dart/method.mtd.dart.tmpl".file().readText() }
 
-        val getterBuilder by lazy { "$tmplDir/getter.dart.tmpl".file().readText() }
+        val getterBuilder by lazy { "$tmplDir/dart/getter.mtd.dart.tmpl".file().readText() }
 
-        val setterBuilder by lazy { "$tmplDir/setter.dart.tmpl".file().readText() }
+        val setterBuilder by lazy { "$tmplDir/dart/setter.mtd.dart.tmpl".file().readText() }
 
-        const val classDeclaration = """import 'dart:typed_data';
-import 'package:$outputProjectName/$outputProjectName.dart';
-import 'package:flutter/services.dart';
-
-// ignore_for_file: non_constant_identifier_names, camel_case_types
-class #__class_name__# {
-  #__class_name__#.withRefId(this.refId);
-
-  final int refId;
-"""
-
-        val methodChannel = """
-  static final _channel = MethodChannel('${OutputProject.methodChannel}');
-"""
-
-        const val classEnd = "}"
-
-        const val getter = """
-            Future<#__class_name__#> get#__field__#() {
-                
-            }
-        """
-
-        const val setter = """
-            Future<void> set#__field__#() {
-                
-            }
-        """
-
-        const val toString = """
-  @override
-  String toString() {
-    return JsonEncoder.withIndent('  ').convert(toJson());
-  }
-"""
-
-        object AndroidView {
-            const val androidView = """import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:$outputProjectName/$outputProjectName.dart';
-
-typedef void #__view__#CreatedCallback(#__view__# controller);
-
-class #__view__#_Android extends StatelessWidget {
-  const #__view__#_Android({
-    Key key,
-    this.onViewCreated,
-  }) : super(key: key);
-  
-  final #__view__#CreatedCallback onViewCreated;
-  
-  @override
-  Widget build(BuildContext context) {
-    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
-      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-    ].toSet();
-
-    final messageCodec = StandardMessageCodec();
-    return AndroidView(
-      viewType: '$outputOrg/#__view__#',
-      gestureRecognizers: gestureRecognizers,
-      onPlatformViewCreated: _onViewCreated,
-      creationParamsCodec: messageCodec,
-    );
-  }
-
-  void _onViewCreated(int id) {
-    final controller = #__view__#.withRefId(id);
-    if (onViewCreated != null) {
-      onViewCreated(controller);
-    }
-  }
-}
-"""
-
-        }
-
-        const val uiKitView = """import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-
-class #__uikit_view__# extends StatelessWidget {
-  const #__uikit_view__#({
-    Key key,
-  }) : super(key: key);
-  
-  @override
-  Widget build(BuildContext context) {
-    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
-      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-    ].toSet();
-
-    final messageCodec = StandardMessageCodec();
-    return UiKitView(
-      viewType: #__view_type__#,
-      gestureRecognizers: gestureRecognizers,
-      creationParamsCodec: messageCodec,
-    );
-  }
-}
-"""
         object ObjectCreator {
             const val classDeclare = """import 'package:flutter/services.dart';
 
@@ -161,6 +50,26 @@ class ObjectCreator {
     }
 
     object Kotlin {
+
+        val pluginBuilder by lazy { "$tmplDir/kotlin/plugin.kt.tmpl".file().readText() }
+
+        val platformViewRegisterBuilder by lazy { "$tmplDir/kotlin/platform_view_register.stmt.kt.tmpl".file().readText() }
+
+        val platformViewFactoryBuilder by lazy { "$tmplDir/kotlin/platform_view_factory.kt.tmpl".file().readText() }
+
+        val setterBuilder by lazy { "$tmplDir/kotlin/setter.mtd.kt.tmpl".file().readText() }
+
+        val getterBuilder by lazy { "$tmplDir/kotlin/getter.mtd.kt.tmpl".file().readText() }
+
+        val branchBuilder by lazy { "$tmplDir/kotlin/branch.stmt.kt.tmpl".file().readText() }
+
+        val handlerMethodBuilder by lazy { "$tmplDir/kotlin/handler_method.mtd.kt.tmpl".file().readText() }
+
+        val jsonableArgBuilder by lazy { "$tmplDir/kotlin/jsonable_arg.mtd.kt.tmpl".file().readText() }
+
+        val enumArgBuilder by lazy { "$tmplDir/kotlin/enum_arg.mtd.kt.tmpl".file().readText() }
+
+        val refArgBuilder by lazy { "$tmplDir/kotlin/ref_arg.mtd.kt.tmpl".file().readText() }
 
         const val classDeclaration = """
 @Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER")
@@ -210,11 +119,6 @@ class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(
             val classDeclaration = """
 class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : PlatformView, MethodCallHandler {
 """
-
-            const val methodBranchHeader = """
-                    "#__class_name__#::#__method_name__#" -> {
-                        #__handler__#
-                    }"""
 
             const val staticReturnJsonable = """
             val result = #__class_name__#.#__method_name__#(#__params__#)
