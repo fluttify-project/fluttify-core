@@ -7,7 +7,13 @@ import common.extensions.toDartType
 /**
  * 表示一个变量(字段, 方法参数, 局部变量)
  */
-data class Variable(val type: TYPE_NAME, val name: String) {
+data class Variable(
+    val isPublic: Boolean?,
+    val isFinal: Boolean?,
+    val isStatic: Boolean?, 
+    val type: TYPE_NAME,
+    val name: String
+) {
     fun toDartString(): String {
         // 如果变量类型是接口, 那么就需要展开
         return if (Jar.Decompiled.CLASSES[type]?.typeType == TypeType.Interface) {

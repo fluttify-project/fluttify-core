@@ -27,6 +27,10 @@ object Tmpl {
 
         val methodBuilder by lazy { "$tmplDir/method.dart.tmpl".file().readText() }
 
+        val getterBuilder by lazy { "$tmplDir/getter.dart.tmpl".file().readText() }
+
+        val setterBuilder by lazy { "$tmplDir/setter.dart.tmpl".file().readText() }
+
         const val classDeclaration = """import 'dart:typed_data';
 import 'package:$outputProjectName/$outputProjectName.dart';
 import 'package:flutter/services.dart';

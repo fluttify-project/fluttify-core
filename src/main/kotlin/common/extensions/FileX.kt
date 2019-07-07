@@ -64,11 +64,11 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterFieldDeclaration(ctx: FieldDeclarationContext) {
-            fields.add(Variable(ctx.type(), ctx.name()))
+            fields.add(Variable(ctx.isPublic(), ctx.isFinal(), ctx.isStatic(), ctx.type(), ctx.name()))
         }
 
         override fun enterEnumConstant(ctx: EnumConstantContext) {
-            fields.add(Variable(ctx.IDENTIFIER().text, ctx.IDENTIFIER().text))
+            fields.add(Variable(true,  true, false, type = ctx.IDENTIFIER().text, name = ctx.IDENTIFIER().text))
         }
     })
 

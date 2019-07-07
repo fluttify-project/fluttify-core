@@ -151,6 +151,9 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
+                    null,
+                    true,
+                    null,
                     if (formalParam.typeType().text.isList()) "List<$typeFullName>" else typeFullName,
                     formalParam.variableDeclaratorId().text
                 )
@@ -175,6 +178,9 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
+                    false,
+                    true,
+                    null,
                     if (typeType().text.isList()) "List<$typeFullName>" else typeFullName,
                     variableDeclaratorId().text
                 )
@@ -207,6 +213,9 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
+                    false,
+                    true,
+                    null,
                     if (formalParam.typeType().text.isList()) "List<$typeFullName>" else typeFullName,
                     formalParam.variableDeclaratorId().text
                 )
@@ -231,6 +240,9 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
+                    false,
+                    true,
+                    null,
                     if (typeType().text.isList()) "List<$typeFullName>" else typeFullName,
                     variableDeclaratorId().text
                 )
@@ -264,7 +276,15 @@ fun ObjectiveCParser.MethodDeclarationContext?.formalParams(): List<Variable> {
     methodSelector()
         .keywordDeclarator()
         ?.forEach {
-            result.add(Variable(it.methodType()[0].typeName().text.toDartType(), it.identifier().text))
+            result.add(
+                Variable(
+                    false,
+                    true,
+                    null,
+                    it.methodType()[0].typeName().text.toDartType(),
+                    it.identifier().text
+                )
+            )
         }
     return result
 }

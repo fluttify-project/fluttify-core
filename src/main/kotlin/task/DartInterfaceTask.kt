@@ -38,6 +38,36 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                         .replace("#__class_name__#", name.toDartType())
                         // method channel名称
                         .replace("#__method_channel__#", methodChannel)
+                        // getter 目前只支持jsonable的字段
+                        .replaceParagraph("#__getters__#", fields
+                            .filter {
+                                it.isPublic == true
+                                        && it.isStatic == false
+                                        && !it.type.run { isUnknownType() || isObfuscated() || !jsonable() }
+                            }
+                            .distinctBy { it.name }
+                            .joinToString("\n") {
+                                Tmpl.Dart.getterBuilder
+                                    .replace("#__type__#", it.type.toDartType())
+                                    .replace("#__name__#", it.name.capitalize())
+                                    .replace("#__getter_method__#", "${this.name}::get${it.name.capitalize()}")
+                            })
+                        // setter 只有不是final且public的字段需要加 目前只支持jsonable的字段
+                        .replaceParagraph("#__setters__#", fields
+                            .filter {
+                                it.isPublic == true
+                                        && it.isFinal == false
+                                        && it.isStatic == false
+                                        && !it.type.run { isUnknownType() || isObfuscated() || !jsonable() }
+                            }
+                            .distinctBy { it.name }
+                            .joinToString("\n") {
+                                Tmpl.Dart.setterBuilder
+                                    .replace("#__name__#", it.name.capitalize())
+                                    .replace("#__type__#", it.type.toDartType())
+                                    .replace("#__arg__#", it.name)
+                                    .replace("#__setter_method__#", "${this.name}::set${it.name.capitalize()}")
+                            })
                         // 方法们
                         .replaceParagraph("#__methods__#", methods
                             // 过滤掉混淆, 未知参数类型, 未知返回类型的方法
@@ -143,7 +173,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         val actualParams = params
             .filter { !it.type.isCallback() }
             .toMutableList()
-            .apply { if (!isStatic) add(Variable("int", "refId")) }
+            .apply { if (!isStatic) add(Variable(null, null, null, "int", "refId")) }
             .toDartMap {
                 when {
                     it.type.isEnum() -> "${it.name}.index"
@@ -168,7 +198,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         callbacks
             .distinctBy { it.name }
             .forEach { callback ->
-                resultBuilder.append(
+                resultBuilder.appendln(
                     Tmpl.Dart.callbackCaseBuilder
                         .replace("#__callback_case__#", "$className::${methodName}_Callback::${callback.name}")
                         .replace("#__callback_handler__#", callback.name)
