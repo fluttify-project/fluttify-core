@@ -19,6 +19,10 @@ object Tmpl {
 
         val enumBuilder by lazy { "$tmplDir/enum.dart.tmpl".file().readText() }
 
+        val callbackBuilder by lazy { "$tmplDir/callback.stmt.dart.tmpl".file().readText() }
+
+        val callbackCaseBuilder by lazy { "$tmplDir/callback_case.stmt.dart.tmpl".file().readText() }
+
         val androidViewBuilder by lazy { "$tmplDir/android_view.dart.tmpl".file().readText() }
 
         val methodBuilder by lazy { "$tmplDir/method.dart.tmpl".file().readText() }

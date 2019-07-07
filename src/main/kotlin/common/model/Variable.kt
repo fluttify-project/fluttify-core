@@ -8,21 +8,6 @@ import common.extensions.toDartType
  * 表示一个变量(字段, 方法参数, 局部变量)
  */
 data class Variable(val type: TYPE_NAME, val name: String) {
-    override fun toString(): String {
-        // 如果变量类型是接口, 那么就需要展开
-        return if (Jar.Decompiled.CLASSES[type]?.typeType == TypeType.Interface) {
-            Jar.Decompiled
-                .CLASSES[type]
-                ?.methods
-                ?.distinctBy { it.name }
-                ?.joinToString { it.toDartString() } ?: ""
-        }
-        // 普通变量
-        else {
-            "$type $name"
-        }
-    }
-
     fun toDartString(): String {
         // 如果变量类型是接口, 那么就需要展开
         return if (Jar.Decompiled.CLASSES[type]?.typeType == TypeType.Interface) {
@@ -30,7 +15,7 @@ data class Variable(val type: TYPE_NAME, val name: String) {
                 .CLASSES[type]
                 ?.methods
                 ?.distinctBy { it.name }
-                ?.joinToString { it.toDartString() } ?: ""
+                ?.joinToString(prefix = "{", postfix = ",}") { it.toDartString() } ?: ""
         }
         // 普通变量
         else {

@@ -1,5 +1,5 @@
 MethodChannel('#__callback_channel__#' + refId.toString())
-    .setMethodCallHandler((methodCall) {
+    .setMethodCallHandler((methodCall) async {
       final args = methodCall.arguments as Map;
       final refId = args['refId'] as int;
       if (refId != this.refId) return;

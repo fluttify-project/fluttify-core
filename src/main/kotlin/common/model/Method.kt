@@ -1,7 +1,5 @@
 package common.model
 
-import common.extensions.toDartType
-
 data class Method(
     val returnType: String,
     val name: String,
@@ -9,19 +7,12 @@ data class Method(
     val isStatic: Boolean,
     val isAbstract: Boolean
 ) {
-    override fun toString(): String {
-        return if (isAbstract) {
-            "$returnType $name(${formalParams.joinToString()})"
-        } else {
-            "$returnType $name(${formalParams.joinToString()})"
-        }
-    }
-
     fun toDartString(): String {
+        // 这个方法是否只有由接口转lambda的时候才使用?如果是的话, 那么返回类型一律是void
         return if (isAbstract) {
-            "${returnType.toDartType()} $name(${formalParams.joinToString { it.toDartString() }})"
+            "void $name(${formalParams.joinToString { it.toDartString() }})"
         } else {
-            "${returnType.toDartType()} $name(${formalParams.joinToString { it.toDartString() }})"
+            "void $name(${formalParams.joinToString { it.toDartString() }})"
         }
     }
 }

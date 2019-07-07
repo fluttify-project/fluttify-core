@@ -48,29 +48,47 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                                         && it.name !in IGNORE_METHOD
                             }
                             .distinctBy { it.name }
-                            .joinToString("\n") {
+                            .joinToString("\n") { method ->
                                 Tmpl.Dart.methodBuilder
                                     // 返回类型
-                                    .replace("#__return_type__#", it.returnType.toDartType())
+                                    .replace("#__return_type__#", method.returnType.toDartType())
                                     // 方法名
-                                    .replace("#__method__#", it.name)
+                                    .replace("#__method__#", method.name)
                                     // 形参
                                     .replace(
                                         "#__formal_params__#",
-                                        it.formalParams.joinToString { it.toDartString() })
+                                        method.formalParams.joinToString { it.toDartString() })
                                     // 返回语句
-                                    .replace("#__return_statement__#", returnString(it.returnType))
-                                    // 方法体的语句
+                                    .replace("#__return_statement__#", returnString(method.returnType))
+                                    // 方法体的调用语句
                                     .replaceParagraph(
-                                        "#__statements__#", methodBodyString(
-                                            it.isStatic,
+                                        "#__invoke__#", invokeString(
+                                            method.isStatic,
                                             name,
-                                            it.name,
-                                            it.formalParams,
-                                            it.formalParams
-                                                .filter { it.type.isCallback() }
-                                                .flatMap { Jar.Decompiled.CLASSES[it.type]!!.methods }
+                                            method.name,
+                                            method.formalParams
                                         )
+                                    )
+                                    // 方法体的回调语句
+                                    .replaceParagraph(
+                                        "#__callback__#", method.formalParams
+                                            .filter { it.type.isCallback() }
+                                            .flatMap { Jar.Decompiled.CLASSES[it.type]!!.methods }
+                                            .takeIf { it.isNotEmpty() }
+                                            ?.run {
+                                                Tmpl.Dart.callbackBuilder
+                                                    .replace(
+                                                        "#__callback_channel__#",
+                                                        "$name::${method.name}_Callback"
+                                                    )
+                                                    .replaceParagraph(
+                                                        "#__cases__#", callbackString(
+                                                            name,
+                                                            method.name,
+                                                            this
+                                                        )
+                                                    )
+                                            } ?: ""
                                     )
                             })
                     dartBuilder.append(classString)
@@ -85,6 +103,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                     dartBuilder.append(classString)
                 }
 
+                // 碰到view类型的的类, 生成对应的PlatformView
                 val androidViewString = if (superClass in listOf("View", "ViewGroup")) {
                     Tmpl.Dart.androidViewBuilder
                         // 导入当前所在包的所有文件
@@ -113,12 +132,11 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
     /**
      * 方法体拼接字符串
      */
-    private fun methodBodyString(
+    private fun invokeString(
         isStatic: Boolean,
         className: String,
         methodName: String,
-        params: List<Variable>,
-        callbacks: List<Method>
+        params: List<Variable>
     ): String {
         val resultBuilder = StringBuilder("")
 
@@ -138,40 +156,30 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         resultBuilder.append(
             "final result = await _channel.invokeMethod('$className::$methodName', $actualParams);\n"
         )
+        return resultBuilder.toString()
+    }
 
+    private fun callbackString(
+        className: String,
+        methodName: String,
+        callbacks: List<Method>
+    ): String {
+        val resultBuilder = StringBuilder("")
         callbacks
             .distinctBy { it.name }
-            .forEachIndexed { index, lambda ->
-                if (index == 0) {
-                    resultBuilder.append(
-                        """MethodChannel('$className::${methodName}_Callback' + refId.toString())
-                        .setMethodCallHandler((methodCall) { 
-                            final args = methodCall.arguments as Map; 
-                            final refId = args['refId'] as int; 
-                            if (refId != this.refId) return;
-
-                            switch (methodCall.method) {"""
-                    )
-                }
-
+            .forEach { callback ->
                 resultBuilder.append(
-                    """
-            case '$className::${methodName}_Callback::${lambda.name}':
-              if (${lambda.name} != null) {
-                ${lambda.name}(${lambda.formalParams.joinToString {
-                        if (it.type.jsonable()) {
-                            "args['${it.name}']"
-                        } else {
-                            "${it.type.toDartType()}.withRefId(args['${it.name}'])"
-                        }
-                    }});
-              }
-              break;"""
+                    Tmpl.Dart.callbackCaseBuilder
+                        .replace("#__callback_case__#", "$className::${methodName}_Callback::${callback.name}")
+                        .replace("#__callback_handler__#", callback.name)
+                        .replace("#__callback_args__#", callback.formalParams.joinToString {
+                            if (it.type.jsonable()) {
+                                "args['${it.name}']"
+                            } else {
+                                "${it.type.toDartType()}.withRefId(args['${it.name}'])"
+                            }
+                        })
                 )
-
-                if (index == callbacks.distinctBy { it.name }.lastIndex) {
-                    resultBuilder.append("""default: break; } });""")
-                }
             }
         return resultBuilder.toString()
     }
