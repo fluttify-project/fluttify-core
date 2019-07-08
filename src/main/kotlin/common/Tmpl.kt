@@ -31,6 +31,8 @@ object Tmpl {
 
         val setterBuilder by lazy { "$tmplDir/dart/setter.mtd.dart.tmpl".file().readText() }
 
+        val systemRefBuilder by lazy { "$tmplDir/dart/system_ref.dart.tmpl".file().readText() }
+
         object ObjectCreator {
             const val classDeclare = """import 'package:flutter/services.dart';
 
@@ -70,22 +72,6 @@ class ObjectCreator {
         val enumArgBuilder by lazy { "$tmplDir/kotlin/enum_arg.mtd.kt.tmpl".file().readText() }
 
         val refArgBuilder by lazy { "$tmplDir/kotlin/ref_arg.mtd.kt.tmpl".file().readText() }
-
-        const val classDeclaration = """
-@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER")
-class #__class_name__#Plugin : MethodCallHandler {
-
-    private val mapper: objectMapper = objectMapper()
-"""
-
-        const val whenElse = """
-                    else -> methodResult.notImplemented()"""
-
-        const val getter = """
-                    else -> methodResult.notImplemented()"""
-
-        const val setter = """
-                    else -> methodResult.notImplemented()"""
 
         object PlatformView {
 

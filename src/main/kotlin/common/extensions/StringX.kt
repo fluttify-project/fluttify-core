@@ -3,6 +3,7 @@ package common.extensions
 import Framework
 import Jar
 import common.PATH
+import common.PRESERVED_CLASS
 import common.PRESERVED_MODEL
 import common.TYPE_NAME
 import common.model.Type
@@ -58,7 +59,11 @@ fun TYPE_NAME.isArrayList(): Boolean {
  * 是否是未知类型, 即非当前sdk内的类
  */
 fun TYPE_NAME.isUnknownType(): Boolean {
+    // 如果是保留的类, 那么就认为是已知类
+    if (genericType() in PRESERVED_CLASS) return false
+    // 不是jsonable且不是sdk内的类
     return !(Jar.Decompiled.CLASSES.containsKey(genericType()) || jsonable())
+            // 是接口类, 且方法内有未知类型的都算未知类型
             || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownType() } } } == true
 }
 

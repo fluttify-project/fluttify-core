@@ -125,14 +125,9 @@ object OutputProject {
         val androidDirPath = "$libDirPath/src/android/"
 
         /**
-         * 生成工程的Android端PlatformView的Dart文件路径
+         * 生成工程的系统引用的Dart文件路径
          */
-        val androidPlatformViewFilePath = "${androidDirPath}android_${outputProjectName}.dart"
-
-        /**
-         * 生成工程的Android端Dart模型文件路径
-         */
-        val androidModelDirPath = "$libDirPath/src/android/model/"
+        val systemRefFilePath = "$libDirPath/src/android/system_ref.dart"
 
         /**
          * 生成工程的iOS端Dart文件路径

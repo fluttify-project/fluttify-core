@@ -177,7 +177,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                                         name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
-                                                it.name
+                                                if (it.type.isList()) "ArrayList(${it.name})" else it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
                                             }
@@ -191,7 +191,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                                         name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
-                                                it.name
+                                                if (it.type.isList()) "ArrayList(${it.name})" else it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
                                             }
@@ -205,7 +205,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                                         name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
-                                                it.name
+                                                if (it.type.isList()) "ArrayList(${it.name})" else it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
                                             }
@@ -225,7 +225,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                                         name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
-                                                it.name
+                                                if (it.type.isList()) "ArrayList(${it.name})" else it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
                                             }
@@ -239,7 +239,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                                         name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
-                                                it.name
+                                                if (it.type.isList()) "ArrayList(${it.name})" else it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
                                             }
@@ -254,7 +254,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                                         name(),
                                         formalParams().joinToString {
                                             if (!it.type.isCallback())
-                                                it.name
+                                                if (it.type.isList()) "ArrayList(${it.name})" else it.name
                                             else {
                                                 Callback(className, methodName, it.type).toString()
                                             }

@@ -27,6 +27,7 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
         val dartBuilder = StringBuilder()
         val androidViewBuilder = StringBuilder()
 
+        // 生成java类对应的dart接口
         javaFile.javaType()
             .run {
                 // 普通类
@@ -80,6 +81,8 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                             .distinctBy { it.name }
                             .joinToString("\n") { method ->
                                 Tmpl.Dart.methodBuilder
+                                    // 是否静态
+                                    .replace("#__static__#", if (method.isStatic) "static" else "")
                                     // 返回类型
                                     .replace("#__return_type__#", method.returnType.toDartType())
                                     // 方法名
@@ -134,12 +137,14 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                 }
 
                 // 碰到view类型的的类, 生成对应的PlatformView
-                val androidViewString = if (superClass in listOf("View", "ViewGroup")) {
+                val androidViewString = if (superClass in listOf("android.view.View", "android.view.ViewGroup")) {
                     Tmpl.Dart.androidViewBuilder
                         // 导入当前所在包的所有文件
                         .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
                         // PlatformView的简写类名
                         .replace("#__view_simple_name__#", name.simpleName())
+                        // PlatformView的简写类名
+                        .replace("#__view_type__#", name)
                         // PlatformView的类名
                         .replace("#__view__#", name.toDartType())
                         // 输出工程的组织名称
@@ -148,14 +153,17 @@ class DartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE, DART_
                 androidViewBuilder.append(androidViewString)
             }
 
+        // 写入PlatformView文件
         if (androidViewBuilder.toString().isNotBlank()) {
             "${androidDirPath}android_${javaFile.javaType().name.simpleName().camel2Underscore()}.dart".file()
                 .writeText(androidViewBuilder.toString())
         }
 
-        return "$androidDirPath${javaFile.toRelativeString(Jar.Decompiled.rootDirPath.file()).substringBeforeLast(
-            "."
-        ).replace("$", "_")}.dart".file()
+        return "$androidDirPath${javaFile
+            .toRelativeString(Jar.Decompiled.rootDirPath.file())
+            .substringBeforeLast(".")
+            .replace("$", "_")}.dart"
+            .file()
             .apply { writeText(dartBuilder.toString()) }
     }
 

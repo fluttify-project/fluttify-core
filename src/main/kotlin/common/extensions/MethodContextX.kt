@@ -155,7 +155,6 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                     true,
                     null,
                     when {
-                        formalParam.typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
                         formalParam.typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
                     },
@@ -186,7 +185,6 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                     true,
                     null,
                     when {
-                        typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
                         typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
                     },
@@ -225,7 +223,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                     true,
                     null,
                     when {
-                        formalParam.typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
                         formalParam.typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
                     },
@@ -256,7 +253,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                     true,
                     null,
                     when {
-                        typeType().text.isArrayList() -> "ArrayList<$typeFullName>"
                         typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
                     },

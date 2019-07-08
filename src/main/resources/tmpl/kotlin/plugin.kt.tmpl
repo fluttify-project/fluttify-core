@@ -15,6 +15,12 @@ class #__plugin_in_name__#Plugin {
             channel.setMethodCallHandler { methodCall, methodResult ->
                 val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
                 when (methodCall.method) {
+                    "SystemRef::getandroid_app_Application" -> {
+                        methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
+                    }
+                    "SystemRef::getandroid_app_Activity" -> {
+                        methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
+                    }
                     #__dispatcher__#
                     else -> methodResult.notImplemented()
                     }

@@ -24,7 +24,7 @@ val IGNORE_METHOD = listOf(
  * 保留的类
  */
 val PRESERVED_CLASS = listOf(
-    "Context"
+    "android.content.Context"
 )
 
 /**
