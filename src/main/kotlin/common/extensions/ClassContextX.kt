@@ -1,9 +1,6 @@
 package common.extensions
 
-import common.gWalker
-import common.model.Lambda
 import parser.java.JavaParser
-import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 
 //region Java类扩展
@@ -62,35 +59,6 @@ fun JavaParser.EnumDeclarationContext.fullName(): String {
         ?.qualifiedName()
         ?.text ?: ""
     return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
-}
-
-/**
- * interface转lambda
- */
-fun JavaParser.InterfaceDeclarationContext.interface2lambdas(): List<Lambda> {
-    val result = mutableListOf<Lambda>()
-
-    gWalker.walk(object : JavaParserBaseListener() {
-        val existMethod = mutableListOf<String>()
-
-        override fun enterInterfaceMethodDeclaration(ctx: JavaParser.InterfaceMethodDeclarationContext?) {
-            ctx?.run {
-                val returnType = typeTypeOrVoid().text.toDartType()
-                // 处理java中重载的情况
-                val methodName = if (IDENTIFIER().text in existMethod)
-                    "${IDENTIFIER().text}_${formalParams().joinToString("_") { it.type.toDartType() }}"
-                else
-                    IDENTIFIER().text
-
-                if (formalParams().all { !it.type.isUnknownType() }) {
-                    result.add(Lambda(returnType, methodName, formalParams()))
-                    existMethod.add(IDENTIFIER().text)
-                }
-            }
-        }
-    }, this)
-
-    return result
 }
 //endregion
 
