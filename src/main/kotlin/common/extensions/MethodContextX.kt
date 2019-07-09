@@ -86,16 +86,14 @@ fun JavaParser.MethodDeclarationContext.isPrivate(): Boolean {
         ?.contains("private") == true
 }
 
-fun JavaParser.MethodDeclarationContext?.isStatic(): Boolean {
-    if (this == null) return false
+fun JavaParser.MethodDeclarationContext.isStatic(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("static") == true
 }
 
-fun JavaParser.InterfaceMethodDeclarationContext?.isStatic(): Boolean {
-    if (this == null) return false
+fun JavaParser.InterfaceMethodDeclarationContext.isStatic(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
@@ -151,9 +149,6 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
-                    null,
-                    true,
-                    null,
                     when {
                         formalParam.typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
@@ -181,9 +176,6 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
-                    false,
-                    true,
-                    null,
                     when {
                         typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
@@ -219,9 +211,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
-                    false,
-                    true,
-                    null,
                     when {
                         formalParam.typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
@@ -249,9 +238,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
                 ?.qualifiedName()?.text ?: paramType
             result.add(
                 Variable(
-                    false,
-                    true,
-                    null,
                     when {
                         typeType().text.isList() -> "List<$typeFullName>"
                         else -> typeFullName
@@ -266,13 +252,17 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
 //endregion
 
 //region Objc Method
-fun ObjectiveCParser.MethodDeclarationContext?.returnType(): String? {
-    if (this == null) return null
-    return methodType().typeName().text
+fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
+    return methodType().typeName().text.run {
+        if (this == "instancetype") {
+            ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text ?: ""
+        } else {
+            this
+        }
+    }
 }
 
-fun ObjectiveCParser.MethodDeclarationContext?.name(): String? {
-    if (this == null) return null
+fun ObjectiveCParser.MethodDeclarationContext.name(): String {
     return methodSelector()
         .selector()
         ?.text ?: methodSelector()
@@ -281,8 +271,7 @@ fun ObjectiveCParser.MethodDeclarationContext?.name(): String? {
         .text
 }
 
-fun ObjectiveCParser.MethodDeclarationContext?.formalParams(): List<Variable> {
-    if (this == null) return listOf()
+fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Variable> {
     val result = mutableListOf<Variable>()
 
     methodSelector()
@@ -290,9 +279,6 @@ fun ObjectiveCParser.MethodDeclarationContext?.formalParams(): List<Variable> {
         ?.forEach {
             result.add(
                 Variable(
-                    false,
-                    true,
-                    null,
                     it.methodType()[0].typeName().text.toDartType(),
                     it.identifier().text
                 )

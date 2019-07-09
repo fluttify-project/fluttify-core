@@ -22,7 +22,7 @@ class Type(
     /**
      * 所有的字段
      */
-    val fields: List<Variable>,
+    val fields: List<Field>,
 
     /**
      * 所有的方法
@@ -32,9 +32,23 @@ class Type(
     /**
      * 类型的类型(class/enum/interface)
      */
-    var typeType: TypeType? = null
-)
+    var typeType: TypeType? = null,
+
+    /**
+     * lambda的参数
+     */
+    val lambdaParams: List<Variable>? = null,
+
+    /**
+     * lambda返回类型
+     */
+    val lambdaReturnType: String? = null
+) {
+    override fun toString(): String {
+        return "Type(name='$name', path='$path', superClass='$superClass', fields=$fields, methods=$methods, typeType=$typeType)"
+    }
+}
 
 enum class TypeType {
-    Class, Enum, Interface
+    Class, Enum, Interface, Lambda
 }

@@ -1,13 +1,13 @@
 package common.extensions
 
 import common.JAVA_FILE
-import common.model.Method
-import common.model.Type
-import common.model.TypeType
-import common.model.Variable
+import common.OBJC_FILE
+import common.model.*
 import org.apache.commons.io.FileUtils
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
+import parser.objc.ObjectiveCParser
+import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
 
 /**
@@ -17,7 +17,7 @@ fun JAVA_FILE.javaType(): Type {
     val source = readText()
 
     var packageName = ""
-    val fields = mutableListOf<Variable>()
+    val fields = mutableListOf<Field>()
     val methods = mutableListOf<Method>()
     var simpleName = ""
     var typeType: TypeType? = null
@@ -64,11 +64,11 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterFieldDeclaration(ctx: FieldDeclarationContext) {
-            fields.add(Variable(ctx.isPublic(), ctx.isFinal(), ctx.isStatic(), ctx.type(), ctx.name()))
+            fields.add(Field(ctx.isPublic(), ctx.isFinal(), ctx.isStatic(), Variable(ctx.type(), ctx.name())))
         }
 
         override fun enterEnumConstant(ctx: EnumConstantContext) {
-            fields.add(Variable(true,  true, false, type = ctx.IDENTIFIER().text, name = ctx.IDENTIFIER().text))
+            fields.add(Field(true,  true, false, Variable(ctx.IDENTIFIER().text, ctx.IDENTIFIER().text)))
         }
     })
 
@@ -80,6 +80,59 @@ fun JAVA_FILE.javaType(): Type {
         methods,
         typeType
     )
+}
+
+/**
+ * Objc源码解析
+ */
+fun OBJC_FILE.objcType(): Type {
+    val source = readText()
+
+    val fields = mutableListOf<Field>()
+    val methods = mutableListOf<Method>()
+    var name = ""
+    var typeType: TypeType? = null
+    var superClass = ""
+
+    source.walkTree(object: ObjectiveCParserBaseListener() {
+        override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
+            typeType = TypeType.Class
+            name = ctx.className.text
+            superClass = ctx.superclassName.text
+        }
+
+        override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
+            typeType = TypeType.Interface
+        }
+
+        override fun enterPropertyDeclaration(ctx: ObjectiveCParser.PropertyDeclarationContext) {
+            val variable = Variable(ctx.fieldDeclaration().type(), ctx.fieldDeclaration().name())
+            // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
+            fields.add(Field(true, ctx.isFinal(), false, variable))
+        }
+
+        override fun enterClassMethodDeclaration(ctx: ObjectiveCParser.ClassMethodDeclarationContext) {
+            methods.add(Method(
+                ctx.methodDeclaration().returnType(),
+                ctx.methodDeclaration().name(),
+                ctx.methodDeclaration().formalParams(),
+                true,
+                null
+            ))
+        }
+
+        override fun enterInstanceMethodDeclaration(ctx: ObjectiveCParser.InstanceMethodDeclarationContext) {
+            methods.add(Method(
+                ctx.methodDeclaration().returnType(),
+                ctx.methodDeclaration().name(),
+                ctx.methodDeclaration().formalParams(),
+                false,
+                null
+            ))
+        }
+    })
+
+    return Type(name, absolutePath, superClass, fields, methods, typeType)
 }
 
 fun File.iterate(fileSuffix: String, recursive: Boolean = true, forEach: (File) -> Unit) {

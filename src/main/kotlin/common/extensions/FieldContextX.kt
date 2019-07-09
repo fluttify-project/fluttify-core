@@ -81,24 +81,25 @@ fun FieldDeclarationContext?.jsonable(): Boolean {
 //endregion
 
 //region Objc field
-fun ObjectiveCParser.FieldDeclarationContext?.isStatic(): Boolean {
-    return false
+fun ObjectiveCParser.PropertyDeclarationContext.isFinal(): Boolean {
+    return propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+        ?.contains("readonly") == true
 }
 
-fun ObjectiveCParser.FieldDeclarationContext?.type(): String? {
-    if (this == null) return null
+fun ObjectiveCParser.FieldDeclarationContext.type(): String {
     return specifierQualifierList().text
 }
 
-fun ObjectiveCParser.FieldDeclarationContext?.name(): String? {
-    if (this == null) return null
+fun ObjectiveCParser.FieldDeclarationContext.name(): String {
     return fieldDeclaratorList().text
 }
 
 fun ObjectiveCParser.FieldDeclarationContext?.jsonable(): Boolean {
     if (this == null) return true
 
-    return type()?.toDartType() in listOf(
+    return type().toDartType() in listOf(
         "bool",
         "int",
         "double",

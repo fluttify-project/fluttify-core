@@ -5,10 +5,13 @@ import org.junit.Test
 class FileXKtTest {
 
     @Test
-    fun javaTypeInfo() {
+    fun javaType() {
     }
 
     @Test
-    fun objcTypeInfo() {
+    fun objcType() {
+        val file = "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/objc-classes/Class_1".file()
+
+        println(file.objcType())
     }
 }
