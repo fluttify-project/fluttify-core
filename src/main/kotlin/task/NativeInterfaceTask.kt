@@ -56,8 +56,26 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
         val branchBuilder = StringBuilder("")
         val methodList = mutableListOf<String>()
 
-        javaFile
-            .readText()
+        val content = javaFile.readText()
+
+        // 如果类可以直接构造的话, 那么为其添加一个object creator方法
+        if (!javaFile.nameWithoutExtension.isObfuscated()
+            && content.publicNonDependencyConstructor()
+            && !content.allMemberStatic()
+            && !content.isAbstract()
+        ) {
+            branchBuilder.appendln(
+                Tmpl.Kotlin.branchBuilder
+                    .replace("#__class_name__#", "ObjectCreator")
+                    .replace("#__method_name__#", "create${javaFile.javaType().name.replace(".", "_")}")
+                    .replace(
+                        "#__handler__#",
+                        "methodResult.success(${javaFile.javaType().name}().apply { REF_MAP[hashCode()] = this }.hashCode())"
+                    )
+            )
+        }
+
+        content
             .walkTree(object : JavaParserBaseListener() {
                 override fun enterFieldDeclaration(ctx: JavaParser.FieldDeclarationContext?) {
                     ctx?.run {

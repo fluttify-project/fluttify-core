@@ -11,3 +11,10 @@ fun JavaParser.ConstructorDeclarationContext.isPublic(): Boolean {
         ?.map { it.text }
         ?.contains("public") ?: false
 }
+
+/**
+ * 是否是无参构造器
+ */
+fun JavaParser.ConstructorDeclarationContext.hasDependency(): Boolean {
+    return formalParameters().formalParameterList() != null
+}

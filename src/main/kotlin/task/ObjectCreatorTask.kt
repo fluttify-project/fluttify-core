@@ -1,5 +1,7 @@
 package task
 
+import Configs.outputOrg
+import Configs.outputProjectName
 import OutputProject
 import common.DART_FILE
 import common.DIR
@@ -17,28 +19,30 @@ class ObjectCreatorTask(private val dir: DIR) : Task<DIR, DART_FILE>(dir) {
     override fun process(): DART_FILE {
         val dartBuilder = StringBuilder()
 
-        dartBuilder.appendln(Tmpl.Dart.ObjectCreator.classDeclare)
+        val createObjects = StringBuilder("")
 
         dir.iterate("java") {
             if (!it.nameWithoutExtension.isObfuscated()
-                && it.readText().run { publicConstructor() && !allMemberStatic() }
+                && it.readText().run { publicNonDependencyConstructor() && !allMemberStatic() }
             ) {
                 println("处理文件: $it")
-                dartBuilder.appendln(
-                    Tmpl.Dart.ObjectCreator.creator.placeholder(
-                        it.javaType().name.toDartType(),
-                        it.javaType().name.toDartType(),
-                        "",
-                        it.javaType().name.toDartType(),
-                        "",
-                        "",
-                        it.javaType().name.toDartType()
-                    )
+
+                createObjects.appendln(
+                    Tmpl.Dart.createObjectMethodBuilder
+                        .replace("#__class_name__#", it.javaType().name.toDartType())
+                        .replace("#__formal_params__#", "")
+                        .replace("#__separator__#", "")
+                        .replace("#__params__#", "")
                 )
             }
         }
 
-        dartBuilder.appendln(Tmpl.Dart.ObjectCreator.classDeclareEnd)
+        dartBuilder.appendln(
+            Tmpl.Dart.objectCreatorBuilder
+                .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
+                .replace("#__org__#", outputOrg)
+                .replaceParagraph("#__create_objects__#", createObjects.toString())
+        )
 
         return "${OutputProject.Dart.libDirPath}src/object_creator.dart".file()
             .apply { writeText(dartBuilder.toString()) }

@@ -171,19 +171,37 @@ fun JAVA_SOURCE.isIgnore(): Boolean {
 }
 
 /**
- * 是否有公有的构造器
+ * 是否有公有无参的构造器
  */
-fun JAVA_SOURCE.publicConstructor(): Boolean {
-    val constructorIsPublic = mutableListOf<Boolean>()
+fun JAVA_SOURCE.publicNonDependencyConstructor(): Boolean {
+    val publicNonDependency = mutableListOf<Boolean>()
 
     walkTree(object : JavaParserBaseListener() {
         override fun enterConstructorDeclaration(ctx: JavaParser.ConstructorDeclarationContext?) {
             ctx?.run {
-                constructorIsPublic.add(isPublic())
+                publicNonDependency.add(isPublic() && !hasDependency())
             }
         }
     })
-    return constructorIsPublic.any { it } || constructorIsPublic.isEmpty()
+    return publicNonDependency.any { it } || publicNonDependency.isEmpty()
+}
+
+/**
+ * 是否抽象
+ */
+fun JAVA_SOURCE.isAbstract(): Boolean {
+    var isAbstract = false
+
+    walkTree(object : JavaParserBaseListener() {
+        override fun enterClassDeclaration(ctx: ClassDeclarationContext) {
+            isAbstract = ctx.isAbstract()
+        }
+
+        override fun enterInterfaceDeclaration(ctx: JavaParser.InterfaceDeclarationContext?) {
+            isAbstract = true
+        }
+    })
+    return isAbstract
 }
 
 /**

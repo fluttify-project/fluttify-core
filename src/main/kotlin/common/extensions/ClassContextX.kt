@@ -25,8 +25,7 @@ fun JavaParser.ClassDeclarationContext.superClass(): String? {
 /**
  * 是某个类的子类/实现了某个接口
  */
-fun JavaParser.ClassDeclarationContext?.isAbstract(): Boolean {
-    if (this == null) return false
+fun JavaParser.ClassDeclarationContext.isAbstract(): Boolean {
     return ancestorOf(JavaParser.TypeDeclarationContext::class)
         ?.classOrInterfaceModifier()
         ?.map { it.text }

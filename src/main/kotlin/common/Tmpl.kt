@@ -33,6 +33,10 @@ object Tmpl {
 
         val systemRefBuilder by lazy { "$tmplDir/dart/system_ref.dart.tmpl".file().readText() }
 
+        val objectCreatorBuilder by lazy { "$tmplDir/dart/object_creator.dart.tmpl".file().readText() }
+
+        val createObjectMethodBuilder by lazy { "$tmplDir/dart/create_object.mtd.dart.tmpl".file().readText() }
+
         object ObjectCreator {
             const val classDeclare = """import 'package:flutter/services.dart';
 
