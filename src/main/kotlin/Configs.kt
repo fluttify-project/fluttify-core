@@ -7,7 +7,7 @@ object Configs {
     /**
      * framework路径
      */
-    val frameworkDirPath: String = "${Project.path}/src/main/resources/library/ios/Tbit.framework"
+    val frameworkDirPath: String = "${Project.path}/src/main/resources/library/ios/"
 
     /**
      * 生成工程的组织名

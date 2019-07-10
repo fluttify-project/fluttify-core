@@ -245,62 +245,62 @@ fun OBJC_SOURCE.walkTree(listener: ObjectiveCParserBaseListener) {
     walker.walk(listener, tree)
 }
 
-/**
- * objc源码判断是否是模型类
- *
- * 源码内只有一个类
- */
-fun OBJC_SOURCE.isObjcModel(): Boolean {
-    var isAbstract = false
-    var isSubclass = false
-    var hasDependency = false
-    val fieldJsonable: MutableList<Boolean> = mutableListOf()
-
-    walkTree(object : ObjectiveCParserBaseListener() {
-        override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext?) {
-            // 如果是接口, 那么就不是model
-            ctx?.run { isAbstract = true }
-        }
-
-        override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-            ctx?.run {
-                // 如果类有继承, 暂时认为不是model
-                isSubclass = ctx.isSubclass()
-            }
-        }
-
-        override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
-            ctx?.run {
-                // 如果类中含有init方法, 那么就认为含有依赖
-                if (ctx.name()?.contains("init") == true) {
-                    hasDependency = true
-                }
-            }
-        }
-
-        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext?) {
-            ctx?.run {
-                fieldJsonable.add(
-                    if (!ctx.jsonable()) {
-                        ctx.type()?.isObjcModelType() ?: false
-                    } else {
-                        // 静态属性不作为model的字段
-                        !ctx.isStatic()
-                    }
-                )
-            }
-        }
-    })
-
-    return if (isAbstract
-        || isSubclass
-        || hasDependency
-        || fieldJsonable.isEmpty()
-    )
-        false
-    else
-        fieldJsonable.all { it }
-}
+///**
+// * objc源码判断是否是模型类
+// *
+// * 源码内只有一个类
+// */
+//fun OBJC_SOURCE.isObjcModel(): Boolean {
+//    var isAbstract = false
+//    var isSubclass = false
+//    var hasDependency = false
+//    val fieldJsonable: MutableList<Boolean> = mutableListOf()
+//
+//    walkTree(object : ObjectiveCParserBaseListener() {
+//        override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext?) {
+//            // 如果是接口, 那么就不是model
+//            ctx?.run { isAbstract = true }
+//        }
+//
+//        override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
+//            ctx?.run {
+//                // 如果类有继承, 暂时认为不是model
+//                isSubclass = ctx.isSubclass()
+//            }
+//        }
+//
+//        override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
+//            ctx?.run {
+//                // 如果类中含有init方法, 那么就认为含有依赖
+//                if (ctx.name().contains("init")) {
+//                    hasDependency = true
+//                }
+//            }
+//        }
+//
+//        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext?) {
+//            ctx?.run {
+//                fieldJsonable.add(
+//                    if (!ctx.jsonable()) {
+//                        ctx.type().isObjcModelType() ?: false
+//                    } else {
+//                        // 静态属性不作为model的字段
+//                        !ctx.isStatic()
+//                    }
+//                )
+//            }
+//        }
+//    })
+//
+//    return if (isAbstract
+//        || isSubclass
+//        || hasDependency
+//        || fieldJsonable.isEmpty()
+//    )
+//        false
+//    else
+//        fieldJsonable.all { it }
+//}
 //endregion
 
 //region Dart源码扩展

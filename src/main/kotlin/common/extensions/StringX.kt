@@ -1,6 +1,5 @@
 package common.extensions
 
-import Framework
 import Jar
 import common.PATH
 import common.PRESERVED_CLASS
@@ -230,21 +229,6 @@ fun TYPE_NAME.isJavaModelType(): Boolean {
  */
 fun TYPE_NAME.isJavaRefType(): Boolean {
     return !isJavaModelType()
-}
-
-/**
- * 类型名判断是否是objc model
- */
-fun TYPE_NAME.isObjcModelType(): Boolean {
-    // 如果是可以直接json序列化的, 那么直接就返回true
-    if (jsonable()) return true
-
-    return Framework
-        .CLASSES[this]
-        ?.path
-        ?.file()
-        ?.readText()
-        ?.isObjcModel() ?: false
 }
 
 /**
