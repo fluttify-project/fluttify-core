@@ -10,8 +10,8 @@ class FileXKtTest {
 
     @Test
     fun objcType() {
-        val file = "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/objc-classes/Class_1".file()
-
+//        val file = "/Users/yohom/Github/Util/Kotlin/fluttify-core/src/main/resources/library/ios/BaiduMapAPI_Map.framework/Headers/BMKOfflineMapType.h".file()
+        val file = "/Users/yohom/Github/Util/Kotlin/fluttify-core/src/main/resources/library/ios/BaiduMapAPI_Map.framework/Headers/BMKMapView.h".file()
         println(file.objcType())
     }
 }

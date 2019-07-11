@@ -68,7 +68,7 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterEnumConstant(ctx: EnumConstantContext) {
-            fields.add(Field(true,  true, false, Variable(ctx.IDENTIFIER().text, ctx.IDENTIFIER().text)))
+            fields.add(Field(true, true, false, Variable(ctx.IDENTIFIER().text, ctx.IDENTIFIER().text)))
         }
     })
 
@@ -85,16 +85,18 @@ fun JAVA_FILE.javaType(): Type {
 /**
  * Objc源码解析
  */
-fun OBJC_FILE.objcType(): Type {
+fun OBJC_FILE.objcType(): List<Type> {
     val source = readText()
 
-    val fields = mutableListOf<Field>()
-    val methods = mutableListOf<Method>()
+    val result = mutableListOf<Type>()
+
+    var fields = mutableListOf<Field>()
+    var methods = mutableListOf<Method>()
     var name = ""
     var typeType: TypeType? = null
     var superClass = ""
 
-    source.walkTree(object: ObjectiveCParserBaseListener() {
+    source.walkTree(object : ObjectiveCParserBaseListener() {
         override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
             typeType = TypeType.Class
             name = ctx.className.text
@@ -103,6 +105,14 @@ fun OBJC_FILE.objcType(): Type {
 
         override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
             typeType = TypeType.Interface
+            name = ctx.protocolName().text
+        }
+
+        override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
+            typeType = TypeType.Enum
+            name = ctx.identifier()?.text
+                ?: ctx.enumSpecifier().identifier().firstOrNull { it != null }?.text
+                        ?: ""
         }
 
         override fun enterPropertyDeclaration(ctx: ObjectiveCParser.PropertyDeclarationContext) {
@@ -112,27 +122,56 @@ fun OBJC_FILE.objcType(): Type {
         }
 
         override fun enterClassMethodDeclaration(ctx: ObjectiveCParser.ClassMethodDeclarationContext) {
-            methods.add(Method(
-                ctx.methodDeclaration().returnType(),
-                ctx.methodDeclaration().name(),
-                ctx.methodDeclaration().formalParams(),
-                true,
-                null
-            ))
+            methods.add(
+                Method(
+                    ctx.methodDeclaration().returnType(),
+                    ctx.methodDeclaration().name(),
+                    ctx.methodDeclaration().formalParams(),
+                    true,
+                    null
+                )
+            )
         }
 
         override fun enterInstanceMethodDeclaration(ctx: ObjectiveCParser.InstanceMethodDeclarationContext) {
-            methods.add(Method(
-                ctx.methodDeclaration().returnType(),
-                ctx.methodDeclaration().name(),
-                ctx.methodDeclaration().formalParams(),
-                false,
-                null
-            ))
+            methods.add(
+                Method(
+                    ctx.methodDeclaration().returnType(),
+                    ctx.methodDeclaration().name(),
+                    ctx.methodDeclaration().formalParams(),
+                    false,
+                    null
+                )
+            )
+        }
+
+        override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
+            fields.add(Field(true, true, false, Variable(ctx.text, ctx.text)))
+        }
+
+        override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
+            result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
+            // 创新创建fields和methods
+            fields = mutableListOf()
+            methods = mutableListOf()
+        }
+
+        override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
+            result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
+            // 创新创建fields和methods
+            fields = mutableListOf()
+            methods = mutableListOf()
+        }
+
+        override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext?) {
+            result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
+            // 创新创建fields和methods
+            fields = mutableListOf()
+            methods = mutableListOf()
         }
     })
 
-    return Type(name, absolutePath, superClass, fields, methods, typeType)
+    return result
 }
 
 fun File.iterate(fileSuffix: String, recursive: Boolean = true, forEach: (File) -> Unit) {

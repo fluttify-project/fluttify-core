@@ -59,6 +59,7 @@ object Framework {
      * framework中的所有类都单独放一个文件 因为objc的模型类可能多个模型类写在一个文件里,
      * 在识别的时候把它们分散到单独的文件中去, 供下一步处理
      */
+    @Deprecated("新模型下不需要这个了")
     val singleClassesDirPath = "$path/build/objc-classes/"
 
     /**
@@ -68,12 +69,16 @@ object Framework {
      */
     val CLASSES: Map<TYPE_NAME, Type> by lazy {
         val result = mutableMapOf<TYPE_NAME, Type>()
-        FileUtils
-            .iterateFiles(singleClassesDirPath.file(), null, true)
-            .forEach {
-                val typeInfo = it.absolutePath.file().objcType()
-                result.putIfAbsent(typeInfo.name, typeInfo)
+
+        frameworkDirPath
+            .file()
+            .iterate("h") {
+                it.absolutePath
+                    .file()
+                    .objcType()
+                    .forEach { type -> result.putIfAbsent(type.name, type) }
             }
+
         result
     }
 }

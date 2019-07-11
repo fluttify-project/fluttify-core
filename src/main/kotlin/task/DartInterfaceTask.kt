@@ -1,9 +1,11 @@
 package task
 
+import Configs
 import Configs.outputOrg
 import Configs.outputProjectName
 import Jar
 import OutputProject.Dart.androidDirPath
+import OutputProject.Dart.iOSDirPath
 import OutputProject.methodChannel
 import common.*
 import common.extensions.*
@@ -48,7 +50,10 @@ class AndroidDartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE
                                 Tmpl.Dart.getterBuilder
                                     .replace("#__type__#", it.variable.type.toDartType())
                                     .replace("#__name__#", it.variable.name.capitalize())
-                                    .replace("#__getter_method__#", "${this.name}::get${it.variable.name.capitalize()}")
+                                    .replace(
+                                        "#__getter_method__#",
+                                        "${this.name}::get${it.variable.name.capitalize()}"
+                                    )
                             })
                         // setter 只有不是final且public的字段需要加 目前只支持jsonable的字段
                         .replaceParagraph("#__setters__#", fields
@@ -64,7 +69,10 @@ class AndroidDartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE
                                     .replace("#__name__#", it.variable.name.capitalize())
                                     .replace("#__type__#", it.variable.type.toDartType())
                                     .replace("#__arg__#", it.variable.name)
-                                    .replace("#__setter_method__#", "${this.name}::set${it.variable.name.capitalize()}")
+                                    .replace(
+                                        "#__setter_method__#",
+                                        "${this.name}::set${it.variable.name.capitalize()}"
+                                    )
                             })
                         // 方法们
                         .replaceParagraph("#__methods__#", methods
@@ -263,19 +271,19 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
         val uikitViewBuilder = StringBuilder("")
 
         // 生成objc类对应的dart接口
-        objcFile.javaType()
-            .run {
+        objcFile.objcType()
+            .forEach { type ->
                 // 普通类
-                if (typeType == TypeType.Class) {
+                if (type.typeType == TypeType.Class) {
                     val classString = Tmpl.Dart.classBuilder
                         // 导入当前所在包的所有文件
                         .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
                         // 类名
-                        .replace("#__class_name__#", name.toDartType())
+                        .replace("#__class_name__#", type.name.toDartType())
                         // method channel名称
                         .replace("#__method_channel__#", methodChannel)
                         // getter 目前只支持jsonable的字段
-                        .replaceParagraph("#__getters__#", fields
+                        .replaceParagraph("#__getters__#", type.fields
                             .filter {
                                 it.isPublic == true
                                         && it.isStatic == false
@@ -286,10 +294,13 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                                 Tmpl.Dart.getterBuilder
                                     .replace("#__type__#", it.variable.type.toDartType())
                                     .replace("#__name__#", it.variable.name.capitalize())
-                                    .replace("#__getter_method__#", "${this.name}::get${it.variable.name.capitalize()}")
+                                    .replace(
+                                        "#__getter_method__#",
+                                        "${type.name}::get${it.variable.name.capitalize()}"
+                                    )
                             })
                         // setter 只有不是final且public的字段需要加 目前只支持jsonable的字段
-                        .replaceParagraph("#__setters__#", fields
+                        .replaceParagraph("#__setters__#", type.fields
                             .filter {
                                 it.isPublic == true
                                         && it.isFinal == false
@@ -302,10 +313,13 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                                     .replace("#__name__#", it.variable.name.capitalize())
                                     .replace("#__type__#", it.variable.type.toDartType())
                                     .replace("#__arg__#", it.variable.name)
-                                    .replace("#__setter_method__#", "${this.name}::set${it.variable.name.capitalize()}")
+                                    .replace(
+                                        "#__setter_method__#",
+                                        "${type.name}::set${it.variable.name.capitalize()}"
+                                    )
                             })
                         // 方法们
-                        .replaceParagraph("#__methods__#", methods
+                        .replaceParagraph("#__methods__#", type.methods
                             // 过滤掉混淆, 未知参数类型, 未知返回类型的方法
                             .filter {
                                 !it.name.isObfuscated()
@@ -332,7 +346,7 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                                     .replaceParagraph(
                                         "#__invoke__#", invokeString(
                                             method.isStatic,
-                                            name,
+                                            type.name,
                                             method.name,
                                             method.formalParams
                                         )
@@ -347,11 +361,11 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                                                 Tmpl.Dart.callbackBuilder
                                                     .replace(
                                                         "#__callback_channel__#",
-                                                        "$name::${method.name}_Callback"
+                                                        "${type.name}::${method.name}_Callback"
                                                     )
                                                     .replaceParagraph(
                                                         "#__cases__#", callbackString(
-                                                            name,
+                                                            type.name,
                                                             method.name,
                                                             this
                                                         )
@@ -359,47 +373,52 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                                             } ?: ""
                                     )
                             })
-                    dartBuilder.append(classString)
+                    dartBuilder.appendln(classString)
                 }
                 // 枚举类
-                else if (typeType == TypeType.Enum) {
+                else if (type.typeType == TypeType.Enum) {
                     val classString = Tmpl.Dart.enumBuilder
                         // 类名
-                        .replace("#__enum_name__#", name.toDartType())
+                        .replace("#__enum_name__#", type.name.toDartType())
                         // 枚举值
-                        .replaceParagraph("#__enum_constant__#", this.fields.joinToString(",\n") { it.variable.type })
-                    dartBuilder.append(classString)
+                        .replaceParagraph("#__enum_constant__#", type.fields.joinToString(",\n") { it.variable.type })
+                    dartBuilder.appendln(classString)
                 }
 
                 // 碰到view类型的的类, 生成对应的PlatformView
-                val androidViewString = if (superClass in listOf("android.view.View", "android.view.ViewGroup")) {
-                    Tmpl.Dart.androidViewBuilder
-                        // 导入当前所在包的所有文件
-                        .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
-                        // PlatformView的简写类名
-                        .replace("#__view_simple_name__#", name.simpleName())
-                        // PlatformView的简写类名
-                        .replace("#__view_type__#", name)
-                        // PlatformView的类名
-                        .replace("#__view__#", name.toDartType())
-                        // 输出工程的组织名称
-                        .replace("#__org__#", outputOrg)
-                } else ""
-                uikitViewBuilder.append(androidViewString)
+//                val androidViewString = if (type.superClass == "UIView") {
+//                    Tmpl.Dart.androidViewBuilder
+//                        // 导入当前所在包的所有文件
+//                        .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
+//                        // PlatformView的简写类名
+//                        .replace("#__view_simple_name__#", type.name.simpleName())
+//                        // PlatformView的简写类名
+//                        .replace("#__view_type__#", type.name)
+//                        // PlatformView的类名
+//                        .replace("#__view__#", type.name.toDartType())
+//                        // 输出工程的组织名称
+//                        .replace("#__org__#", outputOrg)
+//                } else ""
+//                uikitViewBuilder.append(androidViewString)
             }
 
         // 写入PlatformView文件
-        if (uikitViewBuilder.toString().isNotBlank()) {
-            "${androidDirPath}android_${objcFile.javaType().name.simpleName().camel2Underscore()}.dart".file()
-                .writeText(uikitViewBuilder.toString())
-        }
+//        if (uikitViewBuilder.toString().isNotBlank()) {
+//            "${androidDirPath}android_${objcFile.javaType().name.simpleName().camel2Underscore()}.dart".file()
+//                .writeText(uikitViewBuilder.toString())
+//        }
 
-        return "$androidDirPath${objcFile
-            .toRelativeString(Jar.Decompiled.rootDirPath.file())
+        // 去掉重复的import
+        val imports = dartBuilder.lines().filter { it.startsWith("import") }.distinct().joinToString("\n")
+        val withoutImports = dartBuilder.lines().filter { !it.startsWith("import") }.joinToString("\n")
+
+        val result = "$imports\n$withoutImports"
+        return "$iOSDirPath${objcFile
+            .toRelativeString(Configs.frameworkDirPath.file())
             .substringBeforeLast(".")
             .replace("$", "_")}.dart"
             .file()
-            .apply { writeText(dartBuilder.toString()) }
+            .apply { writeText(result) }
     }
 
     /**

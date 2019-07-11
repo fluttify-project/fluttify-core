@@ -6,7 +6,7 @@ import common.extensions.isObfuscated
 import common.extensions.iterate
 import org.junit.Test
 
-class DartInterfaceTaskTest {
+class AndroidDartInterfaceTaskTest {
 
     @Test
     fun process() {
