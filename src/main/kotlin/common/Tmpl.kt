@@ -2,8 +2,6 @@ package common
 
 import Configs.outputOrg
 import Configs.outputProjectName
-import Framework
-import OutputProject
 import Project
 import common.extensions.file
 
@@ -81,37 +79,6 @@ class ObjectCreator {
 
         object PlatformView {
 
-            const val factory = """package $outputOrg.$outputProjectName
-
-import android.content.Context
-import android.view.View
-
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.StandardMessageCodec
-import io.flutter.plugin.platform.PlatformView
-import io.flutter.plugin.platform.PlatformViewFactory
-import io.flutter.plugin.common.PluginRegistry.Registrar
-
-class #__view__#Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
-
-    override fun create(context: Context, id: Int, params: Any?): PlatformView {
-        return object : PlatformView {
-            private val view = #__view__#(registrar.activity())
-
-            override fun getView(): View = view.apply { REF_MAP[id] = this }
-
-            override fun dispose() {
-                REF_MAP.remove(id)
-            }
-        }
-    }
-}"""
-
-            val classDeclaration = """
-class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : PlatformView, MethodCallHandler {
-"""
-
             const val staticReturnJsonable = """
             val result = #__class_name__#.#__method_name__#(#__params__#)
                 
@@ -161,34 +128,73 @@ class ${OutputProject.classSimpleName}(id: Int, registrar: Registrar) : Platform
     }
 
     object Swift {
-        val packageImport = """import Flutter
-import UIKit
-import ${Framework.name}
-"""
 
-        const val classDeclaration = """
-public class Swift#__class_name__#Plugin : NSObject, FlutterPlugin {"""
+        val pluginBuilder by lazy { "$tmplDir/swift/plugin.swift.tmpl".file().readText() }
 
-        const val register = """
-    public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "#__method_channel_name__#", binaryMessenger: registrar.messenger())
-        let instance = Swift#__plugin_class_simple_name__#Plugin()
-        registrar.addMethodCallDelegate(instance, channel: channel)
-    }
-"""
+        val platformViewRegisterBuilder by lazy { "$tmplDir/swift/platform_view_register.stmt.swift.tmpl".file().readText() }
 
-        const val onMethodCall = """
-    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! Dictionary<String, Any>
-        switch call.method {"""
+        val platformViewFactoryBuilder by lazy { "$tmplDir/swift/platform_view_factory.swift.tmpl".file().readText() }
 
-        const val invokeResult = """
-        case "#__method_name__#": result(#__main_objc_class__#.#__method_name__#(#__params__#))"""
+        val setterBuilder by lazy { "$tmplDir/swift/setter.mtd.swift.tmpl".file().readText() }
 
-        const val switchDefault = """
-        default:
-            result(FlutterMethodNotImplemented)"""
+        val getterBuilder by lazy { "$tmplDir/swift/getter.mtd.swift.tmpl".file().readText() }
 
-        const val classEnd = "\n\t\t}\n\t}\n}"
+        val branchBuilder by lazy { "$tmplDir/swift/branch.stmt.swift.tmpl".file().readText() }
+
+        val handlerMethodBuilder by lazy { "$tmplDir/swift/handler_method.mtd.swift.tmpl".file().readText() }
+
+        val jsonableArgBuilder by lazy { "$tmplDir/swift/jsonable_arg.mtd.swift.tmpl".file().readText() }
+
+        val enumArgBuilder by lazy { "$tmplDir/swift/enum_arg.mtd.swift.tmpl".file().readText() }
+
+        val refArgBuilder by lazy { "$tmplDir/swift/ref_arg.mtd.swift.tmpl".file().readText() }
+
+        object PlatformView {
+
+            const val staticReturnJsonable = """
+            val result = #__class_name__#.#__method_name__#(#__params__#)
+                
+            methodResult.success(result)"""
+
+            const val staticReturnVoid = """
+            #__class_name__#.#__method_name__#(#__params__#)
+                
+            methodResult.success("success")"""
+
+            const val staticReturnRef = """
+            val result = #__class_name__#.#__method_name__#(#__params__#)
+            
+            val returnRefId = result.hashCode()
+            REF_MAP[returnRefId] = result
+            
+            methodResult.success(returnRefId)"""
+
+            const val refReturnRef = """
+            val refId = args["refId"] as Int
+            val ref = REF_MAP[refId] as #__class_name__#
+            
+            val result = ref.#__method_name__#(#__params__#)
+            
+            val returnRefId = result.hashCode()
+            REF_MAP[returnRefId] = result
+            
+            methodResult.success(returnRefId)"""
+
+            const val refReturnJsonable = """
+            val refId = args["refId"] as Int
+            val ref = REF_MAP[refId] as #__class_name__#
+
+            val result = ref.#__method_name__#(#__params__#)
+
+            methodResult.success(result)"""
+
+            const val refReturnVoid = """
+            val refId = args["refId"] as Int
+            val ref = REF_MAP[refId] as #__class_name__#
+            
+            ref.#__method_name__#(#__params__#)
+            
+            methodResult.success("success")"""
+        }
     }
 }

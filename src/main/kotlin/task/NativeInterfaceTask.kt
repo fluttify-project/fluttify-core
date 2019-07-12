@@ -324,24 +324,24 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
 /**
  * iOS端接口生成
  *
- * 输入: objc文件
+ * 输入: framework文件夹
  * 输出: 对应的method channel文件
  * 依赖: [DecompileClassTask]
  */
-class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir) {
+class IOSInterfaceTask(private val frameworkDir: DIR) : Task<DIR, OBJC_FILE>(frameworkDir) {
     private val methodHandlers = mutableListOf<String>()
 
-    override fun process(): KOTLIN_FILE {
+    override fun process(): OBJC_FILE {
         val branchesBuilder = StringBuilder("")
         val platformViewRegisterBuilder = StringBuilder("")
 
-        jarDir.iterate("java") {
+        frameworkDir.iterate("h") {
             if (!it.nameWithoutExtension.isObfuscated() && !it.readText().isIgnore()) {
                 branchesBuilder.append(generateForFile(it))
             }
         }
 
-        jarDir.iterate("java") {
+        frameworkDir.iterate("h") {
             if (it.readText().isView()) {
                 if (it.readText().isView()) {
                     platformViewRegisterBuilder.appendln(registerPlatformFactory(it))
@@ -350,7 +350,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
             }
         }
         // package
-        val pluginClassString = Tmpl.Kotlin.pluginBuilder
+        val pluginClassString = Tmpl.Swift.pluginBuilder
             .replace("#__package_name__#", "$outputOrg.$outputProjectName")
             .replace("#__plugin_in_name__#", classSimpleName)
             .replace("#__method_channel__#", methodChannel)
@@ -358,28 +358,28 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
             .replaceParagraph("#__platform_views__#", platformViewRegisterBuilder.toString())
             .replaceParagraph("#__handlers__#", methodHandlers.joinToString("\n"))
 
-        return OutputProject.Android.kotlinFilePath.file().apply { writeText(pluginClassString) }
+        return OutputProject.iOS.swiftFilePath.file().apply { writeText(pluginClassString) }
     }
 
-    private fun generateForFile(javaFile: JAVA_FILE): String {
+    private fun generateForFile(objcFile: OBJC_FILE): String {
         val branchBuilder = StringBuilder("")
         val methodList = mutableListOf<String>()
 
-        val content = javaFile.readText()
+        val content = objcFile.readText()
 
         // 如果类可以直接构造的话, 那么为其添加一个object creator方法
-        if (!javaFile.nameWithoutExtension.isObfuscated()
+        if (!objcFile.nameWithoutExtension.isObfuscated()
             && content.publicNonDependencyConstructor()
             && !content.allMemberStatic()
             && !content.isAbstract()
         ) {
             branchBuilder.appendln(
-                Tmpl.Kotlin.branchBuilder
+                Tmpl.Swift.branchBuilder
                     .replace("#__class_name__#", "ObjectCreator")
-                    .replace("#__method_name__#", "create${javaFile.javaType().name.replace(".", "_")}")
+                    .replace("#__method_name__#", "create${objcFile.javaType().name.replace(".", "_")}")
                     .replace(
                         "#__handler__#",
-                        "methodResult.success(${javaFile.javaType().name}().apply { REF_MAP[hashCode()] = this }.hashCode())"
+                        "methodResult.success(${objcFile.javaType().name}().apply { REF_MAP[hashCode()] = this }.hashCode())"
                     )
             )
         }
@@ -402,13 +402,13 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                         val getterMethodName = "get${name().capitalize()}"
 
                         val setterHandlerMethodName =
-                            "handle${javaFile.javaType().name.replace("$", ".").replace(".", "_")}_$setterMethodName"
+                            "handle${objcFile.javaType().name.replace("$", ".").replace(".", "_")}_$setterMethodName"
                         val getterHandlerMethodName =
-                            "handle${javaFile.javaType().name.replace("$", ".").replace(".", "_")}_$getterMethodName"
+                            "handle${objcFile.javaType().name.replace("$", ".").replace(".", "_")}_$getterMethodName"
 
                         if (!isFinal()) {
                             handlerMethodBuilder.appendln(
-                                Tmpl.Kotlin.setterBuilder
+                                Tmpl.Swift.setterBuilder
                                     .replace("#__setter_name__#", setterHandlerMethodName)
                                     .replace("#__field_name__#", name())
                                     .replace("#__field_type__#", type().capitalize().replace("[]", "Array"))
@@ -416,7 +416,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                             )
 
                             branchBuilder.appendln(
-                                Tmpl.Kotlin.branchBuilder
+                                Tmpl.Swift.branchBuilder
                                     .replace("#__class_name__#", className)
                                     .replace("#__method_name__#", setterMethodName)
                                     .replace("#__handler__#", "$setterHandlerMethodName(registrar, args, methodResult)")
@@ -426,14 +426,14 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                         // Getter
                         // 返回void
                         handlerMethodBuilder.appendln(
-                            Tmpl.Kotlin.getterBuilder
+                            Tmpl.Swift.getterBuilder
                                 .replace("#__getter_name__#", getterHandlerMethodName)
                                 .replace("#__field_name__#", name())
                                 .replace("#__class_name__#", className)
                         )
 
                         branchBuilder.appendln(
-                            Tmpl.Kotlin.branchBuilder
+                            Tmpl.Swift.branchBuilder
                                 .replace("#__class_name__#", className)
                                 .replace("#__method_name__#", getterMethodName)
                                 .replace("#__handler__#", "$getterHandlerMethodName(registrar, args, methodResult)")
@@ -464,7 +464,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                             return
                         }
                         val handlerMethodName =
-                            "handle${javaFile.javaType().name.replace("$", ".").replace(".", "_")}_$methodName"
+                            "handle${objcFile.javaType().name.replace("$", ".").replace(".", "_")}_$methodName"
 
                         handlerMethodBuilder.append("\t\tprivate fun $handlerMethodName(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {")
 
@@ -498,7 +498,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                             // 返回类型是jsonable
                             when {
                                 returnType() == "void" -> handlerMethodBuilder.append(
-                                    Tmpl.Kotlin.PlatformView.staticReturnVoid.placeholder(
+                                    Tmpl.Swift.PlatformView.staticReturnVoid.placeholder(
                                         className,
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -512,7 +512,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                                     )
                                 )
                                 returnType().jsonable() -> handlerMethodBuilder.append(
-                                    Tmpl.Kotlin.PlatformView.staticReturnJsonable.placeholder(
+                                    Tmpl.Swift.PlatformView.staticReturnJsonable.placeholder(
                                         className,
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -526,7 +526,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                                     )
                                 )
                                 returnType().isJavaRefType() -> handlerMethodBuilder.append(
-                                    Tmpl.Kotlin.PlatformView.staticReturnRef.placeholder(
+                                    Tmpl.Swift.PlatformView.staticReturnRef.placeholder(
                                         className,
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -546,7 +546,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                             when {
                                 // 返回void
                                 returnType() == "void" -> handlerMethodBuilder.append(
-                                    Tmpl.Kotlin.PlatformView.refReturnVoid.placeholder(
+                                    Tmpl.Swift.PlatformView.refReturnVoid.placeholder(
                                         className.replace("_", "."),
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -560,7 +560,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                                     )
                                 )
                                 returnType().jsonable() -> handlerMethodBuilder.append(
-                                    Tmpl.Kotlin.PlatformView.refReturnJsonable.placeholder(
+                                    Tmpl.Swift.PlatformView.refReturnJsonable.placeholder(
                                         className.replace("_", "."),
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -575,7 +575,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                                 )
                                 // 返回类型是ref
                                 else -> handlerMethodBuilder.append(
-                                    Tmpl.Kotlin.PlatformView.refReturnRef.placeholder(
+                                    Tmpl.Swift.PlatformView.refReturnRef.placeholder(
                                         className.replace("_", "."),
                                         // 方法体内调用的时候, 要用原始的方法名
                                         name(),
@@ -597,7 +597,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
 
                         // 添加branch代码
                         branchBuilder.appendln(
-                            Tmpl.Kotlin.branchBuilder
+                            Tmpl.Swift.branchBuilder
                                 .replace("#__class_name__#", className)
                                 .replace("#__method_name__#", methodName)
                                 .replace("#__handler__#", "$handlerMethodName(registrar, args, methodResult)")
@@ -613,7 +613,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
 
     private fun registerPlatformFactory(viewFile: File): String {
         val javaTypeInfo = viewFile.javaType()
-        return Tmpl.Kotlin.platformViewRegisterBuilder
+        return Tmpl.Swift.platformViewRegisterBuilder
             .replace("#__view_type__#", "$outputOrg/${javaTypeInfo.name}")
             .replace("#__factory_name__#", javaTypeInfo.name.simpleName())
     }
@@ -621,7 +621,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
     private fun generatePlatformViewFactory(javaFile: JAVA_FILE) {
         "${OutputProject.Android.kotlinDirPath}${javaFile.nameWithoutExtension}Factory.kt".file().run {
             writeText(
-                Tmpl.Kotlin.platformViewFactoryBuilder
+                Tmpl.Swift.platformViewFactoryBuilder
                     .replace("#__package_name__#", "$outputOrg.$outputProjectName")
                     .replace("#__factory_name__#", javaFile.nameWithoutExtension)
                     .replace("#__native_view__#", javaFile.javaType().name)
