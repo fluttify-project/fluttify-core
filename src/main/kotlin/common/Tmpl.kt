@@ -25,6 +25,8 @@ object Tmpl {
 
         val androidViewBuilder by lazy { "$tmplDir/dart/android_view.dart.tmpl".file().readText() }
 
+        val uikitViewBuilder by lazy { "$tmplDir/dart/uikit_view.dart.tmpl".file().readText() }
+
         val methodBuilder by lazy { "$tmplDir/dart/method.mtd.dart.tmpl".file().readText() }
 
         val getterBuilder by lazy { "$tmplDir/dart/getter.mtd.dart.tmpl".file().readText() }

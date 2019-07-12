@@ -43,7 +43,7 @@ class AndroidDartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE
                             .filter {
                                 it.isPublic == true
                                         && it.isStatic == false
-                                        && !it.variable.type.run { isUnknownType() || isObfuscated() || !jsonable() }
+                                        && !it.variable.type.run { isUnknownJavaType() || isObfuscated() || !jsonable() }
                             }
                             .distinctBy { it.variable.name }
                             .joinToString("\n") {
@@ -61,7 +61,7 @@ class AndroidDartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE
                                 it.isPublic == true
                                         && it.isFinal == false
                                         && it.isStatic == false
-                                        && !it.variable.type.run { isUnknownType() || isObfuscated() || !jsonable() }
+                                        && !it.variable.type.run { isUnknownJavaType() || isObfuscated() || !jsonable() }
                             }
                             .distinctBy { it.variable.name }
                             .joinToString("\n") {
@@ -79,8 +79,8 @@ class AndroidDartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE
                             // 过滤掉混淆, 未知参数类型, 未知返回类型的方法
                             .filter {
                                 !it.name.isObfuscated()
-                                        && it.formalParams.all { !(it.type.isUnknownType() || it.type.isObfuscated()) }
-                                        && !it.returnType.run { isObfuscated() || isUnknownType() }
+                                        && it.formalParams.all { !(it.type.isUnknownJavaType() || it.type.isObfuscated()) }
+                                        && !it.returnType.run { isObfuscated() || isUnknownJavaType() }
                                         && it.name !in IGNORE_METHOD
                             }
                             .distinctBy { it.name }
@@ -287,7 +287,7 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                             .filter {
                                 it.isPublic == true
                                         && it.isStatic == false
-                                        && !it.variable.type.run { isUnknownType() || isObfuscated() || !jsonable() }
+                                        && !it.variable.type.run { isUnknownJavaType() || isObfuscated() || !jsonable() }
                             }
                             .distinctBy { it.variable.name }
                             .joinToString("\n") {
@@ -305,7 +305,7 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                                 it.isPublic == true
                                         && it.isFinal == false
                                         && it.isStatic == false
-                                        && !it.variable.type.run { isUnknownType() || isObfuscated() || !jsonable() }
+                                        && !it.variable.type.run { isUnknownJavaType() || isObfuscated() || !jsonable() }
                             }
                             .distinctBy { it.variable.name }
                             .joinToString("\n") {
@@ -323,8 +323,8 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                             // 过滤掉混淆, 未知参数类型, 未知返回类型的方法
                             .filter {
                                 !it.name.isObfuscated()
-                                        && it.formalParams.all { !(it.type.isUnknownType() || it.type.isObfuscated()) }
-                                        && !it.returnType.run { isObfuscated() || isUnknownType() }
+                                        && it.formalParams.all { !(it.type.isUnknownObjcType() || it.type.isObfuscated()) }
+                                        && !it.returnType.run { isObfuscated() || isUnknownObjcType() }
                                         && it.name !in IGNORE_METHOD
                             }
                             .distinctBy { it.name }
@@ -386,27 +386,27 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                 }
 
                 // 碰到view类型的的类, 生成对应的PlatformView
-//                val androidViewString = if (type.superClass == "UIView") {
-//                    Tmpl.Dart.androidViewBuilder
-//                        // 导入当前所在包的所有文件
-//                        .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
-//                        // PlatformView的简写类名
-//                        .replace("#__view_simple_name__#", type.name.simpleName())
-//                        // PlatformView的简写类名
-//                        .replace("#__view_type__#", type.name)
-//                        // PlatformView的类名
-//                        .replace("#__view__#", type.name.toDartType())
-//                        // 输出工程的组织名称
-//                        .replace("#__org__#", outputOrg)
-//                } else ""
-//                uikitViewBuilder.append(androidViewString)
+                val uikitViewString = if (type.superClass == "UIView") {
+                    Tmpl.Dart.uikitViewBuilder
+                        // 导入当前所在包的所有文件
+                        .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
+                        // PlatformView的简写类名
+                        .replace("#__view_simple_name__#", type.name.simpleName())
+                        // PlatformView的简写类名
+                        .replace("#__view_type__#", type.name)
+                        // PlatformView的类名
+                        .replace("#__view__#", type.name.toDartType())
+                        // 输出工程的组织名称
+                        .replace("#__org__#", outputOrg)
+                } else ""
+                uikitViewBuilder.appendln(uikitViewString)
             }
 
         // 写入PlatformView文件
-//        if (uikitViewBuilder.toString().isNotBlank()) {
-//            "${androidDirPath}android_${objcFile.javaType().name.simpleName().camel2Underscore()}.dart".file()
-//                .writeText(uikitViewBuilder.toString())
-//        }
+        if (uikitViewBuilder.toString().isNotBlank()) {
+            "${iOSDirPath}ios_${objcFile.nameWithoutExtension}.dart".file()
+                .writeText(uikitViewBuilder.toString())
+        }
 
         // 去掉重复的import
         val imports = dartBuilder.lines().filter { it.startsWith("import") }.distinct().joinToString("\n")

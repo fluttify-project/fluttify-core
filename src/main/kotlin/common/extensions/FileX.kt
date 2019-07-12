@@ -106,6 +106,7 @@ fun OBJC_FILE.objcType(): List<Type> {
         override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
             typeType = TypeType.Interface
             name = ctx.protocolName().text
+            superClass = ""
         }
 
         override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
@@ -150,24 +151,30 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
-            result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
-            // 创新创建fields和methods
-            fields = mutableListOf()
-            methods = mutableListOf()
+            if (name.isNotEmpty()) {
+                result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
+                // 创新创建fields和methods
+                fields = mutableListOf()
+                methods = mutableListOf()
+            }
         }
 
         override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
-            result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
-            // 创新创建fields和methods
-            fields = mutableListOf()
-            methods = mutableListOf()
+            if (name.isNotEmpty()) {
+                result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
+                // 创新创建fields和methods
+                fields = mutableListOf()
+                methods = mutableListOf()
+            }
         }
 
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext?) {
-            result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
-            // 创新创建fields和methods
-            fields = mutableListOf()
-            methods = mutableListOf()
+            if (name.isNotEmpty()) {
+                result.add(Type(name, absolutePath, superClass, fields, methods, typeType))
+                // 创新创建fields和methods
+                fields = mutableListOf()
+                methods = mutableListOf()
+            }
         }
     })
 

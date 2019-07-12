@@ -81,7 +81,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                     ctx?.run {
                         if (!isPublic()
                             || name().isObfuscated()
-                            || type().run { isObfuscated() || isUnknownType() || !jsonable() }
+                            || type().run { isObfuscated() || isUnknownJavaType() || !jsonable() }
                             || isStatic()
                         ) return
 
@@ -141,8 +141,8 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                     ctx?.run {
                         if (!isPublic()
                             || name() in IGNORE_METHOD
-                            || formalParams().any { it.type.isUnknownType() || it.type.isObfuscated() }
-                            || returnType().run { isUnknownType() || isObfuscated() }
+                            || formalParams().any { it.type.isUnknownJavaType() || it.type.isObfuscated() }
+                            || returnType().run { isUnknownJavaType() || isObfuscated() }
                         ) return
 
                         val handlerMethodBuilder = StringBuilder("")
@@ -390,7 +390,7 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                     ctx?.run {
                         if (!isPublic()
                             || name().isObfuscated()
-                            || type().run { isObfuscated() || isUnknownType() || !jsonable() }
+                            || type().run { isObfuscated() || isUnknownJavaType() || !jsonable() }
                             || isStatic()
                         ) return
 
@@ -450,8 +450,8 @@ class IOSInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir)
                     ctx?.run {
                         if (!isPublic()
                             || name() in IGNORE_METHOD
-                            || formalParams().any { it.type.isUnknownType() || it.type.isObfuscated() }
-                            || returnType().run { isUnknownType() || isObfuscated() }
+                            || formalParams().any { it.type.isUnknownJavaType() || it.type.isObfuscated() }
+                            || returnType().run { isUnknownJavaType() || isObfuscated() }
                         ) return
 
                         val handlerMethodBuilder = StringBuilder("")
