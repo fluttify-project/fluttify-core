@@ -1,14 +1,15 @@
 package task
 
-import Configs
-import common.extensions.file
+import me.yohom.fluttify.FluttifyCorePluginExtension
+import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.task.IOSInterfaceTask
 import org.junit.Test
 
 class IOSInterfaceTaskTest {
 
     @Test
     fun process() {
-        val file = IOSInterfaceTask(Configs.frameworkDirPath.file())
+        val file = IOSInterfaceTask(FluttifyCorePluginExtension.frameworkDirPath.file())
             .process()
         println(file.readText())
     }

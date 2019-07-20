@@ -1,6 +1,7 @@
 package task
 
-import common.extensions.file
+import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.task.AddAndroidDependencyTask
 import org.junit.Test
 
 class AddAndroidDependencyTaskTest {

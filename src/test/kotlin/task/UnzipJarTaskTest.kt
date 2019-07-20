@@ -1,16 +1,16 @@
 package task
 
-import Configs
+import me.yohom.fluttify.FluttifyCorePluginExtension
 import org.junit.Assert
 import org.junit.Test
-import task.UnzipJarTask
+import me.yohom.fluttify.task.UnzipJarTask
 import java.io.File
 
 class UnzipJarTaskTest {
 
     @Test
     fun process() {
-        val jarFile = File(Configs.jarFilePath)
+        val jarFile = File(FluttifyCorePluginExtension.jarFilePath)
         val unzipJarDir = UnzipJarTask(jarFile).process()
 
         Assert.assertTrue(unzipJarDir.isDirectory)

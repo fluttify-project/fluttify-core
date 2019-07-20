@@ -1,15 +1,16 @@
 package task
 
-import Configs
-import common.extensions.file
-import common.extensions.iterate
+import me.yohom.fluttify.FluttifyCorePluginExtension
+import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.common.extensions.iterate
+import me.yohom.fluttify.task.IOSDartInterfaceTask
 import org.junit.Test
 
 class IOSDartInterfaceTaskTest {
 
     @Test
     fun process() {
-        Configs.frameworkDirPath
+        FluttifyCorePluginExtension.frameworkDirPath
             .file()
             .iterate("h") {
                 val file = IOSDartInterfaceTask(it).process()

@@ -1,6 +1,7 @@
 package task
 
-import OutputProject
+import me.yohom.fluttify.OutputProject
+import me.yohom.fluttify.task.CleanEmptyTask
 import org.apache.commons.io.FileUtils
 import org.junit.Assert
 import org.junit.Test
@@ -25,7 +26,7 @@ class CleanBlankTaskTest {
         Assert.assertFalse(containEmpty)
 
 //        // 测试完成后恢复一个含有blank字符串的文件
-//        val blankFile = File("${Project.path}/src/test/resources/clean_empty_test/Blank.java")
+//        val blankFile = File("${me.yohom.fluttify.FluttifyProject.path}/src/test/resources/clean_empty_test/Blank.java")
 //        if (!blankFile.exists()) {
 //            blankFile.createNewFile()
 //        }

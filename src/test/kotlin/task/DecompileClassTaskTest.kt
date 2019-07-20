@@ -1,6 +1,7 @@
 package task
 
-import common.extensions.file
+import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.task.DecompileClassTask
 import org.apache.commons.io.FileUtils
 import org.junit.Assert
 import org.junit.Test
