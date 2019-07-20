@@ -23,7 +23,7 @@ class ObjectCreatorTask(private val dir: DIR) : Task<DIR, DART_FILE>(dir) {
 
         dir.iterate("java") {
             if (!it.nameWithoutExtension.isObfuscated()
-                && it.readText().run { publicNonDependencyConstructor() && !allMemberStatic() }
+                && it.readText().run { javaPublicNonDependencyConstructor() && !javaAllMemberStatic() }
             ) {
                 println("处理文件: $it")
 

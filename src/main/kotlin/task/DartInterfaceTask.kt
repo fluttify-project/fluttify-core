@@ -110,7 +110,7 @@ class AndroidDartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE
                                     // 方法体的回调语句
                                     .replaceParagraph(
                                         "#__callback__#", method.formalParams
-                                            .filter { it.type.isCallback() }
+                                            .filter { it.type.isJavaCallback() }
                                             .flatMap { Jar.Decompiled.CLASSES[it.type]!!.methods }
                                             .takeIf { it.isNotEmpty() }
                                             ?.run {
@@ -184,7 +184,7 @@ class AndroidDartInterfaceTask(private val javaFile: JAVA_FILE) : Task<JAVA_FILE
         val resultBuilder = StringBuilder("")
 
         val actualParams = params
-            .filter { !it.type.isCallback() }
+            .filter { !it.type.isJavaCallback() }
             .toMutableList()
             .apply { if (!isStatic) add(Variable("int", "refId")) }
             .toDartMap {
@@ -354,7 +354,7 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
                                     // 方法体的回调语句
                                     .replaceParagraph(
                                         "#__callback__#", method.formalParams
-                                            .filter { it.type.isCallback() }
+                                            .filter { it.type.isJavaCallback() }
                                             .flatMap { Jar.Decompiled.CLASSES[it.type]!!.methods }
                                             .takeIf { it.isNotEmpty() }
                                             ?.run {
@@ -433,7 +433,7 @@ class IOSDartInterfaceTask(private val objcFile: JAVA_FILE) : Task<OBJC_FILE, DA
         val resultBuilder = StringBuilder("")
 
         val actualParams = params
-            .filter { !it.type.isCallback() }
+            .filter { !it.type.isJavaCallback() }
             .toMutableList()
             .apply { if (!isStatic) add(Variable("int", "refId")) }
             .toDartMap {

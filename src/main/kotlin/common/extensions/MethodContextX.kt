@@ -262,6 +262,11 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
     }
 }
 
+fun ObjectiveCParser.MethodDeclarationContext.isStatic(): Boolean {
+    return ancestorOf(ObjectiveCParser.ClassMethodDeclarationContext::class) != null
+
+}
+
 fun ObjectiveCParser.MethodDeclarationContext.name(): String {
     return methodSelector()
         .selector()
@@ -279,7 +284,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Variable> {
         ?.forEach {
             result.add(
                 Variable(
-                    it.methodType()[0].typeName().text.toDartType(),
+                    it.methodType()[0].typeName().text,
                     it.identifier().text
                 )
             )

@@ -169,6 +169,12 @@ object OutputProject {
      */
     object iOS {
         /**
+         * 生成工程的iOS端Swift路径
+         */
+        val swiftDirPath =
+            "$path/build/output-project/$outputProjectName/ios/Classes/"
+
+        /**
          * 生成工程的iOS端Swift文件路径
          */
         val swiftFilePath =

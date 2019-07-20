@@ -1,35 +1,33 @@
 package common.extensions
 
 import parser.java.JavaParser
-import parser.java.JavaParser.ClassBodyDeclarationContext
-import parser.java.JavaParser.FieldDeclarationContext
 import parser.objc.ObjectiveCParser
 
 //region Java Field
-fun FieldDeclarationContext?.isStatic(): Boolean {
+fun JavaParser.FieldDeclarationContext?.isStatic(): Boolean {
     if (this == null) return false
-    return ancestorOf(ClassBodyDeclarationContext::class)
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("static") == true
 }
 
-fun FieldDeclarationContext?.isPrivate(): Boolean {
+fun JavaParser.FieldDeclarationContext?.isPrivate(): Boolean {
     if (this == null) return false
-    return ancestorOf(ClassBodyDeclarationContext::class)
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("private") == true
 }
 
-fun FieldDeclarationContext.isPublic(): Boolean {
-    return ancestorOf(ClassBodyDeclarationContext::class)
+fun JavaParser.FieldDeclarationContext.isPublic(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("public") == true
 }
 
-fun FieldDeclarationContext.type(): String {
+fun JavaParser.FieldDeclarationContext.type(): String {
     val simpleType = typeType().text
     return ancestorOf(JavaParser.CompilationUnitContext::class)
         ?.importDeclaration()
@@ -44,17 +42,18 @@ fun FieldDeclarationContext.type(): String {
         ?.qualifiedName()?.text ?: simpleType
 }
 
-fun FieldDeclarationContext.name(): String {
+fun JavaParser.FieldDeclarationContext.name(): String {
     return variableDeclarators()?.variableDeclarator()?.get(0)?.variableDeclaratorId()?.text ?: ""
 }
 
-fun FieldDeclarationContext.isFinal(): Boolean {
-    return ancestorOf(ClassBodyDeclarationContext::class)
+fun JavaParser.FieldDeclarationContext.isFinal(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
-        ?.contains("final") == true}
+        ?.contains("final") == true
+}
 
-fun FieldDeclarationContext?.value(): String? {
+fun JavaParser.FieldDeclarationContext?.value(): String? {
     if (this == null) return null
     return variableDeclarators()
         ?.variableDeclarator()
@@ -73,7 +72,7 @@ fun FieldDeclarationContext?.value(): String? {
         }
 }
 
-fun FieldDeclarationContext?.jsonable(): Boolean {
+fun JavaParser.FieldDeclarationContext?.jsonable(): Boolean {
     if (this == null) return true
 
     return type().jsonable()
@@ -81,8 +80,9 @@ fun FieldDeclarationContext?.jsonable(): Boolean {
 //endregion
 
 //region Objc field
-fun ObjectiveCParser.PropertyDeclarationContext.isFinal(): Boolean {
-    return propertyAttributesList()
+fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
+    return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
         ?.propertyAttribute()
         ?.map { it.text }
         ?.contains("readonly") == true
@@ -96,9 +96,11 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
     return fieldDeclaratorList().text
 }
 
-fun ObjectiveCParser.FieldDeclarationContext?.jsonable(): Boolean {
-    if (this == null) return true
+fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {
+    return false
+}
 
+fun ObjectiveCParser.FieldDeclarationContext.jsonable(): Boolean {
     return type().toDartType() in listOf(
         "bool",
         "int",

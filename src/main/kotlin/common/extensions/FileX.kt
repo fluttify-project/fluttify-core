@@ -116,8 +116,9 @@ fun OBJC_FILE.objcType(): List<Type> {
                         ?: ""
         }
 
-        override fun enterPropertyDeclaration(ctx: ObjectiveCParser.PropertyDeclarationContext) {
-            val variable = Variable(ctx.fieldDeclaration().type(), ctx.fieldDeclaration().name())
+        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
+            val variable = Variable(ctx.type(), ctx.name())
+
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(Field(true, ctx.isFinal(), false, variable))
         }

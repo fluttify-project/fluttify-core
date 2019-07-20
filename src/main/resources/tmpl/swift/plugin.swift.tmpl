@@ -1,34 +1,27 @@
-package #__package_name__#
+import Flutter
+import UIKit
 
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.PluginRegistry.Registrar
+val REF_MAP = [Int : Any] = [:]
 
-val REF_MAP = mutableMapOf<Int, Any>()
+public class Swift#__plugin_in_name__#Plugin: NSObject, FlutterPlugin {
 
-@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
-class #__plugin_in_name__#Plugin {
-    companion object {
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
+    public static func register(with registrar: FlutterPluginRegistrar) {
+        let channel = FlutterMethodChannel(name: "#__method_channel__#", binaryMessenger: registrar.messenger())
+        let instance = Swift#__plugin_in_name__#Plugin()
 
-            channel.setMethodCallHandler { methodCall, methodResult ->
-                val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
-                when (methodCall.method) {
-                    "SystemRef::getandroid_app_Application" -> {
-                        methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
-                    }
-                    "SystemRef::getandroid_app_Activity" -> {
-                        methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
-                    }
-                    #__dispatcher__#
-                    else -> methodResult.notImplemented()
-                    }
-                }
+        registrar.addMethodCallDelegate(instance, channel: channel)
 
-            #__platform_views__#
-		}
+        #__platform_views__#
+	}
 
-		#__handlers__#
+    private func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let args = call.arguments as! Dictionary<String, Any>
+        switch call.method {
+            #__dispatcher__#
+            default:
+                result(FlutterMethodNotImplemented)
+        }
     }
+
+	#__handlers__#
 }

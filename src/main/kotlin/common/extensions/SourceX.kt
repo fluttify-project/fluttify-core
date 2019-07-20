@@ -1,14 +1,12 @@
 package common.extensions
 
+import Framework
 import Jar
 import common.*
 import common.model.TypeType
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
-import parser.dart.Dart2BaseListener
-import parser.dart.Dart2Lexer
-import parser.dart.Dart2Parser
 import parser.java.JavaLexer
 import parser.java.JavaParser
 import parser.java.JavaParser.ClassDeclarationContext
@@ -112,7 +110,7 @@ fun JAVA_SOURCE.methodContext(): JavaParser.MethodDeclarationContext {
 /**
  * 所有成员都是静态
  */
-fun JAVA_SOURCE.allMemberStatic(): Boolean {
+fun JAVA_SOURCE.javaAllMemberStatic(): Boolean {
     val memberAllStatic = mutableListOf<Boolean>()
 
     walkTree(object : JavaParserBaseListener() {
@@ -173,7 +171,7 @@ fun JAVA_SOURCE.isIgnore(): Boolean {
 /**
  * 是否有公有无参的构造器
  */
-fun JAVA_SOURCE.publicNonDependencyConstructor(): Boolean {
+fun JAVA_SOURCE.javaPublicNonDependencyConstructor(): Boolean {
     val publicNonDependency = mutableListOf<Boolean>()
 
     walkTree(object : JavaParserBaseListener() {
@@ -207,8 +205,15 @@ fun JAVA_SOURCE.isAbstract(): Boolean {
 /**
  * 是否是回调类, 目前只识别interface文件
  */
-fun TYPE_NAME.isCallback(): Boolean {
+fun TYPE_NAME.isJavaCallback(): Boolean {
     return Jar.Decompiled.CLASSES[this]?.typeType == TypeType.Interface
+}
+
+/**
+ * 是否是回调类, 目前只识别protocol文件
+ */
+fun TYPE_NAME.isObjcCallback(): Boolean {
+    return Framework.CLASSES[this]?.typeType == TypeType.Interface
 }
 
 /**
@@ -245,74 +250,43 @@ fun OBJC_SOURCE.walkTree(listener: ObjectiveCParserBaseListener) {
     walker.walk(listener, tree)
 }
 
-///**
-// * objc源码判断是否是模型类
-// *
-// * 源码内只有一个类
-// */
-//fun OBJC_SOURCE.isObjcModel(): Boolean {
-//    var isAbstract = false
-//    var isSubclass = false
-//    var hasDependency = false
-//    val fieldJsonable: MutableList<Boolean> = mutableListOf()
-//
-//    walkTree(object : ObjectiveCParserBaseListener() {
-//        override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext?) {
-//            // 如果是接口, 那么就不是model
-//            ctx?.run { isAbstract = true }
-//        }
-//
-//        override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext?) {
-//            ctx?.run {
-//                // 如果类有继承, 暂时认为不是model
-//                isSubclass = ctx.isSubclass()
-//            }
-//        }
-//
-//        override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext?) {
-//            ctx?.run {
-//                // 如果类中含有init方法, 那么就认为含有依赖
-//                if (ctx.name().contains("init")) {
-//                    hasDependency = true
-//                }
-//            }
-//        }
-//
-//        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext?) {
-//            ctx?.run {
-//                fieldJsonable.add(
-//                    if (!ctx.jsonable()) {
-//                        ctx.type().isObjcModelType() ?: false
-//                    } else {
-//                        // 静态属性不作为model的字段
-//                        !ctx.isStatic()
-//                    }
-//                )
-//            }
-//        }
-//    })
-//
-//    return if (isAbstract
-//        || isSubclass
-//        || hasDependency
-//        || fieldJsonable.isEmpty()
-//    )
-//        false
-//    else
-//        fieldJsonable.all { it }
-//}
-//endregion
-
-//region Dart源码扩展
 /**
- * Dart源码遍历
+ * 是否有公有无参的构造器 即检查有无`无参数`的init方法
  */
-fun DART_SOURCE.walkTree(listener: Dart2BaseListener) {
-    val lexer = Dart2Lexer(CharStreams.fromString(this))
-    val parser = Dart2Parser(CommonTokenStream(lexer))
-    val tree = parser.compilationUnit()
-    val walker = ParseTreeWalker()
+fun OBJC_SOURCE.objcPublicNonDependencyConstructor(): Boolean {
+    val publicNonDependency = mutableListOf<Boolean>()
 
-    walker.walk(listener, tree)
+    walkTree(object : ObjectiveCParserBaseListener() {
+        override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
+            ctx.run {
+                if (name() == "init") {
+                    publicNonDependency.add(formalParams().isEmpty())
+                }
+            }
+        }
+    })
+    return publicNonDependency.any { it } || publicNonDependency.isEmpty()
+}
+
+/**
+ * 所有成员都是静态
+ */
+fun OBJC_SOURCE.objcAllMemberStatic(): Boolean {
+    val memberAllStatic = mutableListOf<Boolean>()
+
+    walkTree(object : ObjectiveCParserBaseListener() {
+        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
+            memberAllStatic.add(ctx.isStatic())
+        }
+
+        override fun enterClassMethodDeclaration(ctx: ObjectiveCParser.ClassMethodDeclarationContext) {
+            memberAllStatic.add(true)
+        }
+
+        override fun enterInstanceMethodDeclaration(ctx: ObjectiveCParser.InstanceMethodDeclarationContext) {
+            memberAllStatic.add(false)
+        }
+    })
+    return memberAllStatic.all { it }
 }
 //endregion

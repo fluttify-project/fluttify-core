@@ -62,12 +62,17 @@ fun JavaParser.EnumDeclarationContext.fullName(): String {
 }
 //endregion
 
-//region Java类扩展
+//region Objc类扩展
 /**
  * 是某个类的子类(实现了某个接口的认为还是model, 比如说实现了Parcel)
  */
-fun ObjectiveCParser.ClassInterfaceContext?.isSubclass(): Boolean {
-    if (this == null) return false
+fun ObjectiveCParser.ClassInterfaceContext.isSubclass(): Boolean {
     return COLON() != null && superclassName?.IDENTIFIER()?.text != "NSObject"
+}
+/**
+ * objc类的全名
+ */
+fun ObjectiveCParser.ClassInterfaceContext.fullName(): String {
+    return className.text
 }
 //endregion
