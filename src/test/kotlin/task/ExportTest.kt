@@ -1,15 +1,15 @@
 package task
 
-import me.yohom.fluttify.task.ExportTask
+import me.yohom.fluttify.task.Export
 import org.junit.Test
 import java.io.File
 
-class ExportTaskTest {
+class ExportTest {
 
     @Test
     fun process() {
         val outputProjectDirPath = "/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter"
 
-        ExportTask(File(outputProjectDirPath)).process()
+        Export(File(outputProjectDirPath)).process()
     }
 }

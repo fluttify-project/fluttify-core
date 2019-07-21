@@ -19,7 +19,7 @@ import org.gradle.api.Project
 //        // 清理空文件
 //        .map { CleanEmpty(it).process() }
 //        // 增加export
-//        .map { ExportTask(me.yohom.fluttify.OutputProject.dirPath.file()).process() }
+//        .map { Export(me.yohom.fluttify.OutputProject.dirPath.file()).process() }
 //        .subscribe()
 //}
 
@@ -33,6 +33,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
+        val export = project.tasks.create("export", Export::class.java)
 
         decompileClass.dependsOn(unzip)
         addDependency.dependsOn(outputProject)

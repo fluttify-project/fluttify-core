@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.extensions.isObfuscated
 import me.yohom.fluttify.common.extensions.iterate
 import me.yohom.fluttify.task.AndroidDartInterfaceTask
 import me.yohom.fluttify.task.AndroidSystemRefTask
-import me.yohom.fluttify.task.ExportTask
+import me.yohom.fluttify.task.Export
 import org.junit.Test
 
 class AndroidDartInterfaceTaskTest {
@@ -22,7 +22,7 @@ class AndroidDartInterfaceTaskTest {
         }
         AndroidSystemRefTask("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter".file())
             .process()
-        ExportTask("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter".file())
+        Export("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter".file())
             .process()
 //        println("  abc\ndef".replaceParagraph("abc", "g"))
     }
