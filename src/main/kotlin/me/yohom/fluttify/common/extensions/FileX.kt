@@ -18,6 +18,7 @@ fun JAVA_FILE.javaType(): Type {
 
     var packageName = ""
     val fields = mutableListOf<Field>()
+    val enumConstants = mutableListOf<String>()
     val methods = mutableListOf<Method>()
     var simpleName = ""
     var typeType: TypeType? = null
@@ -91,25 +92,37 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterEnumConstant(ctx: EnumConstantContext) {
-            fields.add(
-                Field(
-                    true,
-                    true,
-                    false,
-                    Variable(ctx.IDENTIFIER().text, ctx.IDENTIFIER().text)
-                )
-            )
+            enumConstants.add(ctx.IDENTIFIER().text)
         }
     })
 
-    return Type(
-        "$packageName.${simpleName.replace("$", ".")}",
-        absolutePath,
-        superClass,
-        fields,
-        methods,
-        typeType
-    )
+    return when (typeType) {
+        TypeType.Class -> {
+            ClassType(
+                "$packageName.${simpleName.replace("$", ".")}",
+                absolutePath,
+                superClass,
+                fields,
+                methods
+            )
+        }
+        TypeType.Enum -> {
+            EnumType(
+                "$packageName.${simpleName.replace("$", ".")}",
+                absolutePath,
+                enumConstants
+            )
+        }
+        TypeType.Interface -> {
+            InterfaceType(
+                "$packageName.${simpleName.replace("$", ".")}",
+                absolutePath,
+                superClass,
+                methods
+            )
+        }
+        else -> Type("$packageName.${simpleName.replace("$", ".")}")
+    }
 }
 
 /**
@@ -121,6 +134,7 @@ fun OBJC_FILE.objcType(): List<Type> {
     val result = mutableListOf<Type>()
 
     var fields = mutableListOf<Field>()
+    val enumConstants = mutableListOf<String>()
     var methods = mutableListOf<Method>()
     var name = ""
     var typeType: TypeType? = null
@@ -178,26 +192,17 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
-            fields.add(
-                Field(
-                    true,
-                    true,
-                    false,
-                    Variable(ctx.text, ctx.text)
-                )
-            )
+            enumConstants.add(ctx.text)
         }
 
         override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
             if (name.isNotEmpty()) {
                 result.add(
-                    Type(
+                    InterfaceType(
                         name,
                         absolutePath,
                         superClass,
-                        fields,
-                        methods,
-                        typeType
+                        methods
                     )
                 )
                 // 创新创建fields和methods
@@ -209,13 +214,12 @@ fun OBJC_FILE.objcType(): List<Type> {
         override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
             if (name.isNotEmpty()) {
                 result.add(
-                    Type(
+                    ClassType(
                         name,
                         absolutePath,
                         superClass,
                         fields,
-                        methods,
-                        typeType
+                        methods
                     )
                 )
                 // 创新创建fields和methods
@@ -224,18 +228,9 @@ fun OBJC_FILE.objcType(): List<Type> {
             }
         }
 
-        override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext?) {
+        override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
             if (name.isNotEmpty()) {
-                result.add(
-                    Type(
-                        name,
-                        absolutePath,
-                        superClass,
-                        fields,
-                        methods,
-                        typeType
-                    )
-                )
+                result.add(EnumType(name, absolutePath, enumConstants))
                 // 创新创建fields和methods
                 fields = mutableListOf()
                 methods = mutableListOf()

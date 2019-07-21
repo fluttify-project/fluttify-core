@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.extensions
 import me.yohom.fluttify.Framework
 import me.yohom.fluttify.Jar
 import me.yohom.fluttify.common.*
-import me.yohom.fluttify.common.model.TypeType
+import me.yohom.fluttify.common.model.InterfaceType
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -206,14 +206,14 @@ fun JAVA_SOURCE.isAbstract(): Boolean {
  * 是否是回调类, 目前只识别interface文件
  */
 fun TYPE_NAME.isJavaCallback(): Boolean {
-    return Jar.Decompiled.CLASSES[this]?.typeType == TypeType.Interface
+    return Jar.Decompiled.CLASSES[this] is InterfaceType
 }
 
 /**
  * 是否是回调类, 目前只识别protocol文件
  */
 fun TYPE_NAME.isObjcCallback(): Boolean {
-    return Framework.CLASSES[this]?.typeType == TypeType.Interface
+    return Framework.CLASSES[this] is InterfaceType
 }
 
 /**

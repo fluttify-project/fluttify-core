@@ -1,13 +1,20 @@
 package me.yohom.fluttify.common.model
 
-/**
- * 类信息 Java类和Objc类公用
- */
-class Type(
+open class Type(
     /**
      * 全名
      */
-    val name: String,
+    open val name: String
+)
+
+/**
+ * 类信息 Java类和Objc类公用
+ */
+data class ClassType(
+    /**
+     * 全名
+     */
+    override val name: String,
 
     /**
      * 类文件所在绝对路径
@@ -27,27 +34,53 @@ class Type(
     /**
      * 所有的方法
      */
-    val methods: List<Method>,
+    val methods: List<Method>
+) : Type(name)
+
+/**
+ * 类信息 Java类和Objc类公用
+ */
+data class InterfaceType(
+    /**
+     * 全名
+     */
+    override val name: String,
 
     /**
-     * 类型的类型(class/enum/interface)
+     * 类文件所在绝对路径
      */
-    var typeType: TypeType? = null,
+    val path: String,
 
     /**
-     * lambda的参数
+     * 父类全名
      */
-    val lambdaParams: List<Variable>? = null,
+    val superClass: String,
 
     /**
-     * lambda返回类型
+     * 所有的方法
      */
-    val lambdaReturnType: String? = null
-) {
-    override fun toString(): String {
-        return "Type(name='$name', path='$path', superClass='$superClass', fields=$fields, methods=$methods, typeType=$typeType)"
-    }
-}
+    val methods: List<Method>
+) : Type(name)
+
+/**
+ * 类信息 Java类和Objc类公用
+ */
+data class EnumType(
+    /**
+     * 全名
+     */
+    override val name: String,
+
+    /**
+     * 类文件所在绝对路径
+     */
+    val path: String,
+
+    /**
+     * 枚举值
+     */
+    val constants: List<String>
+) : Type(name)
 
 enum class TypeType {
     Class, Enum, Interface, Lambda
