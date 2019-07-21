@@ -14,7 +14,7 @@ import org.gradle.api.tasks.TaskAction
  * 输入: 要生成ObjectCreator的文件夹
  * 输出: 生成后的ObjectCreator Dart文件
  */
-class ObjectFactory : DefaultTask() {
+open class ObjectFactory : DefaultTask() {
     override fun getGroup() = "fluttify"
 
     @TaskAction
