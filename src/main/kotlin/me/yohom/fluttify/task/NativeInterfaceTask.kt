@@ -8,6 +8,8 @@ import me.yohom.fluttify.OutputProject.methodChannel
 import me.yohom.fluttify.common.*
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Callback
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
@@ -19,22 +21,24 @@ import java.io.File
  *
  * 输入: java文件
  * 输出: 对应的method channel文件
- * 依赖: [DecompileClassTask]
  */
-class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jarDir) {
+open class AndroidKotlinInterface : DefaultTask() {
     private val methodHandlers = mutableListOf<String>()
 
-    override fun process(): KOTLIN_FILE {
+    override fun getGroup() = "fluttify"
+
+    @TaskAction
+    fun process() {
         val branchesBuilder = StringBuilder("")
         val platformViewRegisterBuilder = StringBuilder("")
 
-        jarDir.iterate("java") {
+        project.projectDir.iterate("java") {
             if (!it.nameWithoutExtension.isObfuscated() && !it.readText().isIgnore()) {
                 branchesBuilder.append(generateForFile(it))
             }
         }
 
-        jarDir.iterate("java") {
+        project.projectDir.iterate("java") {
             if (it.readText().isView()) {
                 if (it.readText().isView()) {
                     platformViewRegisterBuilder.appendln(registerPlatformFactory(it))
@@ -42,6 +46,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
                 }
             }
         }
+
         // package
         val pluginClassString = Tmpl.Kotlin.pluginBuilder
             .replace("#__package_name__#", "$outputOrg.$outputProjectName")
@@ -51,7 +56,7 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
             .replaceParagraph("#__platform_views__#", platformViewRegisterBuilder.toString())
             .replaceParagraph("#__handlers__#", methodHandlers.joinToString("\n"))
 
-        return OutputProject.Android.kotlinFilePath.file().apply { writeText(pluginClassString) }
+        OutputProject.Android.kotlinFilePath.file().apply { writeText(pluginClassString) }
     }
 
     private fun generateForFile(javaFile: JAVA_FILE): String {
@@ -328,16 +333,18 @@ class AndroidInterfaceTask(private val jarDir: DIR) : Task<DIR, KOTLIN_FILE>(jar
  *
  * 输入: framework文件夹
  * 输出: 对应的method channel文件
- * 依赖: [DecompileClassTask]
  */
-class IOSInterfaceTask(private val frameworkDir: DIR) : Task<DIR, OBJC_FILE>(frameworkDir) {
+open class IOSSwiftInterface : DefaultTask() {
     private val methodHandlers = mutableListOf<String>()
 
-    override fun process(): OBJC_FILE {
+    override fun getGroup() = "fluttify"
+
+    @TaskAction
+    fun process() {
         val branchesBuilder = StringBuilder("")
         val platformViewRegisterBuilder = StringBuilder("")
 
-        frameworkDir.iterate("h") {
+        project.projectDir.iterate("h") {
             if (!it.nameWithoutExtension.isObfuscated() && !it.readText().isIgnore()) {
                 branchesBuilder.append(generateForFile(it))
             }
@@ -360,7 +367,7 @@ class IOSInterfaceTask(private val frameworkDir: DIR) : Task<DIR, OBJC_FILE>(fra
             .replaceParagraph("#__platform_views__#", platformViewRegisterBuilder.toString())
             .replaceParagraph("#__handlers__#", methodHandlers.joinToString("\n"))
 
-        return OutputProject.iOS.swiftFilePath.file().apply { writeText(pluginClassString) }
+        OutputProject.iOS.swiftFilePath.file().apply { writeText(pluginClassString) }
     }
 
     private fun generateForFile(objcFile: OBJC_FILE): String {

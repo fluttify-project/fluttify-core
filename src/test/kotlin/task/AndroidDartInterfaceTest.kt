@@ -2,13 +2,13 @@ package task
 
 import org.junit.Test
 
-class AndroidDartInterfaceTaskTest {
+class AndroidDartInterfaceTest {
 
     @Test
     fun process() {
 //        Jar.Decompiled.rootDirPath.file().iterate("java") {
 //            if (!it.nameWithoutExtension.isObfuscated()) {
-//                val file = AndroidDartInterfaceTask(it).process()
+//                val file = AndroidDartInterface(it).process()
 ////                val formatedFile = Dartfmt(file).process()
 //                println(file.readText())
 //            }
