@@ -16,7 +16,7 @@ class AndroidDartInterfaceTaskTest {
         Jar.Decompiled.rootDirPath.file().iterate("java") {
             if (!it.nameWithoutExtension.isObfuscated()) {
                 val file = AndroidDartInterfaceTask(it).process()
-//                val formatedFile = DartfmtTask(file).process()
+//                val formatedFile = Dartfmt(file).process()
                 println(file.readText())
             }
         }

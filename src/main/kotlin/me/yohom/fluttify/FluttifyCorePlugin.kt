@@ -32,6 +32,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val addDependency = project.tasks.create("addDependency", AddAndroidDependency::class.java)
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
+        val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
         decompileClass.dependsOn(unzip)
         addDependency.dependsOn(outputProject)
