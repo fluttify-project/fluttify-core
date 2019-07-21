@@ -1,7 +1,7 @@
 package task
 
-import org.junit.Test
 import me.yohom.fluttify.task.ExportTask
+import org.junit.Test
 import java.io.File
 
 class ExportTaskTest {

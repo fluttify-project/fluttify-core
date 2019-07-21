@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.31'
 }
 
-group 'com.fluttify'
+group 'me.yohom'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
@@ -21,7 +21,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
     implementation "io.reactivex.rxjava2:rxjava:2.2.9"
     testImplementation 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-reflect:1.3.31"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.31"
 }
 
 compileKotlin {
@@ -29,4 +29,12 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+uploadArchives {
+    repositories {
+        ivy {
+            url 'build/plugin'
+        }
+    }
 }

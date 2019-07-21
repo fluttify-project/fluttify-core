@@ -1236,7 +1236,7 @@ public class Dart2Parser extends Parser {
 			setState(460);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,18,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1367,7 +1367,7 @@ public class Dart2Parser extends Parser {
 			setState(473);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,20,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1448,7 +1448,7 @@ public class Dart2Parser extends Parser {
 			setState(487);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,22,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4062,7 +4062,7 @@ public class Dart2Parser extends Parser {
 			setState(825);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,81,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4333,7 +4333,7 @@ public class Dart2Parser extends Parser {
 			setState(864);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,87,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4602,7 +4602,7 @@ public class Dart2Parser extends Parser {
 			setState(894);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,91,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -5221,7 +5221,7 @@ public class Dart2Parser extends Parser {
 				setState(946);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,96,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -5416,7 +5416,7 @@ public class Dart2Parser extends Parser {
 				setState(978);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,104,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -5939,7 +5939,7 @@ public class Dart2Parser extends Parser {
 				setState(1033);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,111,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -5964,7 +5964,7 @@ public class Dart2Parser extends Parser {
 				setState(1041);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,112,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -7016,7 +7016,7 @@ public class Dart2Parser extends Parser {
 				setState(1159);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,129,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -7059,7 +7059,7 @@ public class Dart2Parser extends Parser {
 					setState(1167); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,130,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 				}
 				break;
 			}
@@ -8180,7 +8180,7 @@ public class Dart2Parser extends Parser {
 				setState(1307);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,150,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -8929,7 +8929,7 @@ public class Dart2Parser extends Parser {
 			setState(1371);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,160,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -8994,7 +8994,7 @@ public class Dart2Parser extends Parser {
 			setState(1377);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,161,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -9863,7 +9863,7 @@ public class Dart2Parser extends Parser {
 			setState(1477);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,171,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -11189,7 +11189,7 @@ public class Dart2Parser extends Parser {
 			setState(1652);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,195,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -11205,7 +11205,7 @@ public class Dart2Parser extends Parser {
 			setState(1658);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,196,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{

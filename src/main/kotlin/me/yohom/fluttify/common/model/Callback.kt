@@ -1,7 +1,6 @@
 package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.TYPE_NAME
-import common.extensions.*
 import me.yohom.fluttify.common.extensions.*
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener

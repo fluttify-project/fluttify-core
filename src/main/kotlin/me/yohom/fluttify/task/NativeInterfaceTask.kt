@@ -5,8 +5,6 @@ import me.yohom.fluttify.FluttifyCorePluginExtension.outputProjectName
 import me.yohom.fluttify.OutputProject
 import me.yohom.fluttify.OutputProject.classSimpleName
 import me.yohom.fluttify.OutputProject.methodChannel
-import common.*
-import common.extensions.*
 import me.yohom.fluttify.common.*
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Callback

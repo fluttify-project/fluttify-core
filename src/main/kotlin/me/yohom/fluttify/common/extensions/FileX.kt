@@ -2,7 +2,6 @@ package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.common.JAVA_FILE
 import me.yohom.fluttify.common.OBJC_FILE
-import common.model.*
 import me.yohom.fluttify.common.model.*
 import org.apache.commons.io.FileUtils
 import parser.java.JavaParser.*

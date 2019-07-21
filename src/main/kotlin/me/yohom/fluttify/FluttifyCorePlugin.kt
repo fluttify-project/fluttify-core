@@ -1,6 +1,7 @@
 package me.yohom.fluttify
 
-import me.yohom.fluttify.task.FluttifyTask
+import me.yohom.fluttify.task.DecompileClass
+import me.yohom.fluttify.task.UnzipJar
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -22,9 +23,10 @@ import org.gradle.api.Project
 //        .subscribe()
 //}
 
-class FluttifyCorePlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        target.extensions.create("fluttify", FluttifyCorePluginExtension::class.java)
-        target.tasks.create("fluttify", FluttifyTask::class.java)
+open class FluttifyCorePlugin : Plugin<Project> {
+    override fun apply(project: Project) {
+        project.extensions.create("fluttify", FluttifyExtension::class.java)
+        val unzip = project.tasks.create("unzipJar", UnzipJar::class.java)
+        project.tasks.create("decompileClass", DecompileClass::class.java).dependsOn(unzip)
     }
 }

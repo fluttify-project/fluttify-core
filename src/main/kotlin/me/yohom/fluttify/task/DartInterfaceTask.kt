@@ -7,8 +7,6 @@ import me.yohom.fluttify.Jar
 import me.yohom.fluttify.OutputProject.Dart.androidDirPath
 import me.yohom.fluttify.OutputProject.Dart.iOSDirPath
 import me.yohom.fluttify.OutputProject.methodChannel
-import common.*
-import common.extensions.*
 import me.yohom.fluttify.common.*
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Method

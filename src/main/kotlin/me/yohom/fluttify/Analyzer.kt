@@ -7,7 +7,6 @@ import me.yohom.fluttify.FluttifyCorePluginExtension.outputOrg
 import me.yohom.fluttify.FluttifyCorePluginExtension.outputProjectName
 import me.yohom.fluttify.FluttifyProject.path
 import me.yohom.fluttify.common.TYPE_NAME
-import common.extensions.*
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Type
 import org.apache.commons.io.FileUtils

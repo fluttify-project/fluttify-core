@@ -2,7 +2,6 @@ package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.Framework
 import me.yohom.fluttify.Jar
-import common.*
 import me.yohom.fluttify.common.*
 import me.yohom.fluttify.common.model.TypeType
 import org.antlr.v4.runtime.CharStreams

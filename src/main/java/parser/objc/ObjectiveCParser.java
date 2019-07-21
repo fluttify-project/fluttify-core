@@ -1177,7 +1177,7 @@ public class ObjectiveCParser extends Parser {
 				setState(409);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,18,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -1290,7 +1290,7 @@ public class ObjectiveCParser extends Parser {
 					setState(415); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,19,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 				}
 				break;
 			default:
@@ -2076,7 +2076,7 @@ public class ObjectiveCParser extends Parser {
 				setState(510);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -2180,7 +2180,7 @@ public class ObjectiveCParser extends Parser {
 					setState(516); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,32,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 				}
 				break;
 			default:
@@ -2358,7 +2358,7 @@ public class ObjectiveCParser extends Parser {
 				setState(529); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,35,_ctx);
-			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+			} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 			}
 		}
 		catch (RecognitionException re) {
@@ -2904,7 +2904,7 @@ public class ObjectiveCParser extends Parser {
 					setState(577); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,43,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+				} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 				setState(581);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -3614,7 +3614,7 @@ public class ObjectiveCParser extends Parser {
 			setState(664);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,59,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -3697,7 +3697,7 @@ public class ObjectiveCParser extends Parser {
 				setState(676);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,60,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -6591,7 +6591,7 @@ public class ObjectiveCParser extends Parser {
 				setState(975); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,108,_ctx);
-			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+			} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 			}
 		}
 		catch (RecognitionException re) {
@@ -7110,7 +7110,7 @@ public class ObjectiveCParser extends Parser {
 				setState(1034); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,117,_ctx);
-			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+			} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 			}
 		}
 		catch (RecognitionException re) {
@@ -8171,7 +8171,7 @@ public class ObjectiveCParser extends Parser {
 			setState(1138);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,130,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -8959,7 +8959,7 @@ public class ObjectiveCParser extends Parser {
 				setState(1227);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,147,_ctx);
-				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -9047,7 +9047,7 @@ public class ObjectiveCParser extends Parser {
 			setState(1242);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,150,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -9444,7 +9444,7 @@ public class ObjectiveCParser extends Parser {
 			setState(1297);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,163,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -11063,7 +11063,7 @@ public class ObjectiveCParser extends Parser {
 			setState(1491);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,195,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -11209,7 +11209,7 @@ public class ObjectiveCParser extends Parser {
 			setState(1550);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,200,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -12017,7 +12017,7 @@ public class ObjectiveCParser extends Parser {
 			setState(1598);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,207,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -12035,7 +12035,7 @@ public class ObjectiveCParser extends Parser {
 			setState(1612);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,209,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -12060,7 +12060,7 @@ public class ObjectiveCParser extends Parser {
 					setState(1607);
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,208,_ctx);
-					while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+					while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
 						if ( _alt==1 ) {
 							{
 							{
@@ -12804,7 +12804,7 @@ public class ObjectiveCParser extends Parser {
 				setState(1694); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,221,_ctx);
-			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+			} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
 			}
 		}
 		catch (RecognitionException re) {
