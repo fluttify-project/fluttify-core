@@ -2,6 +2,7 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.common.extensions.iterate
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -14,6 +15,7 @@ import java.io.InputStreamReader
 open class Dartfmt : DefaultTask() {
     override fun getGroup() = "fluttify"
 
+    @TaskAction
     fun process() {
         project.projectDir.iterate("dart") {
             val process = Runtime

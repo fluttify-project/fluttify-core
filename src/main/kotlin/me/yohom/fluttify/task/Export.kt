@@ -4,6 +4,7 @@ import me.yohom.fluttify.FluttifyCorePluginExtension
 import me.yohom.fluttify.common.extensions.file
 import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
 /**
  * 需要引入的内容为android端的主类和模型类以及ios端的主类和模型类
@@ -14,6 +15,7 @@ import org.gradle.api.DefaultTask
 open class Export : DefaultTask() {
     override fun getGroup() = "fluttify"
 
+    @TaskAction
     fun process() {
         val dartSrcDir = "${project.projectDir}/output-project/lib/src/".file()
         val exportFile =

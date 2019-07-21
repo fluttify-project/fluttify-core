@@ -5,7 +5,7 @@ import me.yohom.fluttify.common.extensions.file
 import me.yohom.fluttify.common.extensions.isObfuscated
 import me.yohom.fluttify.common.extensions.iterate
 import me.yohom.fluttify.task.AndroidDartInterfaceTask
-import me.yohom.fluttify.task.AndroidSystemRefTask
+import me.yohom.fluttify.task.AndroidSystemRef
 import me.yohom.fluttify.task.Export
 import org.junit.Test
 
@@ -20,7 +20,7 @@ class AndroidDartInterfaceTaskTest {
                 println(file.readText())
             }
         }
-        AndroidSystemRefTask("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter".file())
+        AndroidSystemRef("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter".file())
             .process()
         Export("/Users/yohom/Github/Util/Kotlin/fluttify-core/build/output-project/baidu_map_flutter".file())
             .process()
