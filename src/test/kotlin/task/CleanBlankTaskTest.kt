@@ -1,7 +1,7 @@
 package task
 
 import me.yohom.fluttify.OutputProject
-import me.yohom.fluttify.task.CleanEmptyTask
+import me.yohom.fluttify.task.CleanEmpty
 import org.apache.commons.io.FileUtils
 import org.junit.Assert
 import org.junit.Test
@@ -12,7 +12,7 @@ class CleanBlankTaskTest {
     @Test
     fun process() {
         val testDir = File(OutputProject.Dart.libDirPath)
-        val nonEmptyDir = CleanEmptyTask(testDir).process()
+        val nonEmptyDir = CleanEmpty(testDir).process()
         println(nonEmptyDir)
 
         var containEmpty = false

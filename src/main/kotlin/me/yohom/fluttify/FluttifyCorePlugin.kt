@@ -1,9 +1,7 @@
 package me.yohom.fluttify
 
-import me.yohom.fluttify.task.AddAndroidDependency
-import me.yohom.fluttify.task.DecompileClass
+import me.yohom.fluttify.task.*
 import me.yohom.fluttify.task.OutputProject
-import me.yohom.fluttify.task.UnzipJar
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -19,7 +17,7 @@ import org.gradle.api.Project
 //        // 反编译Jar
 //        .map { DecompileClassTask(it).process() }
 //        // 清理空文件
-//        .map { CleanEmptyTask(it).process() }
+//        .map { CleanEmpty(it).process() }
 //        // 增加export
 //        .map { ExportTask(me.yohom.fluttify.OutputProject.dirPath.file()).process() }
 //        .subscribe()
@@ -33,6 +31,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val decompileClass = project.tasks.create("decompileClass", DecompileClass::class.java)
         val addDependency = project.tasks.create("addDependency", AddAndroidDependency::class.java)
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
+        val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
 
         decompileClass.dependsOn(unzip)
         addDependency.dependsOn(outputProject)

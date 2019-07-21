@@ -246,7 +246,7 @@ fun OBJC_FILE.objcType(): List<Type> {
     return result
 }
 
-fun File.iterate(fileSuffix: String, recursive: Boolean = true, forEach: (File) -> Unit) {
+fun File.iterate(fileSuffix: String?, recursive: Boolean = true, forEach: (File) -> Unit) {
     FileUtils
         .iterateFiles(this, arrayOf(fileSuffix), recursive)
         .forEach { forEach(it) }
