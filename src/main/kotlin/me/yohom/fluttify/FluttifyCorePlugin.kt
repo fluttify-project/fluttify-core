@@ -23,6 +23,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val androidKotlinInterface = project.tasks.create("androidKotlinInterface", AndroidKotlinInterface::class.java)
         val iOSSwiftInterface = project.tasks.create("iOSSwiftInterface", IOSSwiftInterface::class.java)
         val androidJsonRepresentation = project.tasks.create("androidJsonRepresentation", AndroidJsonRepresentation::class.java)
+        val iOSJsonRepresentation = project.tasks.create("iOSJsonRepresentation", IOSJsonRepresentation::class.java)
 
         decompileClass.dependsOn(unzip)
         addDependency.dependsOn(outputProject)

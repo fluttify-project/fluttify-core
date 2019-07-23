@@ -2,14 +2,14 @@ package me.yohom.fluttify.common.model
 
 open class Type {
     /**
-     * 类/接口/枚举/lambda
-     */
-    var typeType: TypeType? = null
-
-    /**
      * 全名
      */
     var name: String = ""
+
+    /**
+     * 类/接口/枚举/lambda
+     */
+    var typeType: TypeType? = null
 
     /**
      * 是否公开
