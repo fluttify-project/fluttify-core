@@ -23,6 +23,7 @@ fun JAVA_FILE.javaType(): Type {
     var simpleName = ""
     var typeType: TypeType? = null
     var superClass = ""
+    var isPublic = false
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext) {
@@ -30,30 +31,27 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterClassDeclaration(ctx: ClassDeclarationContext) {
-            if (ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
-                simpleName = ctx.IDENTIFIER().text
-                typeType = TypeType.Class
+            isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
+            simpleName = ctx.IDENTIFIER().text
+            typeType = TypeType.Class
 
-                val imports = ctx
-                    .ancestorOf(CompilationUnitContext::class)
-                    ?.importDeclaration()
-                    ?.map { it.qualifiedName().text } ?: listOf()
-                superClass = imports.firstOrNull { it.substringAfterLast(".") == ctx.typeType()?.text } ?: ""
-            }
+            val imports = ctx
+                .ancestorOf(CompilationUnitContext::class)
+                ?.importDeclaration()
+                ?.map { it.qualifiedName().text } ?: listOf()
+            superClass = imports.firstOrNull { it.substringAfterLast(".") == ctx.typeType()?.text } ?: ""
         }
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {
-            if (ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
-                simpleName = ctx.IDENTIFIER().text
-                typeType = TypeType.Interface
-            }
+            isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
+            simpleName = ctx.IDENTIFIER().text
+            typeType = TypeType.Interface
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
-            if (ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true) {
-                simpleName = ctx.IDENTIFIER().text
-                typeType = TypeType.Enum
-            }
+            isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
+            simpleName = ctx.IDENTIFIER().text
+            typeType = TypeType.Enum
         }
 
         override fun enterMethodDeclaration(ctx: MethodDeclarationContext) {
@@ -96,32 +94,14 @@ fun JAVA_FILE.javaType(): Type {
         }
     })
 
-    return when (typeType) {
-        TypeType.Class -> {
-            ClassType(
-                "$packageName.${simpleName.replace("$", ".")}",
-                absolutePath,
-                superClass,
-                fields,
-                methods
-            )
-        }
-        TypeType.Enum -> {
-            EnumType(
-                "$packageName.${simpleName.replace("$", ".")}",
-                absolutePath,
-                enumConstants
-            )
-        }
-        TypeType.Interface -> {
-            InterfaceType(
-                "$packageName.${simpleName.replace("$", ".")}",
-                absolutePath,
-                superClass,
-                methods
-            )
-        }
-        else -> Type("$packageName.${simpleName.replace("$", ".")}")
+    return Type().also {
+        it.typeType = typeType
+        it.isPublic = isPublic
+        it.name = "$packageName.${simpleName.replace("$", ".")}"
+        it.superClass = superClass
+        it.fields.addAll(fields)
+        it.methods.addAll(methods)
+        it.constants.addAll(enumConstants)
     }
 }
 
@@ -198,12 +178,15 @@ fun OBJC_FILE.objcType(): List<Type> {
         override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
             if (name.isNotEmpty()) {
                 result.add(
-                    InterfaceType(
-                        name,
-                        absolutePath,
-                        superClass,
-                        methods
-                    )
+                    Type().also {
+                        it.typeType = typeType
+                        it.isPublic = true
+                        it.name = name
+                        it.superClass = superClass
+                        it.fields.addAll(fields)
+                        it.methods.addAll(methods)
+                        it.constants.addAll(enumConstants)
+                    }
                 )
                 // 创新创建fields和methods
                 fields = mutableListOf()
@@ -214,13 +197,15 @@ fun OBJC_FILE.objcType(): List<Type> {
         override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
             if (name.isNotEmpty()) {
                 result.add(
-                    ClassType(
-                        name,
-                        absolutePath,
-                        superClass,
-                        fields,
-                        methods
-                    )
+                    Type().also {
+                        it.typeType = typeType
+                        it.isPublic = true
+                        it.name = name
+                        it.superClass = superClass
+                        it.fields.addAll(fields)
+                        it.methods.addAll(methods)
+                        it.constants.addAll(enumConstants)
+                    }
                 )
                 // 创新创建fields和methods
                 fields = mutableListOf()
@@ -230,7 +215,15 @@ fun OBJC_FILE.objcType(): List<Type> {
 
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
             if (name.isNotEmpty()) {
-                result.add(EnumType(name, absolutePath, enumConstants))
+                result.add(Type().also {
+                    it.typeType = typeType
+                    it.isPublic = true
+                    it.name = name
+                    it.superClass = superClass
+                    it.fields.addAll(fields)
+                    it.methods.addAll(methods)
+                    it.constants.addAll(enumConstants)
+                })
                 // 创新创建fields和methods
                 fields = mutableListOf()
                 methods = mutableListOf()

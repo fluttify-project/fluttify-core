@@ -1,86 +1,51 @@
 package me.yohom.fluttify.common.model
 
-open class Type(
+open class Type {
+    /**
+     * 类/接口/枚举/lambda
+     */
+    var typeType: TypeType? = null
+
     /**
      * 全名
      */
-    open val name: String
-)
-
-/**
- * 类信息 Java类和Objc类公用
- */
-data class ClassType(
-    /**
-     * 全名
-     */
-    override val name: String,
+    var name: String = ""
 
     /**
-     * 类文件所在绝对路径
+     * 是否公开
      */
-    val path: String,
+    var isPublic: Boolean = false
 
     /**
      * 父类全名
      */
-    val superClass: String,
+    var superClass: String = ""
 
     /**
      * 所有的字段
      */
-    val fields: List<Field>,
+    val fields: MutableList<Field> = mutableListOf()
 
     /**
      * 所有的方法
      */
-    val methods: List<Method>
-) : Type(name)
-
-/**
- * 类信息 Java类和Objc类公用
- */
-data class InterfaceType(
-    /**
-     * 全名
-     */
-    override val name: String,
+    val methods: MutableList<Method> = mutableListOf()
 
     /**
-     * 类文件所在绝对路径
+     * 枚举值 枚举专用
      */
-    val path: String,
+    val constants: MutableList<String> = mutableListOf()
 
     /**
-     * 父类全名
+     * 返回值类型 Lambda专用
      */
-    val superClass: String,
+    var returnType: String = ""
 
     /**
-     * 所有的方法
+     * 形参 Lambda专用
      */
-    val methods: List<Method>
-) : Type(name)
-
-/**
- * 类信息 Java类和Objc类公用
- */
-data class EnumType(
-    /**
-     * 全名
-     */
-    override val name: String,
-
-    /**
-     * 类文件所在绝对路径
-     */
-    val path: String,
-
-    /**
-     * 枚举值
-     */
-    val constants: List<String>
-) : Type(name)
+    val formalParam: MutableList<Variable> = mutableListOf()
+}
 
 enum class TypeType {
     Class, Enum, Interface, Lambda

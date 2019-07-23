@@ -1,12 +1,27 @@
 package me.yohom.fluttify.common.model
 
-data class SDK(
-    val version: String,
-    val name: String,
-    val platform: Platform,
-    val types: List<Type>
-)
+class SDK {
+    /**
+     * 版本
+     */
+    var version: String = ""
+
+    /**
+     * 名称
+     */
+    var name: String = ""
+
+    /**
+     * 平台
+     */
+    var platform: Platform = Platform.Unknown
+
+    /**
+     * 类
+     */
+    var types: MutableList<Type> = mutableListOf()
+}
 
 enum class Platform {
-    iOS, Android
+    iOS, Android, Unknown
 }
