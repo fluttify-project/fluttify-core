@@ -1,10 +1,6 @@
 package me.yohom.fluttify.task
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import me.yohom.fluttify.common.extensions.file
-import me.yohom.fluttify.common.extensions.iterate
-import me.yohom.fluttify.common.extensions.javaType
-import me.yohom.fluttify.common.extensions.objcType
+import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.SDK
@@ -27,11 +23,15 @@ open class AndroidJsonRepresentation : DefaultTask() {
             ?.forEach {
                 val lib = Lib().apply { name = it.nameWithoutExtension }
                 it.iterate("java") { javaFile ->
-                    lib.types.add(javaFile.javaType())
+                    val type = javaFile.javaType()
+                    if (!type.name.isObfuscated()) {
+                        lib.types.add(javaFile.javaType())
+                    }
                 }
                 sdk.libs.add(lib)
             }
-        ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(jsonFile, sdk)
+
+        jsonFile.writeText(sdk.toJson())
     }
 }
 
@@ -55,7 +55,7 @@ open class IOSJsonRepresentation : DefaultTask() {
                 }
                 sdk.libs.add(lib)
             }
-        ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(jsonFile, sdk)
+        jsonFile.writeText(sdk.toJson())
     }
 
 }

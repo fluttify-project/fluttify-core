@@ -14,7 +14,11 @@ class SDK {
     /**
      * 库 Android上是jar, iOS上是framework
      */
-    val libs: MutableList<Lib> = mutableListOf()
+    var libs: MutableList<Lib> = mutableListOf()
+
+    override fun toString(): String {
+        return "SDK(version='$version', platform=$platform, libs=$libs)"
+    }
 }
 
 class Lib {
@@ -27,6 +31,10 @@ class Lib {
      * 类
      */
     var types: MutableList<Type> = mutableListOf()
+
+    override fun toString(): String {
+        return "Lib(name='$name', types=$types)"
+    }
 }
 
 enum class Platform {

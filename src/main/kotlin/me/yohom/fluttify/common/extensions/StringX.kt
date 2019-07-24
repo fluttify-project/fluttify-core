@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.extensions
 
+import com.google.gson.Gson
 import me.yohom.fluttify.Framework
 import me.yohom.fluttify.Jar
 import me.yohom.fluttify.common.PATH
@@ -22,6 +23,9 @@ fun String.findType(): Type {
     return Jar.Decompiled.CLASSES[this] ?: throw IllegalArgumentException("非法的类型")
 }
 
+inline fun <reified T> String.fromJson(): T {
+    return Gson().fromJson(this, T::class.java)
+}
 
 /**
  * 是否可序列化
@@ -68,7 +72,7 @@ fun TYPE_NAME.isUnknownJavaType(): Boolean {
     // 不是jsonable且不是sdk内的类
     return !(Jar.Decompiled.CLASSES.containsKey(genericType()) || jsonable())
             // 是接口类, 且方法内有未知类型的都算未知类型
-            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownJavaType() } } } == true
+            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type?.isUnknownJavaType() == true } } } == true
 }
 
 /**
@@ -80,7 +84,7 @@ fun TYPE_NAME.isUnknownObjcType(): Boolean {
     // 不是jsonable且不是sdk内的类
     return !(Framework.CLASSES.containsKey(genericType()) || jsonable())
             // 是接口类, 且方法内有未知类型的都算未知类型
-            || Framework.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownObjcType() } } } == true
+            || Framework.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type?.isUnknownObjcType() == true } } } == true
 }
 
 /**
@@ -143,13 +147,6 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
             }
         }
     }.replace("$", ".").replace(".", "_")
-}
-
-/**
- * 从java类型获取类型信息
- */
-fun TYPE_NAME.javaType(): Type? {
-    return Jar.Decompiled.CLASSES[this]
 }
 
 /**

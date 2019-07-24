@@ -1,5 +1,8 @@
 package me.yohom.fluttify.task
 
+import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.common.extensions.fromJson
+import me.yohom.fluttify.common.model.SDK
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -14,9 +17,10 @@ open class AndroidDartInterface : DefaultTask() {
 
     @TaskAction
     fun process() {
+        val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
 
+        println(sdk)
     }
-
 
 }
 

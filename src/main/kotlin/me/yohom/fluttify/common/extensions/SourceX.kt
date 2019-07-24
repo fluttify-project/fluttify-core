@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.extensions
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import me.yohom.fluttify.Framework
 import me.yohom.fluttify.Jar
 import me.yohom.fluttify.common.*

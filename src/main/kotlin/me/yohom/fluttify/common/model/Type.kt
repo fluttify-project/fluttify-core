@@ -24,17 +24,17 @@ open class Type {
     /**
      * 所有的字段
      */
-    val fields: MutableList<Field> = mutableListOf()
+    var fields: MutableList<Field> = mutableListOf()
 
     /**
      * 所有的方法
      */
-    val methods: MutableList<Method> = mutableListOf()
+    var methods: MutableList<Method> = mutableListOf()
 
     /**
      * 枚举值 枚举专用
      */
-    val constants: MutableList<String> = mutableListOf()
+    var constants: MutableList<String> = mutableListOf()
 
     /**
      * 返回值类型 Lambda专用
@@ -44,7 +44,11 @@ open class Type {
     /**
      * 形参 Lambda专用
      */
-    val formalParam: MutableList<Variable> = mutableListOf()
+    var formalParam: MutableList<Variable> = mutableListOf()
+
+    override fun toString(): String {
+        return "Type(name='$name', typeType=$typeType, isPublic=$isPublic, superClass='$superClass', fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
+    }
 }
 
 enum class TypeType {
