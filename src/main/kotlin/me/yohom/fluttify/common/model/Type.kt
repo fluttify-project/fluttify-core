@@ -1,51 +1,53 @@
 package me.yohom.fluttify.common.model
 
-/**
- * 类信息 Java类和Objc类公用
- */
-class Type(
+open class Type {
     /**
      * 全名
      */
-    val name: String,
+    var name: String = ""
 
     /**
-     * 类文件所在绝对路径
+     * 类/接口/枚举/lambda
      */
-    val path: String,
+    var typeType: TypeType? = null
+
+    /**
+     * 是否公开
+     */
+    var isPublic: Boolean = false
 
     /**
      * 父类全名
      */
-    val superClass: String,
+    var superClass: String = ""
 
     /**
      * 所有的字段
      */
-    val fields: List<Field>,
+    var fields: MutableList<Field> = mutableListOf()
 
     /**
      * 所有的方法
      */
-    val methods: List<Method>,
+    var methods: MutableList<Method> = mutableListOf()
 
     /**
-     * 类型的类型(class/enum/interface)
+     * 枚举值 枚举专用
      */
-    var typeType: TypeType? = null,
+    var constants: MutableList<String> = mutableListOf()
 
     /**
-     * lambda的参数
+     * 返回值类型 Lambda专用
      */
-    val lambdaParams: List<Variable>? = null,
+    var returnType: String = ""
 
     /**
-     * lambda返回类型
+     * 形参 Lambda专用
      */
-    val lambdaReturnType: String? = null
-) {
+    var formalParam: MutableList<Variable> = mutableListOf()
+
     override fun toString(): String {
-        return "Type(name='$name', path='$path', superClass='$superClass', fields=$fields, methods=$methods, typeType=$typeType)"
+        return "Type(name='$name', typeType=$typeType, isPublic=$isPublic, superClass='$superClass', fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
     }
 }
 

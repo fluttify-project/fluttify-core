@@ -1,10 +1,10 @@
 package me.yohom.fluttify.common.extensions
 
+import com.google.gson.Gson
 import me.yohom.fluttify.Framework
 import me.yohom.fluttify.Jar
 import me.yohom.fluttify.common.PATH
 import me.yohom.fluttify.common.PRESERVED_CLASS
-import me.yohom.fluttify.common.PRESERVED_MODEL
 import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.model.Type
 import me.yohom.fluttify.common.model.TypeType
@@ -17,6 +17,14 @@ fun String?.isLiteral(): Boolean {
         this in listOf("null", "nil") -> true
         else -> false
     }
+}
+
+fun String.findType(): Type {
+    return Jar.Decompiled.CLASSES[this] ?: throw IllegalArgumentException("非法的类型")
+}
+
+inline fun <reified T> String.fromJson(): T {
+    return Gson().fromJson(this, T::class.java)
 }
 
 /**
@@ -64,7 +72,7 @@ fun TYPE_NAME.isUnknownJavaType(): Boolean {
     // 不是jsonable且不是sdk内的类
     return !(Jar.Decompiled.CLASSES.containsKey(genericType()) || jsonable())
             // 是接口类, 且方法内有未知类型的都算未知类型
-            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownJavaType() } } } == true
+            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type?.isUnknownJavaType() == true } } } == true
 }
 
 /**
@@ -76,7 +84,7 @@ fun TYPE_NAME.isUnknownObjcType(): Boolean {
     // 不是jsonable且不是sdk内的类
     return !(Framework.CLASSES.containsKey(genericType()) || jsonable())
             // 是接口类, 且方法内有未知类型的都算未知类型
-            || Framework.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownObjcType() } } } == true
+            || Framework.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type?.isUnknownObjcType() == true } } } == true
 }
 
 /**
@@ -139,13 +147,6 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
             }
         }
     }.replace("$", ".").replace(".", "_")
-}
-
-/**
- * 从java类型获取类型信息
- */
-fun TYPE_NAME.javaType(): Type? {
-    return Jar.Decompiled.CLASSES[this]
 }
 
 /**
@@ -219,29 +220,10 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
 }
 
 /**
- * 类型名判断是否是java model
- */
-fun TYPE_NAME.isJavaModelType(): Boolean {
-    // 如果是系统知道的模型类, 那么直接返回true
-    if (PRESERVED_MODEL.contains(this)) return true
-
-    // 如果是可以直接json序列化的, 那么直接就返回true
-    if (jsonable()) return true
-
-    return Jar
-        .Decompiled
-        .CLASSES[this]
-        ?.path
-        ?.file()
-        ?.readText()
-        ?.isJavaModel() == true
-}
-
-/**
  * 类型名判断是否是java引用类型
  */
 fun TYPE_NAME.isJavaRefType(): Boolean {
-    return !isJavaModelType()
+    return !jsonable()
 }
 
 /**
