@@ -14,6 +14,12 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    from('src/main/java') {
+        include 'resources/tmpl/**/*.tmpl'
+    }
+}
+
 dependencies {
     implementation gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"

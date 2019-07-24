@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common
+package me.yohom.fluttify.common.tmpl
 
 import me.yohom.fluttify.FluttifyCorePluginExtension.outputOrg
 import me.yohom.fluttify.FluttifyCorePluginExtension.outputProjectName

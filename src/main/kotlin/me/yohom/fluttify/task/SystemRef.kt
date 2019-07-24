@@ -1,7 +1,7 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.OutputProject.methodChannel
-import me.yohom.fluttify.common.Tmpl
+import me.yohom.fluttify.common.tmpl.Tmpl
 import me.yohom.fluttify.common.extensions.file
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction

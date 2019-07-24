@@ -1,8 +1,10 @@
 package me.yohom.fluttify.task
 
+import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.file
 import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.model.SDK
+import me.yohom.fluttify.common.tmpl.dart.AndroidViewTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -17,9 +19,17 @@ open class AndroidDartInterface : DefaultTask() {
 
     @TaskAction
     fun process() {
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
         val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
 
-        println(sdk)
+        sdk.libs
+            .flatMap { it.types }
+            .filter { it.superClass in listOf("android.view.View", "android.view.ViewGroup") }
+            .forEach {
+                val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
+
+                println(dartAndroidView)
+            }
     }
 
 }

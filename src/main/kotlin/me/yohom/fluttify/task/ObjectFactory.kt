@@ -3,7 +3,7 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.FluttifyCorePluginExtension.outputOrg
 import me.yohom.fluttify.FluttifyCorePluginExtension.outputProjectName
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.Tmpl
+import me.yohom.fluttify.common.tmpl.Tmpl
 import me.yohom.fluttify.common.extensions.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
