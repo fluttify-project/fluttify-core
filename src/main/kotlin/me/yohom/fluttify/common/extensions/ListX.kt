@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.model.Variable
 /**
  * 键值对转成dart的map字面量字符串
  */
-fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name ?: "" }): String {
+fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name }): String {
     if (isEmpty()) return ""
     return joinToString(prefix = "{", postfix = "}") { "\"${it.name}\": ${valueBuilder(it)}" }
 }

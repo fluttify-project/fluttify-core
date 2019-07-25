@@ -72,7 +72,7 @@ fun TYPE_NAME.isUnknownJavaType(): Boolean {
     // 不是jsonable且不是sdk内的类
     return !(Jar.Decompiled.CLASSES.containsKey(genericType()) || jsonable())
             // 是接口类, 且方法内有未知类型的都算未知类型
-            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type?.isUnknownJavaType() == true } } } == true
+            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownJavaType() } } } == true
 }
 
 /**
@@ -84,7 +84,7 @@ fun TYPE_NAME.isUnknownObjcType(): Boolean {
     // 不是jsonable且不是sdk内的类
     return !(Framework.CLASSES.containsKey(genericType()) || jsonable())
             // 是接口类, 且方法内有未知类型的都算未知类型
-            || Framework.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type?.isUnknownObjcType() == true } } } == true
+            || Framework.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.type.isUnknownObjcType() } } } == true
 }
 
 /**

@@ -55,13 +55,17 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterMethodDeclaration(ctx: MethodDeclarationContext) {
+            if (ctx.name().isObfuscated()) return
+
             methods.add(
                 Method(
                     ctx.returnType(),
                     ctx.name(),
                     ctx.formalParams(),
                     ctx.isStatic(),
-                    ctx.isAbstract()
+                    ctx.isAbstract(),
+                    ctx.isPublic(),
+                    "$packageName.${simpleName.replace("$", ".")}"
                 )
             )
         }
@@ -73,12 +77,16 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.name(),
                     ctx.formalParams(),
                     ctx.isStatic(),
-                    true
+                    true,
+                    isPublic = true,
+                    className = "$packageName.${simpleName.replace("$", ".")}"
                 )
             )
         }
 
         override fun enterFieldDeclaration(ctx: FieldDeclarationContext) {
+            if (ctx.name().isObfuscated()) return
+
             fields.add(
                 Field(
                     ctx.isPublic(),
@@ -154,7 +162,9 @@ fun OBJC_FILE.objcType(): List<Type> {
                     ctx.methodDeclaration().name(),
                     ctx.methodDeclaration().formalParams(),
                     true,
-                    null
+                    null,
+                    true,
+                    name
                 )
             )
         }
@@ -166,7 +176,9 @@ fun OBJC_FILE.objcType(): List<Type> {
                     ctx.methodDeclaration().name(),
                     ctx.methodDeclaration().formalParams(),
                     false,
-                    null
+                    null,
+                    true,
+                    name
                 )
             )
         }

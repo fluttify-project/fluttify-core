@@ -23,8 +23,11 @@ import parser.objc.ObjectiveCParser
 //}
 
 fun JavaParser.MethodDeclarationContext.returnType(): String {
+    // 返回类型 简称
     val paramType = typeTypeOrVoid().text.genericType()
-    val fullGenericType = ancestorOf(JavaParser.CompilationUnitContext::class)
+    // 返回类型 全称
+    // 从import中查找对应的类全称
+    var fullGenericType = ancestorOf(JavaParser.CompilationUnitContext::class)
         ?.importDeclaration()
         // 找到import语句中对应的语句
         ?.firstOrNull {
@@ -35,6 +38,12 @@ fun JavaParser.MethodDeclarationContext.returnType(): String {
                 .run { substring(length - paramType.length, length) } == paramType
         }
         ?.qualifiedName()?.text ?: paramType
+
+    // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
+    if (paramType == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
+        val `package` = ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
+        fullGenericType = "$`package`.$paramType"
+    }
 
     return if (typeTypeOrVoid().text.isList()) {
         "List<$fullGenericType>"
