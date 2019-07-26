@@ -16,6 +16,7 @@ data class Variable(
         return if (typeName.findType().isCallback()) {
             val type = typeName.findType()
             type.methods
+                // 过滤掉方法参数中含有不认识类的参数
                 .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
                 .joinToString { "void ${it.name}(${it.formalParams.joinToString { it.toDartString() }})" }
         } else {
