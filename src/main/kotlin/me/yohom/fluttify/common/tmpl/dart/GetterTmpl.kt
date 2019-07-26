@@ -2,6 +2,10 @@ package me.yohom.fluttify.common.tmpl.dart
 
 import me.yohom.fluttify.common.model.Field
 
+//Future<#__type__#> get#__name__#() async {
+//    final result = await _channel.invokeMethod("#__getter_method__#", {'refId': refId});
+//    return result;
+//}
 /**
  * 生成普通类的dart接口
  */
@@ -10,7 +14,7 @@ class GetterTmpl(private val field: Field) {
 
     fun dartGetter(): String {
         return field.variable?.run {
-            val type = type
+            val type = typeName
             val name = name
             val getterMethod = "$type::get${name.capitalize()}"
 

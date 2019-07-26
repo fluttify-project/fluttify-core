@@ -1,5 +1,10 @@
 package me.yohom.fluttify.common.model
 
+import me.yohom.fluttify.common.extensions.isList
+import me.yohom.fluttify.common.extensions.isObfuscated
+import me.yohom.fluttify.common.extensions.jsonable
+import me.yohom.fluttify.common.extensions.toDartType
+
 open class Type {
     /**
      * 全名
@@ -15,6 +20,11 @@ open class Type {
      * 是否公开
      */
     var isPublic: Boolean = false
+
+    /**
+     * 是否primitive
+     */
+    var isPrimitive: Boolean = false
 
     /**
      * 父类全名
@@ -46,8 +56,36 @@ open class Type {
      */
     var formalParam: MutableList<Variable> = mutableListOf()
 
+    fun isCallback(): Boolean {
+        return typeType == TypeType.Interface
+    }
+
+    fun isEnum(): Boolean {
+        return typeType == TypeType.Enum
+    }
+
+    fun isList(): Boolean {
+        return name.isList()
+    }
+
+    fun jsonable(): Boolean {
+        return name.jsonable()
+    }
+
+    fun toDartType(): String {
+        return name.toDartType()
+    }
+
+    fun isObfuscated(): Boolean {
+        return name.isObfuscated()
+    }
+
     override fun toString(): String {
         return "Type(name='$name', typeType=$typeType, isPublic=$isPublic, superClass='$superClass', fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
+    }
+
+    companion object {
+        val UNKNOWN_TYPE: Type = Type().apply { name = "unknown" }
     }
 }
 

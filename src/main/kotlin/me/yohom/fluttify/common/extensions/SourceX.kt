@@ -59,8 +59,8 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
 //
 //                fieldAllModel.add(
 //                    field.jsonable()
-//                            || me.yohom.fluttify.Jar.Decompiled.CLASSES[type().genericType()]?.isModel == true
-//                            || PRESERVED_MODEL.contains(type())
+//                            || me.yohom.fluttify.Jar.Decompiled.CLASSES[typeName().genericType()]?.isModel == true
+//                            || PRESERVED_MODEL.contains(typeName())
 //                )
 //            }
 //        }
@@ -71,7 +71,7 @@ fun JAVA_SOURCE.isJavaModel(): Boolean {
 //                if (ctx.name() in IGNORE_METHOD) return
 //
 //                memberAllStatic.add(!ctx.isInstanceMethod())
-//                formalParams().forEach { methodArgsAllModel.add(it.type.isModel()) }
+//                formalParams().forEach { methodArgsAllModel.add(it.typeName.isModel()) }
 //            }
 //        }
 //

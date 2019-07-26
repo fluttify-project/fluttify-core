@@ -1,6 +1,5 @@
 package me.yohom.fluttify.common.extensions
 
-import me.yohom.fluttify.common.KOTLIN_SOURCE
 import me.yohom.fluttify.common.model.Variable
 
 
@@ -15,11 +14,11 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
 /**
  * 保留的model类转换成kotlin代码
  */
-fun Variable.convertPreservedModel(): KOTLIN_SOURCE {
-    return when (type) {
-        "Bundle" -> "\n\t\t\tval $name = Bundle()"
-        "Bitmap" -> "\n\t\t\tval $name = (args[\"$name\"] as? ByteArray)?.run { BitmapFactory.decodeByteArray(this, 0, size) }"
-        else -> ""
-    }
-}
+//fun Variable.convertPreservedModel(): KOTLIN_SOURCE {
+//    return when (typeName) {
+//        "Bundle" -> "\n\t\t\tval $name = Bundle()"
+//        "Bitmap" -> "\n\t\t\tval $name = (args[\"$name\"] as? ByteArray)?.run { BitmapFactory.decodeByteArray(this, 0, size) }"
+//        else -> ""
+//    }
+//}
 

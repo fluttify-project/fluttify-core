@@ -3,8 +3,12 @@ package me.yohom.fluttify.common.tmpl.dart
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
-import me.yohom.fluttify.common.tmpl.Tmpl
 
+//#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+//    #__invoke__#
+//    #__callback__#
+//    return #__return_statement__#;
+//}
 /**
  * 生成普通类的dart接口
  */
@@ -17,11 +21,11 @@ class MethodTmpl(private val method: Method) {
         val name = method.name
         val formalParams = method.formalParams.joinToString { it.toDartString() }
         val invoke = invokeString(method.isStatic, method.className, method.name, method.formalParams)
-        val callback = callbackString(method.className, method.name, listOf())
+        val callback = CallbackTmpl(method).callback()
         val returnStatement = returnString(method.returnType)
 
         return tmpl
-            .replace("#__static__#", static)
+            .replace("#__static__# ", static)
             .replace("#__return_type__#", returnType)
             .replace("#__method_name__#", name)
             .replace("#__formal_params__#", formalParams)
@@ -42,14 +46,14 @@ class MethodTmpl(private val method: Method) {
         val resultBuilder = StringBuilder("")
 
         val actualParams = params
-            .filter { !it.type.isJavaCallback() }
+            .filter { !it.typeName.isJavaCallback() }
             .toMutableList()
             .apply { if (!isStatic) add(Variable("int", "refId")) }
             .toDartMap {
                 when {
-                    it.type.isEnum() -> "${it.name}.index"
-                    it.type.isList() -> "${it.name}.map((it) => it.refId).toList()"
-                    it.type.jsonable() -> it.name
+                    it.typeName.isEnum() -> "${it.name}.index"
+                    it.typeName.isList() -> "${it.name}.map((it) => it.refId).toList()"
+                    it.typeName.jsonable() -> it.name
                     else -> "${it.name}.refId"
                 }
             }
@@ -57,31 +61,6 @@ class MethodTmpl(private val method: Method) {
         resultBuilder.append(
             "final result = await _channel.invokeMethod('$className::$methodName', $actualParams);\n"
         )
-        return resultBuilder.toString()
-    }
-
-    private fun callbackString(
-        className: String,
-        methodName: String,
-        callbacks: List<Method>
-    ): String {
-        val resultBuilder = StringBuilder("")
-        callbacks
-            .distinctBy { it.name }
-            .forEach { callback ->
-                resultBuilder.appendln(
-                    Tmpl.Dart.callbackCaseBuilder
-                        .replace("#__callback_case__#", "$className::${methodName}_Callback::${callback.name}")
-                        .replace("#__callback_handler__#", callback.name)
-                        .replace("#__callback_args__#", callback.formalParams.joinToString {
-                            if (it.type.jsonable()) {
-                                "args['${it.name}']"
-                            } else {
-                                "${it.type.toDartType()}.withRefId(args['${it.name}'])"
-                            }
-                        })
-                )
-            }
         return resultBuilder.toString()
     }
 

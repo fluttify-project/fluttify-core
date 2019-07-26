@@ -3,6 +3,9 @@ package me.yohom.fluttify.common.tmpl.dart
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Field
 
+//Future<void> set#__name__#(#__type__# #__arg__#) async {
+//  await _channel.invokeMethod('#__setter_method__#', {'refId': refId, "#__arg__#": #__arg__#});
+//}
 /**
  * 生成普通类的dart接口
  */
@@ -11,7 +14,7 @@ class SetterTmpl(private val field: Field) {
 
     fun dartSetter(): String {
         return field.variable?.run {
-            val type = type.toDartType()
+            val type = typeName.toDartType()
             val name = name.capitalize()
             val setterMethod = "$type::set${name.capitalize()}"
 

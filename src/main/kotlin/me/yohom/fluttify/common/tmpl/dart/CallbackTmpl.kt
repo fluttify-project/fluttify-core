@@ -1,34 +1,42 @@
 package me.yohom.fluttify.common.tmpl.dart
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.model.Type
 
+//MethodChannel('#__callback_channel__#' + refId.toString())
+//.setMethodCallHandler((methodCall) async {
+//    final args = methodCall.arguments as Map;
+//    final refId = args['refId'] as int;
+//    if (refId != this.refId) return;
+//
+//    switch (methodCall.method) {
+//        #__cases__#
+//        default:
+//        break;
+//    }
+//});
 /**
- * 生成普通类的dart接口
+ * 回调代码
  */
-class CallbackTmpl(
-    private val method: Method,
-    private val ext: FluttifyExtension
-) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
+class CallbackTmpl(private val callerMethod: Method) {
+    private val tmpl = this::class.java.getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText()
 
-    fun dartMethod(): String {
-        val static = if (method.isStatic) "static" else ""
-        val returnType = method.returnType
-        val name = method.name
-        val formalParams = method.name
-        val invoke = method.name
-        val callback = method.name
-        val returnStatement = method.name
+    fun callback(): String {
+        // 如果方法参数中没有回调类型的参数, 那么直接返回空字符串
+        if (callerMethod.formalParams.none { it.typeName.findType().isCallback() }) return ""
+
+        val callbackMethods = callerMethod.formalParams
+            .filter { it.typeName.findType().isCallback() }
+            .flatMap { it.typeName.findType().methods }
+            // 过滤掉回调方法中含有不认识类参数的回调方法
+            .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
+        val className = "${callerMethod.className}::${callerMethod.name}_Callback"
+        val callbackCases = callbackMethods.map { CallbackCaseTmpl(callerMethod, it).callbackCase() }
 
         return tmpl
-            .replace("#__static__#", static)
-            .replace("#__return_type__#", returnType)
-            .replace("#__method__#", name)
-            .replaceParagraph("#__formal_params__#", formalParams)
-            .replaceParagraph("#__invoke__#", invoke)
-            .replaceParagraph("#__callback__#", callback)
-            .replaceParagraph("#__return_statement__#", returnStatement)
+            .replace("#__callback_channel__#", className)
+            .replaceParagraph("#__cases__#", callbackCases.joinToString("\n"))
     }
 }

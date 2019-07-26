@@ -1,10 +1,30 @@
 package me.yohom.fluttify.common.tmpl.dart
 
 import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Type
 
+//import 'dart:typed_data';
+//
+//import 'package:#__current_package__#/#__current_package__#.dart';
+//import 'package:flutter/services.dart';
+//
+//// ignore_for_file: non_constant_identifier_names, camel_case_types
+//class #__class_name__# {
+//    #__class_name__#.withRefId(this.refId);
+//
+//    final int refId;
+//
+//    static final _channel = MethodChannel('#__method_channel__#');
+//
+//    #__getters__#
+//
+//    #__setters__#
+//
+//    #__methods__#
+//}
 /**
  * 生成普通类的dart接口
  */
@@ -32,6 +52,7 @@ class ClassTmpl(
 
         val methods = type.methods
             .filter { it.isPublic == true }
+            .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
             .map { MethodTmpl(it).dartMethod() }
 
         return tmpl

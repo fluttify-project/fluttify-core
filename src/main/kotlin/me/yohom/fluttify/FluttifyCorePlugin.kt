@@ -27,5 +27,6 @@ open class FluttifyCorePlugin : Plugin<Project> {
 
         decompileClass.dependsOn(unzip)
         addDependency.dependsOn(outputProject)
+        androidDartInterface.dependsOn(androidJsonRepresentation)
     }
 }

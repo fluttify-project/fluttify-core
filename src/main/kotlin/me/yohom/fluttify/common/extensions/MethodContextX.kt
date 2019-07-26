@@ -4,44 +4,16 @@ import me.yohom.fluttify.common.model.Variable
 import parser.java.JavaParser
 import parser.objc.ObjectiveCParser
 
-//fun JavaParser.MethodDeclarationContext?.method(): Method? {
-//    if (this == null) return null
-//    return Method(
-//        returnType(),
-//        IDENTIFIER().text ?: return null,
-//        formalParams()
-//    )
-//}
-//
-//fun JavaParser.InterfaceMethodDeclarationContext?.method(): Method? {
-//    if (this == null) return null
-//    return Method(
-//        returnType(),
-//        IDENTIFIER().text ?: return null,
-//        formalParams()
-//    )
-//}
-
 fun JavaParser.MethodDeclarationContext.returnType(): String {
     // 返回类型 简称
     val paramType = typeTypeOrVoid().text.genericType()
     // 返回类型 全称
-    // 从import中查找对应的类全称
-    var fullGenericType = ancestorOf(JavaParser.CompilationUnitContext::class)
-        ?.importDeclaration()
-        // 找到import语句中对应的语句
-        ?.firstOrNull {
-            !paramType.jsonable()
-                    && it.qualifiedName().text.length >= paramType.length
-                    && it.qualifiedName()
-                .text
-                .run { substring(length - paramType.length, length) } == paramType
-        }
-        ?.qualifiedName()?.text ?: paramType
+    var fullGenericType = typeFullName(paramType)
 
     // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
     if (paramType == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
-        val `package` = ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
+        val `package` =
+            ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
         fullGenericType = "$`package`.$paramType"
     }
 
@@ -54,17 +26,7 @@ fun JavaParser.MethodDeclarationContext.returnType(): String {
 
 fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
     val paramType = typeTypeOrVoid().text.genericType()
-    val fullGenericType = ancestorOf(JavaParser.CompilationUnitContext::class)
-        ?.importDeclaration()
-        // 找到import语句中对应的语句
-        ?.firstOrNull {
-            !paramType.jsonable()
-                    && it.qualifiedName().text.length >= paramType.length
-                    && it.qualifiedName()
-                .text
-                .run { substring(length - paramType.length, length) } == paramType
-        }
-        ?.qualifiedName()?.text ?: paramType
+    val fullGenericType = typeFullName(paramType)
 
     return if (typeTypeOrVoid().text.isList()) {
         "List<$fullGenericType>"
@@ -119,16 +81,14 @@ fun JavaParser.MethodDeclarationContext.isObfuscated(): Boolean {
     return name().length == 1
 }
 
-fun JavaParser.MethodDeclarationContext?.isPublic(): Boolean {
-    if (this == null) return false
+fun JavaParser.MethodDeclarationContext.isPublic(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("public") == true
 }
 
-fun JavaParser.MethodDeclarationContext?.isInstanceMethod(): Boolean {
-    if (this == null) return false
+fun JavaParser.MethodDeclarationContext.isInstanceMethod(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
@@ -145,24 +105,12 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
         ?.formalParameter()
         ?.forEach { formalParam ->
             val paramType = formalParam.typeType().text.genericType()
-            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
-                ?.importDeclaration()
-                ?.firstOrNull {
-                    !paramType.jsonable()
-                            && it.qualifiedName().text.length >= paramType.length
-                            && it.qualifiedName()
-                        .text
-                        .replace("$", ".")
-                        .run { substringAfterLast(".") } == paramType
-                }
-                ?.qualifiedName()?.text ?: paramType
+            val typeFullName = typeFullName(paramType)
             result.add(
                 Variable(
-                    when {
-                        formalParam.typeType().text.isList() -> "List<$typeFullName>"
-                        else -> typeFullName
-                    },
-                    formalParam.variableDeclaratorId().text
+                    typeFullName,
+                    formalParam.variableDeclaratorId().text,
+                    formalParam.typeType().text.isList()
                 )
             )
         }
@@ -172,24 +120,12 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
         ?.lastFormalParameter()
         ?.run {
             val paramType = typeType().text.genericType()
-            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
-                ?.importDeclaration()
-                ?.firstOrNull {
-                    !paramType.jsonable()
-                            && it.qualifiedName().text.length >= paramType.length
-                            && it.qualifiedName()
-                        .text
-                        .replace("$", ".")
-                        .run { substringAfterLast(".") } == paramType
-                }
-                ?.qualifiedName()?.text ?: paramType
+            val typeFullName = typeFullName(paramType)
             result.add(
                 Variable(
-                    when {
-                        typeType().text.isList() -> "List<$typeFullName>"
-                        else -> typeFullName
-                    },
-                    variableDeclaratorId().text
+                    typeFullName,
+                    variableDeclaratorId().text,
+                    typeType().text.isList()
                 )
             )
         }
@@ -207,24 +143,12 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
         ?.formalParameter()
         ?.forEach { formalParam ->
             val paramType = formalParam.typeType().text.genericType()
-            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
-                ?.importDeclaration()
-                ?.firstOrNull {
-                    !paramType.jsonable()
-                            && it.qualifiedName().text.length >= paramType.length
-                            && it.qualifiedName()
-                        .text
-                        .replace("$", ".")
-                        .run { substringAfterLast(".") } == paramType
-                }
-                ?.qualifiedName()?.text ?: paramType
+            val typeFullName = typeFullName(paramType)
             result.add(
                 Variable(
-                    when {
-                        formalParam.typeType().text.isList() -> "List<$typeFullName>"
-                        else -> typeFullName
-                    },
-                    formalParam.variableDeclaratorId().text
+                    typeFullName,
+                    formalParam.variableDeclaratorId().text,
+                    formalParam.typeType().text.isList()
                 )
             )
         }
@@ -234,24 +158,12 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
         ?.lastFormalParameter()
         ?.run {
             val paramType = typeType().text.genericType()
-            val typeFullName = ancestorOf(JavaParser.CompilationUnitContext::class)
-                ?.importDeclaration()
-                ?.firstOrNull {
-                    !paramType.jsonable()
-                            && it.qualifiedName().text.length >= paramType.length
-                            && it.qualifiedName()
-                        .text
-                        .replace("$", ".")
-                        .run { substringAfterLast(".") } == paramType
-                }
-                ?.qualifiedName()?.text ?: paramType
+            val typeFullName = typeFullName(paramType)
             result.add(
                 Variable(
-                    when {
-                        typeType().text.isList() -> "List<$typeFullName>"
-                        else -> typeFullName
-                    },
-                    variableDeclaratorId().text
+                    typeFullName,
+                    variableDeclaratorId().text,
+                    typeType().text.isList()
                 )
             )
         }
