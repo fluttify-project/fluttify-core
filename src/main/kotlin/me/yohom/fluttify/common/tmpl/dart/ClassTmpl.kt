@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.tmpl.dart
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.findType
+import me.yohom.fluttify.common.extensions.isObfuscated
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Type
@@ -52,6 +53,7 @@ class ClassTmpl(
 
         val methods = type.methods
             .filter { it.isPublic == true }
+            .filter { !it.returnType.isObfuscated()}
             .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
             .map { MethodTmpl(it).dartMethod() }
 
