@@ -20,7 +20,6 @@ import java.io.File
  * 输出: 对应的method channel文件
  */
 open class AndroidKotlinInterface : DefaultTask() {
-    private val methodHandlers = mutableListOf<String>()
 
     override fun getGroup() = "fluttify"
 
@@ -62,14 +61,18 @@ open class AndroidKotlinInterface : DefaultTask() {
 //            .replaceParagraph("#__register_platform_views__#", platformViewRegisterBuilder.toString())
 //            .replaceParagraph("#__handlers__#", methodHandlers.joinToString("\n"))
 
-
         val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
 
+        // 生成主plugin文件
         sdk.libs.forEach {
-            val pluginClassString = PluginTmpl(it, ext).kotlinPlugin()
-            pluginOutputFile.file().writeText(pluginClassString)
+            PluginTmpl(it, ext)
+                .kotlinPlugin()
+                .run {
+                    pluginOutputFile.file().writeText(this)
+                }
         }
 
+        // 生成PlatformViewFactory文件
         sdk.libs
             .flatMap { it.types }
             .filter { it.isView() }
@@ -79,9 +82,12 @@ open class AndroidKotlinInterface : DefaultTask() {
                         ".",
                         "/"
                     )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
-                PlatformViewFactoryTmpl(it, ext).kotlinPlatformViewFactory().run {
-                    factoryOutputFile.writeText(this)
-                }
+
+                PlatformViewFactoryTmpl(it, ext)
+                    .kotlinPlatformViewFactory()
+                    .run {
+                        factoryOutputFile.writeText(this)
+                    }
             }
     }
 
