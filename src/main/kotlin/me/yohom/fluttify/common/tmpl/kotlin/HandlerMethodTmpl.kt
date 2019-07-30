@@ -1,8 +1,8 @@
 package me.yohom.fluttify.common.tmpl.kotlin
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
+import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 
 //private fun #__method_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
@@ -14,10 +14,7 @@ import me.yohom.fluttify.common.model.Method
 //
 //    #__result__#
 //}
-class HandlerMethodTmpl(
-    private val method: Method,
-    private val ext: FluttifyExtension
-) {
+class HandlerMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.mtd.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
@@ -36,15 +33,18 @@ class HandlerMethodTmpl(
                 }
             }
         // 获取当前调用方法的对象引用
-        val ref = ""
-        val invoke = ""
-        val result = ""
+        val ref = RefTmpl(method).kotlinRef()
 
+        // 调用kotlin端对应的方法
+        val invoke = InvokeTmpl(method).kotlinInvoke()
+
+        // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
+        val result = RefResultTmpl(method.returnType).kotlinRefResult()
         return tmpl
             .replace("#__method_name__#", methodName)
-            .replace("#__args__#", args)
-            .replace("#__ref__#", ref)
-            .replace("#__invoke__#", invoke)
-            .replace("#__result__#", result)
+            .replaceParagraph("#__args__#", args)
+            .replaceParagraph("#__ref__#", ref)
+            .replaceParagraph("#__invoke__#", invoke)
+            .replaceParagraph("#__result__#", result)
     }
 }
