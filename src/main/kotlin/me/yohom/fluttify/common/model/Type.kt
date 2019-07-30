@@ -80,6 +80,10 @@ open class Type {
         return name.isObfuscated()
     }
 
+    fun isView(): Boolean {
+        return superClass in listOf("android.view.View", "android.view.ViewGroup")
+    }
+
     override fun toString(): String {
         return "Type(name='$name', typeType=$typeType, isPublic=$isPublic, superClass='$superClass', fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
     }

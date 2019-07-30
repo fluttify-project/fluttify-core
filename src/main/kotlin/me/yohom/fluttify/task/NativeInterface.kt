@@ -1,13 +1,14 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyCorePluginExtension.outputOrg
-import me.yohom.fluttify.FluttifyCorePluginExtension.outputProjectName
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.OutputProject.classSimpleName
-import me.yohom.fluttify.OutputProject.methodChannel
 import me.yohom.fluttify.common.JAVA_FILE
-import me.yohom.fluttify.common.extensions.*
-import me.yohom.fluttify.common.tmpl.Tmpl
+import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.common.extensions.fromJson
+import me.yohom.fluttify.common.extensions.simpleName
+import me.yohom.fluttify.common.extensions.underscore2Camel
+import me.yohom.fluttify.common.model.SDK
+import me.yohom.fluttify.common.tmpl.kotlin.PlatformViewFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.PluginTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -26,38 +27,62 @@ open class AndroidKotlinInterface : DefaultTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val outputFile = "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(".", "/")}/${ext.outputProjectName}/${ext.outputProjectName.underscore2Camel(true)}"
+        val pluginOutputFile =
+            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
+                ".",
+                "/"
+            )}/${ext.outputProjectName}/${ext.outputProjectName.underscore2Camel(true)}Plugin.kt"
 
-        val branchesBuilder = StringBuilder("")
-        val platformViewRegisterBuilder = StringBuilder("")
+//        val branchesBuilder = StringBuilder("")
+//        val platformViewRegisterBuilder = StringBuilder("")
+//
+//        // 生成所有方法的分支
+//        project.projectDir.iterate("java") {
+//            if (!it.nameWithoutExtension.isObfuscated() && !it.readText().isIgnore()) {
+//                branchesBuilder.append(generateForFile(it))
+//            }
+//        }
+//
+//        // 注册所有的View
+//        project.projectDir.iterate("java") {
+//            if (it.readText().isView()) {
+//                if (it.readText().isView()) {
+//                    platformViewRegisterBuilder.appendln(registerPlatformFactory(it))
+//                    generatePlatformViewFactory(it)
+//                }
+//            }
+//        }
+//
+//        // package
+//        val pluginClassString = Tmpl.Kotlin.pluginBuilder
+//            .replace("#__package_name__#", "$outputOrg.$outputProjectName")
+//            .replace("#__plugin_in_name__#", classSimpleName)
+//            .replace("#__method_channel__#", methodChannel)
+//            .replaceParagraph("#__dispatcher__#", branchesBuilder.toString())
+//            .replaceParagraph("#__register_platform_views__#", platformViewRegisterBuilder.toString())
+//            .replaceParagraph("#__handlers__#", methodHandlers.joinToString("\n"))
 
-        // 生成所有方法的分支
-        project.projectDir.iterate("java") {
-            if (!it.nameWithoutExtension.isObfuscated() && !it.readText().isIgnore()) {
-                branchesBuilder.append(generateForFile(it))
-            }
+
+        val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
+
+        sdk.libs.forEach {
+            val pluginClassString = PluginTmpl(it, ext).kotlinPlugin()
+            pluginOutputFile.file().writeText(pluginClassString)
         }
 
-        // 注册所有的View
-        project.projectDir.iterate("java") {
-            if (it.readText().isView()) {
-                if (it.readText().isView()) {
-                    platformViewRegisterBuilder.appendln(registerPlatformFactory(it))
-                    generatePlatformViewFactory(it)
+        sdk.libs
+            .flatMap { it.types }
+            .filter { it.isView() }
+            .forEach {
+                val factoryOutputFile =
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
+                        ".",
+                        "/"
+                    )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
+                PlatformViewFactoryTmpl(it, ext).kotlinPlatformViewFactory().run {
+                    factoryOutputFile.writeText(this)
                 }
             }
-        }
-
-        // package
-        val pluginClassString = Tmpl.Kotlin.pluginBuilder
-            .replace("#__package_name__#", "$outputOrg.$outputProjectName")
-            .replace("#__plugin_in_name__#", classSimpleName)
-            .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__dispatcher__#", branchesBuilder.toString())
-            .replaceParagraph("#__platform_views__#", platformViewRegisterBuilder.toString())
-            .replaceParagraph("#__handlers__#", methodHandlers.joinToString("\n"))
-
-        outputFile.file().writeText(pluginClassString)
     }
 
     private fun generateForFile(javaFile: JAVA_FILE): String {

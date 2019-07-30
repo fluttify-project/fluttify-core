@@ -59,7 +59,7 @@ class ObjectCreator {
 
         val pluginBuilder by lazy { "$tmplDir/kotlin/plugin.kt.tmpl".file().readText() }
 
-        val platformViewRegisterBuilder by lazy { "$tmplDir/kotlin/platform_view_register.stmt.kt.tmpl".file().readText() }
+        val platformViewRegisterBuilder by lazy { "$tmplDir/kotlin/register_platform_view.stmt.kt.tmpl".file().readText() }
 
         val platformViewFactoryBuilder by lazy { "$tmplDir/kotlin/platform_view_factory.kt.tmpl".file().readText() }
 

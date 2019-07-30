@@ -6,7 +6,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 val REF_MAP = mutableMapOf<Int, Any>()
 
 @Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
-class #__plugin_in_name__#Plugin {
+class #__plugin_name__#Plugin {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
@@ -21,12 +21,12 @@ class #__plugin_in_name__#Plugin {
                     "SystemRef::getandroid_app_Activity" -> {
                         methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
                     }
-                    #__dispatcher__#
+                    #__branches__#
                     else -> methodResult.notImplemented()
                     }
                 }
 
-            #__platform_views__#
+            #__register_platform_views__#
 		}
 
 		#__handlers__#
