@@ -32,6 +32,9 @@ class CallbackTmpl(private val callerMethod: Method) {
             .flatMap { it.typeName.findType().methods }
             // 过滤掉回调方法中含有不认识类参数的回调方法
             .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
+            // 重载方法只留一个
+            .distinctBy { it.name }
+
         val className = "${callerMethod.className}::${callerMethod.name}_Callback"
         val callbackCases = callbackMethods.map { CallbackCaseTmpl(callerMethod, it).callbackCase() }
 

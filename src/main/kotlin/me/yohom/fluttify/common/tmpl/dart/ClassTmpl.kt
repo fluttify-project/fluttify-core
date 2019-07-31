@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.tmpl.dart
 
 import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.common.IGNORE_METHOD
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.isObfuscated
 import me.yohom.fluttify.common.extensions.replaceParagraph
@@ -43,19 +44,29 @@ class ClassTmpl(
         val getters = type.fields
             .filter { it.isPublic == true }
             .filter { it.isStatic == false }
+            .filter { it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE }
             .map { GetterTmpl(it).dartGetter() }
 
         val setters = type.fields
+            .asSequence()
             .filter { it.isFinal == false }
             .filter { it.isPublic == true }
             .filter { it.isStatic == false }
+            .filter { it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE }
             .map { SetterTmpl(it).dartSetter() }
+            .toList()
 
         val methods = type.methods
+            .asSequence()
+            .distinctBy { it.name }
+            .filter { it.name !in IGNORE_METHOD }
             .filter { it.isPublic == true }
-            .filter { !it.returnType.isObfuscated()}
+            .filter { !it.returnType.isObfuscated() }
+            .filter { it.returnType.findType() != Type.UNKNOWN_TYPE }
             .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
             .map { MethodTmpl(it).dartMethod() }
+            // todo 去除和getters和setters重复的方法
+            .toList()
 
         return tmpl
             .replace("#__current_package__#", currentPackage)

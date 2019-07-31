@@ -25,7 +25,7 @@ class MethodTmpl(private val method: Method) {
         val returnStatement = returnString(method.returnType)
 
         return tmpl
-            .replace("#__static__# ", static)
+            .replace("#__static__#", static)
             .replace("#__return_type__#", returnType)
             .replace("#__method_name__#", name)
             .replace("#__formal_params__#", formalParams)

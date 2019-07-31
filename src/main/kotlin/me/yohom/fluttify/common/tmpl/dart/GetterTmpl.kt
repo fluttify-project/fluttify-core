@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.tmpl.dart
 
+import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Field
 
 //Future<#__type__#> get#__name__#() async {
@@ -14,7 +15,7 @@ class GetterTmpl(private val field: Field) {
 
     fun dartGetter(): String {
         return field.variable?.run {
-            val type = typeName
+            val type = typeName.toDartType()
             val name = name
             val getterMethod = "$type::get${name.capitalize()}"
 

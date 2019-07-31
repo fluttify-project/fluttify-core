@@ -15,7 +15,7 @@ class SetterTmpl(private val field: Field) {
     fun dartSetter(): String {
         return field.variable?.run {
             val type = typeName.toDartType()
-            val name = name.capitalize()
+            val name = name.capitalize().toDartType()
             val setterMethod = "$type::set${name.capitalize()}"
 
             tmpl

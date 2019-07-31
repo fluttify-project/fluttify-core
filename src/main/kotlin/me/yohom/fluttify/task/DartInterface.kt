@@ -6,8 +6,10 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.isObfuscated
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.model.SDK
+import me.yohom.fluttify.common.model.TypeType
 import me.yohom.fluttify.common.tmpl.dart.AndroidViewTmpl
 import me.yohom.fluttify.common.tmpl.dart.ClassTmpl
+import me.yohom.fluttify.common.tmpl.dart.EnumTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -28,10 +30,11 @@ open class AndroidDartInterface : DefaultTask() {
         // 处理View, 生成AndroidView
         sdk.libs
             .flatMap { it.types }
-            .filter { it.superClass in listOf("android.view.View", "android.view.ViewGroup") }
+            .filter { it.isView() }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
-                val androidViewFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.simpleName()}.dart"
+                val androidViewFile =
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.simpleName()}.dart"
 
                 androidViewFile.file().writeText(dartAndroidView)
             }
@@ -39,12 +42,25 @@ open class AndroidDartInterface : DefaultTask() {
         // 处理普通类
         sdk.libs
             .flatMap { it.types }
-            .filter { !it.name.simpleName().isObfuscated() }
+            .filter { !it.name.isObfuscated() }
             .forEach {
-                val dartClass = ClassTmpl(it, ext).dartClass()
-                val classFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.replace(".", "/")}.dart"
+                val resultDart = when (it.typeType) {
+                    TypeType.Class -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Enum -> EnumTmpl(it).dartEnum()
+                    TypeType.Interface -> ""
+                    TypeType.Lambda -> ""
+                    null -> ""
+                }
 
-                classFile.file().writeText(dartClass)
+                if (resultDart.isNotBlank()) {
+                    val resultFile =
+                        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.replace(
+                            ".",
+                            "/"
+                        )}.dart"
+
+                    resultFile.file().writeText(resultDart)
+                }
             }
     }
 
