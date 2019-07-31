@@ -8,7 +8,7 @@ class ArgJsonableTmpl(private val variable: Variable) {
 
     fun kotlinArgJsonable(): String {
         return tmpl
-            .replace("#__type_name__#", variable.typeName)
+            .replace("#__type_name__#", variable.typeName.capitalize().replace("[]", "Array"))
             .replace("#__arg_name__#", variable.name)
     }
 }

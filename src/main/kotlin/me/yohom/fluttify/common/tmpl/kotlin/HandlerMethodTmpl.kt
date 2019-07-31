@@ -3,6 +3,7 @@ package me.yohom.fluttify.common.tmpl.kotlin
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
+import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
 
 //private fun #__method_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
@@ -18,7 +19,7 @@ class HandlerMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.mtd.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
-        val methodName = method.name
+        val methodName = "handle${method.className.toDartType()}_${method.name}"
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
         // 2. jsonable

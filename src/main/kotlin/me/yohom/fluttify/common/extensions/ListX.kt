@@ -1,5 +1,10 @@
 package me.yohom.fluttify.common.extensions
 
+import me.yohom.fluttify.common.IGNORE_CLASS
+import me.yohom.fluttify.common.IGNORE_METHOD
+import me.yohom.fluttify.common.model.Field
+import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.model.Type
 import me.yohom.fluttify.common.model.Variable
 
 
@@ -11,14 +16,42 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
     return joinToString(prefix = "{", postfix = "}") { "\"${it.name}\": ${valueBuilder(it)}" }
 }
 
-/**
- * 保留的model类转换成kotlin代码
- */
-//fun Variable.convertPreservedModel(): KOTLIN_SOURCE {
-//    return when (typeName) {
-//        "Bundle" -> "\n\t\t\tval $name = Bundle()"
-//        "Bitmap" -> "\n\t\t\tval $name = (args[\"$name\"] as? ByteArray)?.run { BitmapFactory.decodeByteArray(this, 0, size) }"
-//        else -> ""
-//    }
-//}
+fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
+    return asSequence()
+        .filter { method -> distinctSource.none { it.contains(method.name) } }
+        .distinctBy { it.name }
+        .filter { it.name !in IGNORE_METHOD }
+        .filter { it.isPublic == true }
+        .filter { !it.returnType.isObfuscated() }
+        .filter { it.returnType.findType() != Type.UNKNOWN_TYPE }
+        .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
+        .toList()
+        .apply { println("Method过滤后: $this") }
+}
+
+fun List<Field>.filterGetters(): List<Field> {
+    return asSequence()
+        .filter { it.isPublic == true }
+        .filter { it.isStatic == false }
+        .filter { it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE }
+        .toList()
+}
+
+fun List<Type>.filterType(): List<Type> {
+    return asSequence()
+        .filter { it.isPublic }
+        .filter { it.superClass !in IGNORE_CLASS }
+        .toList()
+}
+
+fun List<Field>.filterSetters(): List<Field> {
+    println("Setters过滤前: $this")
+    return asSequence()
+        .filter { it.isFinal == false }
+        .filter { it.isPublic == true }
+        .filter { it.isStatic == false }
+        .filter { it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE }
+        .toList()
+        .apply { println("Setters过滤后: $this") }
+}
 

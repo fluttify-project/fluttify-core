@@ -1,7 +1,8 @@
 package me.yohom.fluttify.common.tmpl.kotlin
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.isUnknownJavaType
+import me.yohom.fluttify.common.extensions.filterMethod
+import me.yohom.fluttify.common.extensions.filterType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.Lib
@@ -58,7 +59,9 @@ class PluginTmpl(
 
         // 处理分支们 由于方法内代码太多, 会导致编译失败, 所以会为每个处理方法单独开一个私有方法
         val branches = lib.types
+            .filterType()
             .flatMap { it.methods }
+            .filterMethod()
             .joinToString("\n") { BranchTmpl(it).kotlinBranch() }
 
         // 注册PlatformView
@@ -68,9 +71,9 @@ class PluginTmpl(
 
         // 为每个方法单独开的方法
         val handlers = lib.types
+            .filterType()
             .flatMap { it.methods }
-            .filter { it.isPublic == true }
-            .filter { it.formalParams.none { it.typeName.isUnknownJavaType() } }
+            .filterMethod()
             .joinToString("\n") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
 
         return tmpl

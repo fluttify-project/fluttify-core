@@ -14,7 +14,7 @@ class BranchTmpl(
     fun kotlinBranch(): String {
         val className = method.className
         val methodName = method.name
-        val handler = "handle${method.className.toDartType()}_${method.name}()"
+        val handler = "handle${method.className.toDartType()}_${method.name}(registrar, args, methodResult)"
 
         return tmpl.replace("#__class_name__#", className)
             .replace("#__method_name__#", methodName)

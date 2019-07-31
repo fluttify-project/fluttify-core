@@ -4,7 +4,6 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.FluttifyProject
 import me.yohom.fluttify.common.PATH
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -17,15 +16,13 @@ import java.io.InputStreamReader
  */
 open class OutputProject : DefaultTask() {
 
-    private val ext = project.extensions.getByType(FluttifyExtension::class.java)
-
-    @Input
-    var outputProjectPath = "${project.projectDir}/output-project/${ext.outputProjectName}"
-
     override fun getGroup() = "fluttify"
 
     @TaskAction
     fun process() {
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
+        val outputProjectPath = "${project.projectDir}/output-project/${ext.outputProjectName}"
+
         val process = Runtime
             .getRuntime()
             .exec("flutter create --offline -a kotlin -i swift --template plugin --org ${ext.outputOrg} $outputProjectPath")

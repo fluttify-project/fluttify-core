@@ -38,5 +38,5 @@ val IGNORE_FIELD = listOf(
  * 忽略的类
  */
 val IGNORE_CLASS = listOf(
-    "Fragment"
+    "android.support.v4.app.Fragment"
 )
