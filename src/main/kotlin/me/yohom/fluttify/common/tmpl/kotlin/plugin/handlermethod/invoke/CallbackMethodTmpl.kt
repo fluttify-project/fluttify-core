@@ -6,16 +6,22 @@ import me.yohom.fluttify.common.extensions.toKotlinType
 import me.yohom.fluttify.common.model.Method
 
 //override fun #__callback_method__#(#__formal_params__#): #__return_type__# {
+//    // 日志打印
+//    #__log__#
+//
+//    // 开始回调
 //    callbackChannel.invokeMethod(
 //        "#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#",
 //        mapOf<String, Any?>(
 //            #__callback_params__#
 //        )
 //    )
+//
+//    // 方法返回值
 //    #__return_stmt__#
 //}
 class CallbackMethodTmpl(private val callerMethod: Method, private val callbackMethod: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback_method.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback_method.mtd.kt.tmpl").readText()
 
     fun kotlinCallbackMethod(): String {
         return tmpl
@@ -34,6 +40,7 @@ class CallbackMethodTmpl(private val callerMethod: Method, private val callbackM
                     "\"${it.name}\" to ${if (it.typeName.jsonable()) it.name else "${it.name}.hashCode()"}"
                 }
             )
+            .replaceParagraph("#__log__#", "print(\"fluttify-kotlin-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\")")
             .replaceParagraph(
                 "#__return_stmt__#",
                 when (callbackMethod.returnType.toKotlinType()) {

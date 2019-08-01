@@ -5,8 +5,10 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Type
 
 //object : #__callback_class_name__# {
+//    // method channel
 //    val callbackChannel = MethodChannel(registrar.messenger(), "#__caller_class_name__#::#__caller_method_name__#_Callback" + refId)
 //
+//    // 回调方法们
 //    #__callback_methods__#
 //}
 class CallbackTmpl(private val callerMethod: Method, private val callbackType: Type) {

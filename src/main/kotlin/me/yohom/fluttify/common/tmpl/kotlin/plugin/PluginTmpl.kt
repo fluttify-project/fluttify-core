@@ -25,6 +25,7 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.HandlerMethodTm
 //            channel.setMethodCallHandler { methodCall, methodResult ->
 //                val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
 //                when (methodCall.method) {
+//                    // 生成系统对象的引用
 //                    "SystemRef::getandroid_app_Application" -> {
 //                        methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
 //                    }
@@ -36,9 +37,11 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.HandlerMethodTm
 //                    }
 //                }
 //
+//            // 注册View
 //            #__register_platform_views__#
 //		}
 //
+//		// 与branch对应的方法们
 //		#__handlers__#
 //    }
 //}

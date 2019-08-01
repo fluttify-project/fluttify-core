@@ -6,17 +6,17 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Type
 
 //MethodChannel('#__callback_channel__#' + refId.toString())
-//.setMethodCallHandler((methodCall) async {
-//    final args = methodCall.arguments as Map;
-//    final refId = args['refId'] as int;
-//    if (refId != this.refId) return;
+//    .setMethodCallHandler((methodCall) async {
+//      final args = methodCall.arguments as Map;
+//      final refId = args['refId'] as int;
+//      if (refId != this.refId) return;
 //
-//    switch (methodCall.method) {
+//      switch (methodCall.method) {
 //        #__cases__#
 //        default:
-//        break;
-//    }
-//});
+//          break;
+//      }
+//    });
 /**
  * 回调代码
  */

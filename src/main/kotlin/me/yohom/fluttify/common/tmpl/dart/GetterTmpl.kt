@@ -4,8 +4,8 @@ import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Field
 
 //Future<#__type__#> get#__name__#() async {
-//    final result = await _channel.invokeMethod("#__getter_method__#", {'refId': refId});
-//    return result;
+//  final result = await _channel.invokeMethod("#__getter_method__#", {'refId': refId});
+//  return result;
 //}
 /**
  * 生成普通类的dart接口

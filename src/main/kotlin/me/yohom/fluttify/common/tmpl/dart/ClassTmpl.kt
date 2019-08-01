@@ -11,17 +11,20 @@ import me.yohom.fluttify.common.model.Type
 //
 //// ignore_for_file: non_constant_identifier_names, camel_case_types
 //class #__class_name__# {
-//    #__class_name__#.withRefId(this.refId);
+//  #__class_name__#.withRefId(this.refId);
 //
-//    final int refId;
+//  final int refId;
 //
-//    static final _channel = MethodChannel('#__method_channel__#');
+//  static final _channel = MethodChannel('#__method_channel__#');
 //
-//    #__getters__#
+//  // 生成getters
+//  #__getters__#
 //
-//    #__setters__#
+//  // 生成setters
+//  #__setters__#
 //
-//    #__methods__#
+//  // 生成方法们
+//  #__methods__#
 //}
 /**
  * 生成普通类的dart接口

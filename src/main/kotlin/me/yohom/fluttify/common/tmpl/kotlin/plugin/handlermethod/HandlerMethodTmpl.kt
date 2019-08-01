@@ -8,14 +8,19 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.invoke.InvokeTmpl
 
 //private fun #__method_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
+//    // 参数
 //    #__args__#
 //
-//    #__log__#
-//
+//    // 调用对象引用
 //    #__ref__#
 //
+//    // 日志打印
+//    #__log__#
+//
+//    // 开始调用
 //    #__invoke__#
 //
+//    // 调用结果
 //    #__result__#
 //}
 class HandlerMethodTmpl(private val method: Method) {
@@ -36,7 +41,11 @@ class HandlerMethodTmpl(private val method: Method) {
                     else -> ArgRefTmpl(it).kotlinArgRef()
                 }
             }
-        val log = "println(\"fluttify-kotlin: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\");"
+        val log = if (method.isStatic) {
+            "println(\"fluttify-kotlin: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\")"
+        } else {
+            "println(\"fluttify-kotlin: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\")"
+        }
 
         // 获取当前调用方法的对象引用
         val ref = RefTmpl(method).kotlinRef()

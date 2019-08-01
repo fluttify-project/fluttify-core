@@ -5,10 +5,17 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
 
 //#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
-//    #__log__#
-//    #__invoke__#
-//    #__callback__#
-//    return #__return_statement__#;
+//  // 日志打印
+//  #__log__#
+//
+//  // 调用原生方法
+//  #__invoke__#
+//
+//  // 接受原生回调
+//  #__callback__#
+//
+//  // 返回值
+//  return #__return_statement__#;
 //}
 /**
  * 生成普通类的dart接口
