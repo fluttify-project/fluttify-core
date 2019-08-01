@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.invoke
 
+import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toKotlinType
 import me.yohom.fluttify.common.model.Method
@@ -29,7 +30,9 @@ class CallbackMethodTmpl(private val callerMethod: Method, private val callbackM
             .replace("#__callback_method__#", callbackMethod.name)
             .replaceParagraph(
                 "#__callback_params__#",
-                callbackMethod.formalParams.joinToString(",\n") { "\"${it.name}\" to ${it.name}" }
+                callbackMethod.formalParams.joinToString(",\n") {
+                    "\"${it.name}\" to ${if (it.typeName.jsonable()) it.name else "${it.name}.hashCode()"}"
+                }
             )
             .replaceParagraph(
                 "#__return_stmt__#",

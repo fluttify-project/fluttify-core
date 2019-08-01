@@ -19,7 +19,7 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
 fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
     return asSequence()
         .filter { method -> distinctSource.isEmpty() or distinctSource.none { it.contains(method.name) } }
-        .distinctBy { it.name }
+        .distinctBy { "${it.className}::${it.name}" }
         .filter { it.name !in IGNORE_METHOD }
         .filter { it.isPublic == true }
         .filter { !it.returnType.findType().isObfuscated() }
