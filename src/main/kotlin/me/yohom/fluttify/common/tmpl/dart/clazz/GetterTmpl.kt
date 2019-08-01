@@ -17,7 +17,7 @@ class GetterTmpl(private val field: Field) {
         return field.variable?.run {
             val type = typeName.toDartType()
             val name = name
-            val getterMethod = "$type::get${name.capitalize()}"
+            val getterMethod = "${field.className}::get${name.capitalize()}"
 
             tmpl
                 .replace("#__type__#", type)

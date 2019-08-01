@@ -16,7 +16,7 @@ class SetterTmpl(private val field: Field) {
         return field.variable?.run {
             val type = typeName.toDartType()
             val name = name.capitalize().toDartType()
-            val setterMethod = "$type::set${name.capitalize()}"
+            val setterMethod = "${field.className}::set${name.capitalize()}"
 
             tmpl
                 .replace("#__type__#", type)
