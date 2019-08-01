@@ -36,6 +36,8 @@ class HandlerMethodTmpl(private val method: Method) {
                     else -> ArgRefTmpl(it).kotlinArgRef()
                 }
             }
+        val log = "println(\"fluttify-kotlin: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\");"
+
         // 获取当前调用方法的对象引用
         val ref = RefTmpl(method).kotlinRef()
 
@@ -48,7 +50,7 @@ class HandlerMethodTmpl(private val method: Method) {
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)
             .replaceParagraph("#__ref__#", ref)
-            .replaceParagraph("#__log__#", "") // todo
+            .replaceParagraph("#__log__#", log)
             .replaceParagraph("#__invoke__#", invoke)
             .replaceParagraph("#__result__#", result)
     }

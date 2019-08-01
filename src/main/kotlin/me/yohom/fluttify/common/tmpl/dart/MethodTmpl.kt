@@ -5,6 +5,7 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
 
 //#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+//    #__log__#
 //    #__invoke__#
 //    #__callback__#
 //    return #__return_statement__#;
@@ -20,6 +21,7 @@ class MethodTmpl(private val method: Method) {
         val returnType = method.returnType.toDartType()
         val name = method.name
         val formalParams = method.formalParams.joinToString { it.toDartString() }
+        val log = "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':$${it.name}" }})');"
         val invoke = invokeString(method.isStatic, method.className, method.name, method.formalParams)
         val callback = CallbackTmpl(method).callback()
         val returnStatement = returnString(method.returnType)
@@ -29,6 +31,7 @@ class MethodTmpl(private val method: Method) {
             .replace("#__return_type__#", returnType)
             .replace("#__method_name__#", name)
             .replace("#__formal_params__#", formalParams)
+            .replaceParagraph("#__log__#", log)
             .replaceParagraph("#__invoke__#", invoke)
             .replaceParagraph("#__callback__#", callback)
             .replace("#__return_statement__#", returnStatement)
