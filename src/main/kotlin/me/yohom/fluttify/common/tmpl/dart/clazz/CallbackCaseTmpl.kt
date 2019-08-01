@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart
+package me.yohom.fluttify.common.tmpl.dart.clazz
 
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.toDartType

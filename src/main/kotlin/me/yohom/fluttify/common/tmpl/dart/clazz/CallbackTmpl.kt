@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart
+package me.yohom.fluttify.common.tmpl.dart.clazz
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
@@ -36,7 +36,10 @@ class CallbackTmpl(private val callerMethod: Method) {
             .distinctBy { it.name }
 
         val className = "${callerMethod.className}::${callerMethod.name}_Callback"
-        val callbackCases = callbackMethods.map { CallbackCaseTmpl(callerMethod, it).callbackCase() }
+        val callbackCases = callbackMethods.map { CallbackCaseTmpl(
+            callerMethod,
+            it
+        ).callbackCase() }
 
         return tmpl
             .replace("#__callback_channel__#", className)

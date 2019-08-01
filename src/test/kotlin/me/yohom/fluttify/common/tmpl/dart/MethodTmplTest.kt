@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.tmpl.dart
 
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
+import me.yohom.fluttify.common.tmpl.dart.clazz.MethodTmpl
 import org.junit.Test
 
 

@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart
+package me.yohom.fluttify.common.tmpl.dart.clazz
 
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Method
@@ -28,7 +28,11 @@ class MethodTmpl(private val method: Method) {
         val returnType = method.returnType.toDartType()
         val name = method.name
         val formalParams = method.formalParams.joinToString { it.toDartString() }
-        val log = "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':$${it.name}" }})');"
+        val log = if (method.isStatic) {
+            "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':$${it.name}" }})');"
+        } else {
+            "print('fluttify-dart: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':$${it.name}" }})');"
+        }
         val invoke = invokeString(method.isStatic, method.className, method.name, method.formalParams)
         val callback = CallbackTmpl(method).callback()
         val returnStatement = returnString(method.returnType)

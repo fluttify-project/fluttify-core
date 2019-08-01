@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart
+package me.yohom.fluttify.common.tmpl.dart.view
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.simpleName

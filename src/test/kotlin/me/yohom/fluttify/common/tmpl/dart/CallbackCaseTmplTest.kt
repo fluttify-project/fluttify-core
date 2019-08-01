@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.tmpl.dart
 
 import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.tmpl.dart.clazz.CallbackCaseTmpl
 import org.junit.Test
 
 
