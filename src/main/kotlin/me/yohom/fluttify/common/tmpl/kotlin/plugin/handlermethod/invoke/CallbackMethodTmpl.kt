@@ -36,11 +36,11 @@ class CallbackMethodTmpl(private val callerMethod: Method, private val callbackM
             .replace("#__callback_method__#", callbackMethod.name)
             .replaceParagraph(
                 "#__callback_params__#",
-                callbackMethod.formalParams.joinToString(",\n") {
-                    "\"${it.name}\" to ${if (it.typeName.jsonable()) it.name else "${it.name}.hashCode()"}"
+                callbackMethod.formalParams.joinToString("") {
+                    "\"${it.name}\" to ${if (it.typeName.jsonable()) it.name else "${it.name}.hashCode()"},\n"
                 }
             )
-            .replaceParagraph("#__log__#", "print(\"fluttify-kotlin-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\")")
+            .replaceParagraph("#__log__#", "println(\"fluttify-kotlin-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.map { "\\\"${it.name}\\\":$${it.name}" }})\")")
             .replaceParagraph(
                 "#__return_stmt__#",
                 when (callbackMethod.returnType.toKotlinType()) {
