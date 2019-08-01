@@ -26,7 +26,6 @@ fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Met
         .filter { it.returnType.findType() != Type.UNKNOWN_TYPE }
         .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
         .toList()
-        .apply { println("Method过滤后: $this") }
 }
 
 fun List<Field>.filterGetters(): List<Field> {
@@ -45,13 +44,11 @@ fun List<Type>.filterType(): List<Type> {
 }
 
 fun List<Field>.filterSetters(): List<Field> {
-    println("Setters过滤前: $this")
     return asSequence()
         .filter { it.isFinal == false }
         .filter { it.isPublic == true }
         .filter { it.isStatic == false }
         .filter { it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE }
         .toList()
-        .apply { println("Setters过滤后: $this") }
 }
 

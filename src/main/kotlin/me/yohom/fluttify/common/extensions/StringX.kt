@@ -109,7 +109,12 @@ fun TYPE_NAME.findType(): Type {
  * 转kotlin类型
  */
 fun TYPE_NAME.toKotlinType(): String {
-    return if (this == "void") "Unit" else if (jsonable()) capitalize() else this
+    return when {
+        this == "void" -> "Unit"
+        this == "Integer" -> "Int"
+        jsonable() -> capitalize()
+        else -> this
+    }.replace("[]", "Array")
 }
 
 /**

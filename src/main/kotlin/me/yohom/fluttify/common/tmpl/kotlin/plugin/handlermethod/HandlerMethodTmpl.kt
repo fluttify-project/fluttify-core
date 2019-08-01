@@ -1,13 +1,16 @@
-package me.yohom.fluttify.common.tmpl.kotlin
+package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.invoke.InvokeTmpl
 
 //private fun #__method_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
 //    #__args__#
+//
+//    #__log__#
 //
 //    #__ref__#
 //
@@ -45,6 +48,7 @@ class HandlerMethodTmpl(private val method: Method) {
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)
             .replaceParagraph("#__ref__#", ref)
+            .replaceParagraph("#__log__#", "") // todo
             .replaceParagraph("#__invoke__#", invoke)
             .replaceParagraph("#__result__#", result)
     }

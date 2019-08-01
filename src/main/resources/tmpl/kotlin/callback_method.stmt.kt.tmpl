@@ -1,0 +1,9 @@
+override fun #__callback_method__#(#__formal_params__#): #__return_type__# {
+    callbackChannel.invokeMethod(
+        "#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#",
+        mapOf<String, Any?>(
+            #__callback_params__#
+        )
+    )
+    #__return_stmt__#
+}

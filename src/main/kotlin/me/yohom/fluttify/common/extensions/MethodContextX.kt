@@ -125,7 +125,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
                 Variable(
                     typeFullName,
                     variableDeclaratorId().text,
-                    typeType().text.isList()
+                    paramType.isList()
                 )
             )
         }

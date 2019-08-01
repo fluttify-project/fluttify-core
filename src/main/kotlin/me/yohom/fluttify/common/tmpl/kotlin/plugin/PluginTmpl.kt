@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin
+package me.yohom.fluttify.common.tmpl.kotlin.plugin
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.filterMethod
@@ -6,6 +6,7 @@ import me.yohom.fluttify.common.extensions.filterType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.Lib
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.HandlerMethodTmpl
 
 //package #__package_name__#
 //

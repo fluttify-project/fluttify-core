@@ -91,7 +91,7 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isPublic(),
                     ctx.isFinal(),
                     ctx.isStatic(),
-                    Variable(ctx.type(), ctx.name())
+                    Variable(ctx.type(), ctx.name(), ctx.type().isList())
                 )
             )
         }

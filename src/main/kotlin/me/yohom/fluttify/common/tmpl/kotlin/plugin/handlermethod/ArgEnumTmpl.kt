@@ -1,10 +1,10 @@
-package me.yohom.fluttify.common.tmpl.kotlin
+package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod
 
 import me.yohom.fluttify.common.model.Variable
 
 //val #__arg_name__# = #__type_name__#.values()[args["#__arg_name__#"] as Int]
-class CallbackTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback.stmt.kt.tmpl").readText()
+class ArgEnumTmpl(private val variable: Variable) {
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/arg_enum.stmt.kt.tmpl").readText()
 
     fun kotlinArgEnum(): String {
         return tmpl

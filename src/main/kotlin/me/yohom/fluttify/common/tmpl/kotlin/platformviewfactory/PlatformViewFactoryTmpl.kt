@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin
+package me.yohom.fluttify.common.tmpl.kotlin.platformviewfactory
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.simpleName
