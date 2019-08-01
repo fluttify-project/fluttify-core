@@ -1,7 +1,6 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.OutputProject.methodChannel
 import me.yohom.fluttify.common.extensions.file
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -22,6 +21,6 @@ open class AndroidSystemRef : DefaultTask() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/system_ref.dart"
             .file()
-            .writeText(tmpl.replace("#__method_chanel__#", methodChannel))
+            .writeText(tmpl.replace("#__method_chanel__#", "${ext.outputOrg}/${ext.outputProjectName}"))
     }
 }

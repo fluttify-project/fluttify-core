@@ -2,8 +2,8 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.common.extensions.filterType
 import me.yohom.fluttify.common.extensions.fromJson
-import me.yohom.fluttify.common.extensions.isObfuscated
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.model.SDK
 import me.yohom.fluttify.common.model.TypeType
@@ -42,7 +42,7 @@ open class AndroidDartInterface : DefaultTask() {
         // 处理普通类
         sdk.libs
             .flatMap { it.types }
-            .filter { !it.name.isObfuscated() }
+            .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class -> ClassTmpl(it, ext).dartClass()

@@ -19,7 +19,12 @@ data class Variable(
                 // 过滤掉方法参数中含有不认识类的参数
                 .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
                 .distinctBy { it.name }
-                .joinToString { "void ${it.name}(${it.formalParams.joinToString { it.toDartString() }})" }
+                .takeIf { it.isNotEmpty() }
+                ?.joinToString(
+                    prefix = "{",
+                    postfix = "}"
+                ) { "void ${it.name}(${it.formalParams.joinToString { it.toDartString() }})" }
+                ?: ""
         } else {
             "${typeName.toDartType()} $name"
         }

@@ -70,7 +70,7 @@ class PluginTmpl(
             .filter { it.isView() }
             .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).kotlinRegisterPlatformView() }
 
-        // 为每个方法单独开的方法
+        // 为每个分支单独开的方法
         val handlers = lib.types
             .filterType()
             .flatMap { it.methods }

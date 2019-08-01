@@ -6,9 +6,7 @@ import me.yohom.fluttify.common.model.Method
 //"#__class_name__#::#__method_name__#" -> {
 //    #__handler__#
 //}
-class BranchTmpl(
-    private val method: Method
-) {
+class BranchTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/branch.stmt.kt.tmpl").readText()
 
     fun kotlinBranch(): String {
