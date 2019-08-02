@@ -15,12 +15,23 @@ class #__plugin_name__#Plugin {
             channel.setMethodCallHandler { methodCall, methodResult ->
                 val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
                 when (methodCall.method) {
-                    // 生成系统对象的引用
+                    // 获取Application对象
                     "SystemRef::getandroid_app_Application" -> {
                         methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
                     }
+                    // 获取FlutterActivity对象
                     "SystemRef::getandroid_app_Activity" -> {
                         methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
+                    }
+                    // 释放一个对象
+                    "SystemRef::release" -> {
+                        REF_MAP.remove(args["refId"] as Int)
+                        methodResult.success("success")
+                    }
+                    // 清空REF_MAP中所有对象
+                    "SystemRef::clearRefMap" -> {
+                        REF_MAP.clear()
+                        methodResult.success("success")
                     }
                     #__branches__#
                     else -> methodResult.notImplemented()
