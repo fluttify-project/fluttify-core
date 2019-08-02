@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.invoke
+package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke
 
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
@@ -14,6 +14,7 @@ import me.yohom.fluttify.common.model.Method
 //        "#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#",
 //        mapOf<String, Any?>(
 //            #__callback_params__#
+//            "refId" to refId
 //        )
 //    )
 //
@@ -37,7 +38,7 @@ class CallbackMethodTmpl(private val callerMethod: Method, private val callbackM
             .replaceParagraph(
                 "#__callback_params__#",
                 callbackMethod.formalParams.joinToString("") {
-                    "\"${it.name}\" to ${if (it.typeName.jsonable()) it.name else "${it.name}.hashCode()"},\n"
+                    "\"${it.name}\" to ${if (it.typeName.jsonable()) it.name else "${it.name}.hashCode().apply { REF_MAP[this] = ${it.name} }"},\n"
                 }
             )
             .replaceParagraph("#__log__#", "println(\"fluttify-kotlin-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.map { "\\\"${it.name}\\\":$${it.name}" }})\")")

@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.invoke
+package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke
 
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method

@@ -1,12 +1,11 @@
 package me.yohom.fluttify.common.tmpl.kotlin.plugin
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.filterMethod
-import me.yohom.fluttify.common.extensions.filterType
-import me.yohom.fluttify.common.extensions.replaceParagraph
-import me.yohom.fluttify.common.extensions.underscore2Camel
+import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.HandlerMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.GetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.HandleMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 
 //package #__package_name__#
 //
@@ -61,31 +60,69 @@ class PluginTmpl(
         // method channel
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
 
-        // 处理分支们 由于方法内代码太多, 会导致编译失败, 所以会为每个处理方法单独开一个私有方法
-        val branches = lib.types
+        // 分支们 分为三种
+        // 1. 普通方法
+        // 2. getter
+        // 3. setter
+        val gettersBranches = lib.types
+            .filterType()
+            .flatMap { it.fields }
+            .filterGetters()
+            .map { GetterBranchTmpl(it).kotlinGetterBranch() }
+
+        val settersBranches = lib.types
+            .filterType()
+            .flatMap { it.fields }
+            .filterSetters()
+            .map { SetterBranchTmpl(it).kotlinSetterBranch() }
+
+        val methodBranches = lib.types
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .joinToString("\n") { BranchTmpl(it).kotlinBranch() }
+            .map { MethodBranchTmpl(it).kotlinMethodBranch() }
 
         // 注册PlatformView
         val registerPlatformViews = lib.types
             .filter { it.isView() }
             .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).kotlinRegisterPlatformView() }
 
-        // 为每个分支单独开的方法
-        val handlers = lib.types
+        // 处理方法们 分三种
+        // 1. getter handler
+        // 2. setter handler
+        // 3. 普通方法 handler
+        val getterHandlers = lib.types
+            .filterType()
+            .flatMap { it.fields }
+            .filterGetters()
+            .map { GetterMethodTmpl(it).kotlinGetter() }
+
+        val setterHandlers = lib.types
+            .filterType()
+            .flatMap { it.fields }
+            .filterSetters()
+            .map { SetterMethodTmpl(it).kotlinSetter() }
+
+        val methodHandlers = lib.types
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .joinToString("\n") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
+            .map { HandleMethodTmpl(it).kotlinHandlerMethod() }
 
         return tmpl
             .replace("#__package_name__#", packageName)
             .replace("#__plugin_name__#", pluginClassName)
             .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__branches__#", branches)
+            .replaceParagraph("#__getter_branches__#", "")
+            .replaceParagraph("#__setter_branches__#", "")
+            .replaceParagraph(
+                "#__branches__#",
+                methodBranches.union(gettersBranches).union(settersBranches).joinToString("\n")
+            )
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
-            .replaceParagraph("#__handlers__#", handlers)
+            .replaceParagraph(
+                "#__handlers__#",
+                getterHandlers.union(setterHandlers).union(methodHandlers).joinToString("\n")
+            )
     }
 }

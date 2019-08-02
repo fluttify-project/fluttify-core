@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.dart.clazz
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Field
 
-//Future<#__type__#> get#__name__#() async {
+//Future<#__type__#> get_#__name__#() async {
 //  final result = await _channel.invokeMethod("#__getter_method__#", {'refId': refId});
 //  return result;
 //}
@@ -15,14 +15,10 @@ class GetterTmpl(private val field: Field) {
 
     fun dartGetter(): String {
         return field.variable?.run {
-            val type = typeName.toDartType()
-            val name = name
-            val getterMethod = "${field.className}::get${name.capitalize()}"
-
             tmpl
-                .replace("#__type__#", type)
+                .replace("#__type__#", typeName.toDartType())
                 .replace("#__name__#", name)
-                .replace("#__getter_method__#", getterMethod)
+                .replace("#__getter_method__#", field.dartGetterMethod())
         } ?: ""
     }
 }

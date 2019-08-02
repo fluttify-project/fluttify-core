@@ -156,6 +156,10 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
     }.replace("$", ".").replace(".", "_")
 }
 
+fun TYPE_NAME.toUnderscore() : String {
+    return replace("$", ".").replace(".", "_")
+}
+
 /**
  * 获取泛型类型名称
  */

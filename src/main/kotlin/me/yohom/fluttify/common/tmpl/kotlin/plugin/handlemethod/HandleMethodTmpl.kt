@@ -1,11 +1,10 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod
+package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
-import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.invoke.InvokeTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke.InvokeTmpl
 
 //private fun #__method_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
 //    // 参数
@@ -23,11 +22,11 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlermethod.invoke.InvokeTm
 //    // 调用结果
 //    #__result__#
 //}
-class HandlerMethodTmpl(private val method: Method) {
+class HandleMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.mtd.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
-        val methodName = "handle${method.className.toDartType()}_${method.name}"
+        val methodName = method.kotlinHandleMethod()
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
         // 2. jsonable

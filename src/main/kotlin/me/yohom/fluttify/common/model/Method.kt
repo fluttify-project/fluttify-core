@@ -1,5 +1,7 @@
 package me.yohom.fluttify.common.model
 
+import me.yohom.fluttify.common.extensions.toDartType
+
 data class Method(
     /**
      * 方法返回类型
@@ -30,6 +32,10 @@ data class Method(
      */
     var className: String
 ) {
+    fun kotlinHandleMethod(): String {
+        return "handle${className.toDartType()}_$name"
+    }
+
     override fun toString(): String {
         return "Method(returnType='$returnType', name='$name', formalParams=$formalParams, isStatic=$isStatic, isAbstract=$isAbstract, isPublic=$isPublic)"
     }
