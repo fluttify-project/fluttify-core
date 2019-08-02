@@ -20,6 +20,15 @@ fun JavaParser.ClassDeclarationContext.superClass(): String? {
 }
 
 /**
+ * 获取泛型类型
+ */
+fun JavaParser.ClassDeclarationContext.genericTypes(): List<String> {
+    return typeParameters()
+        ?.typeParameter()
+        ?.map { typeFullName(it.IDENTIFIER().text) } ?: listOf()
+}
+
+/**
  * 是某个类的子类/实现了某个接口
  */
 fun JavaParser.ClassDeclarationContext.isAbstract(): Boolean {
@@ -60,6 +69,15 @@ fun JavaParser.EnumDeclarationContext.fullName(): String {
         ?.text ?: ""
     return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
 }
+
+/**
+ * 获取泛型类型
+ */
+fun JavaParser.InterfaceDeclarationContext.genericTypes(): List<String> {
+    return typeParameters()
+        ?.typeParameter()
+        ?.map { typeFullName(it.IDENTIFIER().text) } ?: listOf()
+}
 //endregion
 
 //region Objc类扩展
@@ -69,6 +87,7 @@ fun JavaParser.EnumDeclarationContext.fullName(): String {
 fun ObjectiveCParser.ClassInterfaceContext.isSubclass(): Boolean {
     return COLON() != null && superclassName?.IDENTIFIER()?.text != "NSObject"
 }
+
 /**
  * objc类的全名
  */

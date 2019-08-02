@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.model
 
+import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.extensions.isList
 import me.yohom.fluttify.common.extensions.isObfuscated
 import me.yohom.fluttify.common.extensions.jsonable
@@ -12,6 +13,11 @@ open class Type {
     var name: String = ""
 
     /**
+     * 泛型类型
+     */
+    var genericTypes: MutableList<TYPE_NAME> = mutableListOf()
+
+    /**
      * 类/接口/枚举/lambda
      */
     var typeType: TypeType? = null
@@ -19,7 +25,7 @@ open class Type {
     /**
      * 是否公开
      */
-    var isPublic: Boolean = false
+    var isPublic: Boolean = true
 
     /**
      * 是否primitive
@@ -30,6 +36,11 @@ open class Type {
      * 父类全名
      */
     var superClass: String = ""
+
+    /**
+     * 所有的构造器
+     */
+    var constructors: MutableList<Constructor> = mutableListOf()
 
     /**
      * 所有的字段
@@ -64,6 +75,10 @@ open class Type {
         return typeType == TypeType.Enum
     }
 
+    fun isInterface(): Boolean {
+        return typeType == TypeType.Interface
+    }
+
     fun isList(): Boolean {
         return name.isList()
     }
@@ -81,7 +96,11 @@ open class Type {
     }
 
     fun isView(): Boolean {
-        return superClass in listOf("android.view.View", "android.view.ViewGroup")
+        return superClass in listOf("android.view.View", "android.view.ViewGroup", "android.widget.FrameLayout")
+    }
+
+    fun nameWithGeneric() : String {
+        return if (genericTypes.isEmpty()) name else "$name<${genericTypes.joinToString()}>"
     }
 
     override fun toString(): String {

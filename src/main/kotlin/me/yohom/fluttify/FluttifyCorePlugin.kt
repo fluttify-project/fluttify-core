@@ -1,7 +1,6 @@
 package me.yohom.fluttify
 
 import me.yohom.fluttify.task.*
-import me.yohom.fluttify.task.OutputProject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -26,9 +25,20 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val iOSJsonRepresentation = project.tasks.create("iOSJsonRepresentation", IOSJsonRepresentation::class.java)
 
         decompileClass.dependsOn(unzip)
-        addDependency.dependsOn(outputProject)
+
+//        addDependency.dependsOn(decompileClass)
+//        addDependency.dependsOn(outputProject)
+//
+//        androidJsonRepresentation.dependsOn(decompileClass)
+
+        androidDartInterface.dependsOn(addDependency)
         androidDartInterface.dependsOn(androidJsonRepresentation)
         androidDartInterface.dependsOn(systemRef)
-        androidDartInterface.dependsOn(export)
+
+//        androidKotlinInterface.dependsOn(decompileClass)
+
+        dartfmt.dependsOn(androidDartInterface)
+
+        export.dependsOn(androidDartInterface)
     }
 }

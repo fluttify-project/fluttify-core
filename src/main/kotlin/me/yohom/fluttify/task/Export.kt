@@ -23,7 +23,6 @@ open class Export : DefaultTask() {
         val exportFile =
             "${project.projectDir}/output-project/${ext.outputProjectName}/lib/${ext.outputProjectName}.dart".file()
 
-//        val existContent = exportFile.readText()
         val result = StringBuilder()
         FileUtils
             .iterateFiles(dartSrcDir, arrayOf("dart"), true)
@@ -31,7 +30,6 @@ open class Export : DefaultTask() {
                 result.append("export '${it.toRelativeString(exportFile).removePrefix("../")}';\n")
             }
         result.append("\n")
-//        result.append(existContent)
 
         exportFile.writeText(result.toString())
     }

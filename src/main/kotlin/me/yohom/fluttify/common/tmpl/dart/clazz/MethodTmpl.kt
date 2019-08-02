@@ -27,7 +27,10 @@ class MethodTmpl(private val method: Method) {
         val static = if (method.isStatic) "static" else ""
         val returnType = method.returnType.toDartType()
         val name = method.name
-        val formalParams = method.formalParams.joinToString { it.toDartString() }
+        val formalParams = method.formalParams
+            .map { it.toDartString() }
+            .sortedBy { it } // 这里排序是为了让所有的lambda到后面去, `{`排序优先级默认在字母后面
+            .joinToString()
         val log = if (method.isStatic) {
             "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':$${it.name}" }})');"
         } else {

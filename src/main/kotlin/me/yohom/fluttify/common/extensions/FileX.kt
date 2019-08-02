@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.common.JAVA_FILE
 import me.yohom.fluttify.common.OBJC_FILE
+import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.model.*
 import org.apache.commons.io.FileUtils
 import parser.java.JavaParser.*
@@ -17,7 +18,9 @@ fun JAVA_FILE.javaType(): Type {
     val source = readText()
 
     var packageName = ""
+    var genericTypes = listOf<TYPE_NAME>()
     val fields = mutableListOf<Field>()
+    val constructors = mutableListOf<Constructor>()
     val enumConstants = mutableListOf<String>()
     val methods = mutableListOf<Method>()
     var simpleName = ""
@@ -34,6 +37,7 @@ fun JAVA_FILE.javaType(): Type {
             isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
             simpleName = ctx.IDENTIFIER()?.text ?: ""
             typeType = TypeType.Class
+            genericTypes = ctx.genericTypes()
 
             val imports = ctx
                 .ancestorOf(CompilationUnitContext::class)
@@ -46,12 +50,25 @@ fun JAVA_FILE.javaType(): Type {
             isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
             simpleName = ctx.IDENTIFIER().text
             typeType = TypeType.Interface
+            genericTypes = ctx.genericTypes()
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
             isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
             simpleName = ctx.IDENTIFIER().text
             typeType = TypeType.Enum
+        }
+
+        override fun enterConstructorDeclaration(ctx: ConstructorDeclarationContext) {
+            if (ctx.IDENTIFIER().text.isObfuscated()) return
+
+            constructors.add(
+                Constructor(
+                    ctx.IDENTIFIER().text,
+                    ctx.formalParams(),
+                    ctx.isPublic()
+                )
+            )
         }
 
         override fun enterMethodDeclaration(ctx: MethodDeclarationContext) {
@@ -105,6 +122,8 @@ fun JAVA_FILE.javaType(): Type {
     return Type().also {
         it.typeType = typeType
         it.isPublic = isPublic
+        it.genericTypes.addAll(genericTypes)
+        it.constructors = constructors
         it.name = "$packageName.${simpleName.replace("$", ".")}"
         it.superClass = superClass
         it.fields.addAll(fields)
