@@ -29,7 +29,7 @@ class CallbackMethodTmpl(private val callerMethod: Method, private val callbackM
             .replace("#__callback_method__#", callbackMethod.name)
             .replace(
                 "#__formal_params__#",
-                callbackMethod.formalParams.joinToString { "${it.name}: ${it.typeName.toKotlinType()}" }
+                callbackMethod.formalParams.joinToString { "${it.name}: ${if (it.isList) "List<${it.typeName.toKotlinType()}>" else it.typeName.toKotlinType()}" }
             )
             .replace("#__return_type__#", callbackMethod.returnType.toKotlinType())
             .replace("#__caller_class_name__#", callerMethod.className)
@@ -41,7 +41,10 @@ class CallbackMethodTmpl(private val callerMethod: Method, private val callbackM
                     "\"${it.name}\" to ${if (it.typeName.jsonable()) it.name else "${it.name}.hashCode().apply { REF_MAP[this] = ${it.name} }"},\n"
                 }
             )
-            .replaceParagraph("#__log__#", "println(\"fluttify-kotlin-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.map { "\\\"${it.name}\\\":$${it.name}" }})\")")
+            .replaceParagraph(
+                "#__log__#",
+                "println(\"fluttify-kotlin-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.map { "\\\"${it.name}\\\":$${it.name}" }})\")"
+            )
             .replaceParagraph(
                 "#__return_stmt__#",
                 when (callbackMethod.returnType.toKotlinType()) {

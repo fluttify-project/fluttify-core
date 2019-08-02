@@ -47,6 +47,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
  */
 fun TYPE_NAME.isList(): Boolean {
     return Regex("\\w*List<(\\w*|.*)>").matches(this)
+            || Regex("Iterable<(\\w*|.*)>").matches(this)
 }
 
 /**
@@ -121,7 +122,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
     }.replace("$", ".").replace(".", "_")
 }
 
-fun TYPE_NAME.toUnderscore() : String {
+fun TYPE_NAME.toUnderscore(): String {
     return replace("$", ".").replace(".", "_")
 }
 

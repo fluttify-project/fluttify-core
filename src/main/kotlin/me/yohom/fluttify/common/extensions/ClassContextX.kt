@@ -78,6 +78,13 @@ fun JavaParser.InterfaceDeclarationContext.genericTypes(): List<String> {
         ?.typeParameter()
         ?.map { typeFullName(it.IDENTIFIER().text) } ?: listOf()
 }
+
+/**
+ * 获取父类名称
+ */
+fun JavaParser.InterfaceDeclarationContext.superClass(): String? {
+    return typeList()?.typeType()?.get(0)?.text?.run { typeFullName(this) }
+}
 //endregion
 
 //region Objc类扩展

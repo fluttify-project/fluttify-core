@@ -69,6 +69,8 @@ open class Type {
 
     fun isCallback(): Boolean {
         return typeType == TypeType.Interface
+                && methods.all { it.returnType in listOf("void", "Boolean") }
+                && superClass.isEmpty()
     }
 
     fun isEnum(): Boolean {
@@ -99,7 +101,7 @@ open class Type {
         return superClass in listOf("android.view.View", "android.view.ViewGroup", "android.widget.FrameLayout")
     }
 
-    fun nameWithGeneric() : String {
+    fun nameWithGeneric(): String {
         return if (genericTypes.isEmpty()) name else "$name<${genericTypes.joinToString()}>"
     }
 

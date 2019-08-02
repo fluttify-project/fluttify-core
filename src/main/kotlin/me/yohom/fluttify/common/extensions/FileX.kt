@@ -51,6 +51,7 @@ fun JAVA_FILE.javaType(): Type {
             simpleName = ctx.IDENTIFIER().text
             typeType = TypeType.Interface
             genericTypes = ctx.genericTypes()
+            superClass = ctx.superClass() ?: ""
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {

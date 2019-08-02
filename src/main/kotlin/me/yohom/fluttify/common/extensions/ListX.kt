@@ -1,7 +1,6 @@
 package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.common.IGNORE_CLASS
-import me.yohom.fluttify.common.IGNORE_METHOD
 import me.yohom.fluttify.common.model.Field
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Type
@@ -20,18 +19,7 @@ fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Met
     return asSequence()
         .filter { method -> distinctSource.isEmpty() or distinctSource.none { it.contains(method.name) } }
         .distinctBy { "${it.className}::${it.name}" }
-        .filter { it.name !in IGNORE_METHOD }
-        .filter { it.isPublic == true }
-        .filter { it.className.findType().isPublic }
-        // 返回值
-        .filter { !it.returnType.findType().isObfuscated() }
-        .filter { it.returnType.findType() != Type.UNKNOWN_TYPE }
-        .filter { !it.returnType.findType().isInterface() } // 暂不支持返回值为接口类型的方法
-        .filter { it.returnType.findType().genericTypes.isEmpty() } // 暂不支持返回泛型类型的方法
-        // 参数
-        .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
-        .filter { it.formalParams.all { it.typeName.findType().isPublic } }
-        .filter { it.formalParams.all { it.typeName.findType().genericTypes.isEmpty() } }
+        .filter { it.isOk() }
         .toList()
 }
 
