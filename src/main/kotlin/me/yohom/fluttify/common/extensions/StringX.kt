@@ -1,14 +1,10 @@
 package me.yohom.fluttify.common.extensions
 
 import com.google.gson.Gson
-import me.yohom.fluttify.Framework
-import me.yohom.fluttify.Jar
 import me.yohom.fluttify.common.PATH
-import me.yohom.fluttify.common.PRESERVED_CLASS
 import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.model.SDK
 import me.yohom.fluttify.common.model.Type
-import me.yohom.fluttify.common.model.TypeType
 import java.io.File
 
 fun String?.isLiteral(): Boolean {
@@ -58,37 +54,6 @@ fun TYPE_NAME.isList(): Boolean {
  */
 fun TYPE_NAME.isArrayList(): Boolean {
     return Regex("ArrayList<(\\w*|.*)>").matches(this)
-}
-
-/**
- * 是否是未知类型, 即非当前sdk内的类
- */
-fun TYPE_NAME.isUnknownJavaType(): Boolean {
-    // 如果是保留的类, 那么就认为是已知类
-    if (genericType() in PRESERVED_CLASS) return false
-    // 不是jsonable且不是sdk内的类
-    return !(Jar.Decompiled.CLASSES.containsKey(genericType()) || jsonable())
-            // 是接口类, 且方法内有未知类型的都算未知类型
-            || Jar.Decompiled.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.typeName.isUnknownJavaType() } } } == true
-}
-
-/**
- * 是否是未知类型, 即非当前sdk内的类
- */
-fun TYPE_NAME.isUnknownObjcType(): Boolean {
-    // 如果是保留的类, 那么就认为是已知类
-    if (genericType() in PRESERVED_CLASS) return false
-    // 不是jsonable且不是sdk内的类
-    return !(Framework.CLASSES.containsKey(genericType()) || jsonable())
-            // 是接口类, 且方法内有未知类型的都算未知类型
-            || Framework.CLASSES[genericType()]?.run { typeType == TypeType.Interface && methods.any { it.formalParams.any { it.typeName.isUnknownObjcType() } } } == true
-}
-
-/**
- * 是否是枚举类
- */
-fun TYPE_NAME.isEnum(): Boolean {
-    return Jar.Decompiled.CLASSES[this]?.typeType == TypeType.Enum
 }
 
 /**
@@ -201,18 +166,6 @@ fun String.camel2Underscore(): String {
 }
 
 /**
- * 替换模板字符串中的占位符
- */
-fun String.placeholder(vararg replacements: String?): String {
-    var result = this
-    replacements.forEach {
-        // 正则表达式: 匹配所有`##`包围的字符, 但是被包围的字符中不能有`#` 如果replacement中有`$`符号时, 会报错, 替换掉`$`
-        result = result.replaceFirst(Regex("#[^#]*#"), it?.replace("\$", "_") ?: "")
-    }
-    return result
-}
-
-/**
  * 批量替换字符串 数组分为两部分, 前半部分为被替换的, 后半部分为替换的
  */
 fun String.replaceBatch(vararg sourcesAndDestination: String): String {
@@ -228,13 +181,6 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
     }
 
     return result
-}
-
-/**
- * 类型名判断是否是java引用类型
- */
-fun TYPE_NAME.isJavaRefType(): Boolean {
-    return !jsonable()
 }
 
 /**

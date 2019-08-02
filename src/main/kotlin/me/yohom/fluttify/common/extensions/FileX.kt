@@ -32,7 +32,7 @@ fun JAVA_FILE.javaType(): Type {
 
         override fun enterClassDeclaration(ctx: ClassDeclarationContext) {
             isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
-            simpleName = ctx.IDENTIFIER().text
+            simpleName = ctx.IDENTIFIER()?.text ?: ""
             typeType = TypeType.Class
 
             val imports = ctx

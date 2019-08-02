@@ -60,13 +60,13 @@ class MethodTmpl(private val method: Method) {
         val resultBuilder = StringBuilder("")
 
         val actualParams = params
-            .filter { !it.typeName.isJavaCallback() }
+            .filter { !it.typeName.findType().isCallback()}
             .toMutableList()
             .apply { if (!isStatic) add(Variable("int", "refId")) }
             .toDartMap {
                 when {
-                    it.typeName.isEnum() -> "${it.name}.index"
-                    it.typeName.isList() -> "${it.name}.map((it) => it.refId).toList()"
+                    it.typeName.findType().isEnum() -> "${it.name}.index"
+                    it.typeName.findType().isList() -> "${it.name}.map((it) => it.refId).toList()"
                     it.typeName.jsonable() -> it.name
                     else -> "${it.name}.refId"
                 }
@@ -92,10 +92,10 @@ class MethodTmpl(private val method: Method) {
             } else {
                 resultBuilder.append("result")
             }
-        } else if (returnType.isEnum()) {
+        } else if (returnType.findType().isEnum()) {
             resultBuilder.append("${returnType.toDartType()}.values[result]")
         } else {
-            if (returnType.isList()) {
+            if (returnType.findType().isList()) {
                 resultBuilder.append(
                     "(result as List).map((it) => ${returnType.genericType().toDartType()}.withRefId(it))"
                 )

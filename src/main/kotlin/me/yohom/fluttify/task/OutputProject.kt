@@ -1,7 +1,6 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.FluttifyProject
 import me.yohom.fluttify.common.PATH
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -11,7 +10,7 @@ import java.io.InputStreamReader
 /**
  * 生成初始的输出项目
  *
- * 输入: 生成项目的规格[FluttifyProject]
+ * 输入: 生成项目的规格
  * 输出: 项目路径[PATH]
  */
 open class OutputProject : DefaultTask() {

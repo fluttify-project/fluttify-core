@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyCorePluginExtension
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.file
 import org.apache.commons.io.FileUtils
@@ -22,7 +21,7 @@ open class Export : DefaultTask() {
 
         val dartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/".file()
         val exportFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/${FluttifyCorePluginExtension.outputProjectName}.dart".file()
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/${ext.outputProjectName}.dart".file()
 
 //        val existContent = exportFile.readText()
         val result = StringBuilder()

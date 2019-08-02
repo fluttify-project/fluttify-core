@@ -1,9 +1,9 @@
 package me.yohom.fluttify.common.extensions
 
-import me.yohom.fluttify.Framework
-import me.yohom.fluttify.Jar
-import me.yohom.fluttify.common.*
-import me.yohom.fluttify.common.model.TypeType
+import me.yohom.fluttify.common.IGNORE_CLASS
+import me.yohom.fluttify.common.IGNORE_METHOD
+import me.yohom.fluttify.common.JAVA_SOURCE
+import me.yohom.fluttify.common.OBJC_SOURCE
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -17,87 +17,6 @@ import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 
 //region Java源码扩展
-/**
- * java源码判断是否是模型类
- *
- * 识别规则:
- * 判定为true:
- *   1. 当前类是model, 父类也是model √
- *   2. 所有字段都是model/jsonable √
- *   3. 保留的model类 √
- * 判定为false:
- *   1. 所有成员(包括字段和方法)都是static √
- *   2. 任何一个方法参数中含有非model类
- */
-fun JAVA_SOURCE.isJavaModel(): Boolean {
-//    var parentIsModel = false
-//
-//    val fieldAllModel = mutableListOf<Boolean>()
-//    val fieldAllStatic = mutableListOf<Boolean>()
-//    val memberAllStatic = mutableListOf<Boolean>()
-//    val methodArgsAllModel = mutableListOf<Boolean>()
-//
-//    var isModel = false
-//
-//    walkTree(object : JavaParserBaseListener() {
-//        override fun enterClassDeclaration(ctx: ClassDeclarationContext?) {
-//            ctx?.run {
-//                println(
-//                    "正在评估类: ${ctx.IDENTIFIER().text}; 路径: ${me.yohom.fluttify.Jar.Decompiled.CLASSES[ctx.IDENTIFIER()?.text]?.path ?: ""}"
-//                )
-//                // 父类是否是model, 如果是的话, 那么忽略父类的影响, 如果不是的话, 那么当前类也不是model
-//                // 如果没有父类, 那么就认为父类是model
-//                parentIsModel = ctx.superClass()?.isJavaModelType() == true || ctx.EXTENDS() == null
-//            }
-//        }
-//
-//        override fun enterFieldDeclaration(field: FieldDeclarationContext?) {
-//            field?.run {
-//                fieldAllStatic.add(field.isStatic())
-//                memberAllStatic.add(field.isStatic())
-//                if (field.isStatic()) return
-//
-//                fieldAllModel.add(
-//                    field.jsonable()
-//                            || me.yohom.fluttify.Jar.Decompiled.CLASSES[typeName().genericType()]?.isModel == true
-//                            || PRESERVED_MODEL.contains(typeName())
-//                )
-//            }
-//        }
-//
-//        override fun enterMethodDeclaration(ctx: JavaParser.MethodDeclarationContext?) {
-//            ctx?.run {
-//                // 如果方法名称是在忽略列表里的, 那么就直接跳过
-//                if (ctx.name() in IGNORE_METHOD) return
-//
-//                memberAllStatic.add(!ctx.isInstanceMethod())
-//                formalParams().forEach { methodArgsAllModel.add(it.typeName.isModel()) }
-//            }
-//        }
-//
-//        override fun exitClassDeclaration(ctx: ClassDeclarationContext?) {
-//            ctx?.run {
-//                println("parentIsModel: $parentIsModel, fieldAllModel: $fieldAllModel, fieldAllStatic: $memberAllStatic, methodArgsAllModel: $methodArgsAllModel")
-//
-//                isModel = (fieldAllModel.all { it } || fieldAllModel.isEmpty())
-//                        && (!memberAllStatic.all { it } || memberAllStatic.isEmpty())
-//                        && (!fieldAllStatic.all { it } || fieldAllStatic.isEmpty())
-//                        && parentIsModel
-//                        && (methodArgsAllModel.all { it } || methodArgsAllModel.isEmpty())
-//
-//                me.yohom.fluttify.Jar.Decompiled.CLASSES[ctx.IDENTIFIER().text]?.isModel = isModel
-//
-//                println("${ctx.IDENTIFIER().text} 评估结果: $isModel\n")
-//            }
-//        }
-//
-//        override fun enterEnumDeclaration(ctx: JavaParser.EnumDeclarationContext?) {
-//            ctx?.run { isModel = true }
-//        }
-//    })
-
-    return false
-}
 
 fun JAVA_SOURCE.classContext(): JavaParser.ClassDeclarationContext {
     return parser().classDeclaration()
@@ -200,20 +119,6 @@ fun JAVA_SOURCE.isAbstract(): Boolean {
         }
     })
     return isAbstract
-}
-
-/**
- * 是否是回调类, 目前只识别interface文件
- */
-fun TYPE_NAME.isJavaCallback(): Boolean {
-    return Jar.Decompiled.CLASSES[this]?.typeType == TypeType.Interface
-}
-
-/**
- * 是否是回调类, 目前只识别protocol文件
- */
-fun TYPE_NAME.isObjcCallback(): Boolean {
-    return Framework.CLASSES[this]?.typeType == TypeType.Interface
 }
 
 /**
