@@ -8,6 +8,10 @@ val REF_MAP = mutableMapOf<Int, Any>()
 @Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 class #__plugin_name__#Plugin {
     companion object {
+        private val handlerMap = mapOf<String, Function3<Registrar, Map<String, Any>, MethodChannel.Result, Unit>>(
+                #__branches__#
+        )
+
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
@@ -33,10 +37,11 @@ class #__plugin_name__#Plugin {
                         REF_MAP.clear()
                         methodResult.success("success")
                     }
-                    #__branches__#
-                    else -> methodResult.notImplemented()
+                    else -> {
+                        handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()
                     }
                 }
+            }
 
             // 注册View
             #__register_platform_views__#
