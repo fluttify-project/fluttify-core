@@ -27,6 +27,7 @@ fun JAVA_FILE.javaType(): Type {
     var typeType: TypeType? = null
     var superClass = ""
     var isPublic = false
+    var isInnerClass = false
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext) {
@@ -36,6 +37,7 @@ fun JAVA_FILE.javaType(): Type {
         override fun enterClassDeclaration(ctx: ClassDeclarationContext) {
             isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
             simpleName = ctx.IDENTIFIER()?.text ?: ""
+            isInnerClass = simpleName.contains("$")
             typeType = TypeType.Class
             genericTypes = ctx.genericTypes()
 
@@ -49,6 +51,7 @@ fun JAVA_FILE.javaType(): Type {
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {
             isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
             simpleName = ctx.IDENTIFIER().text
+            isInnerClass = simpleName.contains("$")
             typeType = TypeType.Interface
             genericTypes = ctx.genericTypes()
             superClass = ctx.superClass() ?: ""
@@ -57,6 +60,7 @@ fun JAVA_FILE.javaType(): Type {
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
             isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
             simpleName = ctx.IDENTIFIER().text
+            isInnerClass = simpleName.contains("$")
             typeType = TypeType.Enum
         }
 
@@ -123,6 +127,7 @@ fun JAVA_FILE.javaType(): Type {
     return Type().also {
         it.typeType = typeType
         it.isPublic = isPublic
+        it.isInnerClass = isInnerClass
         it.genericTypes.addAll(genericTypes)
         it.constructors = constructors
         it.name = "$packageName.${simpleName.replace("$", ".")}"

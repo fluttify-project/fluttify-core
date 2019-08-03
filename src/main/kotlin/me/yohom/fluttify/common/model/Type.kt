@@ -28,6 +28,11 @@ open class Type {
     var isPublic: Boolean = true
 
     /**
+     * 是否是内部类
+     */
+    var isInnerClass: Boolean = true
+
+    /**
      * 是否primitive
      */
     var isPrimitive: Boolean = false
@@ -106,7 +111,7 @@ open class Type {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', typeType=$typeType, isPublic=$isPublic, superClass='$superClass', fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isPrimitive=$isPrimitive, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
     }
 
     companion object {
