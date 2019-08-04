@@ -17,6 +17,10 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 //@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 //class #__plugin_name__#Plugin {
 //    companion object {
+//        private val handlerMap = mapOf<String, Function3<Registrar, Map<String, Any>, MethodChannel.Result, Unit>>(
+//                #__branches__#
+//        )
+//
 //        @JvmStatic
 //        fun registerWith(registrar: Registrar) {
 //            val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
@@ -24,17 +28,29 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 //            channel.setMethodCallHandler { methodCall, methodResult ->
 //                val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
 //                when (methodCall.method) {
-//                    // 生成系统对象的引用
+//                    // 获取Application对象
 //                    "SystemRef::getandroid_app_Application" -> {
 //                        methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
 //                    }
+//                    // 获取FlutterActivity对象
 //                    "SystemRef::getandroid_app_Activity" -> {
 //                        methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
 //                    }
-//                    #__branches__#
-//                    else -> methodResult.notImplemented()
+//                    // 释放一个对象
+//                    "SystemRef::release" -> {
+//                        REF_MAP.remove(args["refId"] as Int)
+//                        methodResult.success("success")
+//                    }
+//                    // 清空REF_MAP中所有对象
+//                    "SystemRef::clearRefMap" -> {
+//                        REF_MAP.clear()
+//                        methodResult.success("success")
+//                    }
+//                    else -> {
+//                        handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()
 //                    }
 //                }
+//            }
 //
 //            // 注册View
 //            #__register_platform_views__#
@@ -117,7 +133,7 @@ class PluginTmpl(
             .replaceParagraph("#__setter_branches__#", "")
             .replaceParagraph(
                 "#__branches__#",
-                methodBranches.union(gettersBranches).union(settersBranches).joinToString("\n")
+                methodBranches.union(gettersBranches).union(settersBranches).joinToString(",\n")
             )
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
             .replaceParagraph(

@@ -37,7 +37,7 @@ fun List<Type>.filterType(): List<Type> {
     return asSequence()
         .filter { it.isPublic }
         .filter { it.genericTypes.isEmpty() } // 有泛型的类暂不支持处理
-        .filter { it.constructors.all { it.isPublic == true } }
+        .filter { !(it.constructors.all { it.isPublic == true } && it.isInnerClass) }
         .filter { !it.isObfuscated() }
         .filter { it.superClass !in IGNORE_CLASS }
         .toList()

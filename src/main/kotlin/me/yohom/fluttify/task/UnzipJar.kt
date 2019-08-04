@@ -21,11 +21,10 @@ open class UnzipJar : DefaultTask() {
 
     @TaskAction
     fun unzip() {
-        val extension = project.extensions.getByType(FluttifyExtension::class.java)
-        val jarPath = extension.jarFile.file().absolutePath
-        val jarName = extension.jarFile.file().nameWithoutExtension
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
+        val jarPath = ext.jarFile.file().absolutePath
 
-        val unzippedJar: File = "${project.buildDir}/decompiled/$jarName/".file()
+        val unzippedJar: File = "${ext.jarFile.file().parent}/unzip/".file()
 
         val process = Runtime.getRuntime().exec("unzip -o $jarPath -d $unzippedJar")
         val br = BufferedReader(InputStreamReader(process.inputStream))

@@ -1,13 +1,10 @@
 package me.yohom.fluttify.task
 
+import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.file
-import me.yohom.fluttify.common.extensions.iterate
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
 
 /**
@@ -18,31 +15,24 @@ import java.io.InputStreamReader
  */
 open class DecompileClass : DefaultTask() {
 
-    @InputDirectory
-    var classFilesDir: File = "${project.buildDir}/decompiled/".file()
-
-    @OutputDirectory
-    var javaFilesDir: File = "${project.buildDir}/decompiled/".file()
-
     override fun getGroup() = "fluttify"
 
     @TaskAction
     fun decompile() {
-        classFilesDir.iterate("class") {
-            val artifactPath = it.absolutePath.substringBeforeLast("/")
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
 
-            val process = Runtime
-                .getRuntime()
-                // -dgs=1 => decompile generic signatures
-                // -din=0 => decompile inner CLASSES
-                // -rsy=1 => hide synthetic class members
-                // -hdc=1 => hide empty default constructor
-                .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=0 -rsy=1 -hdc=0 ${it.absolutePath} $artifactPath")
+        val classFilesDir = "${ext.jarFile.file().parent}/unzip/".file()
+        val javaFilesDir = "${project.buildDir}/decompiled/".file()
 
-            val br = BufferedReader(InputStreamReader(process.inputStream))
-            br.lines().forEach(::println)
+        // 开始反编译
+        val process = Runtime
+            .getRuntime()
+            // -dgs=1 => decompile generic signatures
+            // -din=1 => decompile inner CLASSES
+            // -rsy=1 => hide synthetic class members
+            // -hdc=1 => hide empty default constructor
+            .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=1 -rsy=1 -hdc=0 $classFilesDir $javaFilesDir")
 
-            it.delete()
-        }
+        BufferedReader(InputStreamReader(process.inputStream)).lines().forEach(::println)
     }
 }
