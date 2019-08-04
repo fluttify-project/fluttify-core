@@ -10,6 +10,7 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
+    maven { url 'https://raw.github.com/java-decompiler/mvn-repo/master' }
     jcenter()
     mavenCentral()
 }
