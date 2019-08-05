@@ -28,6 +28,7 @@ class MethodTmpl(private val method: Method) {
         val returnType = method.returnType.toDartType()
         val name = method.name
         val formalParams = method.formalParams
+            .filterFormalParams()
             .map { it.toDartString() }
             .sortedBy { it } // 这里排序是为了让所有的lambda到后面去, `{`排序优先级默认在字母后面
             .joinToString()
@@ -63,7 +64,8 @@ class MethodTmpl(private val method: Method) {
         val resultBuilder = StringBuilder("")
 
         val actualParams = params
-            .filter { !it.typeName.findType().isCallback()}
+            .filterFormalParams()
+            .filter { !it.typeName.findType().isCallback() }
             .toMutableList()
             .apply { if (!isStatic) add(Variable("int", "refId")) }
             .toDartMap {

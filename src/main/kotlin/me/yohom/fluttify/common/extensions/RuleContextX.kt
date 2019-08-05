@@ -30,7 +30,7 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
             ?.find {
                 !typeSimpleName.jsonable()
                         && it.qualifiedName().text.length >= typeSimpleName.length
-                        && it.qualifiedName().text.replace("$", ".").run { substringAfterLast(".") } == typeSimpleName
+                        && it.qualifiedName().text.run { substringAfterLast(".") } == typeSimpleName
             }
             ?.qualifiedName()
             ?.text

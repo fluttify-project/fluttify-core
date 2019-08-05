@@ -1,10 +1,7 @@
 package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.TYPE_NAME
-import me.yohom.fluttify.common.extensions.isList
-import me.yohom.fluttify.common.extensions.isObfuscated
-import me.yohom.fluttify.common.extensions.jsonable
-import me.yohom.fluttify.common.extensions.toDartType
+import me.yohom.fluttify.common.extensions.*
 
 open class Type {
     /**
@@ -73,8 +70,12 @@ open class Type {
     var formalParam: MutableList<Variable> = mutableListOf()
 
     fun isCallback(): Boolean {
-        return typeType == TypeType.Interface
+        return typeType == TypeType.Interface // 必须是接口
+                // 返回类型必须是void或者Boolean
                 && methods.all { it.returnType in listOf("void", "Boolean") }
+                // 参数类型必须是jsonable或者引用类型
+                && methods.all { it.formalParams.all { it.typeName.findType().run { jsonable() || !isInterface() }} }
+                // 必须没有父类
                 && superClass.isEmpty()
     }
 
@@ -96,6 +97,10 @@ open class Type {
 
     fun toDartType(): String {
         return name.toDartType()
+    }
+
+    fun isRefType(): Boolean {
+        return typeType == TypeType.Class
     }
 
     fun isObfuscated(): Boolean {

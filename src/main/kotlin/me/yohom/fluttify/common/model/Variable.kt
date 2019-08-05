@@ -16,14 +16,13 @@ data class Variable(
         return if (typeName.findType().isCallback()) {
             val type = typeName.findType()
             type.methods
-                // 过滤掉方法参数中含有不认识类的参数
+                // 过滤掉方法参数中含有不认识类的方法
                 .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
                 .distinctBy { it.name }
                 .takeIf { it.isNotEmpty() }
-                ?.joinToString(
-                    prefix = "{",
-                    postfix = "}"
-                ) { "void ${it.name}(${it.formalParams.joinToString { it.toDartString() }})" }
+                ?.joinToString(prefix = "{", postfix = "}") {
+                    "void ${it.name}(${it.formalParams.joinToString { it.toDartString() }})"
+                }
                 ?: ""
         } else {
             "${typeName.toDartType()} $name"

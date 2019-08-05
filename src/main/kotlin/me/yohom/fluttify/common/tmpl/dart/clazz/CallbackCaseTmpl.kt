@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.tmpl.dart.clazz
 
+import me.yohom.fluttify.common.extensions.filterFormalParams
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
@@ -24,15 +25,18 @@ class CallbackCaseTmpl(
 
     fun callbackCase(): String {
         val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${callbackMethod.name}"
-        val log = "print('fluttify-dart-callback: ${callerMethod.className}::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':\$args[${it.name}]" }})');"
+        val log =
+            "print('fluttify-dart-callback: ${callerMethod.className}::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':\$args[${it.name}]" }})');"
         val callbackHandler = callbackMethod.name
-        val callbackArgs = callbackMethod.formalParams.joinToString {
-            if (it.typeName.jsonable()) {
-                "args['${it.name}']"
-            } else {
-                "${it.typeName.toDartType()}.withRefId(args['${it.name}'])"
+        val callbackArgs = callbackMethod.formalParams
+            .filterFormalParams()
+            .joinToString {
+                if (it.typeName.jsonable()) {
+                    "args['${it.name}']"
+                } else {
+                    "${it.typeName.toDartType()}.withRefId(args['${it.name}'])"
+                }
             }
-        }
 
         return tmpl
             .replace("#__callback_case__#", callbackCase)

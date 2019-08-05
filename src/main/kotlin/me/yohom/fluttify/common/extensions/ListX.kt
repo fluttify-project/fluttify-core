@@ -43,6 +43,14 @@ fun List<Type>.filterType(): List<Type> {
         .toList()
 }
 
+fun List<Variable>.filterFormalParams(): List<Variable> {
+    return asSequence()
+        // 要过滤掉是接口, 却不是回调类的参数
+        .filter { !it.typeName.findType().run { isInterface() && !isCallback() } }
+        .filter { it.typeName.findType() != Type.UNKNOWN_TYPE }
+        .toList()
+}
+
 fun List<Field>.filterSetters(): List<Field> {
     return asSequence()
         .filter { it.isFinal == false }

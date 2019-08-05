@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.tmpl.dart.clazz
 
+import me.yohom.fluttify.common.extensions.filterMethod
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
@@ -28,7 +29,7 @@ class CallbackTmpl(private val callerMethod: Method) {
 
         val callbackMethods = callerMethod.formalParams
             .filter { it.typeName.findType().isCallback() }
-            .flatMap { it.typeName.findType().methods }
+            .flatMap { it.typeName.findType().methods.filterMethod() }
 
         val className = "${callerMethod.className}::${callerMethod.name}_Callback"
         val callbackCases = callbackMethods.map { CallbackCaseTmpl(callerMethod, it).callbackCase() }
