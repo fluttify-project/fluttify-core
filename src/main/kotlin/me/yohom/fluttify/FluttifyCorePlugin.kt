@@ -10,7 +10,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
 
         val unzip = project.tasks.create("unzipJar", UnzipJar::class.java)
         val decompileClass = project.tasks.create("decompileClass", DecompileClass::class.java)
-        val addDependency = project.tasks.create("addDependency", AddAndroidDependency::class.java)
+        val addAndroidDependency = project.tasks.create("addAndroidDependency", AddAndroidDependency::class.java)
+        val addIOSDependency = project.tasks.create("addIOSDependency", AddIOSDependency::class.java)
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
@@ -31,7 +32,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
 //
 //        androidJsonRepresentation.dependsOn(decompileClass)
 
-        androidDartInterface.dependsOn(addDependency)
+        androidDartInterface.dependsOn(addAndroidDependency)
         androidDartInterface.dependsOn(androidJsonRepresentation)
         androidDartInterface.dependsOn(systemRef)
 

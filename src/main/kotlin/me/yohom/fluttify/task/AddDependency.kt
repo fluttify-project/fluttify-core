@@ -8,9 +8,6 @@ import org.gradle.api.tasks.TaskAction
 
 /**
  * 为生成android工程加入目标jar到libs文件夹
- *
- * 输入: 没有加入jar的生成工程
- * 输出: 加入了jar的生成工程
  */
 open class AddAndroidDependency : DefaultTask() {
 
@@ -18,11 +15,29 @@ open class AddAndroidDependency : DefaultTask() {
 
     @TaskAction
     fun process() {
-        val extension = project.extensions.getByType(FluttifyExtension::class.java)
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
 
         FileUtils.copyDirectory(
-            "${extension.jarFile.file().parent}/".file(),
-            "${project.projectDir}/output-project/${extension.outputProjectName}/android/libs/".file()
+            "${ext.jarFile.file().parent}/".file(),
+            "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
+        )
+    }
+}
+
+/**
+ * 为生成ios工程加入目标framework到文件夹
+ */
+open class AddIOSDependency : DefaultTask() {
+
+    override fun getGroup() = "fluttify"
+
+    @TaskAction
+    fun process() {
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
+
+        FileUtils.copyDirectory(
+            ext.frameworkDir.file(),
+            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
         )
     }
 }
