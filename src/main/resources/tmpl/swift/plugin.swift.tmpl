@@ -1,0 +1,27 @@
+import Flutter
+import UIKit
+
+val REF_MAP = [Int : Any] = [:]
+
+public class Swift#__plugin_in_name__#Plugin: NSObject, FlutterPlugin {
+
+    public static func register(with registrar: FlutterPluginRegistrar) {
+        let channel = FlutterMethodChannel(name: "#__method_channel__#", binaryMessenger: registrar.messenger())
+        let instance = Swift#__plugin_in_name__#Plugin()
+
+        registrar.addMethodCallDelegate(instance, channel: channel)
+
+        #__platform_views__#
+	}
+
+    private func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let args = call.arguments as! Dictionary<String, Any>
+        switch call.method {
+            #__dispatcher__#
+            default:
+                result(FlutterMethodNotImplemented)
+        }
+    }
+
+	#__handlers__#
+}

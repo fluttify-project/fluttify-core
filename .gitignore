@@ -61,7 +61,7 @@ playground.xcworkspace
 
 # Swift Package Manager
 #
-# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+# Add this line if you want to avoid checking in resource code from Swift Package Manager dependencies.
 # Packages/
 # Package.pins
 # Package.resolved
@@ -75,12 +75,12 @@ playground.xcworkspace
 #
 # Pods/
 #
-# Add this line if you want to avoid checking in source code from the Xcode workspace
+# Add this line if you want to avoid checking in resource code from the Xcode workspace
 # *.xcworkspace
 
 # Carthage
 #
-# Add this line if you want to avoid checking in source code from Carthage dependencies.
+# Add this line if you want to avoid checking in resource code from Carthage dependencies.
 # Carthage/Checkouts
 
 Carthage/Build
@@ -91,7 +91,7 @@ Dependencies/
 
 # fastlane
 #
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generateIOSDart the
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
@@ -147,19 +147,19 @@ xcuserdata/
 #
 # Pods/
 #
-# Add this line if you want to avoid checking in source code from the Xcode workspace
+# Add this line if you want to avoid checking in resource code from the Xcode workspace
 # *.xcworkspace
 
 # Carthage
 #
-# Add this line if you want to avoid checking in source code from Carthage dependencies.
+# Add this line if you want to avoid checking in resource code from Carthage dependencies.
 # Carthage/Checkouts
 
 Carthage/Build
 
 # fastlane
 #
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generateIOSDart the
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
@@ -189,7 +189,6 @@ iOSInjectionProject/
 *.class
 
 # Generated files
-bin/
 gen/
 out/
 release/
@@ -207,10 +206,10 @@ proguard/
 # Log Files
 *.log
 
-# Android Studio Navigation editor temp files
+# StaticJsonableAndroid Studio Navigation editor temp files
 .navigation/
 
-# Android Studio captures folder
+# StaticJsonableAndroid Studio captures folder
 captures/
 
 # IntelliJ
@@ -221,7 +220,7 @@ captures/
 .idea/assetWizardSettings.xml
 .idea/dictionaries
 .idea/libraries
-# Android Studio 3 in .gitignore file.
+# StaticJsonableAndroid Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml
 # Comment next line if keeping position of elements in Navigation Editor is relevant for you
@@ -232,7 +231,7 @@ captures/
 #*.jks
 #*.keystore
 
-# External native build folder generated in Android Studio 2.2 and later
+# External native build folder generated in StaticJsonableAndroid Studio 2.2 and later
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
@@ -274,7 +273,6 @@ lint/tmp/
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
@@ -285,3 +283,4 @@ lint/tmp/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+resource/
