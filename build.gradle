@@ -5,9 +5,7 @@ plugins {
 }
 
 group 'me.yohom'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
+version '0.1.0'
 
 repositories {
     maven { url 'https://raw.github.com/java-decompiler/mvn-repo/master' }
@@ -30,13 +28,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:2.2.9"
     testImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.31"
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 uploadArchives {
