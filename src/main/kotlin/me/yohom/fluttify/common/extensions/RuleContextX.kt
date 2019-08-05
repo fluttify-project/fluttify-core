@@ -22,15 +22,22 @@ fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
 }
 
 fun RuleContext.typeFullName(typeSimpleName: String): String {
-    return ancestorOf(JavaParser.CompilationUnitContext::class)
-        ?.importDeclaration()
-        ?.firstOrNull {
-            !typeSimpleName.jsonable()
-                    && it.qualifiedName().text.length >= typeSimpleName.length
-                    && it.qualifiedName()
-                .text
-                .replace("$", ".")
-                .run { substringAfterLast(".") } == typeSimpleName
-        }
-        ?.qualifiedName()?.text ?: typeSimpleName
+    return if (typeSimpleName.jsonable()) {
+        typeSimpleName
+    } else {
+        ancestorOf(JavaParser.CompilationUnitContext::class)
+            ?.importDeclaration()
+            ?.find {
+                !typeSimpleName.jsonable()
+                        && it.qualifiedName().text.length >= typeSimpleName.length
+                        && it.qualifiedName().text.replace("$", ".").run { substringAfterLast(".") } == typeSimpleName
+            }
+            ?.qualifiedName()
+            ?.text
+            ?.replace("$", ".")
+        // 如果不是import进来的说明这个类是当前文件的主类, 直接拼接package和类名
+            ?: ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?.packageDeclaration()
+                ?.qualifiedName()?.text + "." + typeSimpleName.replace("$", ".")
+    }
 }

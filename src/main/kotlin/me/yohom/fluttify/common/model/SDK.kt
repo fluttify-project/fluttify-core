@@ -47,7 +47,7 @@ class SDK {
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName }
                 // 已支持的系统类
-                fullName in listOf("android.content.Context", "android.app.Application", "android.app.Activity") -> Type().apply { name = fullName }
+                fullName in listOf("void", "android.content.Context", "android.app.Application", "android.app.Activity") -> Type().apply { name = fullName }
                 // 其他情况一律认为不认识的类
                 else -> Type.UNKNOWN_TYPE
             }

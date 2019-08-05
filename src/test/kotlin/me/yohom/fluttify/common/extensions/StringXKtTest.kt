@@ -1,4 +1,4 @@
-package common.extensions
+package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.common.extensions.camel2Underscore
 import me.yohom.fluttify.common.extensions.genericType

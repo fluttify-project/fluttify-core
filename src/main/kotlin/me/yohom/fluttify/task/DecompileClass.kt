@@ -28,10 +28,10 @@ open class DecompileClass : DefaultTask() {
         val process = Runtime
             .getRuntime()
             // -dgs=1 => decompile generic signatures
-            // -din=1 => decompile inner CLASSES
+            // -din=0 => decompile inner CLASSES
             // -rsy=1 => hide synthetic class members
             // -hdc=1 => hide empty default constructor
-            .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=1 -rsy=1 -hdc=0 $classFilesDir $javaFilesDir")
+            .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=0 -rsy=1 -hdc=0 $classFilesDir $javaFilesDir")
 
         BufferedReader(InputStreamReader(process.inputStream)).lines().forEach(::println)
     }

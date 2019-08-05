@@ -1,4 +1,4 @@
-package common.extensions
+package me.yohom.fluttify.common.extensions
 
 import org.junit.Test
 
