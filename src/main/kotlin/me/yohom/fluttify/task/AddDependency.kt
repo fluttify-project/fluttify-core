@@ -9,7 +9,7 @@ import org.gradle.api.tasks.TaskAction
 /**
  * 为生成android工程加入目标jar到libs文件夹
  */
-open class AddAndroidDependency : DefaultTask() {
+open class AndroidAddDependency : DefaultTask() {
 
     override fun getGroup() = "fluttify"
 
@@ -27,7 +27,7 @@ open class AddAndroidDependency : DefaultTask() {
 /**
  * 为生成ios工程加入目标framework到文件夹
  */
-open class AddIOSDependency : DefaultTask() {
+open class IOSAddDependency : DefaultTask() {
 
     override fun getGroup() = "fluttify"
 

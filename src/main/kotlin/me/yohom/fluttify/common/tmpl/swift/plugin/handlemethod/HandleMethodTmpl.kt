@@ -1,15 +1,10 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod
+package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.InvokeTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.ArgEnumTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.ArgJsonableTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.ArgRefTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.RefResultTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.RefTmpl
 
 //private fun #__method_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
 //    // 参数
@@ -28,7 +23,7 @@ import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.RefTmpl
 //    #__result__#
 //}
 class HandleMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.mtd.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/swift/handler_method.mtd.swift.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
         val methodName = method.kotlinHandleMethod()

@@ -6,8 +6,8 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.SDK
-import me.yohom.fluttify.common.tmpl.kotlin.platformviewfactory.PlatformViewFactoryTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.PluginTmpl
+import me.yohom.fluttify.common.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.PluginTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

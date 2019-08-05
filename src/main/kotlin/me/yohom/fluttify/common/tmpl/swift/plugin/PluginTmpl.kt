@@ -1,12 +1,8 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin
+package me.yohom.fluttify.common.tmpl.swift.plugin
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.swift.plugin.GetterBranchTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.MethodBranchTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.RegisterPlatformViewTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.SetterBranchTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.GetterMethodTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.HandleMethodTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
@@ -68,7 +64,7 @@ class PluginTmpl(
     private val lib: Lib,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/swift/plugin.swift.tmpl").readText()
 
     fun kotlinPlugin(): String {
         // 包名
