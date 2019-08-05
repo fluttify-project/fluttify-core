@@ -15,7 +15,7 @@ class GetterMethodTmpl(private val field: Field) {
 
     fun kotlinGetter(): String {
         return tmpl
-            .replace("#__getter_name__#", field.kotlinHandleGetterMethod())
+            .replace("#__getter_name__#", field.nativeHandleGetterMethod())
             .replace("#__class_name__#", field.className.toKotlinType())
             .replace("#__field_name__#", field.variable!!.name)
     }

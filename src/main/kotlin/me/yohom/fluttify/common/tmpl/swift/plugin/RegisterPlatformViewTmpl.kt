@@ -13,7 +13,7 @@ class RegisterPlatformViewTmpl(
 ) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/register_platform_view.stmt.swift.tmpl").readText()
 
-    fun kotlinRegisterPlatformView(): String {
+    fun swiftRegisterPlatformView(): String {
         return tmpl
             .replace("#__view_type__#", "${ext.outputOrg}/${viewType.name}")
             .replace("#__factory_name__#", viewType.name.simpleName())

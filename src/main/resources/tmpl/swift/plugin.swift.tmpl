@@ -20,7 +20,7 @@ public class Swift#__plugin_name__#Plugin: NSObject, FlutterPlugin {
         #__register_platform_views__#
     }
 
-    private let handlerMap: [String : (String, Any, FlutterResult) -> Void] = [
+    private let handlerMap: [String : (FlutterPluginRegistrar, Dictionary<String, Any>, FlutterResult) -> Void] = [
         #__branches__#
     ]
 
@@ -36,7 +36,7 @@ public class Swift#__plugin_name__#Plugin: NSObject, FlutterPlugin {
             REF_MAP.removeAll()
             methodResult("success")
         default:
-            handlerMap[methodCall.method]?.self(methodCall.method, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
+            handlerMap[methodCall.method]?.self(registrar, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
         }
     }
 }

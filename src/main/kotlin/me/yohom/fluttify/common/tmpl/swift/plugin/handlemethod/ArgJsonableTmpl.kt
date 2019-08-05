@@ -4,11 +4,11 @@ import me.yohom.fluttify.common.extensions.toKotlinType
 import me.yohom.fluttify.common.model.Variable
 
 //// jsonable参数
-//val #__arg_name__# = args["#__arg_name__#"] as #__type_name__#
+//let #__arg_name__# = args["#__arg_name__#"] as #__type_name__#
 class ArgJsonableTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/arg_jsonable.stmt.swift.tmpl").readText()
 
-    fun kotlinArgJsonable(): String {
+    fun swiftArgJsonable(): String {
         return tmpl
             .replace(
                 "#__type_name__#",

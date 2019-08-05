@@ -5,19 +5,19 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
 
 class InvokeTmpl(private val method: Method) {
-    fun kotlinInvoke(): String {
+    fun swiftInvoke(): String {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {
-            if (method.returnType == "void") {
+            if (method.returnType == "Void") {
                 "${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
             } else {
-                "val result = ${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "let result = ${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
             }
         } else {
-            if (method.returnType == "void") {
+            if (method.returnType == "let") {
                 "ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
             } else {
-                "val result = ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "let result = ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
             }
         }
     }

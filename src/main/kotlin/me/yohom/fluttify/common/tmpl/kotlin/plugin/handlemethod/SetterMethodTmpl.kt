@@ -16,7 +16,7 @@ class SetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/setter.mtd.kt.tmpl").readText()
 
     fun kotlinSetter(): String {
-        val setterName = field.kotlinHandleSetterMethod()
+        val setterName = field.nativeHandleSetterMethod()
         val fieldName = field.variable!!.name
         val fieldType = field.variable.typeName.toKotlinType()
         val className = field.className

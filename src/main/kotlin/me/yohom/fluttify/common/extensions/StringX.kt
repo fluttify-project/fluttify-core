@@ -84,6 +84,18 @@ fun TYPE_NAME.toKotlinType(): String {
 }
 
 /**
+ * 转swift类型
+ */
+fun TYPE_NAME.toSwiftType(): String {
+    return when {
+        this == "void" -> "Void"
+        this == "Integer" -> "Int"
+        jsonable() -> capitalize()
+        else -> this
+    }
+}
+
+/**
  * 判断一个类名是否是被混淆过的
  *
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母

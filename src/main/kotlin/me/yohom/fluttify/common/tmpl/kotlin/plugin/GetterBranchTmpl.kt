@@ -9,7 +9,7 @@ class GetterBranchTmpl(private val field: Field) {
     fun kotlinGetterBranch(): String {
         val className = field.className
         val methodName = "get_${field.variable!!.name}"
-        val handler = field.kotlinHandleGetterMethod()
+        val handler = field.nativeHandleGetterMethod()
 
         return tmpl.replace("#__class_name__#", className)
             .replace("#__method_name__#", methodName)

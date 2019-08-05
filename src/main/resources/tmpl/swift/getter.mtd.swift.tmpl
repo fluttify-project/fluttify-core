@@ -1,7 +1,7 @@
-private fun #__getter_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
+private func #__getter_name__#(registrar: FlutterPluginRegistrar, args: Dictionary<String, Any>, methodResult: FlutterResult) {
     // 引用对象
-    val refId = args["refId"] as Int
-    val ref = REF_MAP[refId] as #__class_name__#
+    let refId = args["refId"] as! Int
+    let ref = REF_MAP[refId] as! #__class_name__#
 
-    methodResult.success(ref.#__field_name__#)
+    methodResult(ref.#__field_name__#)
 }

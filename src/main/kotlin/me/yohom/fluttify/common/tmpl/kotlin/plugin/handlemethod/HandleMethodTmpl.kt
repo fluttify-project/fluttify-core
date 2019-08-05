@@ -40,9 +40,9 @@ class HandleMethodTmpl(private val method: Method) {
             .filter { !it.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.typeName.jsonable() -> ArgJsonableTmpl(it).kotlinArgJsonable()
-                    it.typeName.findType().isEnum() -> ArgEnumTmpl(it).kotlinArgEnum()
-                    else -> ArgRefTmpl(it).kotlinArgRef()
+                    it.typeName.jsonable() -> ArgJsonableTmpl(it).swiftArgJsonable()
+                    it.typeName.findType().isEnum() -> ArgEnumTmpl(it).swiftArgEnum()
+                    else -> ArgRefTmpl(it).swiftArgRef()
                 }
             }
         val log = if (method.isStatic) {
@@ -52,13 +52,13 @@ class HandleMethodTmpl(private val method: Method) {
         }
 
         // 获取当前调用方法的对象引用
-        val ref = RefTmpl(method).kotlinRef()
+        val ref = RefTmpl(method).swiftRef()
 
         // 调用kotlin端对应的方法
-        val invoke = InvokeTmpl(method).kotlinInvoke()
+        val invoke = InvokeTmpl(method).swiftInvoke()
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
-        val result = RefResultTmpl(method.returnType).kotlinRefResult()
+        val result = RefResultTmpl(method.returnType).swiftRefResult()
         return tmpl
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)

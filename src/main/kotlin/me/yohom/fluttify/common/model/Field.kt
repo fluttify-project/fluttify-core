@@ -9,11 +9,11 @@ data class Field(
     val variable: Variable?,
     val className: String
 ) {
-    fun kotlinHandleGetterMethod(): String {
+    fun nativeHandleGetterMethod(): String {
         return "handle${className.toUnderscore()}_get_${variable!!.name}"
     }
 
-    fun kotlinHandleSetterMethod(): String {
+    fun nativeHandleSetterMethod(): String {
         return "handle${className.toUnderscore()}_set_${variable!!.name}"
     }
 

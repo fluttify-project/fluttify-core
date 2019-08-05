@@ -76,24 +76,24 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterBranchTmpl(it).kotlinGetterBranch() }
+            .map { GetterBranchTmpl(it).swiftGetterBranch() }
 
         val settersBranches = lib.types
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterBranchTmpl(it).kotlinSetterBranch() }
+            .map { SetterBranchTmpl(it).swiftSetterBranch() }
 
         val methodBranches = lib.types
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { MethodBranchTmpl(it).kotlinMethodBranch() }
+            .map { MethodBranchTmpl(it).swiftMethodBranch() }
 
         // 注册PlatformView
         val registerPlatformViews = lib.types
             .filter { it.isView() }
-            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).kotlinRegisterPlatformView() }
+            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).swiftRegisterPlatformView() }
 
         // 处理方法们 分三种
         // 1. getter handler
