@@ -108,7 +108,12 @@ open class Type {
     }
 
     fun isView(): Boolean {
-        return superClass in listOf("android.view.View", "android.view.ViewGroup", "android.widget.FrameLayout")
+        return superClass in listOf(
+            "android.view.View",
+            "android.view.ViewGroup",
+            "android.widget.FrameLayout",
+            "UIView"
+        )
     }
 
     fun nameWithGeneric(): String {
