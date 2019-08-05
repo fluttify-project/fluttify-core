@@ -77,6 +77,43 @@ open class IOSDartInterface : DefaultTask() {
 
     @TaskAction
     fun process() {
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
+        val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
 
+        // 处理View, 生成AndroidView
+        sdk.libs
+            .flatMap { it.types }
+            .filter { it.isView() }
+            .forEach {
+                val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
+                val androidViewFile =
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.simpleName()}.dart"
+
+                androidViewFile.file().writeText(dartAndroidView)
+            }
+
+        // 处理普通类
+        sdk.libs
+            .flatMap { it.types }
+            .filterType()
+            .forEach {
+                val resultDart = when (it.typeType) {
+                    TypeType.Class -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Enum -> EnumTmpl(it).dartEnum()
+                    TypeType.Interface -> ""
+                    TypeType.Lambda -> ""
+                    null -> ""
+                }
+
+                if (resultDart.isNotBlank()) {
+                    val resultFile =
+                        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.replace(
+                            ".",
+                            "/"
+                        )}.dart"
+
+                    resultFile.file().writeText(resultDart)
+                }
+            }
     }
 }
