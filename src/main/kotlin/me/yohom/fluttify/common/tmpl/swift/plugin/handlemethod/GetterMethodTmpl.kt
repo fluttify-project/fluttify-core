@@ -1,6 +1,5 @@
 package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod
 
-import me.yohom.fluttify.common.extensions.toKotlinType
 import me.yohom.fluttify.common.model.Field
 
 //private fun #__getter_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
@@ -13,10 +12,10 @@ import me.yohom.fluttify.common.model.Field
 class GetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/getter.mtd.swift.tmpl").readText()
 
-    fun kotlinGetter(): String {
+    fun swiftGetter(): String {
         return tmpl
-            .replace("#__getter_name__#", field.kotlinHandleGetterMethod())
-            .replace("#__class_name__#", field.className.toKotlinType())
-            .replace("#__field_name__#", field.variable!!.name)
+//            .replace("#__getter_name__#", field.kotlinHandleGetterMethod())
+//            .replace("#__class_name__#", field.className.toKotlinType())
+//            .replace("#__field_name__#", field.variable!!.name)
     }
 }

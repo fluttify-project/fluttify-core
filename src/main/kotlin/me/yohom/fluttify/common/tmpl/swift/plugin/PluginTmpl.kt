@@ -7,67 +7,59 @@ import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.GetterMethodTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.HandleMethodTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
 
-//package #__package_name__#
+//import Flutter
+//import UIKit
 //
-//import io.flutter.plugin.common.MethodChannel
-//import io.flutter.plugin.common.PluginRegistry.Registrar
+//var REF_MAP = [Int : Any]()
 //
-//val REF_MAP = mutableMapOf<Int, Any>()
+//public class Swift#__plugin_name__#Plugin: NSObject, FlutterPlugin {
 //
-//@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
-//class #__plugin_name__#Plugin {
-//    companion object {
-//        private val handlerMap = mapOf<String, Function3<Registrar, Map<String, Any>, MethodChannel.Result, Unit>>(
-//                #__branches__#
-//        )
+//    private var registrar: FlutterPluginRegistrar
 //
-//        @JvmStatic
-//        fun registerWith(registrar: Registrar) {
-//            val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
+//    init(_ registrar: FlutterPluginRegistrar) {
+//        self.registrar = registrar
+//    }
 //
-//            channel.setMethodCallHandler { methodCall, methodResult ->
-//                val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
-//                when (methodCall.method) {
-//                    // 获取Application对象
-//                    "SystemRef::getandroid_app_Application" -> {
-//                        methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
-//                    }
-//                    // 获取FlutterActivity对象
-//                    "SystemRef::getandroid_app_Activity" -> {
-//                        methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
-//                    }
-//                    // 释放一个对象
-//                    "SystemRef::release" -> {
-//                        REF_MAP.remove(args["refId"] as Int)
-//                        methodResult.success("success")
-//                    }
-//                    // 清空REF_MAP中所有对象
-//                    "SystemRef::clearRefMap" -> {
-//                        REF_MAP.clear()
-//                        methodResult.success("success")
-//                    }
-//                    else -> {
-//                        handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()
-//                    }
-//                }
-//            }
+//    public static func register(with registrar: FlutterPluginRegistrar) {
+//        let channel = FlutterMethodChannel(name: "#__method_channel__#", binaryMessenger: registrar.messenger())
+//        let instance = Swift#__plugin_name__#Plugin(registrar)
+//        registrar.addMethodCallDelegate(instance, channel: channel)
 //
-//            // 注册View
-//            #__register_platform_views__#
-//		}
+//        // 注册View
+//        #__register_platform_views__#
+//    }
 //
-//		// 与branch对应的方法们
-//		#__handlers__#
+//    private let handlerMap = [String : (String, Any, FlutterResult) -> Void](
+//        #__branches__#
+//    )
+//
+//    public func handle(_ methodCall: FlutterMethodCall, methodResult: @escaping FlutterResult) {
+//        let args = methodCall.arguments as? Dictionary<String, Any> ?? [:]
+//        switch methodCall.method {
+//        // 释放一个对象
+//        case "SystemRef::release" :
+//            REF_MAP.removeValue(forKey: args["refId"] as! Int)
+//            methodResult("success")
+//        // 清空REF_MAP中所有对象
+//        case "SystemRef::clearRefMap" :
+//            REF_MAP.removeAll()
+//            methodResult("success")
+//        default:
+//            handlerMap[methodCall.method]?.self(methodCall.method, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
+//        }
 //    }
 //}
+//
+//// 与branch对应的方法们
+//#__handlers__#
 class PluginTmpl(
     private val lib: Lib,
     private val ext: FluttifyExtension
 ) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/plugin.swift.tmpl").readText()
 
-    fun kotlinPlugin(): String {
-        // 包名
+    fun swiftPlugin(): String {
+        // 包名 iOS端是不需要的其实
         val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
 
         // 插件名称
@@ -111,19 +103,19 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterMethodTmpl(it).kotlinGetter() }
+            .map { GetterMethodTmpl(it).swiftGetter() }
 
         val setterHandlers = lib.types
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterMethodTmpl(it).kotlinSetter() }
+            .map { SetterMethodTmpl(it).swiftSetter() }
 
         val methodHandlers = lib.types
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { HandleMethodTmpl(it).kotlinHandlerMethod() }
+            .map { HandleMethodTmpl(it).swiftHandlerMethod() }
 
         return tmpl
             .replace("#__package_name__#", packageName)

@@ -6,10 +6,11 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.SDK
-import me.yohom.fluttify.common.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.PluginTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import me.yohom.fluttify.common.tmpl.kotlin.platformviewfactory.PlatformViewFactoryTmpl as KotlinPlatformViewFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
 
 /**
  * Android端接口生成
@@ -34,7 +35,7 @@ open class AndroidKotlinInterface : DefaultTask() {
 
         // 生成主plugin文件
         sdk.libs.forEach {
-            PluginTmpl(it, ext)
+            KotlinPluginTmpl(it, ext)
                 .kotlinPlugin()
                 .run {
                     pluginOutputFile.file().writeText(this)
@@ -52,7 +53,7 @@ open class AndroidKotlinInterface : DefaultTask() {
                         "/"
                     )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
 
-                PlatformViewFactoryTmpl(it, ext)
+                KotlinPlatformViewFactoryTmpl(it, ext)
                     .kotlinPlatformViewFactory()
                     .run {
                         factoryOutputFile.writeText(this)
@@ -74,5 +75,36 @@ open class IOSSwiftInterface : DefaultTask() {
 
     @TaskAction
     fun process() {
+        val ext = project.extensions.getByType(FluttifyExtension::class.java)
+        val pluginOutputFile =
+            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/Swift${ext.outputProjectName.underscore2Camel(
+                true
+            )}Plugin.swift"
+
+        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
+
+        // 生成主plugin文件
+        sdk.libs.forEach {
+            SwiftPluginTmpl(it, ext)
+                .swiftPlugin()
+                .run {
+                    pluginOutputFile.file().writeText(this)
+                }
+        }
+
+        // 生成PlatformViewFactory文件
+//        sdk.libs
+//            .flatMap { it.types }
+//            .filter { it.isView() }
+//            .forEach {
+//                val factoryOutputFile =
+//                    "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.kt".file()
+//
+//                SwiftPlatformViewFactoryTmpl(it, ext)
+//                    .swiftPlatformViewFactory()
+//                    .run {
+//                        factoryOutputFile.writeText(this)
+//                    }
+//            }
     }
 }

@@ -3,13 +3,9 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.swift.plugin.GetterBranchTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.MethodBranchTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.RegisterPlatformViewTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.SetterBranchTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.GetterMethodTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.GetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.HandleMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 
 //package #__package_name__#
 //

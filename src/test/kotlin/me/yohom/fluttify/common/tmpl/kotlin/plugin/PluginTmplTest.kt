@@ -9,6 +9,6 @@ class PluginTmplTest {
 
     @Test
     fun kotlinPlugin() {
-        PluginTmpl(sdk.libs[0], ext).kotlinPlugin().run { print(this) }
+        PluginTmpl(sdk.libs[0], ext).swiftPlugin().run { print(this) }
     }
 }

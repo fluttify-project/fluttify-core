@@ -15,16 +15,16 @@ import me.yohom.fluttify.common.model.Field
 class SetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/setter.mtd.swift.tmpl").readText()
 
-    fun kotlinSetter(): String {
+    fun swiftSetter(): String {
         val setterName = field.kotlinHandleSetterMethod()
         val fieldName = field.variable!!.name
         val fieldType = field.variable.typeName.toKotlinType()
         val className = field.className
 
         return tmpl
-            .replace("#__setter_name__#", setterName)
-            .replace("#__field_name__#", fieldName)
-            .replace("#__field_type__#", fieldType)
-            .replace("#__class_name__#", className)
+//            .replace("#__setter_name__#", setterName)
+//            .replace("#__field_name__#", fieldName)
+//            .replace("#__field_type__#", fieldType)
+//            .replace("#__class_name__#", className)
     }
 }

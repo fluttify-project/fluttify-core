@@ -2,7 +2,6 @@ package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
-import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.InvokeTmpl
 
@@ -25,7 +24,7 @@ import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.InvokeTmpl
 class HandleMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/handler_method.mtd.swift.tmpl").readText()
 
-    fun kotlinHandlerMethod(): String {
+    fun swiftHandlerMethod(): String {
         val methodName = method.kotlinHandleMethod()
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
@@ -55,11 +54,11 @@ class HandleMethodTmpl(private val method: Method) {
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = RefResultTmpl(method.returnType).kotlinRefResult()
         return tmpl
-            .replace("#__method_name__#", methodName)
-            .replaceParagraph("#__args__#", args)
-            .replaceParagraph("#__ref__#", ref)
-            .replaceParagraph("#__log__#", log)
-            .replaceParagraph("#__invoke__#", invoke)
-            .replaceParagraph("#__result__#", result)
+//            .replace("#__method_name__#", methodName)
+//            .replaceParagraph("#__args__#", args)
+//            .replaceParagraph("#__ref__#", ref)
+//            .replaceParagraph("#__log__#", log)
+//            .replaceParagraph("#__invoke__#", invoke)
+//            .replaceParagraph("#__result__#", result)
     }
 }

@@ -27,7 +27,7 @@ open class Type {
     /**
      * 是否是内部类
      */
-    var isInnerClass: Boolean = true
+    var isInnerClass: Boolean = false
 
     /**
      * 是否primitive

@@ -38,7 +38,7 @@ class PlatformViewFactoryTmpl(
 ) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/platform_view_factory.swift.tmpl").readText()
 
-    fun kotlinPlatformViewFactory(): String {
+    fun swiftPlatformViewFactory(): String {
         return tmpl
             .replace("#__package_name__#", "${ext.outputOrg}.${ext.outputProjectName}")
             .replace("#__factory_name__#", viewType.name.simpleName())

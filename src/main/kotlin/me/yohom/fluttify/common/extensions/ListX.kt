@@ -17,7 +17,13 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
 
 fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
     return asSequence()
-        .filter { method -> distinctSource.isEmpty() or distinctSource.none { it.contains(method.name) } }
+        .filter { method ->
+            (distinctSource.isEmpty() or distinctSource.none { it.contains(method.name) }).apply {
+                if (!this) println(
+                    "filterMethod: $method 由于与distinctSource中的方法重复 被过滤"
+                )
+            }
+        }
         .distinctBy { "${it.className}::${it.name}" }
         .filter { it.isOk() }
         .toList()
@@ -25,40 +31,42 @@ fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Met
 
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
-        .filter { it.isPublic == true }
-        .filter { it.isStatic == false }
-        .filter { it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE }
-        .filter { it.variable?.typeName?.findType()?.isInterface() == false }
-        .filter { it.variable?.typeName?.findType()?.isPublic == true }
+        .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
+        .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
+        .filter { (it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
+        .filter { (it.variable?.typeName?.findType()?.isInterface() == false).apply { if (!this) println("filterGetters: $it 由于是接口类型 被过滤") } }
+        .filter { (it.variable?.typeName?.findType()?.isPublic == true).apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
         .toList()
 }
 
 fun List<Type>.filterType(): List<Type> {
     return asSequence()
-        .filter { it.isPublic }
-        .filter { it.genericTypes.isEmpty() } // 有泛型的类暂不支持处理
-        .filter { !(it.constructors.all { it.isPublic != true } && it.isInnerClass) }
-        .filter { !it.isObfuscated() }
-        .filter { it.superClass !in IGNORE_CLASS }
+        .filter { it.isPublic.apply { if (!this) println("filterType: $it 由于不是公开类 被过滤") } }
+        .filter {
+            it.genericTypes.isEmpty().apply { if (!this) println("filterType: $it 由于含有泛型 被过滤") }
+        } // 有泛型的类暂不支持处理
+        .filter { (!(it.constructors.all { it.isPublic != true } && it.isInnerClass)).apply { if (!this) println("filterType: $it 由于构造器不是全公开且是内部类 被过滤") } }
+        .filter { (!it.isObfuscated()).apply { if (!this) println("filterType: $it 由于是混淆类 被过滤") } }
+        .filter { (it.superClass !in IGNORE_CLASS).apply { if (!this) println("filterType: $it 由于父类是忽略类 被过滤") } }
         .toList()
 }
 
 fun List<Variable>.filterFormalParams(): List<Variable> {
     return asSequence()
         // 要过滤掉是接口, 却不是回调类的参数
-        .filter { !it.typeName.findType().run { isInterface() && !isCallback() } }
-        .filter { it.typeName.findType() != Type.UNKNOWN_TYPE }
+        .filter { (!it.typeName.findType().run { isInterface() && !isCallback() }).apply { if (!this) println("filterFormalParams: $it 由于是接口, 却不是回调类 被过滤") } }
+        .filter { (it.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterFormalParams: $it 由于是未知类型 被过滤") } }
         .toList()
 }
 
 fun List<Field>.filterSetters(): List<Field> {
     return asSequence()
-        .filter { it.isFinal == false }
-        .filter { it.isPublic == true }
-        .filter { it.isStatic == false }
-        .filter { it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE }
-        .filter { it.variable?.typeName?.findType()?.isInterface() == false }
-        .filter { it.variable?.typeName?.findType()?.isPublic == true }
+        .filter { (it.isFinal == false).apply { if (!this) println("filterSetters: $it 由于是final字段 被过滤") } }
+        .filter { (it.isPublic == true).apply { if (!this) println("filterSetters: $it 由于不是公开field 被过滤") } }
+        .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }
+        .filter { (it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterSetters: $it 由于是未知类型 被过滤") } }
+        .filter { (it.variable?.typeName?.findType()?.isInterface() == false).apply { if (!this) println("filterSetters: $it 由于是接口类型 被过滤") } }
+        .filter { (it.variable?.typeName?.findType()?.isPublic == true).apply { if (!this) println("filterSetters: $it 由于字段类型不是公开类型 被过滤") } }
         .toList()
 }
 
