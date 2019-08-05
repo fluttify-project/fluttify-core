@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.model
 
+import me.yohom.fluttify.common.SYSTEM_CLASS
 import me.yohom.fluttify.common.extensions.jsonable
 
 class SDK {
@@ -47,7 +48,7 @@ class SDK {
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName }
                 // 已支持的系统类
-                fullName in listOf("void", "android.content.Context", "android.app.Application", "android.app.Activity") -> Type().apply { name = fullName }
+                fullName in SYSTEM_CLASS -> Type().apply { name = fullName }
                 // 其他情况一律认为不认识的类
                 else -> Type.UNKNOWN_TYPE
             }

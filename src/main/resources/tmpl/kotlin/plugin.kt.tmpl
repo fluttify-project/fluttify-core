@@ -1,5 +1,6 @@
 package #__package_name__#
 
+import android.os.Bundle
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
@@ -26,6 +27,10 @@ class #__plugin_name__#Plugin {
                     // 获取FlutterActivity对象
                     "SystemRef::getandroid_app_Activity" -> {
                         methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
+                    }
+                    // 创建android.os.Bundle对象
+                    "SystemRef::createandroid_os_Bundle" -> {
+                        methodResult.success(Bundle().apply { REF_MAP[hashCode()] = this }.hashCode())
                     }
                     // 释放一个对象
                     "SystemRef::release" -> {

@@ -1,11 +1,5 @@
 package me.yohom.fluttify.common
 
-const val UNKNOWN = "UNKNOWN"
-/**
- * 系统保留的model类
- */
-val PRESERVED_MODEL = listOf("Bitmap", "Bundle")
-
 /**
  * 忽略的方法
  */
@@ -23,15 +17,12 @@ val IGNORE_METHOD = listOf(
 /**
  * 保留的类
  */
-val PRESERVED_CLASS = listOf(
-    "android.content.Context"
-)
-
-/**
- * 忽略的字段
- */
-val IGNORE_FIELD = listOf(
-    "CREATOR"
+val SYSTEM_CLASS = listOf(
+    "void",
+    "android.content.Context",
+    "android.app.Application",
+    "android.app.Activity",
+    "android.os.Bundle"
 )
 
 /**
