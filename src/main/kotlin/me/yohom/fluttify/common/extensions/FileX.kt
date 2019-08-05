@@ -152,6 +152,8 @@ fun OBJC_FILE.objcType(): List<Type> {
     var name = ""
     var typeType: TypeType? = null
     var superClass = ""
+    var genericTypes = listOf<TYPE_NAME>()
+    val constructors = mutableListOf<Constructor>()
 
     source.walkTree(object : ObjectiveCParserBaseListener() {
         override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
