@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'me.yohom'
-version '0.1.0'
+version '0.1.1'
 
 repositories {
     maven { url 'https://raw.github.com/java-decompiler/mvn-repo/master' }

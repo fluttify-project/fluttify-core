@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.TYPE_NAME
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.toDartType
 
@@ -25,7 +26,7 @@ data class Variable(
                 }
                 ?: ""
         } else {
-            "${typeName.toDartType()} $name"
+            "${typeName.toDartType()} ${name.depointer()}"
         }
     }
 }

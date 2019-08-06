@@ -10,6 +10,7 @@ import me.yohom.fluttify.common.model.TypeType
 import me.yohom.fluttify.common.tmpl.dart.clazz.ClassTmpl
 import me.yohom.fluttify.common.tmpl.dart.enumeration.EnumTmpl
 import me.yohom.fluttify.common.tmpl.dart.view.AndroidViewTmpl
+import me.yohom.fluttify.common.tmpl.dart.view.UiKitViewTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -34,7 +35,7 @@ open class AndroidDartInterface : DefaultTask() {
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
                 val androidViewFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.simpleName()}.dart"
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/platformview/${it.name.simpleName()}.dart"
 
                 androidViewFile.file().writeText(dartAndroidView)
             }
@@ -78,18 +79,18 @@ open class IOSDartInterface : DefaultTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
+        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
 
-        // 处理View, 生成AndroidView
+        // 处理View, 生成UiKitView
         sdk.libs
             .flatMap { it.types }
             .filter { it.isView() }
             .forEach {
-                val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
-                val androidViewFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.simpleName()}.dart"
+                val dartUiKitView = UiKitViewTmpl(it, ext).dartUiKitView()
+                val uiKitViewFile =
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/platformview/${it.name.simpleName()}.dart"
 
-                androidViewFile.file().writeText(dartAndroidView)
+                uiKitViewFile.file().writeText(dartUiKitView)
             }
 
         // 处理普通类
@@ -107,7 +108,7 @@ open class IOSDartInterface : DefaultTask() {
 
                 if (resultDart.isNotBlank()) {
                     val resultFile =
-                        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.replace(
+                        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/${it.name.replace(
                             ".",
                             "/"
                         )}.dart"

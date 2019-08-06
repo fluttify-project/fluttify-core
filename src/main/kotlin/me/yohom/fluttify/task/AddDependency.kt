@@ -35,6 +35,14 @@ open class IOSAddDependency : DefaultTask() {
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
 
+        // 添加间接依赖到podspec中
+        val podspecFile = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/${ext.outputProjectName}.podspec".file()
+        podspecFile.readText()
+            .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString(",\n\t\t") { "\"$it\"" })
+            .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString(",\n\t\t") { "\"$it\"" })
+            .run { podspecFile.writeText(this) }
+
+        // 添加framework到工程中
         FileUtils.copyDirectory(
             ext.frameworkDir.file(),
             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()

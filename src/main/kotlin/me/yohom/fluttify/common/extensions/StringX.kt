@@ -138,7 +138,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
                 this
             }
         }
-    }.replace("$", ".").replace(".", "_")
+    }.replace("$", ".").replace(".", "_").depointer()
 }
 
 fun TYPE_NAME.toUnderscore(): String {
