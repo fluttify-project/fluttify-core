@@ -36,6 +36,7 @@ fun List<Field>.filterGetters(): List<Field> {
         .filter { (it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
         .filter { (it.variable?.typeName?.findType()?.isInterface() == false).apply { if (!this) println("filterGetters: $it 由于是接口类型 被过滤") } }
         .filter { (it.variable?.typeName?.findType()?.isPublic == true).apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
+        .filter { println("字段${it}通过Getter过滤"); true }
         .toList()
 }
 
@@ -48,6 +49,7 @@ fun List<Type>.filterType(): List<Type> {
         .filter { (!(it.constructors.all { it.isPublic != true } && it.isInnerClass)).apply { if (!this) println("filterType: $it 由于构造器不是全公开且是内部类 被过滤") } }
         .filter { (!it.isObfuscated()).apply { if (!this) println("filterType: $it 由于是混淆类 被过滤") } }
         .filter { (it.superClass !in IGNORE_CLASS).apply { if (!this) println("filterType: $it 由于父类是忽略类 被过滤") } }
+        .filter { println("类${it}通过过滤"); true }
         .toList()
 }
 
@@ -56,6 +58,7 @@ fun List<Variable>.filterFormalParams(): List<Variable> {
         // 要过滤掉是接口, 却不是回调类的参数
         .filter { (!it.typeName.findType().run { isInterface() && !isCallback() }).apply { if (!this) println("filterFormalParams: $it 由于是接口, 却不是回调类 被过滤") } }
         .filter { (it.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterFormalParams: $it 由于是未知类型 被过滤") } }
+        .filter { println("参数${it}通过过滤"); true }
         .toList()
 }
 
@@ -67,6 +70,7 @@ fun List<Field>.filterSetters(): List<Field> {
         .filter { (it.variable?.typeName?.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterSetters: $it 由于是未知类型 被过滤") } }
         .filter { (it.variable?.typeName?.findType()?.isInterface() == false).apply { if (!this) println("filterSetters: $it 由于是接口类型 被过滤") } }
         .filter { (it.variable?.typeName?.findType()?.isPublic == true).apply { if (!this) println("filterSetters: $it 由于字段类型不是公开类型 被过滤") } }
+        .filter { println("字段${it}通过Setter过滤"); true }
         .toList()
 }
 

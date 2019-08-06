@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.SYSTEM_CLASS
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.jsonable
 
 class SDK {
@@ -44,7 +45,7 @@ class SDK {
             val allTypes = androidSDK?.libs?.union(iOSSDK?.libs ?: listOf())?.flatMap { it.types } ?: listOf()
             return when {
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
-                allTypes.map { it.name }.contains(fullName) -> allTypes.first { it.name == fullName }
+                allTypes.map { it.name.depointer() }.contains(fullName) -> allTypes.first { it.name == fullName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName }
                 // 已支持的系统类

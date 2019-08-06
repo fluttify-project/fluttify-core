@@ -131,6 +131,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "nil" -> "null"
         "NSArray", "NSArray*" -> "List"
         "NSInteger" -> "int"
+        "BOOL" -> "bool"
         else -> {
             if (Regex("ArrayList<\\w*>").matches(this)) {
                 removePrefix("Array")
