@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import #__import__#
 
 class #__native_view__#Factory: NSObject, FlutterPlatformViewFactory {
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
@@ -16,7 +17,7 @@ class #__native_view__#PlatformView: NSObject, FlutterPlatformView {
 
    func view() -> UIView {
        let nativeView = #__native_view__#()
-       REF_MAP[viewId] = nativeView
+       REF_MAP[Int(viewId)] = nativeView
        return nativeView
    }
 

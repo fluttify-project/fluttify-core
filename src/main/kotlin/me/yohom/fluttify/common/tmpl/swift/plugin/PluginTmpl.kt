@@ -9,6 +9,7 @@ import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
 
 //import Flutter
 //import UIKit
+//import #__import__#
 //
 //var REF_MAP = [Int : Any]()
 //
@@ -29,23 +30,23 @@ import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
 //        #__register_platform_views__#
 //    }
 //
-//    private let handlerMap = [String : (String, Any, FlutterResult) -> Void](
+//    private let handlerMap: [String : (FlutterPluginRegistrar, Dictionary<String, Any>, FlutterResult) -> Void] = [
 //        #__branches__#
-//    )
+//    ]
 //
 //    public func handle(_ methodCall: FlutterMethodCall, methodResult: @escaping FlutterResult) {
 //        let args = methodCall.arguments as? Dictionary<String, Any> ?? [:]
 //        switch methodCall.method {
 //        // 释放一个对象
-//        case "SystemRef::release" :
+//        case "SystemRef::release":
 //            REF_MAP.removeValue(forKey: args["refId"] as! Int)
 //            methodResult("success")
 //        // 清空REF_MAP中所有对象
-//        case "SystemRef::clearRefMap" :
+//        case "SystemRef::clearRefMap":
 //            REF_MAP.removeAll()
 //            methodResult("success")
 //        default:
-//            handlerMap[methodCall.method]?.self(methodCall.method, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
+//            handlerMap[methodCall.method]?.self(registrar, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
 //        }
 //    }
 //}
@@ -118,7 +119,7 @@ class PluginTmpl(
             .map { HandleMethodTmpl(it).swiftHandlerMethod() }
 
         return tmpl
-            .replace("#__package_name__#", packageName)
+            .replace("#__import__#", lib.name)
             .replace("#__plugin_name__#", pluginClassName)
             .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__getter_branches__#", "")

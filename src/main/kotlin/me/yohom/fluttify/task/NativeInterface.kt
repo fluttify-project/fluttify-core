@@ -6,11 +6,11 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.SDK
+import me.yohom.fluttify.common.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import me.yohom.fluttify.common.tmpl.kotlin.platformviewfactory.PlatformViewFactoryTmpl as KotlinPlatformViewFactoryTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
-import me.yohom.fluttify.common.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl as SwiftPlatformViewFactoryTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
 
 /**
@@ -95,16 +95,18 @@ open class IOSSwiftInterface : DefaultTask() {
 
         // 生成PlatformViewFactory文件
         sdk.libs
-            .flatMap { it.types }
-            .filter { it.isView() }
-            .forEach {
-                val factoryOutputFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.swift".file()
+            .forEach { lib ->
+                lib.types
+                    .filter { it.isView() }
+                    .forEach {
+                        val factoryOutputFile =
+                            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.swift".file()
 
-                SwiftPlatformViewFactoryTmpl(it)
-                    .swiftPlatformViewFactory()
-                    .run {
-                        factoryOutputFile.writeText(this)
+                        PlatformViewFactoryTmpl(it, lib)
+                            .swiftPlatformViewFactory()
+                            .run {
+                                factoryOutputFile.writeText(this)
+                            }
                     }
             }
     }

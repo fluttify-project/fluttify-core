@@ -1,9 +1,11 @@
 package me.yohom.fluttify.common.tmpl.swift.platformviewfactory
 
+import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.model.Type
 
 //import Flutter
 //import UIKit
+//import #__import__#
 //
 //class #__native_view__#Factory: NSObject, FlutterPlatformViewFactory {
 //    func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
@@ -28,11 +30,15 @@ import me.yohom.fluttify.common.model.Type
 //       REF_MAP.removeValue(forKey: Int(viewId))
 //   }
 //}
-class PlatformViewFactoryTmpl(private val viewType: Type) {
+class PlatformViewFactoryTmpl(
+    private val viewType: Type,
+    private val lib: Lib
+) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/platform_view_factory.swift.tmpl").readText()
 
     fun swiftPlatformViewFactory(): String {
         return tmpl
+            .replace("#__import__#", lib.name)
             .replace("#__native_view__#", viewType.name)
     }
 }
