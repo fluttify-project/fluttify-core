@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod
 
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.toSwiftType
 import me.yohom.fluttify.common.model.Field
 
@@ -23,7 +24,7 @@ class SetterMethodTmpl(private val field: Field) {
 
         return tmpl
             .replace("#__setter_name__#", setterName)
-            .replace("#__field_name__#", fieldName)
+            .replace("#__field_name__#", fieldName.depointer())
             .replace("#__field_type__#", fieldType)
             .replace("#__class_name__#", className)
     }

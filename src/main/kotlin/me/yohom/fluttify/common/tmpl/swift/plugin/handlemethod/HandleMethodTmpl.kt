@@ -41,9 +41,9 @@ class HandleMethodTmpl(private val method: Method) {
                 }
             }
         val log = if (method.isStatic) {
-            "print(\"fluttify-kotlin: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":\\(${it.name})\\n" }})\")"
+            "print(\"fluttify-swift: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":\\(${it.name})\\n" }})\")"
         } else {
-            "print(\"fluttify-kotlin: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":\\(${it.name})\\n" }})\")"
+            "print(\"fluttify-swift: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":\\(${it.name})\\n" }})\")"
         }
 
         // 获取当前调用方法的对象引用

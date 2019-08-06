@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod
 
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.toSwiftType
 import me.yohom.fluttify.common.model.Field
 
@@ -17,6 +18,6 @@ class GetterMethodTmpl(private val field: Field) {
         return tmpl
             .replace("#__getter_name__#", field.nativeHandleGetterMethod())
             .replace("#__class_name__#", field.className.toSwiftType())
-            .replace("#__field_name__#", field.variable!!.name)
+            .replace("#__field_name__#", field.variable!!.name.depointer())
     }
 }

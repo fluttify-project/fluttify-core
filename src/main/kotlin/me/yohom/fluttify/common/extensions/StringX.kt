@@ -87,11 +87,14 @@ fun TYPE_NAME.toKotlinType(): String {
  * 转swift类型
  */
 fun TYPE_NAME.toSwiftType(): String {
+    val depointed = depointer()
     return when {
-        this == "void" -> "Void"
-        this == "Integer" -> "Int"
-        jsonable() -> capitalize()
-        else -> this
+        depointed == "void" -> "Void"
+        depointed == "NSInteger" -> "Int"
+        depointed == "NSString" -> "String"
+        depointed in listOf("NSArray", "NSArray*") -> "[Any]"
+        depointed.jsonable() -> capitalize()
+        else -> depointed
     }
 }
 
@@ -110,7 +113,6 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
-    // 目前只关心java类型, 扩展到ios端后处理oc类型
     return when (this) {
         "String" -> "String"
         "boolean", "Boolean" -> "bool"
@@ -124,6 +126,11 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "Map" -> "Map"
         "void" -> "String"
         null -> "null"
+        // 开始objc
+        "NSString", "NSString*" -> "String"
+        "nil" -> "null"
+        "NSArray", "NSArray*" -> "List"
+        "NSInteger" -> "int"
         else -> {
             if (Regex("ArrayList<\\w*>").matches(this)) {
                 removePrefix("Array")
@@ -136,6 +143,13 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
 
 fun TYPE_NAME.toUnderscore(): String {
     return replace("$", ".").replace(".", "_")
+}
+
+/**
+ * 去除指针类型的`*`号
+ */
+fun TYPE_NAME.depointer(): String {
+    return removePrefix("*").removeSuffix("*")
 }
 
 /**

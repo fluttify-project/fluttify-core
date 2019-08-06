@@ -1,11 +1,12 @@
 package me.yohom.fluttify.common.tmpl.swift.plugin
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.*
+import me.yohom.fluttify.common.extensions.filterMethod
+import me.yohom.fluttify.common.extensions.filterType
+import me.yohom.fluttify.common.extensions.replaceParagraph
+import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.GetterMethodTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
 
 //import Flutter
 //import UIKit
@@ -69,21 +70,21 @@ class PluginTmpl(
         // method channel
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
 
-        // 分支们 分为三种
-        // 1. 普通方法
-        // 2. getter
-        // 3. setter
-        val gettersBranches = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterGetters()
-            .map { GetterBranchTmpl(it).swiftGetterBranch() }
-
-        val settersBranches = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterSetters()
-            .map { SetterBranchTmpl(it).swiftSetterBranch() }
+//        // 分支们 分为三种
+//        // 1. 普通方法
+//        // 2. getter
+//        // 3. setter
+//        val gettersBranches = lib.types
+//            .filterType()
+//            .flatMap { it.fields }
+//            .filterGetters()
+//            .map { GetterBranchTmpl(it).swiftGetterBranch() }
+//
+//        val settersBranches = lib.types
+//            .filterType()
+//            .flatMap { it.fields }
+//            .filterSetters()
+//            .map { SetterBranchTmpl(it).swiftSetterBranch() }
 
         val methodBranches = lib.types
             .filterType()
@@ -96,21 +97,21 @@ class PluginTmpl(
             .filter { it.isView() }
             .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).swiftRegisterPlatformView() }
 
-        // 处理方法们 分三种
-        // 1. getter handler
-        // 2. setter handler
-        // 3. 普通方法 handler
-        val getterHandlers = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterGetters()
-            .map { GetterMethodTmpl(it).swiftGetter() }
-
-        val setterHandlers = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterSetters()
-            .map { SetterMethodTmpl(it).swiftSetter() }
+//        // 处理方法们 分三种
+//        // 1. getter handler
+//        // 2. setter handler
+//        // 3. 普通方法 handler
+//        val getterHandlers = lib.types
+//            .filterType()
+//            .flatMap { it.fields }
+//            .filterGetters()
+//            .map { GetterMethodTmpl(it).swiftGetter() }
+//
+//        val setterHandlers = lib.types
+//            .filterType()
+//            .flatMap { it.fields }
+//            .filterSetters()
+//            .map { SetterMethodTmpl(it).swiftSetter() }
 
         val methodHandlers = lib.types
             .filterType()
@@ -126,12 +127,12 @@ class PluginTmpl(
             .replaceParagraph("#__setter_branches__#", "")
             .replaceParagraph(
                 "#__branches__#",
-                methodBranches.union(gettersBranches).union(settersBranches).joinToString(",\n")
+                methodBranches.joinToString(",\n")
             )
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
             .replaceParagraph(
                 "#__handlers__#",
-                getterHandlers.union(setterHandlers).union(methodHandlers).joinToString("\n")
+                methodHandlers.joinToString("\n")
             )
     }
 }

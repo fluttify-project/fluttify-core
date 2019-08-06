@@ -43,7 +43,7 @@ class CallbackMethodTmpl(private val callerMethod: Method, private val callbackM
             )
             .replaceParagraph(
                 "#__log__#",
-                "println(\"fluttify-kotlin-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.map { "\\\"${it.name}\\\":$${it.name}" }})\")"
+                "println(\"fluttify-swift-callback: ${callerMethod.className}@\$refId::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.map { "\\\"${it.name}\\\":$${it.name}" }})\")"
             )
             .replaceParagraph(
                 "#__return_stmt__#",

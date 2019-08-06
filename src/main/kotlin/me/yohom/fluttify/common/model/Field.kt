@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.extensions.toUnderscore
+import me.yohom.fluttify.common.extensions.depointer
 
 data class Field(
     val isPublic: Boolean?,
@@ -10,11 +11,11 @@ data class Field(
     val className: String
 ) {
     fun nativeHandleGetterMethod(): String {
-        return "handle${className.toUnderscore()}_get_${variable!!.name}"
+        return "handle${className.toUnderscore()}_get_${variable!!.name.depointer()}"
     }
 
     fun nativeHandleSetterMethod(): String {
-        return "handle${className.toUnderscore()}_set_${variable!!.name}"
+        return "handle${className.toUnderscore()}_set_${variable!!.name.depointer()}"
     }
 
     fun dartGetterMethod(): String {

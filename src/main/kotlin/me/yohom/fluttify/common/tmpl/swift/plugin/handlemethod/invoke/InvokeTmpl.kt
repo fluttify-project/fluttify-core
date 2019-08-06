@@ -8,13 +8,13 @@ class InvokeTmpl(private val method: Method) {
     fun swiftInvoke(): String {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {
-            if (method.returnType == "Void") {
+            if (method.returnType == "void") {
                 "${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
             } else {
                 "let result = ${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
             }
         } else {
-            if (method.returnType == "let") {
+            if (method.returnType == "void") {
                 "ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
             } else {
                 "let result = ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
