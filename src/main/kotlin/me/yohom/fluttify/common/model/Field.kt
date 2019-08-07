@@ -1,28 +1,30 @@
 package me.yohom.fluttify.common.model
 
-import me.yohom.fluttify.common.extensions.toUnderscore
 import me.yohom.fluttify.common.extensions.depointer
+import me.yohom.fluttify.common.extensions.toUnderscore
 
 data class Field(
     val isPublic: Boolean?,
     val isFinal: Boolean?,
     val isStatic: Boolean?,
-    val variable: Variable?,
-    val className: String
+    val variable: Variable,
+    val className: String,
+    val getterName: String = variable.name,
+    val setterName: String = variable.name
 ) {
     fun nativeHandleGetterMethod(): String {
-        return "handle${className.toUnderscore()}_get_${variable!!.name.depointer()}"
+        return "handle${className.toUnderscore()}_get_${getterName.depointer()}"
     }
 
     fun nativeHandleSetterMethod(): String {
-        return "handle${className.toUnderscore()}_set_${variable!!.name.depointer()}"
+        return "handle${className.toUnderscore()}_set_${setterName.depointer()}"
     }
 
     fun dartGetterMethod(): String {
-        return "$className::get_${variable!!.name}"
+        return "$className::get_$getterName"
     }
 
     fun dartSetterMethod(): String {
-        return "$className::set_${variable!!.name}"
+        return "$className::set_$setterName"
     }
 }

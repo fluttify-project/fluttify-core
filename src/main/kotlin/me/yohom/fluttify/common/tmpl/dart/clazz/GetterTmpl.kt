@@ -15,11 +15,11 @@ class GetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
 
     fun dartGetter(): String {
-        return field.variable?.run {
+        return field.variable.run {
             tmpl
                 .replace("#__type__#", typeName.toDartType())
                 .replace("#__name__#", name.depointer())
                 .replace("#__getter_method__#", field.dartGetterMethod())
-        } ?: ""
+        }
     }
 }

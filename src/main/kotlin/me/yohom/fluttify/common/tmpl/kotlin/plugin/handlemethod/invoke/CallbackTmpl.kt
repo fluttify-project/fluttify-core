@@ -22,6 +22,6 @@ class CallbackTmpl(private val callerMethod: Method, private val callbackType: T
             .replace("#__caller_method_name__#", callerMethod.name)
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods
-                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).kotlinCallbackMethod() })
+                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).swiftCallbackMethod() })
     }
 }

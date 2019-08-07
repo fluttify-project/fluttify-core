@@ -17,7 +17,7 @@ class SetterMethodTmpl(private val field: Field) {
 
     fun kotlinSetter(): String {
         val setterName = field.nativeHandleSetterMethod()
-        val fieldName = field.variable!!.name
+        val fieldName = field.variable.name
         val fieldType = field.variable.typeName.toKotlinType()
         val className = field.className
 

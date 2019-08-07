@@ -14,13 +14,13 @@ import me.yohom.fluttify.common.model.Type
 class CallbackTmpl(private val callerMethod: Method, private val callbackType: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/callback.stmt.swift.tmpl").readText()
 
-    fun kotlinCallback(): String {
+    fun swiftCallback(): String {
         return tmpl
             .replace("#__callback_class_name__#", callbackType.name)
             .replace("#__caller_class_name__#", callerMethod.className)
             .replace("#__caller_method_name__#", callerMethod.name)
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods
-                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).kotlinCallbackMethod() })
+                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).swiftCallbackMethod() })
     }
 }

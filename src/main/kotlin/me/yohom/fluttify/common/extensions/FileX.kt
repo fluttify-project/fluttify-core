@@ -176,6 +176,10 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
+            // 只接收property
+            ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
+
+            // todo 判断是否是list
             val variable = Variable(ctx.type(), ctx.name())
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(
@@ -184,7 +188,9 @@ fun OBJC_FILE.objcType(): List<Type> {
                     ctx.isFinal(),
                     false,
                     variable,
-                    name
+                    name,
+                    ctx.getterName(),
+                    ctx.setterName()
                 )
             )
         }

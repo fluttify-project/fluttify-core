@@ -92,6 +92,7 @@ fun TYPE_NAME.toSwiftType(): String {
         depointed == "void" -> "Void"
         depointed == "NSInteger" -> "Int"
         depointed == "NSString" -> "String"
+        depointed == "BOOL" -> "Bool"
         depointed in listOf("NSArray", "NSArray*") -> "[Any]"
         depointed.jsonable() -> capitalize()
         else -> depointed
@@ -149,7 +150,7 @@ fun TYPE_NAME.toUnderscore(): String {
 /**
  * 去除指针类型的`*`号
  */
-fun TYPE_NAME.depointer(): String {
+fun String.depointer(): String {
     return removePrefix("*").removeSuffix("*")
 }
 
@@ -209,6 +210,15 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
     }
 
     return result
+}
+
+/**
+ * objc命名规范改为swift命名规范, 这个没什么办法, 目前先枚举替换
+ *
+ * 比如 URL->url
+ */
+fun String.objc2SwiftSpec(): String {
+    return replace("URL", "url")
 }
 
 /**

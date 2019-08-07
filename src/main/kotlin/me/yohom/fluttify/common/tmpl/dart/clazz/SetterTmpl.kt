@@ -14,11 +14,11 @@ class SetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/setter.mtd.dart.tmpl").readText()
 
     fun dartSetter(): String {
-        return field.variable?.run {
+        return field.variable.run {
             tmpl
                 .replace("#__type__#", typeName.toDartType())
                 .replace("#__name__#", name.depointer())
                 .replace("#__setter_method__#", field.dartSetterMethod())
-        } ?: ""
+        }
     }
 }

@@ -25,7 +25,7 @@ class InvokeTmpl(private val method: Method) {
 
     private fun var2formalParam(it: Variable): String {
         return if (it.typeName.findType().isCallback()) {
-            CallbackTmpl(method, it.typeName.findType()).kotlinCallback()
+            CallbackTmpl(method, it.typeName.findType()).swiftCallback()
         } else {
             if (it.isList) "ArrayList(${it.name})" else it.name
         }

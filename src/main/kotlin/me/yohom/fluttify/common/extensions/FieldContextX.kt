@@ -80,12 +80,31 @@ fun JavaParser.FieldDeclarationContext?.jsonable(): Boolean {
 //endregion
 
 //region Objc field
+/**
+ * 是否是只读 有两种情况
+ *
+ * 1. property指定是readonly
+ * 2. 声明了getter却没有声明setter
+ */
 fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
+    val getter = ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+        ?.find { it.contains("getter") }
+        ?.run { split("=")[1] } ?: ""
+    val setter = ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+        ?.find { it.contains("setter") }
+        ?.run { split("=")[1] } ?: ""
+
     return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
         ?.propertyAttributesList()
         ?.propertyAttribute()
         ?.map { it.text }
-        ?.contains("readonly") == true
+        ?.contains("readonly") == true || (getter.isNotEmpty() && setter.isEmpty())
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {
@@ -98,6 +117,26 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
 
 fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {
     return false
+}
+
+fun ObjectiveCParser.FieldDeclarationContext.getterName(): String {
+    return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+        ?.find { it.contains("getter") }
+        ?.run { split("=")[1] }
+        ?: name().depointer()
+}
+
+fun ObjectiveCParser.FieldDeclarationContext.setterName(): String {
+    return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+        ?.find { it.contains("setter") }
+        ?.run { split("=")[1] }
+        ?: name().depointer()
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.jsonable(): Boolean {

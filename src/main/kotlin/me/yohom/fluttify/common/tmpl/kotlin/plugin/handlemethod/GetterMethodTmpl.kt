@@ -17,6 +17,6 @@ class GetterMethodTmpl(private val field: Field) {
         return tmpl
             .replace("#__getter_name__#", field.nativeHandleGetterMethod())
             .replace("#__class_name__#", field.className.toKotlinType())
-            .replace("#__field_name__#", field.variable!!.name)
+            .replace("#__field_name__#", field.variable.name)
     }
 }

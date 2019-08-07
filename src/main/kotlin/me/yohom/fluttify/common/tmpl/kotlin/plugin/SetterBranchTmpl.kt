@@ -8,7 +8,7 @@ class SetterBranchTmpl(private val field: Field) {
 
     fun kotlinSetterBranch(): String {
         val className = field.className
-        val methodName = "set${field.variable!!.name.capitalize()}"
+        val methodName = "set${field.variable.name.capitalize()}"
         val handler = field.nativeHandleSetterMethod()
 
         return tmpl.replace("#__class_name__#", className)
