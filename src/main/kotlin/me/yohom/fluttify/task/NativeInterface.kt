@@ -85,13 +85,11 @@ open class IOSSwiftInterface : DefaultTask() {
         val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
 
         // 生成主plugin文件
-        sdk.libs.forEach {
-            SwiftPluginTmpl(it, ext)
-                .swiftPlugin()
-                .run {
-                    pluginOutputFile.file().writeText(this)
-                }
-        }
+        SwiftPluginTmpl(sdk.libs, ext)
+            .swiftPlugin()
+            .run {
+                pluginOutputFile.file().writeText(this)
+            }
 
         // 生成PlatformViewFactory文件
         sdk.libs
