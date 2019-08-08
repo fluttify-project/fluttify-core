@@ -12,19 +12,19 @@ data class Field(
     val getterName: String = variable.name,
     val setterName: String = variable.name
 ) {
-    fun nativeHandleGetterMethod(): String {
+    fun nativeHandleGetterMethodName(): String {
         return "handle${className.toUnderscore()}_get_${getterName.depointer()}"
     }
 
-    fun nativeHandleSetterMethod(): String {
+    fun nativeHandleSetterMethodName(): String {
         return "handle${className.toUnderscore()}_set_${setterName.depointer()}"
     }
 
-    fun dartGetterMethod(): String {
-        return "$className::get_$getterName"
+    fun getterMethodName(): String {
+        return "$className::get_${getterName.depointer()}"
     }
 
-    fun dartSetterMethod(): String {
-        return "$className::set_$setterName"
+    fun setterMethodName(): String {
+        return "$className::set_${setterName.depointer()}"
     }
 }

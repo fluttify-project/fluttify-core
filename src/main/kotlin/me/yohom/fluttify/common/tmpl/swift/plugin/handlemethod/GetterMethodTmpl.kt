@@ -17,7 +17,7 @@ class GetterMethodTmpl(private val field: Field) {
 
     fun swiftGetter(): String {
         return tmpl
-            .replace("#__getter_method_name__#", field.nativeHandleGetterMethod())
+            .replace("#__getter_method_name__#", field.nativeHandleGetterMethodName())
             .replace("#__class_name__#", field.className.toSwiftType())
             .replace("#__field_name__#", field.getterName.depointer())
             .replace("#__getter__#", field.getterName.depointer().objc2SwiftSpec())

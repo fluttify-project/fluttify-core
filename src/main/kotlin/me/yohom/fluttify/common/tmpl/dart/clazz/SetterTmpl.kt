@@ -18,7 +18,7 @@ class SetterTmpl(private val field: Field) {
             tmpl
                 .replace("#__type__#", typeName.toDartType())
                 .replace("#__name__#", name.depointer())
-                .replace("#__setter_method__#", field.dartSetterMethod())
+                .replace("#__setter_method__#", field.setterMethodName())
         }
     }
 }

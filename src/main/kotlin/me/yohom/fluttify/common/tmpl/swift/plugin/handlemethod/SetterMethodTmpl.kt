@@ -17,7 +17,7 @@ class SetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/setter.mtd.swift.tmpl").readText()
 
     fun swiftSetter(): String {
-        val setterMethodName = field.nativeHandleSetterMethod()
+        val setterMethodName = field.nativeHandleSetterMethodName()
         val setter = field.setterName.depointer()
         val fieldName = field.variable.name
         val fieldType = field.variable.typeName.toSwiftType()

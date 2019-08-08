@@ -19,7 +19,7 @@ class GetterTmpl(private val field: Field) {
             tmpl
                 .replace("#__type__#", typeName.toDartType())
                 .replace("#__name__#", name.depointer())
-                .replace("#__getter_method__#", field.dartGetterMethod())
+                .replace("#__getter_method__#", field.getterMethodName())
         }
     }
 }

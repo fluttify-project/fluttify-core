@@ -7,12 +7,8 @@ class SetterBranchTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/branch.stmt.swift.tmpl").readText()
 
     fun swiftSetterBranch(): String {
-        val className = field.className
-        val methodName = "set${field.variable.name.capitalize()}"
-        val handler = field.nativeHandleSetterMethod()
-
-        return tmpl.replace("#__class_name__#", className)
-            .replace("#__method_name__#", methodName)
-            .replace("#__handler__#", handler)
+        return tmpl.replace("#__class_name__#", field.className)
+            .replace("#__method_name__#", field.setterMethodName())
+            .replace("#__handler__#", field.nativeHandleSetterMethodName())
     }
 }
