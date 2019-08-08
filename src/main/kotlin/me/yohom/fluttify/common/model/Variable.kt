@@ -18,11 +18,11 @@ data class Variable(
             val type = typeName.findType()
             type.methods
                 // 过滤掉方法参数中含有不认识类的方法
-                .filter { it.formalParams.none { it.typeName.findType() == Type.UNKNOWN_TYPE } }
+                .filter { it.formalParams.none { it.variable.typeName.findType() == Type.UNKNOWN_TYPE } }
                 .distinctBy { it.name }
                 .takeIf { it.isNotEmpty() }
                 ?.joinToString(prefix = "{", postfix = "}") {
-                    "void ${it.name}(${it.formalParams.joinToString { it.toDartString() }})"
+                    "void ${it.name}(${it.formalParams.joinToString { it.variable.toDartString() }})"
                 }
                 ?: ""
         } else {

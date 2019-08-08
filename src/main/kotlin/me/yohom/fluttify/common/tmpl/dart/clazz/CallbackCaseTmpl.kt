@@ -26,15 +26,15 @@ class CallbackCaseTmpl(
     fun callbackCase(): String {
         val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${callbackMethod.name}"
         val log =
-            "print('fluttify-dart-callback: ${callerMethod.className}::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':\$args[${it.name}]" }})');"
+            "print('fluttify-dart-callback: ${callerMethod.className}::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
         val callbackHandler = callbackMethod.name
         val callbackArgs = callbackMethod.formalParams
             .filterFormalParams()
             .joinToString {
-                if (it.typeName.jsonable()) {
-                    "args['${it.name}']"
+                if (it.variable.typeName.jsonable()) {
+                    "args['${it.variable.name}']"
                 } else {
-                    "${it.typeName.toDartType()}.withRefId(args['${it.name}'])"
+                    "${it.variable.typeName.toDartType()}.withRefId(args['${it.variable.name}'])"
                 }
             }
 

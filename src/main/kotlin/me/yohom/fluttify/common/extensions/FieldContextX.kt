@@ -87,24 +87,24 @@ fun JavaParser.FieldDeclarationContext?.jsonable(): Boolean {
  * 2. 声明了getter却没有声明setter
  */
 fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
-    val getter = ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+    val propertyAttributes = ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
         ?.propertyAttributesList()
         ?.propertyAttribute()
         ?.map { it.text }
+
+    val getter = propertyAttributes
         ?.find { it.contains("getter") }
         ?.run { split("=")[1] } ?: ""
-    val setter = ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
-        ?.propertyAttributesList()
-        ?.propertyAttribute()
-        ?.map { it.text }
+
+    val setter = propertyAttributes
         ?.find { it.contains("setter") }
         ?.run { split("=")[1] } ?: ""
 
-    return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
-        ?.propertyAttributesList()
-        ?.propertyAttribute()
-        ?.map { it.text }
-        ?.contains("readonly") == true || (getter.isNotEmpty() && setter.isEmpty())
+    val readonly = propertyAttributes?.contains("readonly") == true
+
+    val copy = propertyAttributes?.contains("copy") == true
+
+    return readonly || copy || (getter.isNotEmpty() && setter.isEmpty())
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {

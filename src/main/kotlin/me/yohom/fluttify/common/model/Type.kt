@@ -74,7 +74,7 @@ open class Type {
                 // 返回类型必须是void或者Boolean
                 && methods.all { it.returnType in listOf("void", "Boolean") }
                 // 参数类型必须是jsonable或者引用类型
-                && methods.all { it.formalParams.all { it.typeName.findType().run { jsonable() || !isInterface() }} }
+                && methods.all { it.formalParams.all { it.variable.typeName.findType().run { jsonable() || !isInterface() }} }
                 // 必须没有父类
                 && superClass.isEmpty()
     }

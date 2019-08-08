@@ -2,7 +2,7 @@ package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method
-import me.yohom.fluttify.common.model.Variable
+import me.yohom.fluttify.common.model.Parameter
 
 class InvokeTmpl(private val method: Method) {
     fun swiftInvoke(): String {
@@ -22,11 +22,14 @@ class InvokeTmpl(private val method: Method) {
         }
     }
 
-    private fun var2formalParam(it: Variable): String {
-        return if (it.typeName.findType().isCallback()) {
-            CallbackTmpl(method, it.typeName.findType()).swiftCallback()
+    private fun var2formalParam(it: Parameter): String {
+        return if (it.variable.typeName.findType().isCallback()) {
+            CallbackTmpl(method, it.variable.typeName.findType()).swiftCallback()
         } else {
-            if (it.isList) "ArrayList(${it.name})" else it.name
+            when {
+                it.named.isNotEmpty() -> "${it.named}: ${it.variable.name}"
+                else -> it.variable.name
+            }
         }
     }
 }

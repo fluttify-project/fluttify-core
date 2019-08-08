@@ -26,24 +26,24 @@ class HandleMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/handler_method.mtd.swift.tmpl").readText()
 
     fun swiftHandlerMethod(): String {
-        val methodName = method.kotlinHandleMethod()
+        val methodName = method.handleMethodName()
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
         // 2. jsonable
         // 3. 引用
         val args = method.formalParams
-            .filter { !it.typeName.findType().isCallback() }
+            .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.typeName.jsonable() -> ArgJsonableTmpl(it).swiftArgJsonable()
-                    it.typeName.findType().isEnum() -> ArgEnumTmpl(it).swiftArgEnum()
-                    else -> ArgRefTmpl(it).swiftArgRef()
+                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).swiftArgJsonable()
+                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).swiftArgEnum()
+                    else -> ArgRefTmpl(it.variable).swiftArgRef()
                 }
             }
         val log = if (method.isStatic) {
-            "print(\"fluttify-swift: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":\\(${it.name})\\n" }})\")"
+            "print(\"fluttify-swift: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
         } else {
-            "print(\"fluttify-swift: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":\\(${it.name})\\n" }})\")"
+            "print(\"fluttify-swift: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
         }
 
         // 获取当前调用方法的对象引用

@@ -10,15 +10,15 @@ class InvokeTmpl(private val method: Method) {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {
             if (method.returnType == "void") {
-                "${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it.variable) }})"
             } else {
-                "val result = ${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "val result = ${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it.variable) }})"
             }
         } else {
             if (method.returnType == "void") {
-                "ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it.variable) }})"
             } else {
-                "val result = ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "val result = ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it.variable) }})"
             }
         }
     }

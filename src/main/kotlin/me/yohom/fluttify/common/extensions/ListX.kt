@@ -1,10 +1,7 @@
 package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.common.IGNORE_CLASS
-import me.yohom.fluttify.common.model.Field
-import me.yohom.fluttify.common.model.Method
-import me.yohom.fluttify.common.model.Type
-import me.yohom.fluttify.common.model.Variable
+import me.yohom.fluttify.common.model.*
 
 
 /**
@@ -53,11 +50,11 @@ fun List<Type>.filterType(): List<Type> {
         .toList()
 }
 
-fun List<Variable>.filterFormalParams(): List<Variable> {
+fun List<Parameter>.filterFormalParams(): List<Parameter> {
     return asSequence()
         // 要过滤掉是接口, 却不是回调类的参数
-        .filter { (!it.typeName.findType().run { isInterface() && !isCallback() }).apply { if (!this) println("filterFormalParams: $it 由于是接口, 却不是回调类 被过滤") } }
-        .filter { (it.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterFormalParams: $it 由于是未知类型 被过滤") } }
+        .filter { (!it.variable.typeName.findType().run { isInterface() && !isCallback() }).apply { if (!this) println("filterFormalParams: $it 由于是接口, 却不是回调类 被过滤") } }
+        .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterFormalParams: $it 由于是未知类型 被过滤") } }
         .filter { println("参数${it}通过过滤"); true }
         .toList()
 }
