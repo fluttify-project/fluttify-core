@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.extensions
 
+import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.Variable
 import parser.java.JavaParser
 
@@ -38,7 +39,8 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Variable> {
                 Variable(
                     typeFullName,
                     formalParam.variableDeclaratorId().text,
-                    formalParam.typeType().text.isList()
+                    formalParam.typeType().text.isList(),
+                    Platform.Android
                 )
             )
         }
@@ -53,7 +55,8 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Variable> {
                 Variable(
                     typeFullName,
                     variableDeclaratorId().text,
-                    paramType.isList()
+                    paramType.isList(),
+                    Platform.Android
                 )
             )
         }

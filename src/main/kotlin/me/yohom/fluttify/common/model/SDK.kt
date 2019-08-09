@@ -74,5 +74,5 @@ class Lib {
 }
 
 enum class Platform {
-    iOS, Android, Unknown
+    General, iOS, Android, Unknown
 }

@@ -12,7 +12,7 @@ data class Variable(
     val typeName: TYPE_NAME,
     val name: String,
     val isList: Boolean = false,
-    override var platform: Platform = Platform.Unknown
+    override var platform: Platform
 ) : PlatformAware {
     fun toDartString(): String {
         return if (typeName.findType().isCallback()) {

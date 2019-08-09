@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.common.model.Parameter
+import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.Variable
 import parser.java.JavaParser
 import parser.objc.ObjectiveCParser
@@ -113,8 +114,10 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        formalParam.typeType().text.isList()
-                    )
+                        formalParam.typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -130,8 +133,10 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        typeType().text.isList()
-                    )
+                        typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -155,8 +160,10 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        formalParam.typeType().text.isList()
-                    )
+                        formalParam.typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -172,8 +179,10 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        typeType().text.isList()
-                    )
+                        typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -218,8 +227,10 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     if (index == 0) "" else it.selector().text ?: "",
                     Variable(
                         it.methodType()[0].typeName().text,
-                        it.identifier().text
-                    )
+                        it.identifier().text,
+                        platform = Platform.iOS
+                    ),
+                    platform = Platform.iOS
                 )
             )
         }

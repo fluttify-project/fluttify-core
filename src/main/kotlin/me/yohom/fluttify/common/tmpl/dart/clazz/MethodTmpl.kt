@@ -3,6 +3,7 @@ package me.yohom.fluttify.common.tmpl.dart.clazz
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
+import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.Variable
 
 //#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
@@ -68,7 +69,14 @@ class MethodTmpl(private val method: Method) {
             .filterFormalParams()
             .filter { !it.variable.typeName.findType().isCallback() }
             .toMutableList()
-            .apply { if (!isStatic) add(Parameter(variable = Variable("int", "refId"))) }
+            .apply {
+                if (!isStatic) add(
+                    Parameter(
+                        variable = Variable("int", "refId", platform = Platform.General),
+                        platform = Platform.General
+                    )
+                )
+            }
             .map { it.variable }
             .toDartMap {
                 when {

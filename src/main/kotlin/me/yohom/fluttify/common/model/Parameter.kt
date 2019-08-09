@@ -8,5 +8,5 @@ package me.yohom.fluttify.common.model
 class Parameter(
     val named: String = "",
     val variable: Variable,
-    override var platform: Platform = Platform.Unknown
+    override var platform: Platform
 ) : PlatformAware

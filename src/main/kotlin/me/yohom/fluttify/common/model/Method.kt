@@ -35,7 +35,7 @@ data class Method(
      */
     var className: String,
 
-    override var platform: Platform = Platform.Unknown
+    override var platform: Platform
 ) : PlatformAware {
     fun isOk(): Boolean {
         return when {

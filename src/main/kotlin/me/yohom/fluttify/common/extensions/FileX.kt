@@ -71,7 +71,8 @@ fun JAVA_FILE.javaType(): Type {
                 Constructor(
                     ctx.IDENTIFIER().text,
                     ctx.formalParams(),
-                    ctx.isPublic()
+                    ctx.isPublic(),
+                    platform = Platform.Android
                 )
             )
         }
@@ -87,7 +88,8 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     ctx.isAbstract(),
                     ctx.isPublic(),
-                    "$packageName.${simpleName.replace("$", ".")}"
+                    "$packageName.${simpleName.replace("$", ".")}",
+                    platform = Platform.Android
                 )
             )
         }
@@ -101,7 +103,8 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     true,
                     isPublic = true,
-                    className = "$packageName.${simpleName.replace("$", ".")}"
+                    className = "$packageName.${simpleName.replace("$", ".")}",
+                    platform = Platform.Android
                 )
             )
         }
@@ -113,8 +116,9 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isPublic(),
                     ctx.isFinal(),
                     ctx.isStatic(),
-                    Variable(ctx.type(), ctx.name(), ctx.type().isList()),
-                    "$packageName.${simpleName.replace("$", ".")}"
+                    Variable(ctx.type(), ctx.name(), ctx.type().isList(), Platform.Android),
+                    "$packageName.${simpleName.replace("$", ".")}",
+                    platform = Platform.Android
                 )
             )
         }
@@ -135,6 +139,7 @@ fun JAVA_FILE.javaType(): Type {
         it.fields.addAll(fields)
         it.methods.addAll(methods)
         it.constants.addAll(enumConstants)
+        it.platform = Platform.Android
     }
 }
 
@@ -180,7 +185,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
 
             // todo 判断是否是list
-            val variable = Variable(ctx.type(), ctx.name())
+            val variable = Variable(ctx.type(), ctx.name(), platform = Platform.iOS)
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(
                 Field(
@@ -190,7 +195,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                     variable,
                     name,
                     ctx.getterName(),
-                    ctx.setterName()
+                    ctx.setterName(),
+                    Platform.iOS
                 )
             )
         }
@@ -204,7 +210,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                     true,
                     null,
                     true,
-                    name
+                    name,
+                    Platform.iOS
                 )
             )
         }
@@ -218,7 +225,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                     false,
                     null,
                     true,
-                    name
+                    name,
+                    Platform.iOS
                 )
             )
         }
@@ -238,6 +246,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
                         it.constants.addAll(enumConstants)
+                        it.platform = Platform.iOS
                     }
                 )
                 // 创新创建fields和methods
@@ -257,6 +266,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
                         it.constants.addAll(enumConstants)
+                        it.platform = Platform.iOS
                     }
                 )
                 // 创新创建fields和methods
@@ -275,6 +285,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     it.fields.addAll(fields)
                     it.methods.addAll(methods)
                     it.constants.addAll(enumConstants)
+                    it.platform = Platform.iOS
                 })
                 // 创新创建fields和methods
                 fields = mutableListOf()
