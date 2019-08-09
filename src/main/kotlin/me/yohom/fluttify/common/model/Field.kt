@@ -10,8 +10,9 @@ data class Field(
     val variable: Variable,
     val className: String,
     val getterName: String = variable.name,
-    val setterName: String = variable.name
-) {
+    val setterName: String = variable.name,
+    override var platform: Platform = Platform.Unknown
+) : PlatformAware {
     fun nativeHandleGetterMethodName(): String {
         return "handle${className.toUnderscore()}_get_${getterName.depointer()}"
     }

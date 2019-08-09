@@ -4,7 +4,7 @@ import me.yohom.fluttify.common.SYSTEM_CLASS
 import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.jsonable
 
-class SDK {
+class SDK : PlatformAware {
 
     /**
      * 每构造一个sdk, 都记录到静态变量中去, 以供程序的其他地方调用
@@ -21,7 +21,7 @@ class SDK {
     /**
      * 平台
      */
-    var platform: Platform = Platform.Unknown
+    override var platform: Platform = Platform.Unknown
 
     /**
      * 库 Android上是jar, iOS上是framework

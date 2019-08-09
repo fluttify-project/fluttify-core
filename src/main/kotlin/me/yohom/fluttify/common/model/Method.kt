@@ -33,8 +33,10 @@ data class Method(
     /**
      * 所在类名称
      */
-    var className: String
-) {
+    var className: String,
+
+    override var platform: Platform = Platform.Unknown
+) : PlatformAware {
     fun isOk(): Boolean {
         return when {
             // 不能是忽略的方法
