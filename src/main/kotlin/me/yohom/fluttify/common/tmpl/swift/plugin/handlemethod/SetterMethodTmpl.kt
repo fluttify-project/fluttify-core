@@ -13,7 +13,7 @@ import me.yohom.fluttify.common.model.Field
 //    ref.#__setter__# = #__field_name__#
 //    methodResult("success")
 //}
-class SetterMethodTmpl(private val field: Field) {
+internal class SetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/setter.mtd.swift.tmpl").readText()
 
     fun swiftSetter(): String {

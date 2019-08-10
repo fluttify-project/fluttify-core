@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.swift.plugin
 import me.yohom.fluttify.common.model.Field
 
 //"#__method_name__#" : #__handler__#
-class SetterBranchTmpl(private val field: Field) {
+internal class SetterBranchTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/branch.stmt.swift.tmpl").readText()
 
     fun swiftSetterBranch(): String {

@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.model.Type
 //registrar
 //        .platformViewRegistry()
 //        .registerViewFactory("#__view_type__#", #__factory_name__#Factory(registrar))
-class RegisterPlatformViewTmpl(
+internal class RegisterPlatformViewTmpl(
     private val viewType: Type,
     private val ext: FluttifyExtension
 ) {

@@ -10,7 +10,7 @@ import me.yohom.fluttify.common.model.Field
 //
 //    methodResult.success(ref.#__field_name__#)
 //}
-class GetterMethodTmpl(private val field: Field) {
+internal class GetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/getter.mtd.kt.tmpl").readText()
 
     fun kotlinGetter(): String {

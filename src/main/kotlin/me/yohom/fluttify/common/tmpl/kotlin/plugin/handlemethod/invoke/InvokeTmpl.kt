@@ -5,7 +5,7 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
 import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.CallbackTmpl
 
-class InvokeTmpl(private val method: Method) {
+internal class InvokeTmpl(private val method: Method) {
     fun kotlinInvoke(): String {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {

@@ -21,7 +21,7 @@ import me.yohom.fluttify.common.model.Method
 //    // 方法返回值
 //    #__return_stmt__#
 //}
-class CallbackMethodTmpl(private val callerMethod: Method, private val callbackMethod: Method) {
+internal class CallbackMethodTmpl(private val callerMethod: Method, private val callbackMethod: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/callback_method.mtd.swift.tmpl").readText()
 
     fun swiftCallbackMethod(): String {

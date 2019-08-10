@@ -4,7 +4,7 @@ import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
 
-class InvokeTmpl(private val method: Method) {
+internal class InvokeTmpl(private val method: Method) {
     fun swiftInvoke(): String {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {

@@ -12,7 +12,7 @@ import me.yohom.fluttify.common.model.Field
 //
 //    methodResult(ref.#__getter__#)
 //}
-class GetterMethodTmpl(private val field: Field) {
+internal class GetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/getter.mtd.swift.tmpl").readText()
 
     fun swiftGetter(): String {

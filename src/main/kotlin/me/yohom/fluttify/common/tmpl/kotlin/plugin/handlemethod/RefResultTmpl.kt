@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.extensions.jsonable
 //REF_MAP[returnRefId] = result
 //
 //methodResult.success(returnRefId)
-class RefResultTmpl(val returnType: TYPE_NAME) {
+internal class RefResultTmpl(val returnType: TYPE_NAME) {
 
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/ref_result.stmt.kt.tmpl").readText()
 

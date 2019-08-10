@@ -22,7 +22,7 @@ import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.InvokeTmpl
 //    // 调用结果
 //    #__result__#
 //}
-class HandleMethodTmpl(private val method: Method) {
+internal class HandleMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/handler_method.mtd.swift.tmpl").readText()
 
     fun swiftHandlerMethod(): String {

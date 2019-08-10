@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin
 import me.yohom.fluttify.common.model.Field
 
 //"#__method_name__#" to ::#__handler__#
-class GetterBranchTmpl(private val field: Field) {
+internal class GetterBranchTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/branch.stmt.kt.tmpl").readText()
 
     fun kotlinGetterBranch(): String {
