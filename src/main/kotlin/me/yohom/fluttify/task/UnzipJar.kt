@@ -22,9 +22,9 @@ open class UnzipJar : DefaultTask() {
     @TaskAction
     fun unzip() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val jarPath = ext.jarFile.file().absolutePath
+        val jarPath = ext.jarDir.file().listFiles()?.first { it.name.endsWith("jar") }?.absolutePath
 
-        val unzippedJar: File = "${ext.jarFile.file().parent}/unzip/".file()
+        val unzippedJar: File = "${ext.jarDir}unzip/".file()
 
         val process = Runtime.getRuntime().exec("unzip -o $jarPath -d $unzippedJar")
         val br = BufferedReader(InputStreamReader(process.inputStream))

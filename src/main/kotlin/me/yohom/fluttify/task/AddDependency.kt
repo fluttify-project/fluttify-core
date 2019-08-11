@@ -18,7 +18,7 @@ open class AndroidAddDependency : DefaultTask() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
 
         FileUtils.copyDirectory(
-            "${ext.jarFile.file().parent}/".file(),
+            ext.jarDir.file(),
             "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
         )
     }

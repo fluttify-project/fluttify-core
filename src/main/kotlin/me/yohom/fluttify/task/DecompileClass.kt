@@ -21,7 +21,7 @@ open class DecompileClass : DefaultTask() {
     fun decompile() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
 
-        val classFilesDir = "${ext.jarFile.file().parent}/unzip/".file()
+        val classFilesDir = "${ext.jarDir}unzip/".file()
         val javaFilesDir = "${project.buildDir}/decompiled/".file()
 
         // 开始反编译
