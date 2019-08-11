@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.LambdaCallbackTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.LambdaCallbackTmpl
 
 internal class InvokeTmpl(private val method: Method) {
     fun kotlinInvoke(): String {

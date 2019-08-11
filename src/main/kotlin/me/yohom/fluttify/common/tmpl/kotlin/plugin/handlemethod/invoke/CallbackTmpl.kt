@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Type
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.CallbackMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.CallbackMethodTmpl
 
 //object : #__callback_class_name__# {
 //    // method channel

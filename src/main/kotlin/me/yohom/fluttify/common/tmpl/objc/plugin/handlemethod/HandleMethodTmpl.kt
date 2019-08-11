@@ -1,14 +1,9 @@
-package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod
+package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.ArgEnumTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.ArgJsonableTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.ArgRefTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.RefResultTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.RefTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.InvokeTmpl
 
 //private func #__method_name__#(registrar: Registrar, args: Dictionary<String, Any>, methodResult: FlutterResult) {

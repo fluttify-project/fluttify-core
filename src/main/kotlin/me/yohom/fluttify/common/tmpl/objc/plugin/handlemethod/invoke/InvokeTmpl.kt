@@ -1,10 +1,9 @@
-package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke
+package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.toSwiftMethod
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.LambdaCallbackTmpl
 
 internal class InvokeTmpl(private val method: Method) {
     fun swiftInvoke(): String {

@@ -1,12 +1,8 @@
-package me.yohom.fluttify.common.tmpl.swift.plugin
+package me.yohom.fluttify.common.tmpl.objc.plugin
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.objc.plugin.GetterBranchTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.MethodBranchTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.RegisterPlatformViewTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.SetterBranchTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.GetterMethodTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.HandleMethodTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.SetterMethodTmpl
