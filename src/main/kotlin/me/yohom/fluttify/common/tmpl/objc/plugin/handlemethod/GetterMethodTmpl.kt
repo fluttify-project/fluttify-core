@@ -15,7 +15,7 @@ import me.yohom.fluttify.common.model.Field
 internal class GetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/getter.mtd.swift.tmpl").readText()
 
-    fun swiftGetter(): String {
+    fun objcGetter(): String {
         return tmpl
             .replace("#__getter_method_name__#", field.nativeHandleGetterMethodName())
             .replace("#__class_name__#", field.className.toSwiftType())

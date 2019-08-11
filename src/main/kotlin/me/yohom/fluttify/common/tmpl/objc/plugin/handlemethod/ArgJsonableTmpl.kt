@@ -8,7 +8,7 @@ import me.yohom.fluttify.common.model.Variable
 internal class ArgJsonableTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/arg_jsonable.stmt.swift.tmpl").readText()
 
-    fun swiftArgJsonable(): String {
+    fun objcArgJsonable(): String {
         return tmpl
             .replace(
                 "#__type_name__#",

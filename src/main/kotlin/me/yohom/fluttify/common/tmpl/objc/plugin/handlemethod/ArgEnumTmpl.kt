@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.model.Variable
 internal class ArgEnumTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/arg_enum.stmt.swift.tmpl").readText()
 
-    fun swiftArgEnum(): String {
+    fun objcArgEnum(): String {
         return tmpl
             .replace("#__type_name__#", variable.typeName)
             .replace("#__arg_name__#", variable.name)

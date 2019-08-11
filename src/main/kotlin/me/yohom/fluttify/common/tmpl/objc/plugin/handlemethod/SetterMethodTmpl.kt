@@ -16,7 +16,7 @@ import me.yohom.fluttify.common.model.Field
 internal class SetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/setter.mtd.swift.tmpl").readText()
 
-    fun swiftSetter(): String {
+    fun objcSetter(): String {
         val setterMethodName = field.nativeHandleSetterMethodName()
         val setter = field.setterName.depointer()
         val fieldName = field.variable.name

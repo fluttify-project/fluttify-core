@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
 
 internal class InvokeTmpl(private val method: Method) {
-    fun swiftInvoke(): String {
+    fun objcInvoke(): String {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {
             if (method.returnType == "void") {
@@ -25,7 +25,7 @@ internal class InvokeTmpl(private val method: Method) {
 
     private fun var2formalParam(it: Parameter): String {
         return if (it.variable.typeName.findType().isCallback()) {
-            LambdaCallbackTmpl(method, it.variable.typeName.findType()).swiftCallback()
+            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
         } else {
             when {
                 it.named.isNotEmpty() -> "${it.named}: ${it.variable.name}"

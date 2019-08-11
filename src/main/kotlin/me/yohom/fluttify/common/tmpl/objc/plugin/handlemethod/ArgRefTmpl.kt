@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.model.Variable
 internal class ArgRefTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/arg_ref.stmt.swift.tmpl").readText()
 
-    fun swiftArgRef(): String {
+    fun objcArgRef(): String {
         return tmpl
             .replace("#__type_name__#", if (variable.isList) "List<${variable.typeName}>" else variable.typeName)
             .replace("#__arg_name__#", variable.name)

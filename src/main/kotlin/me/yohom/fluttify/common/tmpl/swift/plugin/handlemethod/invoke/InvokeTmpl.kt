@@ -26,7 +26,7 @@ internal class InvokeTmpl(private val method: Method) {
 
     private fun var2formalParam(it: Parameter): String {
         return if (it.variable.typeName.findType().isCallback()) {
-            LambdaCallbackTmpl(method, it.variable.typeName.findType()).swiftCallback()
+            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
         } else {
             when {
                 it.named.isNotEmpty() -> "${it.named}: ${it.variable.name}"

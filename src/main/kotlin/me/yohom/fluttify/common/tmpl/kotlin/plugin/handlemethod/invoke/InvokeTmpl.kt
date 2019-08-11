@@ -25,7 +25,7 @@ internal class InvokeTmpl(private val method: Method) {
 
     private fun var2formalParam(it: Variable): String {
         return if (it.typeName.findType().isCallback()) {
-            LambdaCallbackTmpl(method, it.typeName.findType()).swiftCallback()
+            LambdaCallbackTmpl(method, it.typeName.findType()).objcCallback()
         } else {
             if (it.isList) "ArrayList(${it.name})" else it.name
         }

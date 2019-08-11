@@ -36,7 +36,7 @@ class PlatformViewFactoryTmpl(
 ) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/platform_view_factory.swift.tmpl").readText()
 
-    fun swiftPlatformViewFactory(): String {
+    fun objcPlatformViewFactory(): String {
         return tmpl
             .replace("#__import__#", lib.name)
             .replace("#__native_view__#", viewType.name)

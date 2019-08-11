@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.model.Method
 internal class RefTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/ref.stmt.swift.tmpl").readText()
 
-    fun swiftRef(): String {
+    fun objcRef(): String {
         return if (method.isStatic)
             ""
         else

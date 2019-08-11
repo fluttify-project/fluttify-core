@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.model.Method
 internal class MethodBranchTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/branch.stmt.swift.tmpl").readText()
 
-    fun swiftMethodBranch(): String {
+    fun objcMethodBranch(): String {
         return tmpl
             .replace("#__method_name__#", method.methodName())
             .replace("#__handler__#", method.handleMethodName())

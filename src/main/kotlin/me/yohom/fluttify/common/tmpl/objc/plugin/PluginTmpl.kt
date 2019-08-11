@@ -59,7 +59,7 @@ class PluginTmpl(
 ) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/plugin.swift.tmpl").readText()
 
-    fun swiftPlugin(): String {
+    fun objcPlugin(): String {
         // 包名 iOS端是不需要的其实
         val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
 
@@ -78,27 +78,27 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterBranchTmpl(it).swiftGetterBranch() }
+            .map { GetterBranchTmpl(it).objcGetterBranch() }
 
         val settersBranches = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterBranchTmpl(it).swiftSetterBranch() }
+            .map { SetterBranchTmpl(it).objcSetterBranch() }
 
         val methodBranches = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { MethodBranchTmpl(it).swiftMethodBranch() }
+            .map { MethodBranchTmpl(it).objcMethodBranch() }
 
         // 注册PlatformView
         val registerPlatformViews = libs
             .flatMap { it.types }
             .filter { it.isView() }
-            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).swiftRegisterPlatformView() }
+            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).objcRegisterPlatformView() }
 
         // 处理方法们 分三种
         // 1. getter handler
@@ -109,21 +109,21 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterMethodTmpl(it).swiftGetter() }
+            .map { GetterMethodTmpl(it).objcGetter() }
 
         val setterHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterMethodTmpl(it).swiftSetter() }
+            .map { SetterMethodTmpl(it).objcSetter() }
 
         val methodHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { HandleMethodTmpl(it).swiftHandlerMethod() }
+            .map { HandleMethodTmpl(it).objcHandlerMethod() }
 
         return tmpl
             .replace("#__imports__#", libs.joinToString("\n") { "import ${it.name}" })

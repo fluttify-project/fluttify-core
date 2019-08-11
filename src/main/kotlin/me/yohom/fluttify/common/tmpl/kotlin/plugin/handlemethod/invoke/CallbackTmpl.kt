@@ -22,6 +22,6 @@ internal class CallbackTmpl(private val callerMethod: Method, private val callba
             .replace("#__caller_method_name__#", callerMethod.name)
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods
-                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).swiftCallbackMethod() })
+                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).objcCallbackMethod() })
     }
 }
