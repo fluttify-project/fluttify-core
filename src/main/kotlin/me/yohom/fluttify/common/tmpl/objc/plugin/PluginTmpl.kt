@@ -57,7 +57,7 @@ class PluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/swift/plugin.swift.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
 
     fun objcPlugin(): String {
         // 包名 iOS端是不需要的其实
