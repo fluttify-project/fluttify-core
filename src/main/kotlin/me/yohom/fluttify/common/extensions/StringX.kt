@@ -102,8 +102,16 @@ fun TYPE_NAME.toSwiftType(): String {
 /**
  * objc方法名转swift名
  */
-fun TYPE_NAME.toSwiftMethod(): String {
-    return substringBefore("With")
+fun String.toSwiftMethod(): String {
+    return if (!contains("with", true)) {
+        // 如果不包含`with`的话, 那么就直接使用原来的方法名, 不需要转换
+        "$this("
+    } else {
+        // 形如`xxWithXxx: (XXX)xx` 的方法, swift会转换为`xx(xxx: xx)`方法
+        val methodNameBeforeWith = substringBefore("With")
+        val methodNameAfterWith = substringAfter("With").decapitalize()
+        "$methodNameBeforeWith($methodNameAfterWith: "
+    }
 }
 
 /**

@@ -4,12 +4,7 @@ import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.ArgEnumTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.ArgJsonableTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.ArgRefTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.RefResultTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.RefTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.InvokeTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke.InvokeTmpl
 
 //private func #__method_name__#(registrar: Registrar, args: Dictionary<String, Any>, methodResult: FlutterResult) {
 //    // 参数
@@ -40,9 +35,9 @@ internal class HandleMethodTmpl(private val method: Method) {
             .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).objcArgJsonable()
-                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
-                    else -> ArgRefTmpl(it.variable).objcArgRef()
+                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).swiftArgJsonable()
+                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).swiftArgEnum()
+                    else -> ArgRefTmpl(it.variable).swiftArgRef()
                 }
             }
         val log = if (method.isStatic) {
@@ -52,13 +47,13 @@ internal class HandleMethodTmpl(private val method: Method) {
         }
 
         // 获取当前调用方法的对象引用
-        val ref = RefTmpl(method).objcRef()
+        val ref = RefTmpl(method).swiftRef()
 
         // 调用kotlin端对应的方法
-        val invoke = InvokeTmpl(method).objcInvoke()
+        val invoke = InvokeTmpl(method).swiftInvoke()
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
-        val result = RefResultTmpl(method.returnType).objcRefResult()
+        val result = RefResultTmpl(method.returnType).swiftRefResult()
         return tmpl
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)

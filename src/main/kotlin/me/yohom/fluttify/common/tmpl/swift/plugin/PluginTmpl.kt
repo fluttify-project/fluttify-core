@@ -3,13 +3,9 @@ package me.yohom.fluttify.common.tmpl.swift.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.objc.plugin.GetterBranchTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.MethodBranchTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.RegisterPlatformViewTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.SetterBranchTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.GetterMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.SetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.GetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.HandleMethodTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
 
 //import Flutter
 //import UIKit
@@ -82,27 +78,27 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterBranchTmpl(it).objcGetterBranch() }
+            .map { GetterBranchTmpl(it).swiftGetterBranch() }
 
         val settersBranches = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterBranchTmpl(it).objcSetterBranch() }
+            .map { SetterBranchTmpl(it).swiftSetterBranch() }
 
         val methodBranches = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { MethodBranchTmpl(it).objcMethodBranch() }
+            .map { MethodBranchTmpl(it).swiftMethodBranch() }
 
         // 注册PlatformView
         val registerPlatformViews = libs
             .flatMap { it.types }
             .filter { it.isView() }
-            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).objcRegisterPlatformView() }
+            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).swiftRegisterPlatformView() }
 
         // 处理方法们 分三种
         // 1. getter handler
@@ -113,21 +109,21 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterMethodTmpl(it).objcGetter() }
+            .map { GetterMethodTmpl(it).swiftGetter() }
 
         val setterHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterMethodTmpl(it).objcSetter() }
+            .map { SetterMethodTmpl(it).swiftSetter() }
 
         val methodHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { HandleMethodTmpl(it).objcHandlerMethod() }
+            .map { HandleMethodTmpl(it).swiftHandlerMethod() }
 
         return tmpl
             .replace("#__imports__#", libs.joinToString("\n") { "import ${it.name}" })
