@@ -35,7 +35,12 @@ data class Method(
      */
     var className: String,
 
-    override var platform: Platform
+    override var platform: Platform,
+
+    /**
+     * 是否过时
+     */
+    var isDeprecated: Boolean = false
 ) : PlatformAware {
     fun isOk(): Boolean {
         return when {

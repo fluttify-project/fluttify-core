@@ -98,6 +98,18 @@ fun JavaParser.MethodDeclarationContext.isInstanceMethod(): Boolean {
         ?.contains("static") != true
 }
 
+fun JavaParser.MethodDeclarationContext.isDeprecated(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.any { it.text.contains("@Deprecated") } == true
+}
+
+fun JavaParser.InterfaceMethodDeclarationContext.isDeprecated(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.any { it.text.contains("@Deprecated") } == true
+}
+
 fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     val result = mutableListOf<Parameter>()
 
@@ -226,7 +238,9 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                 Parameter(
                     if (index == 0) "" else it.selector().text ?: "",
                     Variable(
-                        it.methodType()[0].typeName().text,
+                        it.methodType()[0].typeName().run {
+                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
+                        },
                         it.identifier().text,
                         platform = Platform.iOS
                     ),
@@ -235,5 +249,38 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
             )
         }
     return result
+}
+
+fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): List<Parameter> {
+    val result = mutableListOf<Parameter>()
+
+    methodSelector()
+        .keywordDeclarator()
+        ?.forEachIndexed { index, it ->
+            result.add(
+                Parameter(
+                    if (index == 0) "" else it.selector().text ?: "",
+                    Variable(
+                        it.methodType()[0].typeName().run {
+                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
+                        },
+                        it.identifier().text,
+                        platform = Platform.iOS
+                    ),
+                    platform = Platform.iOS
+                )
+            )
+        }
+    return result
+}
+
+fun ObjectiveCParser.BlockTypeContext.returnType(): String {
+    return typeSpecifier()[0].text
+}
+
+fun ObjectiveCParser.BlockTypeContext.parameters(): String {
+    return blockParameters().typeVariableDeclaratorOrName().joinToString {
+        "${it.typeVariableDeclarator().declarationSpecifiers().text} ${it.typeVariableDeclarator().declarator().directDeclarator().identifier().text}"
+    }
 }
 //endregion

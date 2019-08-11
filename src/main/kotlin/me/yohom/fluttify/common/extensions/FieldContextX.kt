@@ -4,16 +4,20 @@ import parser.java.JavaParser
 import parser.objc.ObjectiveCParser
 
 //region Java Field
-fun JavaParser.FieldDeclarationContext?.isStatic(): Boolean {
-    if (this == null) return false
+fun JavaParser.FieldDeclarationContext.isStatic(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("static") == true
 }
 
-fun JavaParser.FieldDeclarationContext?.isPrivate(): Boolean {
-    if (this == null) return false
+fun JavaParser.FieldDeclarationContext.isDeprecated(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.any { it.text.contains("@Deprecated") } == true
+}
+
+fun JavaParser.FieldDeclarationContext.isPrivate(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }

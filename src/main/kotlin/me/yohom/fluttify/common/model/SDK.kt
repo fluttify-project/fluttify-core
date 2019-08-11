@@ -50,6 +50,22 @@ class SDK : PlatformAware {
                 fullName.jsonable() -> Type().apply { name = fullName }
                 // 已支持的系统类
                 fullName in SYSTEM_CLASS -> Type().apply { name = fullName }
+                // lambda
+                fullName.contains("|") -> Type().apply {
+                    typeType = TypeType.Lambda
+                    name = fullName
+                    returnType = fullName.substringBefore("|")
+                    formalParams = fullName
+                        .substringAfter("|")
+                        .split(",")
+                        .map { it.split(" ") }
+                        .map {
+                            Parameter(
+                                variable = Variable(it[0], it[1], platform = Platform.General),
+                                platform = Platform.General
+                            )
+                        }
+                }
                 // 其他情况一律认为不认识的类
                 else -> Type.UNKNOWN_TYPE
             }

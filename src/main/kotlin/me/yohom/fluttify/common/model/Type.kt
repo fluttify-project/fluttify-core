@@ -69,7 +69,12 @@ open class Type : PlatformAware {
     /**
      * 形参 Lambda专用
      */
-    var formalParam: MutableList<Variable> = mutableListOf()
+    var formalParams: List<Parameter> = listOf()
+
+    /**
+     * 是否过时
+     */
+    var deprecated: Boolean = false
 
     /**
      * 是否是回调
@@ -79,13 +84,11 @@ open class Type : PlatformAware {
                 // 返回类型必须是void或者Boolean
                 && methods.all { it.returnType.toDartType() in listOf("void", "bool") }
                 // 参数类型必须是jsonable或者引用类型
-                && methods.all {
-            it.formalParams.all {
-                it.variable.typeName.findType().run { jsonable() || !isInterface() }
-            }
-        }
+                && methods.all { it.formalParams.all { it.variable.typeName.findType().run { jsonable() || !isInterface() } } }
                 // 必须没有父类
                 && superClass.isEmpty()
+                // 或者是lambda
+                || typeType == TypeType.Lambda
     }
 
     /**
@@ -137,7 +140,7 @@ open class Type : PlatformAware {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isPrimitive=$isPrimitive, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isPrimitive=$isPrimitive, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {

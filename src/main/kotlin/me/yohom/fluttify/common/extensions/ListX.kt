@@ -14,6 +14,7 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
 
 fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
     return asSequence()
+        .filter { !it.isDeprecated }
         .filter { method ->
             (distinctSource.isEmpty() or distinctSource.none { it.contains(method.name) }).apply {
                 if (!this) println(

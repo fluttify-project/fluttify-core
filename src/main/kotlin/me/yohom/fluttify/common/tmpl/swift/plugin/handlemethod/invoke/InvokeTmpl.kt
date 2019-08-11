@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.invoke
 
 import me.yohom.fluttify.common.extensions.findType
+import me.yohom.fluttify.common.extensions.toSwiftMethod
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
 
@@ -9,22 +10,22 @@ internal class InvokeTmpl(private val method: Method) {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {
             if (method.returnType == "void") {
-                "${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "${method.className}.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
             } else {
-                "let result = ${method.className}.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "let result = ${method.className}.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
             }
         } else {
             if (method.returnType == "void") {
-                "ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "ref.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
             } else {
-                "let result = ref.${method.name}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "let result = ref.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
             }
         }
     }
 
     private fun var2formalParam(it: Parameter): String {
         return if (it.variable.typeName.findType().isCallback()) {
-            CallbackTmpl(method, it.variable.typeName.findType()).swiftCallback()
+            LambdaCallbackTmpl(method, it.variable.typeName.findType()).swiftCallback()
         } else {
             when {
                 it.named.isNotEmpty() -> "${it.named}: ${it.variable.name}"

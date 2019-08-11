@@ -100,6 +100,13 @@ fun TYPE_NAME.toSwiftType(): String {
 }
 
 /**
+ * objc方法名转swift名
+ */
+fun TYPE_NAME.toSwiftMethod(): String {
+    return substringBefore("With")
+}
+
+/**
  * 判断一个类名是否是被混淆过的
  *
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母

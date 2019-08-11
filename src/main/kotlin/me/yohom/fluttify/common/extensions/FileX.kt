@@ -89,7 +89,8 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isAbstract(),
                     ctx.isPublic(),
                     "$packageName.${simpleName.replace("$", ".")}",
-                    platform = Platform.Android
+                    Platform.Android,
+                    ctx.isDeprecated() // todo 测试是否能用, 目前只测试了objc
                 )
             )
         }
@@ -102,9 +103,10 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.formalParams(),
                     ctx.isStatic(),
                     true,
-                    isPublic = true,
-                    className = "$packageName.${simpleName.replace("$", ".")}",
-                    platform = Platform.Android
+                    true,
+                    "$packageName.${simpleName.replace("$", ".")}",
+                    Platform.Android,
+                    ctx.isDeprecated()
                 )
             )
         }
@@ -118,7 +120,8 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     Variable(ctx.type(), ctx.name(), ctx.type().isList(), Platform.Android),
                     "$packageName.${simpleName.replace("$", ".")}",
-                    platform = Platform.Android
+                    platform = Platform.Android,
+                    isDeprecated = ctx.isDeprecated()
                 )
             )
         }
@@ -196,7 +199,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                     name,
                     ctx.getterName(),
                     ctx.setterName(),
-                    Platform.iOS
+                    Platform.iOS,
+                    ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
         }
@@ -211,7 +215,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                     null,
                     true,
                     name,
-                    Platform.iOS
+                    Platform.iOS,
+                    ctx.methodDeclaration().macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
         }
@@ -226,7 +231,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                     null,
                     true,
                     name,
-                    Platform.iOS
+                    Platform.iOS,
+                    ctx.methodDeclaration().macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
         }
