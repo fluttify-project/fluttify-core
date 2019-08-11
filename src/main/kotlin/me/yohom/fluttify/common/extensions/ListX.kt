@@ -15,6 +15,7 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
 fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
     return asSequence()
         .filter { !it.isDeprecated }
+        .filter { !(it.platform == Platform.iOS && it.name.startsWith("init")) } // ios端的init系列函数作为构造器而不是普通方法
         .filter { method ->
             (distinctSource.isEmpty() or distinctSource.none { it.contains(method.name) }).apply {
                 if (!this) println(

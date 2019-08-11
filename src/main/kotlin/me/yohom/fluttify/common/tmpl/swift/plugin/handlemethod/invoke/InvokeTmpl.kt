@@ -13,7 +13,7 @@ internal class InvokeTmpl(private val method: Method) {
             if (method.returnType == "void") {
                 invoke
             } else {
-                "let result = $invoke)"
+                "let result = $invoke"
             }
         } else {
             val invoke = "ref.${method.name.toSwiftMethod()}${method.formalParams.joinToString { var2formalParam(it) }})"

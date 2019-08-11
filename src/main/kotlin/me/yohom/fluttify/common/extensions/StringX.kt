@@ -87,7 +87,11 @@ fun TYPE_NAME.toKotlinType(): String {
  * 转swift类型
  */
 fun TYPE_NAME.toSwiftType(): String {
-    val depointed = depointer()
+    var depointed = depointer()
+    // 如果是形如id<XXX>的protocol的话, 那么去掉id<>
+    if (contains("id<")) {
+        depointed = depointed.removePrefix("id<").removeSuffix(">")
+    }
     return when {
         depointed == "void" -> "Void"
         depointed == "NSInteger" -> "Int"
