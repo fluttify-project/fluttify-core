@@ -76,31 +76,6 @@ class PluginTmpl(
         // method channel
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
 
-        // 分支们 分为三种
-        // 1. 普通方法
-        // 2. getter
-        // 3. setter
-        val gettersBranches = libs
-            .flatMap { it.types }
-            .filterType()
-            .flatMap { it.fields }
-            .filterGetters()
-            .map { GetterBranchTmpl(it).objcGetterBranch() }
-
-        val settersBranches = libs
-            .flatMap { it.types }
-            .filterType()
-            .flatMap { it.fields }
-            .filterSetters()
-            .map { SetterBranchTmpl(it).objcSetterBranch() }
-
-        val methodBranches = libs
-            .flatMap { it.types }
-            .filterType()
-            .flatMap { it.methods }
-            .filterMethod()
-            .map { MethodBranchTmpl(it).objcMethodBranch() }
-
         // 注册PlatformView
         val registerPlatformViews = libs
             .flatMap { it.types }
@@ -138,10 +113,6 @@ class PluginTmpl(
             .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__getter_branches__#", "")
             .replaceParagraph("#__setter_branches__#", "")
-            .replaceParagraph(
-                "#__branches__#",
-                methodBranches.union(gettersBranches).union(settersBranches).joinToString(",\n")
-            )
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
             .replaceParagraph(
                 "#__handlers__#",
