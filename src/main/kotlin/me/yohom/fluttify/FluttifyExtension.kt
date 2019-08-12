@@ -35,7 +35,7 @@ open class FluttifyExtension {
     /**
      * ios工程输出语言
      */
-    var iOSLanguage: String = "swift"
+    var iOSLanguage: String = "objc"
 
     val androidTransitiveDependencies get() = transitiveDependencies["android"] ?: listOf()
 

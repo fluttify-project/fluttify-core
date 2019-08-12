@@ -4,7 +4,7 @@ import me.yohom.fluttify.common.model.Field
 
 //"#__method_name__#" : #__handler__#
 internal class SetterBranchTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/swift/branch.stmt.swift.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/branch.stmt.m.tmpl").readText()
 
     fun objcSetterBranch(): String {
         return tmpl

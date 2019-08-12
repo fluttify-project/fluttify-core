@@ -1,4 +1,4 @@
-private func #__setter_method_name__#(registrar: FlutterPluginRegistrar, args: Dictionary<String, Any>, methodResult: FlutterResult) {
+@#__method_name__#: ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, NSObject *> * args, FlutterResult methodResult) {
     let #__field_name__# = args["#__field_name__#"] as! #__field_type__#
 
     let refId = args["refId"] as! Int
@@ -6,4 +6,4 @@ private func #__setter_method_name__#(registrar: FlutterPluginRegistrar, args: D
 
     ref.#__setter__# = #__field_name__#
     methodResult("success")
-}
+},

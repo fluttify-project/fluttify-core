@@ -23,7 +23,7 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.InvokeTmpl
 //    #__result__#
 //}
 internal class HandleMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/swift/handler_method.mtd.swift.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler.mtd.m.tmpl").readText()
 
     fun objcHandlerMethod(): String {
         val methodName = method.handleMethodName()

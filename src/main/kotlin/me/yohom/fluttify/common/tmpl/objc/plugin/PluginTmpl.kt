@@ -7,52 +7,62 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.GetterMethodTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.HandleMethodTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.SetterMethodTmpl
 
-//import Flutter
-//import UIKit
+//#import "#__plugin_name__#Plugin.h"
 //#__imports__#
 //
-//var REF_MAP = [Int : Any]()
+//typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 //
-//public class Swift#__plugin_name__#Plugin: NSObject, FlutterPlugin {
+//NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 //
-//    private var registrar: FlutterPluginRegistrar
-//
-//    init(_ registrar: FlutterPluginRegistrar) {
-//        self.registrar = registrar
-//    }
-//
-//    public static func register(with registrar: FlutterPluginRegistrar) {
-//        let channel = FlutterMethodChannel(name: "#__method_channel__#", binaryMessenger: registrar.messenger())
-//        let instance = Swift#__plugin_name__#Plugin(registrar)
-//        registrar.addMethodCallDelegate(instance, channel: channel)
-//
-//        // 注册View
-//        #__register_platform_views__#
-//    }
-//
-//    private let handlerMap: [String : (FlutterPluginRegistrar, Dictionary<String, Any>, FlutterResult) -> Void] = [
-//        #__branches__#
-//    ]
-//
-//    public func handle(_ methodCall: FlutterMethodCall, methodResult: @escaping FlutterResult) {
-//        let args = methodCall.arguments as? Dictionary<String, Any> ?? [:]
-//        switch methodCall.method {
-//        // 释放一个对象
-//        case "SystemRef::release":
-//            REF_MAP.removeValue(forKey: args["refId"] as! Int)
-//            methodResult("success")
-//        // 清空REF_MAP中所有对象
-//        case "SystemRef::clearRefMap":
-//            REF_MAP.removeAll()
-//            methodResult("success")
-//        default:
-//            handlerMap[methodCall.method]?.self(registrar, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
-//        }
-//    }
+//@implementation #__plugin_name__#Plugin {
+//  NSObject <FlutterPluginRegistrar> *_flutterPluginRegistrar;
+//  NSDictionary<NSString *, Handler> *_handlerMap;
 //}
 //
-//// 与branch对应的方法们
-//#__handlers__#
+//+ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
+//  FlutterMethodChannel *channel = [FlutterMethodChannel
+//      methodChannelWithName:@"amap_base_flutter"
+//            binaryMessenger:[registrar messenger]];
+//  #__plugin_name__#Plugin *instance = [[#__plugin_name__#Plugin alloc] initWithFlutterPluginRegistrar:registrar];
+//  [registrar addMethodCallDelegate:instance channel:channel];
+//
+//  // 注册View
+//  #__register_platform_views__#
+//}
+//
+//- (instancetype)initWithFlutterPluginRegistrar:(NSObject <FlutterPluginRegistrar> *)flutterPluginRegistrar {
+//  self = [super init];
+//  if (self) {
+//    _flutterPluginRegistrar = flutterPluginRegistrar;
+//
+//    REF_MAP = @{}.mutableCopy;
+//
+//    _handlerMap = @{
+//         #__handlers__#
+//    };
+//  }
+//
+//  return self;
+//}
+//
+//- (void)handleMethodCall:(FlutterMethodCall *)methodCall methodResult:(FlutterResult)methodResult {
+//  NSDictionary<NSString *, NSObject *> *args = (NSDictionary<NSString *, NSObject *> *) [methodCall arguments];
+//  if ([@"SystemRef::release" isEqualToString:methodCall.method]) {
+//    [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
+//    methodResult(@"success");
+//  } else if ([@"SystemRef::clearRefMap" isEqualToString:methodCall.method]) {
+//    [REF_MAP removeAllObjects];
+//    methodResult(@"success");
+//  } else {
+//    if (_handlerMap[methodCall.method] != nil) {
+//      _handlerMap[methodCall.method](_flutterPluginRegistrar, args, methodResult);
+//    } else {
+//      methodResult(FlutterMethodNotImplemented);
+//    }
+//  }
+//}
+//
+//@end
 class PluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
@@ -60,9 +70,6 @@ class PluginTmpl(
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
 
     fun objcPlugin(): String {
-        // 包名 iOS端是不需要的其实
-        val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
-
         // 插件名称
         val pluginClassName = ext.outputProjectName.underscore2Camel(true)
 
@@ -126,7 +133,7 @@ class PluginTmpl(
             .map { HandleMethodTmpl(it).objcHandlerMethod() }
 
         return tmpl
-            .replace("#__imports__#", libs.joinToString("\n") { "import ${it.name}" })
+            .replace("#__imports__#", libs.joinToString("\n") { "#include <${it.name}/${it.name}.h>" })
             .replace("#__plugin_name__#", pluginClassName)
             .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__getter_branches__#", "")
