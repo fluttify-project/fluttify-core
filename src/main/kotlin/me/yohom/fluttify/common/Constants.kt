@@ -29,5 +29,6 @@ val SYSTEM_CLASS = listOf(
  * 忽略的类
  */
 val IGNORE_CLASS = listOf(
-    "android.support.v4.app.Fragment"
+    "android.support.v4.app.Fragment",
+    "UIViewController"
 )

@@ -1,7 +1,6 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke
 
 import me.yohom.fluttify.common.extensions.findType
-import me.yohom.fluttify.common.extensions.toSwiftMethod
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
 
@@ -10,15 +9,15 @@ internal class InvokeTmpl(private val method: Method) {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return if (method.isStatic) {
             if (method.returnType == "void") {
-                "${method.className}.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "[${method.className} ${method.name} ${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
             } else {
-                "let result = ${method.className}.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "${method.returnType} result = [${method.className} ${method.name}${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
             }
         } else {
             if (method.returnType == "void") {
-                "ref.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "[ref ${method.name} ${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
             } else {
-                "let result = ref.${method.name.toSwiftMethod()}(${method.formalParams.joinToString { var2formalParam(it) }})"
+                "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
             }
         }
     }
@@ -29,7 +28,7 @@ internal class InvokeTmpl(private val method: Method) {
         } else {
             when {
                 it.named.isNotEmpty() -> "${it.named}: ${it.variable.name}"
-                else -> it.variable.name
+                else -> ": ${it.variable.name}"
             }
         }
     }

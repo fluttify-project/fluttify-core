@@ -26,7 +26,7 @@ import me.yohom.fluttify.common.model.Type
 //    #__return_stmt__#
 //}
 internal class LambdaCallbackTmpl(private val callerMethod: Method, private val callbackLambda: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/swift/lambda_callback.stmt.swift.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText()
 
     fun objcCallback(): String {
         return tmpl

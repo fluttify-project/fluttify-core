@@ -41,9 +41,9 @@ internal class HandleMethodTmpl(private val method: Method) {
                 }
             }
         val log = if (method.isStatic) {
-            "print(\"fluttify-swift: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
+            "NSLog(\"fluttify-swift: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
         } else {
-            "print(\"fluttify-swift: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
+            "NSLog(\"fluttify-swift: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
         }
 
         // 获取当前调用方法的对象引用
@@ -58,7 +58,7 @@ internal class HandleMethodTmpl(private val method: Method) {
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)
             .replaceParagraph("#__ref__#", ref)
-            .replaceParagraph("#__log__#", log)
+            .replaceParagraph("#__log__#", "")
             .replaceParagraph("#__invoke__#", invoke)
             .replaceParagraph("#__result__#", result)
     }
