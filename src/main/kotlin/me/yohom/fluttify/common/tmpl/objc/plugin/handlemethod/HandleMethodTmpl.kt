@@ -41,9 +41,9 @@ internal class HandleMethodTmpl(private val method: Method) {
                 }
             }
         val log = if (method.isStatic) {
-            "NSLog(\"fluttify-swift: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
+            "NSLog(\"fluttify-objc: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
         } else {
-            "NSLog(\"fluttify-swift: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
+            "NSLog(\"fluttify-objc: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
         }
 
         // 获取当前调用方法的对象引用

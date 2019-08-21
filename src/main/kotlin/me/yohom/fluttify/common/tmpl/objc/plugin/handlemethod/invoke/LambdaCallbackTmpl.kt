@@ -1,26 +1,27 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke
 
+import me.yohom.fluttify.common.extensions.isCType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toSwiftType
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Type
 
-//{ (#__formal_params__#) in
+//: ^(#__formal_params__#) {
 //    // method channel
-//    let callbackChannel = FlutterMethodChannel(name: "#__caller_class_name__#::#__caller_method_name__#_Callback\(refId)", binaryMessenger: registrar.messenger())
+//    FlutterMethodChannel *callbackChannel = [FlutterMethodChannel
+//          methodChannelWithName:@"#__caller_class_name__#::#__caller_method_name__#_Callback\(refId)"
+//                binaryMessenger:[registrar messenger]];
 //
 //    // 日志打印
 //    #__log__#
 //
 //    // 开始回调
-//    callbackChannel.invokeMethod(
-//        "#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#",
-//        arguments: [
-//             #__callback_params__#
-//             "refId": refId
-//        ]
-//    )
+//    [callbackChannel invokeMethod:@"#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#"
+//                        arguments:@{
+//                             #__callback_params__#
+//                             @"refId": @(refId)
+//                        }];
 //
 //    // 方法返回值
 //    #__return_stmt__#
@@ -33,7 +34,7 @@ internal class LambdaCallbackTmpl(private val callerMethod: Method, private val 
             .replace("#__callback_method__#", callbackLambda.name)
             .replace(
                 "#__formal_params__#",
-                callbackLambda.formalParams.joinToString { "${it.variable.name}: ${if (it.variable.isList) "List<${it.variable.typeName.toSwiftType()}>" else it.variable.typeName.toSwiftType()}" }
+                callbackLambda.formalParams.joinToString { "${if (it.variable.isList) "List<${it.variable.typeName}>" else it.variable.typeName} ${it.variable.name}" }
             )
             .replace("#__return_type__#", callbackLambda.returnType.toSwiftType())
             .replace("#__caller_class_name__#", callerMethod.className)
@@ -42,18 +43,22 @@ internal class LambdaCallbackTmpl(private val callerMethod: Method, private val 
             .replaceParagraph(
                 "#__callback_params__#",
                 callbackLambda.formalParams.joinToString("") {
-                    "\"${it.variable.name}\": ${if (it.variable.typeName.jsonable()) it.variable.name else "${it.variable.name}.hashCode().apply { REF_MAP[this] = ${it.variable.name} }"},\n"
+                    "@\"${it.variable.name}\": ${when {
+                        it.variable.typeName.isCType() -> "@(${it.variable.name})"
+                        it.variable.typeName.jsonable() -> it.variable.typeName
+                        else -> "${it.variable.name}.hashCode().apply { REF_MAP[this] = ${it.variable.name} }"
+                    }},\n"
                 }
             )
             .replaceParagraph(
-                "#__log__#",
-                "print(\"fluttify-swift-callback: ${callerMethod.className}@\\(refId)::${callerMethod.name}_${callbackLambda.name}(${callbackLambda.formalParams.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})" }})\")"
+                "#__log__#", ""
+//                "NSLog(@\"fluttify-objc-callback: ${callerMethod.className}@\\(refId)::${callerMethod.name}_${callbackLambda.name}(${callbackLambda.formalParams.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})" }})\")"
             )
             .replaceParagraph(
                 "#__return_stmt__#",
-                when (callbackLambda.returnType.toSwiftType()) {
-                    "Boolean" -> "return true"
-                    "Int" -> "return 0"
+                when (callbackLambda.returnType) {
+                    "BOOL" -> "return true"
+                    "NSInteger" -> "return 0"
                     else -> ""
                 }
             )

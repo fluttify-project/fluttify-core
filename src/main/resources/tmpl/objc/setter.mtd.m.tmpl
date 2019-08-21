@@ -1,9 +1,9 @@
-@#__method_name__#: ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, NSObject *> * args, FlutterResult methodResult) {
-    let #__field_name__# = args["#__field_name__#"] as! #__field_type__#
+@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+    #__field_type__# #__field_name__# = (#__field_type__#) args[@"#__field_name__#"];
 
-    let refId = args["refId"] as! Int
-    let ref = REF_MAP[refId] as! #__class_name__#
+    NSInteger refId = (NSInteger) args[@"refId"];
+    #__class_name__#* ref = (#__class_name__#*) REF_MAP[@(refId)];
 
-    ref.#__setter__# = #__field_name__#
-    methodResult("success")
+    ref.#__setter__# = #__field_value__#;
+    methodResult(@"success");
 },

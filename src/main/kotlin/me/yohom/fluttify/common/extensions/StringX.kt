@@ -104,6 +104,31 @@ fun TYPE_NAME.toSwiftType(): String {
 }
 
 /**
+ * 是否是c类型
+ */
+fun TYPE_NAME.isCType(): Boolean {
+    return (this in listOf(
+        "BOOL",
+        "NSInteger",
+        "int",
+        "float",
+        "double"
+    )) or this.findType().isEnum()
+}
+
+/**
+ * 是否是c类型
+ */
+fun TYPE_NAME.toObjcType(): String {
+    return when (this) {
+        "double" -> "NSNumber*"
+        "float" -> "NSNumber*"
+        "int" -> "NSNumber*"
+        else -> this
+    }
+}
+
+/**
  * objc方法名转swift名
  */
 fun String.toSwiftMethod(): String {

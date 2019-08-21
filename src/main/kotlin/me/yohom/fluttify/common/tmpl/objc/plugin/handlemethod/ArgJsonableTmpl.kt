@@ -1,5 +1,8 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod
 
+import me.yohom.fluttify.common.extensions.depointer
+import me.yohom.fluttify.common.extensions.isCType
+import me.yohom.fluttify.common.extensions.toObjcType
 import me.yohom.fluttify.common.model.Variable
 
 //// jsonable参数
@@ -11,7 +14,11 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
         return tmpl
             .replace(
                 "#__type_name__#",
-                if (variable.isList) "List<${variable.typeName}>" else variable.typeName
+                when {
+                    variable.isList -> "List<${variable.typeName}>"
+                    variable.typeName.isCType() -> variable.typeName.depointer().toObjcType()
+                    else -> variable.typeName
+                }
             )
             .replace("#__arg_name__#", variable.name)
     }
