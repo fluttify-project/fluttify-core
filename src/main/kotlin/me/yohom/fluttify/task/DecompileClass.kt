@@ -4,8 +4,7 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.file
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
 
 /**
  * 反编译Jar任务
@@ -21,18 +20,13 @@ open class DecompileClass : DefaultTask() {
     fun decompile() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
 
-        val classFilesDir = "${ext.jarFile.file().parent}/unzip/".file()
+        val classFilesDir = "${ext.jarDir}unzip/".file()
         val javaFilesDir = "${project.buildDir}/decompiled/".file()
 
-        // 开始反编译
-        val process = Runtime
-            .getRuntime()
-            // -dgs=1 => decompile generic signatures
-            // -din=0 => decompile inner CLASSES
-            // -rsy=1 => hide synthetic class members
-            // -hdc=1 => hide empty default constructor
-            .exec("java -jar /usr/local/custom/java/fernflower.jar -dgs=1 -din=0 -rsy=1 -hdc=0 $classFilesDir $javaFilesDir")
-
-        BufferedReader(InputStreamReader(process.inputStream)).lines().forEach(::println)
+        ConsoleDecompiler.main(arrayOf(
+            "-dgs=1", "-din=0", "-rsy=1", "-hdc=0",
+            classFilesDir.toString(),
+            javaFilesDir.toString())
+        )
     }
 }

@@ -22,28 +22,28 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke.InvokeTmp
 //    // 调用结果
 //    #__result__#
 //}
-class HandleMethodTmpl(private val method: Method) {
+internal class HandleMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.mtd.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
-        val methodName = method.kotlinHandleMethod()
+        val methodName = method.handleMethodName()
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
         // 2. jsonable
         // 3. 引用
         val args = method.formalParams
-            .filter { !it.typeName.findType().isCallback() }
+            .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.typeName.jsonable() -> ArgJsonableTmpl(it).kotlinArgJsonable()
-                    it.typeName.findType().isEnum() -> ArgEnumTmpl(it).kotlinArgEnum()
-                    else -> ArgRefTmpl(it).kotlinArgRef()
+                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
+                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
+                    else -> ArgRefTmpl(it.variable).kotlinArgRef()
                 }
             }
         val log = if (method.isStatic) {
-            "println(\"fluttify-kotlin: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\")"
+            "println(\"fluttify-kotlin: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":$${it.variable.name}" }})\")"
         } else {
-            "println(\"fluttify-kotlin: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\\"${it.name}\\\":$${it.name}" }})\")"
+            "println(\"fluttify-kotlin: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":$${it.variable.name}" }})\")"
         }
 
         // 获取当前调用方法的对象引用

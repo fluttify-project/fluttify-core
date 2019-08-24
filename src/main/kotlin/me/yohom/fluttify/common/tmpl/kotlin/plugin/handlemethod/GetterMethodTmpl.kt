@@ -10,13 +10,13 @@ import me.yohom.fluttify.common.model.Field
 //
 //    methodResult.success(ref.#__field_name__#)
 //}
-class GetterMethodTmpl(private val field: Field) {
+internal class GetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/getter.mtd.kt.tmpl").readText()
 
     fun kotlinGetter(): String {
         return tmpl
-            .replace("#__getter_name__#", field.kotlinHandleGetterMethod())
+            .replace("#__getter_name__#", field.nativeHandleGetterMethodName())
             .replace("#__class_name__#", field.className.toKotlinType())
-            .replace("#__field_name__#", field.variable!!.name)
+            .replace("#__field_name__#", field.variable.name)
     }
 }

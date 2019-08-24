@@ -1,9 +1,10 @@
 package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.SYSTEM_CLASS
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.jsonable
 
-class SDK {
+class SDK : PlatformAware {
 
     /**
      * 每构造一个sdk, 都记录到静态变量中去, 以供程序的其他地方调用
@@ -20,7 +21,7 @@ class SDK {
     /**
      * 平台
      */
-    var platform: Platform = Platform.Unknown
+    override var platform: Platform = Platform.Unknown
 
     /**
      * 库 Android上是jar, iOS上是framework
@@ -41,14 +42,30 @@ class SDK {
             get() = sdks.firstOrNull { it.platform == Platform.iOS }
 
         fun findType(fullName: String): Type {
-            val allTypes = androidSDK?.libs?.union(iOSSDK?.libs ?: listOf())?.flatMap { it.types } ?: listOf()
+            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
             return when {
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
-                allTypes.map { it.name }.contains(fullName) -> allTypes.first { it.name == fullName }
+                allTypes.map { it.name.depointer() }.contains(fullName) -> allTypes.first { it.name.depointer() == fullName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName }
                 // 已支持的系统类
                 fullName in SYSTEM_CLASS -> Type().apply { name = fullName }
+                // lambda
+                fullName.contains("|") -> Type().apply {
+                    typeType = TypeType.Lambda
+                    name = fullName
+                    returnType = fullName.substringBefore("|")
+                    formalParams = fullName
+                        .substringAfter("|")
+                        .split(",")
+                        .map { it.split(" ") }
+                        .map {
+                            Parameter(
+                                variable = Variable(it[0], it[1], platform = Platform.General),
+                                platform = Platform.General
+                            )
+                        }
+                }
                 // 其他情况一律认为不认识的类
                 else -> Type.UNKNOWN_TYPE
             }
@@ -73,5 +90,5 @@ class Lib {
 }
 
 enum class Platform {
-    iOS, Android, Unknown
+    General, iOS, Android, Unknown
 }

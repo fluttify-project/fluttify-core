@@ -1,9 +1,9 @@
-private fun #__setter_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
-    val #__field_name__# = args["#__field_name__#"] as #__field_type__#
+private func #__setter_method_name__#(registrar: FlutterPluginRegistrar, args: Dictionary<String, Any>, methodResult: FlutterResult) {
+    let #__field_name__# = args["#__field_name__#"] as! #__field_type__#
 
-    val refId = args["refId"] as Int
-    val ref = REF_MAP[refId] as #__class_name__#
+    let refId = args["refId"] as! Int
+    let ref = REF_MAP[refId] as! #__class_name__#
 
-    ref.#__field_name__# = #__field_name__#
-    methodResult.success("success")
+    ref.#__setter__# = #__field_name__#
+    methodResult("success")
 }

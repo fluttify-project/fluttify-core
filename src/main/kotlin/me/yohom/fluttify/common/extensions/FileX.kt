@@ -71,7 +71,8 @@ fun JAVA_FILE.javaType(): Type {
                 Constructor(
                     ctx.IDENTIFIER().text,
                     ctx.formalParams(),
-                    ctx.isPublic()
+                    ctx.isPublic(),
+                    platform = Platform.Android
                 )
             )
         }
@@ -87,7 +88,9 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     ctx.isAbstract(),
                     ctx.isPublic(),
-                    "$packageName.${simpleName.replace("$", ".")}"
+                    "$packageName.${simpleName.replace("$", ".")}",
+                    Platform.Android,
+                    ctx.isDeprecated() // todo 测试是否能用, 目前只测试了objc
                 )
             )
         }
@@ -100,8 +103,10 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.formalParams(),
                     ctx.isStatic(),
                     true,
-                    isPublic = true,
-                    className = "$packageName.${simpleName.replace("$", ".")}"
+                    true,
+                    "$packageName.${simpleName.replace("$", ".")}",
+                    Platform.Android,
+                    ctx.isDeprecated()
                 )
             )
         }
@@ -113,8 +118,10 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isPublic(),
                     ctx.isFinal(),
                     ctx.isStatic(),
-                    Variable(ctx.type(), ctx.name(), ctx.type().isList()),
-                    "$packageName.${simpleName.replace("$", ".")}"
+                    Variable(ctx.type(), ctx.name(), ctx.type().isList(), Platform.Android),
+                    "$packageName.${simpleName.replace("$", ".")}",
+                    platform = Platform.Android,
+                    isDeprecated = ctx.isDeprecated()
                 )
             )
         }
@@ -135,6 +142,7 @@ fun JAVA_FILE.javaType(): Type {
         it.fields.addAll(fields)
         it.methods.addAll(methods)
         it.constants.addAll(enumConstants)
+        it.platform = Platform.Android
     }
 }
 
@@ -152,6 +160,8 @@ fun OBJC_FILE.objcType(): List<Type> {
     var name = ""
     var typeType: TypeType? = null
     var superClass = ""
+    var genericTypes = listOf<TYPE_NAME>()
+    val constructors = mutableListOf<Constructor>()
 
     source.walkTree(object : ObjectiveCParserBaseListener() {
         override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
@@ -174,7 +184,11 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
-            val variable = Variable(ctx.type(), ctx.name())
+            // 只接收property
+            ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
+
+            // todo 判断是否是list
+            val variable = Variable(ctx.type(), ctx.name(), platform = Platform.iOS)
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(
                 Field(
@@ -182,7 +196,11 @@ fun OBJC_FILE.objcType(): List<Type> {
                     ctx.isFinal(),
                     false,
                     variable,
-                    name
+                    name,
+                    ctx.getterName(),
+                    ctx.setterName(),
+                    Platform.iOS,
+                    ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
         }
@@ -196,7 +214,9 @@ fun OBJC_FILE.objcType(): List<Type> {
                     true,
                     null,
                     true,
-                    name
+                    name,
+                    Platform.iOS,
+                    ctx.methodDeclaration().macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
         }
@@ -210,7 +230,9 @@ fun OBJC_FILE.objcType(): List<Type> {
                     false,
                     null,
                     true,
-                    name
+                    name,
+                    Platform.iOS,
+                    ctx.methodDeclaration().macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
         }
@@ -230,6 +252,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
                         it.constants.addAll(enumConstants)
+                        it.platform = Platform.iOS
                     }
                 )
                 // 创新创建fields和methods
@@ -249,6 +272,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
                         it.constants.addAll(enumConstants)
+                        it.platform = Platform.iOS
                     }
                 )
                 // 创新创建fields和methods
@@ -267,6 +291,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     it.fields.addAll(fields)
                     it.methods.addAll(methods)
                     it.constants.addAll(enumConstants)
+                    it.platform = Platform.iOS
                 })
                 // 创新创建fields和methods
                 fields = mutableListOf()

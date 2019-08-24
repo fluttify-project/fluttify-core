@@ -1,27 +1,59 @@
 package me.yohom.fluttify.common.model
 
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.toUnderscore
 
 data class Field(
+    /**
+     * 是否公开
+     */
     val isPublic: Boolean?,
+    /**
+     * 是否只读
+     */
     val isFinal: Boolean?,
+    /**
+     * 是否静态
+     */
     val isStatic: Boolean?,
-    val variable: Variable?,
-    val className: String
-) {
-    fun kotlinHandleGetterMethod(): String {
-        return "handle${className.toUnderscore()}_get_${variable!!.name}"
+    /**
+     * 变量
+     */
+    val variable: Variable,
+    /**
+     * 所在类名
+     */
+    val className: String,
+    /**
+     * getter
+     */
+    val getterName: String = variable.name,
+    /**
+     * setter
+     */
+    val setterName: String = variable.name,
+    /**
+     * 所属平台
+     */
+    override var platform: Platform,
+    /**
+     * 是否过时
+     */
+    var isDeprecated: Boolean = false
+) : PlatformAware {
+    fun nativeHandleGetterMethodName(): String {
+        return "handle${className.toUnderscore()}_get_${getterName.depointer()}"
     }
 
-    fun kotlinHandleSetterMethod(): String {
-        return "handle${className.toUnderscore()}_set_${variable!!.name}"
+    fun nativeHandleSetterMethodName(): String {
+        return "handle${className.toUnderscore()}_set_${setterName.depointer()}"
     }
 
-    fun dartGetterMethod(): String {
-        return "$className::get_${variable!!.name}"
+    fun getterMethodName(): String {
+        return "$className::get_${getterName.depointer()}"
     }
 
-    fun dartSetterMethod(): String {
-        return "$className::set_${variable!!.name}"
+    fun setterMethodName(): String {
+        return "$className::set_${setterName.depointer()}"
     }
 }

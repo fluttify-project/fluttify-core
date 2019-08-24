@@ -1,9 +1,12 @@
 package me.yohom.fluttify.common.extensions
 
+import me.yohom.fluttify.common.model.Parameter
+import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.Variable
 import parser.java.JavaParser
 import parser.objc.ObjectiveCParser
 
+//region Java Method
 fun JavaParser.MethodDeclarationContext.returnType(): String {
     // 返回类型 简称
     val paramType = typeTypeOrVoid().text.genericType()
@@ -95,8 +98,20 @@ fun JavaParser.MethodDeclarationContext.isInstanceMethod(): Boolean {
         ?.contains("static") != true
 }
 
-fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
-    val result = mutableListOf<Variable>()
+fun JavaParser.MethodDeclarationContext.isDeprecated(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.any { it.text.contains("@Deprecated") } == true
+}
+
+fun JavaParser.InterfaceMethodDeclarationContext.isDeprecated(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.any { it.text.contains("@Deprecated") } == true
+}
+
+fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
+    val result = mutableListOf<Parameter>()
 
     val parameters = formalParameters().formalParameterList()
 
@@ -107,10 +122,14 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
             val paramType = formalParam.typeType().text.genericType()
             val typeFullName = typeFullName(paramType)
             result.add(
-                Variable(
-                    typeFullName,
-                    formalParam.variableDeclaratorId().text,
-                    formalParam.typeType().text.isList()
+                Parameter(
+                    variable = Variable(
+                        typeFullName,
+                        formalParam.variableDeclaratorId().text,
+                        formalParam.typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -122,10 +141,14 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
             val paramType = typeType().text.genericType()
             val typeFullName = typeFullName(paramType)
             result.add(
-                Variable(
-                    typeFullName,
-                    variableDeclaratorId().text,
-                    paramType.isList()
+                Parameter(
+                    variable = Variable(
+                        typeFullName,
+                        variableDeclaratorId().text,
+                        typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -133,8 +156,8 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Variable> {
     return result
 }
 
-fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> {
-    val result = mutableListOf<Variable>()
+fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter> {
+    val result = mutableListOf<Parameter>()
 
     val parameters = formalParameters().formalParameterList()
 
@@ -145,10 +168,14 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
             val paramType = formalParam.typeType().text.genericType()
             val typeFullName = typeFullName(paramType)
             result.add(
-                Variable(
-                    typeFullName,
-                    formalParam.variableDeclaratorId().text,
-                    formalParam.typeType().text.isList()
+                Parameter(
+                    variable = Variable(
+                        typeFullName,
+                        formalParam.variableDeclaratorId().text,
+                        formalParam.typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -160,10 +187,14 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
             val paramType = typeType().text.genericType()
             val typeFullName = typeFullName(paramType)
             result.add(
-                Variable(
-                    typeFullName,
-                    variableDeclaratorId().text,
-                    typeType().text.isList()
+                Parameter(
+                    variable = Variable(
+                        typeFullName,
+                        variableDeclaratorId().text,
+                        typeType().text.isList(),
+                        Platform.Android
+                    ),
+                    platform = Platform.Android
                 )
             )
         }
@@ -176,7 +207,12 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Variable> 
 fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
     return methodType().typeName().text.run {
         if (this == "instancetype") {
-            ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text ?: ""
+            val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
+            if (instancetype != null) {
+                "$instancetype*"
+            } else {
+                ""
+            }
         } else {
             this
         }
@@ -197,19 +233,59 @@ fun ObjectiveCParser.MethodDeclarationContext.name(): String {
         .text
 }
 
-fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Variable> {
-    val result = mutableListOf<Variable>()
+fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
+    val result = mutableListOf<Parameter>()
 
     methodSelector()
         .keywordDeclarator()
-        ?.forEach {
+        ?.forEachIndexed { index, it ->
             result.add(
-                Variable(
-                    it.methodType()[0].typeName().text,
-                    it.identifier().text
+                Parameter(
+                    if (index == 0) "" else it.selector().text ?: "",
+                    Variable(
+                        it.methodType()[0].typeName().run {
+                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
+                        },
+                        it.identifier().text,
+                        platform = Platform.iOS
+                    ),
+                    platform = Platform.iOS
                 )
             )
         }
     return result
+}
+
+fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): List<Parameter> {
+    val result = mutableListOf<Parameter>()
+
+    methodSelector()
+        .keywordDeclarator()
+        ?.forEachIndexed { index, it ->
+            result.add(
+                Parameter(
+                    if (index == 0) "" else it.selector().text ?: "",
+                    Variable(
+                        it.methodType()[0].typeName().run {
+                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
+                        },
+                        it.identifier().text,
+                        platform = Platform.iOS
+                    ),
+                    platform = Platform.iOS
+                )
+            )
+        }
+    return result
+}
+
+fun ObjectiveCParser.BlockTypeContext.returnType(): String {
+    return typeSpecifier()[0].text
+}
+
+fun ObjectiveCParser.BlockTypeContext.parameters(): String {
+    return blockParameters().typeVariableDeclaratorOrName().joinToString {
+        "${it.typeVariableDeclarator().declarationSpecifiers().text} ${it.typeVariableDeclarator().declarator().directDeclarator().identifier().text}"
+    }
 }
 //endregion

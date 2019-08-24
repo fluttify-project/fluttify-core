@@ -84,6 +84,74 @@ fun TYPE_NAME.toKotlinType(): String {
 }
 
 /**
+ * 转swift类型
+ */
+fun TYPE_NAME.toSwiftType(): String {
+    var depointed = depointer()
+    // 如果是形如id<XXX>的protocol的话, 那么去掉id<>
+    if (contains("id<")) {
+        depointed = depointed.removePrefix("id<").removeSuffix(">")
+    }
+    return when {
+        depointed == "void" -> "Void"
+        depointed == "NSInteger" -> "Int"
+        depointed == "NSString" -> "String"
+        depointed == "BOOL" -> "Bool"
+        depointed in listOf("NSArray", "NSArray*") -> "[Any]"
+        depointed.jsonable() -> capitalize()
+        else -> depointed
+    }
+}
+
+/**
+ * 是否是值类型(相对指针类型)
+ */
+fun TYPE_NAME.isObjcValueType(): Boolean {
+    return (this in listOf(
+        "BOOL",
+        "NSInteger"
+    )) or this.findType().isEnum() or isCType()
+}
+
+/**
+ * 是否是C类型
+ */
+fun TYPE_NAME.isCType(): Boolean {
+    return (this in listOf(
+        "int",
+        "float",
+        "double"
+    ))
+}
+
+/**
+ * 是否是c类型
+ */
+fun TYPE_NAME.toObjcType(): String {
+    return when (this) {
+        "double" -> "NSNumber*"
+        "float" -> "NSNumber*"
+        "int" -> "NSNumber*"
+        else -> this
+    }
+}
+
+/**
+ * objc方法名转swift名
+ */
+fun String.toSwiftMethod(): String {
+    return if (!contains("with", true)) {
+        // 如果不包含`with`的话, 那么就直接使用原来的方法名, 不需要转换
+        "$this("
+    } else {
+        // 形如`xxWithXxx: (XXX)xx` 的方法, swift会转换为`xx(xxx: xx)`方法
+        val methodNameBeforeWith = substringBefore("With")
+        val methodNameAfterWith = substringAfter("With").decapitalize()
+        "$methodNameBeforeWith($methodNameAfterWith: "
+    }
+}
+
+/**
  * 判断一个类名是否是被混淆过的
  *
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母
@@ -98,7 +166,6 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
-    // 目前只关心java类型, 扩展到ios端后处理oc类型
     return when (this) {
         "String" -> "String"
         "boolean", "Boolean" -> "bool"
@@ -112,6 +179,12 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "Map" -> "Map"
         "void" -> "String"
         null -> "null"
+        // 开始objc
+        "NSString", "NSString*" -> "String"
+        "nil" -> "null"
+        "NSArray", "NSArray*" -> "List"
+        "NSInteger" -> "int"
+        "BOOL" -> "bool"
         else -> {
             if (Regex("ArrayList<\\w*>").matches(this)) {
                 removePrefix("Array")
@@ -119,11 +192,18 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
                 this
             }
         }
-    }.replace("$", ".").replace(".", "_")
+    }.replace("$", ".").replace(".", "_").depointer()
 }
 
 fun TYPE_NAME.toUnderscore(): String {
     return replace("$", ".").replace(".", "_")
+}
+
+/**
+ * 去除指针类型的`*`号
+ */
+fun String.depointer(): String {
+    return removePrefix("*").removeSuffix("*")
 }
 
 /**
@@ -182,6 +262,15 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
     }
 
     return result
+}
+
+/**
+ * objc命名规范改为swift命名规范, 这个没什么办法, 目前先枚举替换
+ *
+ * 比如 URL->url
+ */
+fun String.objc2SwiftSpec(): String {
+    return replace("URL", "url")
 }
 
 /**

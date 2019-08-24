@@ -1,0 +1,56 @@
+#import "#__plugin_name__#Plugin.h"
+#__imports__#
+
+typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
+
+NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
+
+@implementation #__plugin_name__#Plugin {
+  NSObject <FlutterPluginRegistrar> *_flutterPluginRegistrar;
+  NSDictionary<NSString *, Handler> *_handlerMap;
+}
+
++ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
+  FlutterMethodChannel *channel = [FlutterMethodChannel
+      methodChannelWithName:@"#__method_channel__#"
+            binaryMessenger:[registrar messenger]];
+  #__plugin_name__#Plugin *instance = [[#__plugin_name__#Plugin alloc] initWithFlutterPluginRegistrar:registrar];
+  [registrar addMethodCallDelegate:instance channel:channel];
+
+  // 注册View
+  #__register_platform_views__#
+}
+
+- (instancetype)initWithFlutterPluginRegistrar:(NSObject <FlutterPluginRegistrar> *)flutterPluginRegistrar {
+  self = [super init];
+  if (self) {
+    _flutterPluginRegistrar = flutterPluginRegistrar;
+
+    REF_MAP = @{}.mutableCopy;
+
+    _handlerMap = @{
+         #__handlers__#
+    };
+  }
+
+  return self;
+}
+
+- (void)handleMethodCall:(FlutterMethodCall *)methodCall methodResult:(FlutterResult)methodResult {
+  NSDictionary<NSString *, NSObject *> *args = (NSDictionary<NSString *, NSObject *> *) [methodCall arguments];
+  if ([@"SystemRef::release" isEqualToString:methodCall.method]) {
+    [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
+    methodResult(@"success");
+  } else if ([@"SystemRef::clearRefMap" isEqualToString:methodCall.method]) {
+    [REF_MAP removeAllObjects];
+    methodResult(@"success");
+  } else {
+    if (_handlerMap[methodCall.method] != nil) {
+      _handlerMap[methodCall.method](_flutterPluginRegistrar, args, methodResult);
+    } else {
+      methodResult(FlutterMethodNotImplemented);
+    }
+  }
+}
+
+@end

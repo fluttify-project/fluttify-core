@@ -1,26 +1,27 @@
-package #__package_name__#
+import Flutter
+import UIKit
+import #__import__#
 
-import android.content.Context
-import android.view.View
-
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.StandardMessageCodec
-import io.flutter.plugin.platform.PlatformView
-import io.flutter.plugin.platform.PlatformViewFactory
-import io.flutter.plugin.common.PluginRegistry.Registrar
-
-class #__factory_name__#Factory(private val registrar: Registrar) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
-
-    override fun create(context: Context, id: Int, params: Any?): PlatformView {
-        return object : PlatformView {
-            private val view = #__native_view__#(registrar.activity())
-
-            override fun getView(): View = view.apply { REF_MAP[id] = this }
-
-            override fun dispose() {
-                REF_MAP.remove(id)
-            }
-        }
+class #__native_view__#Factory: NSObject, FlutterPlatformViewFactory {
+    func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
+        return #__native_view__#PlatformView(viewId)
     }
+}
+
+class #__native_view__#PlatformView: NSObject, FlutterPlatformView {
+   private let viewId: Int64
+
+   init(_ viewId: Int64) {
+       self.viewId = viewId
+   }
+
+   func view() -> UIView {
+       let nativeView = #__native_view__#()
+       REF_MAP[Int(viewId)] = nativeView
+       return nativeView
+   }
+
+   deinit {
+       REF_MAP.removeValue(forKey: Int(viewId))
+   }
 }

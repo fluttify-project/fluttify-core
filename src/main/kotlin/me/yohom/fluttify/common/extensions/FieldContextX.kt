@@ -4,16 +4,20 @@ import parser.java.JavaParser
 import parser.objc.ObjectiveCParser
 
 //region Java Field
-fun JavaParser.FieldDeclarationContext?.isStatic(): Boolean {
-    if (this == null) return false
+fun JavaParser.FieldDeclarationContext.isStatic(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("static") == true
 }
 
-fun JavaParser.FieldDeclarationContext?.isPrivate(): Boolean {
-    if (this == null) return false
+fun JavaParser.FieldDeclarationContext.isDeprecated(): Boolean {
+    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
+        ?.modifier()
+        ?.any { it.text.contains("@Deprecated") } == true
+}
+
+fun JavaParser.FieldDeclarationContext.isPrivate(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
@@ -80,16 +84,41 @@ fun JavaParser.FieldDeclarationContext?.jsonable(): Boolean {
 //endregion
 
 //region Objc field
+/**
+ * 是否是只读 有两种情况
+ *
+ * 1. property指定是readonly
+ * 2. 声明了getter却没有声明setter
+ */
 fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
-    return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+    val propertyAttributes = ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
         ?.propertyAttributesList()
         ?.propertyAttribute()
         ?.map { it.text }
-        ?.contains("readonly") == true
+
+    val getter = propertyAttributes
+        ?.find { it.contains("getter") }
+        ?.run { split("=")[1] } ?: ""
+
+    val setter = propertyAttributes
+        ?.find { it.contains("setter") }
+        ?.run { split("=")[1] } ?: ""
+
+    val readonly = propertyAttributes?.contains("readonly") == true
+
+    val copy = propertyAttributes?.contains("copy") == true
+
+    return readonly || copy || (getter.isNotEmpty() && setter.isEmpty())
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {
-    return specifierQualifierList().text
+    return specifierQualifierList().text.run {
+        if (contains("id<")) {
+            removePrefix("id<").removeSuffix(">")
+        } else {
+            this
+        }
+    }
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.name(): String {
@@ -98,6 +127,26 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
 
 fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {
     return false
+}
+
+fun ObjectiveCParser.FieldDeclarationContext.getterName(): String {
+    return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+        ?.find { it.contains("getter") }
+        ?.run { split("=")[1] }
+        ?: name().depointer()
+}
+
+fun ObjectiveCParser.FieldDeclarationContext.setterName(): String {
+    return ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+        ?.find { it.contains("setter") }
+        ?.run { split("=")[1] }
+        ?: name().depointer()
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.jsonable(): Boolean {

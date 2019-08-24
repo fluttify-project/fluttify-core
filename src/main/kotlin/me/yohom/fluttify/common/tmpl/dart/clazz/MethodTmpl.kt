@@ -2,6 +2,8 @@ package me.yohom.fluttify.common.tmpl.dart.clazz
 
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.model.Parameter
+import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.Variable
 
 //#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
@@ -29,13 +31,13 @@ class MethodTmpl(private val method: Method) {
         val name = method.name
         val formalParams = method.formalParams
             .filterFormalParams()
-            .map { it.toDartString() }
+            .map { it.variable.toDartString() }
             .sortedBy { it } // 这里排序是为了让所有的lambda到后面去, `{`排序优先级默认在字母后面
             .joinToString()
         val log = if (method.isStatic) {
-            "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':$${it.name}" }})');"
+            "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
         } else {
-            "print('fluttify-dart: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.typeName.jsonable() }.map { "\\'${it.name}\\':$${it.name}" }})');"
+            "print('fluttify-dart: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
         }
         val invoke = invokeString(method.isStatic, method.className, method.name, method.formalParams)
         val callback = CallbackTmpl(method).callback()
@@ -59,15 +61,23 @@ class MethodTmpl(private val method: Method) {
         isStatic: Boolean,
         className: String,
         methodName: String,
-        params: List<Variable>
+        params: List<Parameter>
     ): String {
         val resultBuilder = StringBuilder("")
 
         val actualParams = params
             .filterFormalParams()
-            .filter { !it.typeName.findType().isCallback() }
+            .filter { !it.variable.typeName.findType().isCallback() }
             .toMutableList()
-            .apply { if (!isStatic) add(Variable("int", "refId")) }
+            .apply {
+                if (!isStatic) add(
+                    Parameter(
+                        variable = Variable("int", "refId", platform = Platform.General),
+                        platform = Platform.General
+                    )
+                )
+            }
+            .map { it.variable }
             .toDartMap {
                 when {
                     it.typeName.findType().isEnum() -> "${it.name}.index"

@@ -3,7 +3,9 @@ package me.yohom.fluttify.common.model
 import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.extensions.*
 
-open class Type {
+open class Type : PlatformAware {
+    override var platform: Platform = Platform.Unknown
+
     /**
      * 全名
      */
@@ -27,7 +29,7 @@ open class Type {
     /**
      * 是否是内部类
      */
-    var isInnerClass: Boolean = true
+    var isInnerClass: Boolean = false
 
     /**
      * 是否primitive
@@ -67,16 +69,33 @@ open class Type {
     /**
      * 形参 Lambda专用
      */
-    var formalParam: MutableList<Variable> = mutableListOf()
+    var formalParams: List<Parameter> = listOf()
 
+    /**
+     * 是否过时
+     */
+    var deprecated: Boolean = false
+
+    /**
+     * 是否是回调
+     */
     fun isCallback(): Boolean {
         return typeType == TypeType.Interface // 必须是接口
                 // 返回类型必须是void或者Boolean
-                && methods.all { it.returnType in listOf("void", "Boolean") }
+                && methods.all { it.returnType.toDartType() in listOf("void", "bool") }
                 // 参数类型必须是jsonable或者引用类型
-                && methods.all { it.formalParams.all { it.typeName.findType().run { jsonable() || !isInterface() }} }
+                && methods.all { it.formalParams.all { it.variable.typeName.findType().run { jsonable() || !isInterface() } } }
                 // 必须没有父类
                 && superClass.isEmpty()
+                // 或者是lambda
+                || typeType == TypeType.Lambda
+    }
+
+    /**
+     * 是否是delegate, 与callback类似, 但是callback侧重于异步, 而delegate侧重于委托
+     */
+    fun isDelegate(): Boolean {
+        return false
     }
 
     fun isEnum(): Boolean {
@@ -108,7 +127,12 @@ open class Type {
     }
 
     fun isView(): Boolean {
-        return superClass in listOf("android.view.View", "android.view.ViewGroup", "android.widget.FrameLayout")
+        return superClass in listOf(
+            "android.view.View",
+            "android.view.ViewGroup",
+            "android.widget.FrameLayout",
+            "UIView"
+        )
     }
 
     fun nameWithGeneric(): String {
@@ -116,7 +140,7 @@ open class Type {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isPrimitive=$isPrimitive, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParam=$formalParam)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isPrimitive=$isPrimitive, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {

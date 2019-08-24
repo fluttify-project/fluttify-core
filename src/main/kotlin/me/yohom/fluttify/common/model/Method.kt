@@ -3,6 +3,7 @@ package me.yohom.fluttify.common.model
 import me.yohom.fluttify.common.IGNORE_METHOD
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.toDartType
+import me.yohom.fluttify.common.extensions.toUnderscore
 
 data class Method(
     /**
@@ -16,7 +17,7 @@ data class Method(
     /**
      * 形参
      */
-    var formalParams: List<Variable>,
+    var formalParams: List<Parameter>,
     /**
      * 是否静态
      */
@@ -32,8 +33,15 @@ data class Method(
     /**
      * 所在类名称
      */
-    var className: String
-) {
+    var className: String,
+
+    override var platform: Platform,
+
+    /**
+     * 是否过时
+     */
+    var isDeprecated: Boolean = false
+) : PlatformAware {
     fun isOk(): Boolean {
         return when {
             // 不能是忽略的方法
@@ -65,15 +73,15 @@ data class Method(
                 false.apply { println("方法${this@Method} 由于`返回类型不能含有泛型`, 被过滤") }
             }
             // 形参类型必须全部都是公开类型
-            !formalParams.all { it.typeName.findType().isPublic } -> {
+            !formalParams.all { it.variable.typeName.findType().isPublic } -> {
                 false.apply { println("方法${this@Method} 由于`形参类型必须全部都是公开类型`, 被过滤") }
             }
             // 形参类型必须全部都不含有泛型
-            !formalParams.all { it.typeName.findType().genericTypes.isEmpty() } -> {
+            !formalParams.all { it.variable.typeName.findType().genericTypes.isEmpty() } -> {
                 false.apply { println("方法${this@Method} 由于`形参类型必须全部都不含有泛型`, 被过滤") }
             }
             // 形参类型必须全部都不是未知类型
-            !formalParams.all { it.typeName.findType() != Type.UNKNOWN_TYPE } -> {
+            !formalParams.all { it.variable.typeName.findType() != Type.UNKNOWN_TYPE } -> {
                 false.apply { println("方法${this@Method} 由于`形参类型必须全部都不是未知类型`, 被过滤") }
             }
             else -> {
@@ -82,11 +90,15 @@ data class Method(
         }
     }
 
-    fun kotlinHandleMethod(): String {
+    fun handleMethodName(): String {
         return "handle${className.toDartType()}_$name"
     }
 
+    fun methodName(): String {
+        return "${className.toUnderscore()}::$name"
+    }
+
     override fun toString(): String {
-        return "Method(returnType='$returnType', name='$name', formalParams=$formalParams, isStatic=$isStatic, isAbstract=$isAbstract, isPublic=$isPublic)"
+        return "Method(returnType='$returnType', name='$name', formalParams=$formalParams, isStatic=$isStatic, isAbstract=$isAbstract, isPublic=$isPublic, className='$className')"
     }
 }

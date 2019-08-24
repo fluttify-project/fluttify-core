@@ -12,5 +12,6 @@ data class Constructor(
     /**
      * 是否公开
      */
-    var isPublic: Boolean?
-)
+    var isPublic: Boolean?,
+    override var platform: Platform
+) : PlatformAware

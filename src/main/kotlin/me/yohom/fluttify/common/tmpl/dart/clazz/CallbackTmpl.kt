@@ -25,11 +25,11 @@ class CallbackTmpl(private val callerMethod: Method) {
 
     fun callback(): String {
         // 如果方法参数中没有回调类型的参数, 那么直接返回空字符串
-        if (callerMethod.formalParams.none { it.typeName.findType().isCallback() }) return ""
+        if (callerMethod.formalParams.none { it.variable.typeName.findType().isCallback() }) return ""
 
         val callbackMethods = callerMethod.formalParams
-            .filter { it.typeName.findType().isCallback() }
-            .flatMap { it.typeName.findType().methods.filterMethod() }
+            .filter { it.variable.typeName.findType().isCallback() }
+            .flatMap { it.variable.typeName.findType().methods.filterMethod() }
 
         val className = "${callerMethod.className}::${callerMethod.name}_Callback"
         val callbackCases = callbackMethods.map { CallbackCaseTmpl(callerMethod, it).callbackCase() }
