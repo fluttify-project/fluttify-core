@@ -1,6 +1,6 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke
 
-import me.yohom.fluttify.common.extensions.isCType
+import me.yohom.fluttify.common.extensions.isObjcValueType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toSwiftType
@@ -44,7 +44,7 @@ internal class LambdaCallbackTmpl(private val callerMethod: Method, private val 
                 "#__callback_params__#",
                 callbackLambda.formalParams.joinToString("") {
                     "@\"${it.variable.name}\": ${when {
-                        it.variable.typeName.isCType() -> "@(${it.variable.name})"
+                        it.variable.typeName.isObjcValueType() -> "@(${it.variable.name})"
                         it.variable.typeName.jsonable() -> it.variable.typeName
                         else -> "${it.variable.name}.hashCode().apply { REF_MAP[this] = ${it.variable.name} }"
                     }},\n"

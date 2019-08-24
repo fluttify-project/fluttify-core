@@ -1,6 +1,6 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod
 
-import me.yohom.fluttify.common.extensions.isCType
+import me.yohom.fluttify.common.extensions.isObjcValueType
 import me.yohom.fluttify.common.model.Field
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
@@ -18,7 +18,7 @@ internal class GetterMethodTmpl(private val field: Field) {
             .replace("#__method_name__#", field.getterMethodName())
             .replace("#__class_name__#", field.className)
             .replace("#__getter__#", field.run {
-                if (variable.typeName.isCType()) {
+                if (variable.typeName.isObjcValueType()) {
                     "@(ref.$getterName)"
                 } else {
                     "ref.$getterName"

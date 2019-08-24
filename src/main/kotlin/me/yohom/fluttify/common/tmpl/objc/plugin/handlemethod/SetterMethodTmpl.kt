@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod
 
 import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.isCType
+import me.yohom.fluttify.common.extensions.isObjcValueType
 import me.yohom.fluttify.common.extensions.toObjcType
 import me.yohom.fluttify.common.model.Field
 
@@ -22,7 +23,7 @@ internal class SetterMethodTmpl(private val field: Field) {
         val fieldName = field.variable.name
         val fieldType = when {
             field.variable.isList -> "List<${field.variable.typeName}>"
-            field.variable.typeName.isCType() -> field.variable.typeName.toObjcType()
+            field.variable.typeName.isObjcValueType() -> field.variable.typeName.toObjcType()
             else -> "${field.variable.typeName} *"
         }
         val className = field.className
@@ -32,7 +33,7 @@ internal class SetterMethodTmpl(private val field: Field) {
             .replace("#__setter__#", setter)
             .replace("#__field_name__#", fieldName.depointer())
             .replace("#__field_value__#", fieldName.depointer().run {
-                if (field.variable.typeName in listOf("double", "int", "float")) {
+                if (field.variable.typeName.isCType()) {
                     "$this.${field.variable.typeName}Value"
                 } else {
                     this

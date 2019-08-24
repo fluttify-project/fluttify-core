@@ -1,7 +1,7 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod
 
 import me.yohom.fluttify.common.TYPE_NAME
-import me.yohom.fluttify.common.extensions.isCType
+import me.yohom.fluttify.common.extensions.isObjcValueType
 import me.yohom.fluttify.common.extensions.jsonable
 
 //NSInteger returnRefId = [result hashValue];
@@ -15,7 +15,7 @@ internal class RefResultTmpl(val returnType: TYPE_NAME) {
     fun objcRefResult(): String {
         return when {
             returnType == "void" -> "methodResult(@\"success\");"
-            returnType.isCType() -> "methodResult(@(result));"
+            returnType.isObjcValueType() -> "methodResult(@(result));"
             returnType.jsonable() -> "methodResult(result);"
             else -> tmpl
         }

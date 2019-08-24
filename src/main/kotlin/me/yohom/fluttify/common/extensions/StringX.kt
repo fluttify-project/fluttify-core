@@ -104,16 +104,24 @@ fun TYPE_NAME.toSwiftType(): String {
 }
 
 /**
- * 是否是c类型
+ * 是否是值类型(相对指针类型)
+ */
+fun TYPE_NAME.isObjcValueType(): Boolean {
+    return (this in listOf(
+        "BOOL",
+        "NSInteger"
+    )) or this.findType().isEnum() or isCType()
+}
+
+/**
+ * 是否是C类型
  */
 fun TYPE_NAME.isCType(): Boolean {
     return (this in listOf(
-        "BOOL",
-        "NSInteger",
         "int",
         "float",
         "double"
-    )) or this.findType().isEnum()
+    ))
 }
 
 /**
