@@ -79,7 +79,11 @@ open class IOSObjcInterface : DefaultTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val pluginOutputFile =
+        val pluginHFile =
+            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel(
+                true
+            )}Plugin.h"
+        val pluginMFile =
             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel(
                 true
             )}Plugin.m"
@@ -90,7 +94,8 @@ open class IOSObjcInterface : DefaultTask() {
         ObjcPluginTmpl(sdk.libs, ext)
             .objcPlugin()
             .run {
-                pluginOutputFile.file().writeText(this)
+                pluginHFile.file().writeText(this[0])
+                pluginMFile.file().writeText(this[1])
             }
 
         // 生成PlatformViewFactory文件
@@ -99,13 +104,16 @@ open class IOSObjcInterface : DefaultTask() {
                 lib.types
                     .filter { it.isView() }
                     .forEach {
-                        val factoryOutputFile =
+                        val factoryHFile =
+                            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.h".file()
+                        val factoryMFile =
                             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.m".file()
 
                         PlatformViewFactoryTmpl(it, lib)
                             .objcPlatformViewFactory()
                             .run {
-                                factoryOutputFile.writeText(this)
+                                factoryHFile.writeText(this[0])
+                                factoryMFile.writeText(this[1])
                             }
                     }
             }

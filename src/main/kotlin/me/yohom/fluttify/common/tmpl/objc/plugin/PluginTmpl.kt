@@ -67,19 +67,22 @@ class PluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
+    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin.h.tmpl").readText()
+    private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
 
-    fun objcPlugin(): String {
+    fun objcPlugin(): List<String> {
         // 插件名称
         val pluginClassName = ext.outputProjectName.underscore2Camel(true)
 
         // method channel
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
 
+        val platformViewHeader = mutableListOf<String>()
         // 注册PlatformView
         val registerPlatformViews = libs
             .flatMap { it.types }
             .filter { it.isView() }
+            .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
             .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).objcRegisterPlatformView() }
 
         // 处理方法们 分三种
@@ -107,16 +110,22 @@ class PluginTmpl(
             .filterMethod()
             .map { HandleMethodTmpl(it).objcHandlerMethod() }
 
-        return tmpl
-            .replace("#__imports__#", libs.joinToString("\n") { "#include <${it.name}/${it.name}.h>" })
-            .replace("#__plugin_name__#", pluginClassName)
-            .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__getter_branches__#", "")
-            .replaceParagraph("#__setter_branches__#", "")
-            .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
-            .replaceParagraph(
-                "#__handlers__#",
-                methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
-            )
+        return listOf(
+            hTmpl.replace("#__plugin_name__#", pluginClassName),
+            mTmpl
+                .replace("#__imports__#", libs
+                    .map { "#import <${it.name}/${it.name}.h>" }
+                    .union(platformViewHeader)
+                    .joinToString("\n") )
+                .replace("#__plugin_name__#", pluginClassName)
+                .replace("#__method_channel__#", methodChannel)
+                .replaceParagraph("#__getter_branches__#", "")
+                .replaceParagraph("#__setter_branches__#", "")
+                .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
+                .replaceParagraph(
+                    "#__handlers__#",
+                    methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
+                )
+        )
     }
 }

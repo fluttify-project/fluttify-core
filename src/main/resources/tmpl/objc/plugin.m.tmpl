@@ -12,7 +12,7 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
   FlutterMethodChannel *channel = [FlutterMethodChannel
-      methodChannelWithName:@"amap_base_flutter"
+      methodChannelWithName:@"#__method_channel__#"
             binaryMessenger:[registrar messenger]];
   #__plugin_name__#Plugin *instance = [[#__plugin_name__#Plugin alloc] initWithFlutterPluginRegistrar:registrar];
   [registrar addMethodCallDelegate:instance channel:channel];

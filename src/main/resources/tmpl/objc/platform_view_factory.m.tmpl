@@ -1,27 +1,35 @@
-import Flutter
-import UIKit
-import #__import__#
+#import "#__native_view__#Factory.h"
+#import "AmapBaseFlutterPlugin.h"
+#import #__import__#
 
-class #__native_view__#Factory: NSObject, FlutterPlatformViewFactory {
-    func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return #__native_view__#PlatformView(viewId)
-    }
+@implementation #__native_view__#Factory {
+
+}
+- (NSObject <FlutterPlatformView> *)createWithFrame:(CGRect)frame viewIdentifier:(int64_t)viewId arguments:(id _Nullable)args {
+  return [[#__native_view__#PlatformView alloc] initWithViewId:viewId];
 }
 
-class #__native_view__#PlatformView: NSObject, FlutterPlatformView {
-   private let viewId: Int64
+@end
 
-   init(_ viewId: Int64) {
-       self.viewId = viewId
-   }
-
-   func view() -> UIView {
-       let nativeView = #__native_view__#()
-       REF_MAP[Int(viewId)] = nativeView
-       return nativeView
-   }
-
-   deinit {
-       REF_MAP.removeValue(forKey: Int(viewId))
-   }
+@implementation #__native_view__#PlatformView {
+  NSInteger _viewId;
 }
+
+- (instancetype)initWithViewId:(NSInteger)viewId {
+  self = [super init];
+  if (self) {
+    _viewId = viewId;
+  }
+
+  return self;
+}
+
+- (UIView *)view {
+  return [[#__native_view__# alloc] init];
+}
+
+- (void)dealloc {
+  [REF_MAP removeObjectForKey:@(_viewId)];
+}
+
+@end

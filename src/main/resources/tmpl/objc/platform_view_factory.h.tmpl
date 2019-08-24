@@ -1,0 +1,11 @@
+#import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+
+@interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
+@end
+
+@interface #__native_view__#PlatformView: NSObject <FlutterPlatformView>
+
+- (instancetype) initWithViewId: (NSInteger) viewId;
+
+@end
