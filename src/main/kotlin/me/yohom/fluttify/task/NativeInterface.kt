@@ -94,8 +94,7 @@ open class IOSObjcInterface : DefaultTask() {
         ObjcPluginTmpl(sdk.libs, ext)
             .objcPlugin()
             .run {
-                pluginHFile.file().writeText(this[0])
-                pluginMFile.file().writeText(this[1])
+                pluginMFile.file().writeText(this)
             }
 
         // 生成PlatformViewFactory文件

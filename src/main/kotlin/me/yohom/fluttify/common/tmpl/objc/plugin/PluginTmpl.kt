@@ -16,50 +16,41 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.SetterMethodTmpl
 //
 //@implementation #__plugin_name__#Plugin {
 //  NSObject <FlutterPluginRegistrar> *_flutterPluginRegistrar;
-//  NSDictionary<NSString *, Handler> *_handlerMap;
 //}
 //
 //+ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
-//      methodChannelWithName:@"amap_base_flutter"
+//      methodChannelWithName:@"#__method_channel__#"
 //            binaryMessenger:[registrar messenger]];
-//  #__plugin_name__#Plugin *instance = [[#__plugin_name__#Plugin alloc] initWithFlutterPluginRegistrar:registrar];
-//  [registrar addMethodCallDelegate:instance channel:channel];
+//
+//  // 引用Map
+//  REF_MAP = @{}.mutableCopy;
+//
+//  // 处理方法们
+//  NSDictionary<NSString *, Handler> *_handlerMap = {
+//    #__handlers__#
+//  };
+//
+//  // 处理channel
+//  [channel setMethodCallHandler:^(FlutterMethodCall * _Nonnull methodCall, FlutterResult  _Nonnull methodResult) {
+//          NSDictionary<NSString *, NSObject *> *args = (NSDictionary<NSString *, NSObject *> *) [methodCall arguments];
+//          if ([@"SystemRef::release" isEqualToString:methodCall.method]) {
+//              [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
+//              methodResult(@"success");
+//          } else if ([@"SystemRef::clearRefMap" isEqualToString:methodCall.method]) {
+//              [REF_MAP removeAllObjects];
+//              methodResult(@"success");
+//          } else {
+//              if (_handlerMap[methodCall.method] != nil) {
+//                  _handlerMap[methodCall.method](registrar, args, methodResult);
+//              } else {
+//                  methodResult(FlutterMethodNotImplemented);
+//              }
+//          }
+//      }];
 //
 //  // 注册View
 //  #__register_platform_views__#
-//}
-//
-//- (instancetype)initWithFlutterPluginRegistrar:(NSObject <FlutterPluginRegistrar> *)flutterPluginRegistrar {
-//  self = [super init];
-//  if (self) {
-//    _flutterPluginRegistrar = flutterPluginRegistrar;
-//
-//    REF_MAP = @{}.mutableCopy;
-//
-//    _handlerMap = @{
-//         #__handlers__#
-//    };
-//  }
-//
-//  return self;
-//}
-//
-//- (void)handleMethodCall:(FlutterMethodCall *)methodCall methodResult:(FlutterResult)methodResult {
-//  NSDictionary<NSString *, NSObject *> *args = (NSDictionary<NSString *, NSObject *> *) [methodCall arguments];
-//  if ([@"SystemRef::release" isEqualToString:methodCall.method]) {
-//    [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
-//    methodResult(@"success");
-//  } else if ([@"SystemRef::clearRefMap" isEqualToString:methodCall.method]) {
-//    [REF_MAP removeAllObjects];
-//    methodResult(@"success");
-//  } else {
-//    if (_handlerMap[methodCall.method] != nil) {
-//      _handlerMap[methodCall.method](_flutterPluginRegistrar, args, methodResult);
-//    } else {
-//      methodResult(FlutterMethodNotImplemented);
-//    }
-//  }
 //}
 //
 //@end
@@ -67,10 +58,9 @@ class PluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
 ) {
-    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin.h.tmpl").readText()
     private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
 
-    fun objcPlugin(): List<String> {
+    fun objcPlugin(): String {
         // 插件名称
         val pluginClassName = ext.outputProjectName.underscore2Camel(true)
 
@@ -110,22 +100,19 @@ class PluginTmpl(
             .filterMethod()
             .map { HandleMethodTmpl(it).objcHandlerMethod() }
 
-        return listOf(
-            hTmpl.replace("#__plugin_name__#", pluginClassName),
-            mTmpl
-                .replace("#__imports__#", libs
-                    .map { "#import <${it.name}/${it.name}.h>" }
-                    .union(platformViewHeader)
-                    .joinToString("\n") )
-                .replace("#__plugin_name__#", pluginClassName)
-                .replace("#__method_channel__#", methodChannel)
-                .replaceParagraph("#__getter_branches__#", "")
-                .replaceParagraph("#__setter_branches__#", "")
-                .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
-                .replaceParagraph(
-                    "#__handlers__#",
-                    methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
-                )
-        )
+        return mTmpl
+            .replace("#__imports__#", libs
+                .map { "#import <${it.name}/${it.name}.h>" }
+                .union(platformViewHeader)
+                .joinToString("\n"))
+            .replace("#__plugin_name__#", pluginClassName)
+            .replace("#__method_channel__#", methodChannel)
+            .replaceParagraph("#__getter_branches__#", "")
+            .replaceParagraph("#__setter_branches__#", "")
+            .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
+            .replaceParagraph(
+                "#__handlers__#",
+                methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
+            )
     }
 }
