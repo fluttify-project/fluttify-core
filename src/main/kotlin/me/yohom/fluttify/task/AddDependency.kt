@@ -27,6 +27,12 @@ open class AndroidAddDependency : DefaultTask() {
 
 /**
  * 为生成ios工程加入目标framework到文件夹
+ *
+ * todo 加入引入资源的选项 在podspec文件中加
+ *
+ *  # 需要引入的资源文件
+ *  s.resource = "MAMapKit.framework/AMap.bundle"
+ *
  */
 open class IOSAddDependency : DefaultTask() {
 
