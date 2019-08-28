@@ -9,6 +9,7 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 
 //package #__package_name__#
 //
+//import android.os.Bundle
 //import io.flutter.plugin.common.MethodChannel
 //import io.flutter.plugin.common.PluginRegistry.Registrar
 //
@@ -17,10 +18,6 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 //@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 //class #__plugin_name__#Plugin {
 //    companion object {
-//        private val handlerMap = mapOf<String, Function3<Registrar, Map<String, Any>, MethodChannel.Result, Unit>>(
-//                #__branches__#
-//        )
-//
 //        @JvmStatic
 //        fun registerWith(registrar: Registrar) {
 //            val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
@@ -35,6 +32,10 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 //                    // 获取FlutterActivity对象
 //                    "SystemRef::getandroid_app_Activity" -> {
 //                        methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
+//                    }
+//                    // 创建android.os.Bundle对象
+//                    "SystemRef::createandroid_os_Bundle" -> {
+//                        methodResult.success(Bundle().apply { REF_MAP[hashCode()] = this }.hashCode())
 //                    }
 //                    // 释放一个对象
 //                    "SystemRef::release" -> {
@@ -56,8 +57,9 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
 //            #__register_platform_views__#
 //		}
 //
-//		// 与branch对应的方法们
-//		#__handlers__#
+//        private val handlerMap = mapOf<String, (Registrar, Map<String, Any>, MethodChannel.Result) -> Unit>>(
+//                #__handlers__#
+//        )
 //    }
 //}
 class PluginTmpl(
@@ -75,28 +77,6 @@ class PluginTmpl(
 
         // method channel
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
-
-        // 分支们 分为三种
-        // 1. 普通方法
-        // 2. getter
-        // 3. setter
-        val gettersBranches = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterGetters()
-            .map { GetterBranchTmpl(it).kotlinGetterBranch() }
-
-        val settersBranches = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterSetters()
-            .map { SetterBranchTmpl(it).kotlinSetterBranch() }
-
-        val methodBranches = lib.types
-            .filterType()
-            .flatMap { it.methods }
-            .filterMethod()
-            .map { MethodBranchTmpl(it).kotlinMethodBranch() }
 
         // 注册PlatformView
         val registerPlatformViews = lib.types
@@ -131,14 +111,10 @@ class PluginTmpl(
             .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__getter_branches__#", "")
             .replaceParagraph("#__setter_branches__#", "")
-            .replaceParagraph(
-                "#__branches__#",
-                methodBranches.union(gettersBranches).union(settersBranches).joinToString(",\n")
-            )
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
             .replaceParagraph(
                 "#__handlers__#",
-                getterHandlers.union(setterHandlers).union(methodHandlers).joinToString("\n")
+                getterHandlers.union(setterHandlers).union(methodHandlers).joinToString(",\n")
             )
     }
 }

@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke.InvokeTmpl
 
-//private fun #__method_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
+//"#__method_name__#" to { registrar, args, methodResult ->
 //    // 参数
 //    #__args__#
 //
@@ -26,7 +26,7 @@ internal class HandleMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.mtd.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
-        val methodName = method.handleMethodName()
+        val methodName = method.methodName()
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
         // 2. jsonable

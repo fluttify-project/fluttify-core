@@ -8,6 +8,7 @@ import org.gradle.api.tasks.TaskAction
 
 /**
  * 为生成android工程加入目标jar到libs文件夹
+ * todo 避免拷贝unzip文件夹
  */
 open class AndroidAddDependency : DefaultTask() {
 

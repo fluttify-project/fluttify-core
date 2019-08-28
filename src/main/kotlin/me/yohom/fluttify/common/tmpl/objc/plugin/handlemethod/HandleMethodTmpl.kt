@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.InvokeTmpl
 
-//private func #__method_name__#(registrar: Registrar, args: Dictionary<String, Any>, methodResult: FlutterResult) {
+//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 参数
 //    #__args__#
 //
@@ -21,12 +21,12 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.InvokeTmpl
 //
 //    // 调用结果
 //    #__result__#
-//}
+//},
 internal class HandleMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/handler.mtd.m.tmpl").readText()
 
     fun objcHandlerMethod(): String {
-        val methodName = method.handleMethodName()
+        val methodName = method.methodName()
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
         // 2. jsonable

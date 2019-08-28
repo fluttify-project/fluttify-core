@@ -3,7 +3,6 @@ package me.yohom.fluttify.common.model
 import me.yohom.fluttify.common.IGNORE_METHOD
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.toDartType
-import me.yohom.fluttify.common.extensions.toUnderscore
 
 data class Method(
     /**
@@ -90,12 +89,13 @@ data class Method(
         }
     }
 
+    @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("methodName"))
     fun handleMethodName(): String {
         return "handle${className.toDartType()}_$name"
     }
 
     fun methodName(): String {
-        return "${className.toUnderscore()}::$name"
+        return "${className}::$name"
     }
 
     override fun toString(): String {

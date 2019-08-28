@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod
 import me.yohom.fluttify.common.extensions.toKotlinType
 import me.yohom.fluttify.common.model.Field
 
-//private fun #__setter_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
+//"#__setter_name__#" to { registrar, args, methodResult ->
 //    val #__field_name__# = args["#__field_name__#"] as #__field_type__#
 //
 //    val refId = args["refId"] as Int
@@ -16,7 +16,7 @@ internal class SetterMethodTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/setter.mtd.kt.tmpl").readText()
 
     fun kotlinSetter(): String {
-        val setterName = field.nativeHandleSetterMethodName()
+        val setterName = field.setterMethodName()
         val fieldName = field.variable.name
         val fieldType = field.variable.typeName.toKotlinType()
         val className = field.className

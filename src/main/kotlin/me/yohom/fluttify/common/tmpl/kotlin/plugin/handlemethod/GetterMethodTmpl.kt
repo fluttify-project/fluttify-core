@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod
 import me.yohom.fluttify.common.extensions.toKotlinType
 import me.yohom.fluttify.common.model.Field
 
-//private fun #__getter_name__#(registrar: Registrar, args: Map<String, Any>, methodResult: MethodChannel.Result) {
+//"#__getter_name__#" to { registrar, args, methodResult ->
 //    // 引用对象
 //    val refId = args["refId"] as Int
 //    val ref = REF_MAP[refId] as #__class_name__#
@@ -15,7 +15,7 @@ internal class GetterMethodTmpl(private val field: Field) {
 
     fun kotlinGetter(): String {
         return tmpl
-            .replace("#__getter_name__#", field.nativeHandleGetterMethodName())
+            .replace("#__getter_name__#", field.getterMethodName())
             .replace("#__class_name__#", field.className.toKotlinType())
             .replace("#__field_name__#", field.variable.name)
     }

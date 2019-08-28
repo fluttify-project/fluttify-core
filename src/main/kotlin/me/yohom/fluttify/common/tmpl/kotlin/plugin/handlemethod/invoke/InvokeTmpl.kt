@@ -3,7 +3,6 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.invoke
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Variable
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.invoke.LambdaCallbackTmpl
 
 internal class InvokeTmpl(private val method: Method) {
     fun kotlinInvoke(): String {
@@ -25,7 +24,7 @@ internal class InvokeTmpl(private val method: Method) {
 
     private fun var2formalParam(it: Variable): String {
         return if (it.typeName.findType().isCallback()) {
-            LambdaCallbackTmpl(method, it.typeName.findType()).objcCallback()
+            CallbackTmpl(method, it.typeName.findType()).kotlinCallback()
         } else {
             if (it.isList) "ArrayList(${it.name})" else it.name
         }

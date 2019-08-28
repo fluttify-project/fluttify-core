@@ -9,10 +9,6 @@ val REF_MAP = mutableMapOf<Int, Any>()
 @Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 class #__plugin_name__#Plugin {
     companion object {
-        private val handlerMap = mapOf<String, Function3<Registrar, Map<String, Any>, MethodChannel.Result, Unit>>(
-                #__branches__#
-        )
-
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "#__method_channel__#")
@@ -52,7 +48,8 @@ class #__plugin_name__#Plugin {
             #__register_platform_views__#
 		}
 
-		// 与branch对应的方法们
-		#__handlers__#
+        private val handlerMap = mapOf<String, (Registrar, Map<String, Any>, MethodChannel.Result) -> Unit>(
+                #__handlers__#
+        )
     }
 }
