@@ -106,9 +106,10 @@ fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
 
     val readonly = propertyAttributes?.contains("readonly") == true
 
+    // 高德地图 AMapService.apiKey是copy的, 但是不是只读的
     val copy = propertyAttributes?.contains("copy") == true
 
-    return readonly || copy || (getter.isNotEmpty() && setter.isEmpty())
+    return readonly /*|| copy*/ || (getter.isNotEmpty() && setter.isEmpty())
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {

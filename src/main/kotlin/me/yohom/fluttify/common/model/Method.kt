@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.IGNORE_METHOD
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.toDartType
 
@@ -52,23 +53,23 @@ data class Method(
                 false.apply { println("方法${this@Method} 由于`不能是非公开方法`, 被过滤") }
             }
             // 所在类不能是非公开类
-            !className.findType().isPublic -> {
+            !className.depointer().findType().isPublic -> {
                 false.apply { println("方法${this@Method} 由于`所在类不能是非公开类`, 被过滤") }
             }
             // 返回类型不能是混淆类
-            returnType.findType().isObfuscated() -> {
+            returnType.depointer().findType().isObfuscated() -> {
                 false.apply { println("方法${this@Method} 由于`返回类型不能是混淆类`, 被过滤") }
             }
             // 返回类型不能是未知类
-            returnType.findType() == Type.UNKNOWN_TYPE -> {
+            returnType.depointer().findType() == Type.UNKNOWN_TYPE -> {
                 false.apply { println("方法${this@Method} 由于`返回类型不能是未知类`, 被过滤") }
             }
             // 返回类型不能是接口
-            returnType.findType().isInterface() -> {
+            returnType.depointer().findType().isInterface() -> {
                 false.apply { println("方法${this@Method} 由于`返回类型不能是接口`, 被过滤") }
             }
             // 返回类型不能含有泛型
-            returnType.findType().genericTypes.isNotEmpty() -> {
+            returnType.depointer().findType().genericTypes.isNotEmpty() -> {
                 false.apply { println("方法${this@Method} 由于`返回类型不能含有泛型`, 被过滤") }
             }
             // 形参类型必须全部都是公开类型
