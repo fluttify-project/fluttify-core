@@ -5,7 +5,7 @@ import me.yohom.fluttify.common.model.Field
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 引用对象
-//    NSInteger refId = (NSInteger) args[@"refId"];
+//    NSInteger refId = [args[@"refId"] integerValue];
 //    #__class_name__#* ref = (#__class_name__#*) REF_MAP[@(refId)];
 //
 //    methodResult(#__getter__#);

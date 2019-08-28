@@ -9,7 +9,7 @@ import me.yohom.fluttify.common.model.Field
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    #__field_type__# #__field_name__# = (#__field_type__#) args[@"#__field_name__#"];
 //
-//    NSInteger refId = (NSInteger) args[@"refId"];
+//    NSInteger refId = [args[@"refId"] integerValue];
 //    #__class_name__#* ref = (#__class_name__#*) REF_MAP[@(refId)];
 //
 //    ref.#__setter__# = #__field_value__#;
