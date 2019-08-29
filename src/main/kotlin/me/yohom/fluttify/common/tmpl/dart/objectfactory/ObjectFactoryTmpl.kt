@@ -10,7 +10,7 @@ import me.yohom.fluttify.common.model.Lib
 //import 'package:#__current_package__#.dart';
 //
 //class ObjectFactory {
-//  static final _channel = MethodChannel('#__org__#/ObjectFactory');
+//  static final _channel = MethodChannel('#__method_chanel__#');
 //
 //  #__create_objects__#
 //}
@@ -26,7 +26,7 @@ class ObjectFactoryTmpl(
     fun dartObjectFactory(): String {
         return tmpl
             .replace("#__current_package__#", "${ext.outputProjectName}/${ext.outputProjectName}")
-            .replace("#__org__#", ext.outputOrg)
+            .replace("#__method_chanel__#", "${ext.outputOrg}/${ext.outputProjectName}")
             .replaceParagraph("#__create_objects__#", libs
                 .flatMap { it.types }
                 .filterConstructable()
