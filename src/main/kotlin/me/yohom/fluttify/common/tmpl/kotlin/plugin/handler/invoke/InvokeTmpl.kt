@@ -26,7 +26,12 @@ internal class InvokeTmpl(private val method: Method) {
         return if (it.typeName.findType().isCallback()) {
             CallbackTmpl(method, it.typeName.findType()).kotlinCallback()
         } else {
-            if (it.isList) "ArrayList(${it.name})" else it.name
+            when {
+                it.isList -> "ArrayList(${it.name})"
+                // 由于dart端的double到kotlin这边都是double, 如果方法参数是float的话, 需要转一手
+                it.typeName.toLowerCase() == "float" -> "${it.name}.toFloat()"
+                else -> it.name
+            }
         }
     }
 }

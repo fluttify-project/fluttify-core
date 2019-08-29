@@ -9,7 +9,7 @@ import me.yohom.fluttify.common.model.Field
 //    val refId = args["refId"] as Int
 //    val ref = REF_MAP[refId] as #__class_name__#
 //
-//    ref.#__field_name__# = #__field_name__#
+//    ref.#__field_name__# = #__field_value__#
 //    methodResult.success("success")
 //}
 internal class SetterHandlerTmpl(private val field: Field) {
@@ -26,5 +26,12 @@ internal class SetterHandlerTmpl(private val field: Field) {
             .replace("#__field_name__#", fieldName)
             .replace("#__field_type__#", fieldType)
             .replace("#__class_name__#", className)
+            .replace("#__field_value__#", fieldName.run {
+                if (field.variable.typeName.toLowerCase() == "float") {
+                    "${this}.toFloat()"
+                } else {
+                    this
+                }
+            })
     }
 }
