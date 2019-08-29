@@ -3,9 +3,9 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.GetterMethodTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handlemethod.SetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.GetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandleMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.SetterMethodTmpl
 
 //package #__package_name__#
 //

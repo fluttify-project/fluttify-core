@@ -3,9 +3,9 @@ package me.yohom.fluttify.common.tmpl.objc.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.GetterMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handlemethod.SetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.GetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandleMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.SetterMethodTmpl
 
 //#import "#__plugin_name__#Plugin.h"
 //#__imports__#

@@ -1,0 +1,30 @@
+package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler
+
+import me.yohom.fluttify.common.extensions.toKotlinType
+import me.yohom.fluttify.common.model.Field
+
+//"#__setter_name__#" to { registrar, args, methodResult ->
+//    val #__field_name__# = args["#__field_name__#"] as #__field_type__#
+//
+//    val refId = args["refId"] as Int
+//    val ref = REF_MAP[refId] as #__class_name__#
+//
+//    ref.#__field_name__# = #__field_name__#
+//    methodResult.success("success")
+//}
+internal class SetterMethodTmpl(private val field: Field) {
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/setter.mtd.kt.tmpl").readText()
+
+    fun kotlinSetter(): String {
+        val setterName = field.setterMethodName()
+        val fieldName = field.variable.name
+        val fieldType = field.variable.typeName.toKotlinType()
+        val className = field.className
+
+        return tmpl
+            .replace("#__setter_name__#", setterName)
+            .replace("#__field_name__#", fieldName)
+            .replace("#__field_type__#", fieldType)
+            .replace("#__class_name__#", className)
+    }
+}

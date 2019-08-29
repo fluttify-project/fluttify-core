@@ -79,10 +79,6 @@ open class IOSObjcInterface : DefaultTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val pluginHFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel(
-                true
-            )}Plugin.h"
         val pluginMFile =
             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel(
                 true
