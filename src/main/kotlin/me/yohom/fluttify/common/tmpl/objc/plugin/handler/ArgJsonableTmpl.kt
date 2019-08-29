@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.extensions.toObjcType
 import me.yohom.fluttify.common.model.Variable
 
 //// jsonable参数
-//#__type_name__# #__arg_name__# = [args[@"#__arg_name__#"] #__json_type__#Value];
+//#__type_name__# #__arg_name__# = #__right_value__#;
 internal class ArgJsonableTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
 
@@ -21,7 +21,14 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
                     else -> variable.typeName.enpointer()
                 }
             )
-            .replace("#__json_type__#", variable.typeName.depointer().toLowerCase().removePrefix("ns"))
+            .replace(
+                "#__right_value__#", if (variable.typeName.isObjcValueType()) {
+                    "[args[@\"${variable.name.depointer()}\"] ${variable.typeName.depointer().toLowerCase().removePrefix("ns")}Value];"
+                } else {
+                    // 理论上, 这里目前应该只有NSString会走到这里
+                    "(${variable.typeName.enpointer()}) args[@\"${variable.name.depointer()}\"]"
+                }
+            )
             .replace("#__arg_name__#", variable.name.depointer())
     }
 }
