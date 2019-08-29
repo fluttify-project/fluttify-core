@@ -23,7 +23,13 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
             )
             .replace(
                 "#__right_value__#", if (variable.typeName.isObjcValueType()) {
-                    "[args[@\"${variable.name.depointer()}\"] ${variable.typeName.depointer().toLowerCase().removePrefix("ns")}Value];"
+                    val methodPrefix = variable
+                        .typeName
+                        .depointer()
+                        .toLowerCase()
+                        .removePrefix("ns")
+                        .removePrefix("cg")
+                    "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value];"
                 } else {
                     // 理论上, 这里目前应该只有NSString会走到这里
                     "(${variable.typeName.enpointer()}) args[@\"${variable.name.depointer()}\"]"

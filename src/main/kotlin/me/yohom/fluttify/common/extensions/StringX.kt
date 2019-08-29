@@ -110,7 +110,8 @@ fun TYPE_NAME.toSwiftType(): String {
 fun TYPE_NAME.isObjcValueType(): Boolean {
     return (this in listOf(
         "BOOL",
-        "NSInteger"
+        "NSInteger",
+        "CGFloat"
     )) or this.findType().isEnum() or isCType()
 }
 
@@ -186,6 +187,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "NSArray", "NSArray*" -> "List"
         "NSInteger" -> "int"
         "BOOL" -> "bool"
+        "CGFloat" -> "double"
         else -> {
             if (Regex("ArrayList<\\w*>").matches(this)) {
                 removePrefix("Array")
