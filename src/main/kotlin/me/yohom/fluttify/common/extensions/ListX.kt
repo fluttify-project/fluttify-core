@@ -57,7 +57,13 @@ fun List<Type>.filterType(): List<Type> {
         .filter {
             it.genericTypes.isEmpty().apply { if (!this) println("filterType: $it 由于含有泛型 被过滤") }
         } // 有泛型的类暂不支持处理
-        .filter { (!(it.constructors.all { it.isPublic != true } && it.isInnerClass)).apply { if (!this) println("filterType: $it 由于构造器不是全公开且是内部类 被过滤") } }
+        .filter {
+            (!(it.constructors.all { it.isPublic != true } && it.isInnerClass) || it.isEnum()).apply {
+                if (!this) println(
+                    "filterType: $it 由于构造器不是全公开且是内部类 被过滤"
+                )
+            }
+        }
         .filter { (!it.isObfuscated()).apply { if (!this) println("filterType: $it 由于是混淆类 被过滤") } }
         .filter { (it.superClass !in IGNORE_CLASS).apply { if (!this) println("filterType: $it 由于父类是忽略类 被过滤") } }
         .filter { println("类${it}通过过滤"); true }
