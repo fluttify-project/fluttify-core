@@ -23,7 +23,7 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.handler.invoke.InvokeTmpl
 //    #__result__#
 //},
 internal class HandleMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/handler.mtd.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("@\"#__method_name__#\": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {\n    // 参数\n    #__args__#\n\n    // 调用对象引用\n    #__ref__#\n\n    // 日志打印\n    #__log__#\n\n    // 开始调用\n    #__invoke__#\n\n    // 调用结果\n    #__result__#\n},").readText()
 
     fun objcHandlerMethod(): String {
         val methodName = method.methodName()

@@ -27,6 +27,11 @@ open class Type : PlatformAware {
     var isPublic: Boolean = true
 
     /**
+     * 是否抽象
+     */
+    var isAbstract: Boolean = false
+
+    /**
      * 是否是内部类
      */
     var isInnerClass: Boolean = false

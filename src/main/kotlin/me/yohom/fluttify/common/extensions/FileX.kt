@@ -27,6 +27,7 @@ fun JAVA_FILE.javaType(): Type {
     var typeType: TypeType? = null
     var superClass = ""
     var isPublic = false
+    var isAbstract = false
     var isInnerClass = false
 
     source.walkTree(object : JavaParserBaseListener() {
@@ -40,6 +41,7 @@ fun JAVA_FILE.javaType(): Type {
             isInnerClass = simpleName.contains("$")
             typeType = TypeType.Class
             genericTypes = ctx.genericTypes()
+            isAbstract = ctx.isAbstract()
 
             val imports = ctx
                 .ancestorOf(CompilationUnitContext::class)
@@ -55,6 +57,7 @@ fun JAVA_FILE.javaType(): Type {
             typeType = TypeType.Interface
             genericTypes = ctx.genericTypes()
             superClass = ctx.superClass() ?: ""
+            isAbstract = true
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
@@ -62,6 +65,7 @@ fun JAVA_FILE.javaType(): Type {
             simpleName = ctx.IDENTIFIER().text
             isInnerClass = simpleName.contains("$")
             typeType = TypeType.Enum
+            isAbstract = false
         }
 
         override fun enterConstructorDeclaration(ctx: ConstructorDeclarationContext) {
@@ -134,6 +138,7 @@ fun JAVA_FILE.javaType(): Type {
     return Type().also {
         it.typeType = typeType
         it.isPublic = isPublic
+        it.isAbstract = isAbstract
         it.isInnerClass = isInnerClass
         it.genericTypes.addAll(genericTypes)
         it.constructors = constructors
@@ -160,6 +165,7 @@ fun OBJC_FILE.objcType(): List<Type> {
     var name = ""
     var typeType: TypeType? = null
     var superClass = ""
+    var isAbstract = false
     var genericTypes = listOf<TYPE_NAME>()
     val constructors = mutableListOf<Constructor>()
 
@@ -168,12 +174,14 @@ fun OBJC_FILE.objcType(): List<Type> {
             typeType = TypeType.Class
             name = ctx.className.text
             superClass = ctx.superclassName.text
+            isAbstract = false
         }
 
         override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
             typeType = TypeType.Interface
             name = ctx.protocolName().text
             superClass = ""
+            isAbstract = true
         }
 
         override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
@@ -181,6 +189,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             name = ctx.identifier()?.text
                 ?: ctx.enumSpecifier().identifier().firstOrNull { it != null }?.text
                         ?: ""
+            isAbstract = false
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
@@ -247,6 +256,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     Type().also {
                         it.typeType = typeType
                         it.isPublic = true
+                        it.isAbstract = isAbstract
                         it.name = name
                         it.superClass = superClass
                         it.fields.addAll(fields)
@@ -267,6 +277,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     Type().also {
                         it.typeType = typeType
                         it.isPublic = true
+                        it.isAbstract = isAbstract
                         it.name = name
                         it.superClass = superClass
                         it.fields.addAll(fields)
@@ -286,6 +297,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 result.add(Type().also {
                     it.typeType = typeType
                     it.isPublic = true
+                    it.isAbstract = isAbstract
                     it.name = name
                     it.superClass = superClass
                     it.fields.addAll(fields)

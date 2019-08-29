@@ -1,6 +1,6 @@
 package me.yohom.fluttify.common.tmpl.dart.objectfactory
 
-import me.yohom.fluttify.common.extensions.toDartType
+import me.yohom.fluttify.common.extensions.toUnderscore
 import me.yohom.fluttify.common.model.Type
 
 //static Future<#__class_name__#> create#__class_name__#() async {
@@ -12,6 +12,6 @@ class CreateObjectTmpl(val type: Type) {
 
     fun dartCreateObject(): String {
         return tmpl
-            .replace("#__class_name__#", type.name.toDartType())
+            .replace("#__class_name__#", type.name.toUnderscore())
     }
 }

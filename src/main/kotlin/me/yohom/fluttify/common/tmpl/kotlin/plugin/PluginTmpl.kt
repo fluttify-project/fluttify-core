@@ -3,9 +3,10 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.GetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.GetterHandlerTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.SetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ObjectFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.SetterHandlerTmpl
 
 //package #__package_name__#
 //
@@ -91,19 +92,23 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterMethodTmpl(it).kotlinGetter() }
+            .map { GetterHandlerTmpl(it).kotlinGetter() }
 
         val setterHandlers = lib.types
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterMethodTmpl(it).kotlinSetter() }
+            .map { SetterHandlerTmpl(it).kotlinSetter() }
 
         val methodHandlers = lib.types
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
             .map { HandleMethodTmpl(it).kotlinHandlerMethod() }
+
+        val objectFactoryHandlers = lib.types
+            .filterConstructable()
+            .map { ObjectFactoryTmpl(it).kotlinObjectFactory() }
 
         return tmpl
             .replace("#__package_name__#", packageName)
@@ -114,7 +119,7 @@ class PluginTmpl(
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
             .replaceParagraph(
                 "#__handlers__#",
-                getterHandlers.union(setterHandlers).union(methodHandlers).joinToString(",\n")
+                getterHandlers.union(setterHandlers).union(methodHandlers).union(objectFactoryHandlers).joinToString(",\n")
             )
     }
 }

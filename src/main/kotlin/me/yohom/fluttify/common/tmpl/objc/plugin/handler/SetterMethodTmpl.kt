@@ -16,7 +16,7 @@ import me.yohom.fluttify.common.model.Field
 //    methodResult(@"success");
 //},
 internal class SetterMethodTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/setter.mtd.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("@\"#__method_name__#\": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {\n    #__field_type__# #__field_name__# = (#__field_type__#) args[@\"#__field_name__#\"];\n\n    NSInteger refId = [args[@\"refId\"] integerValue];\n    #__class_name__#* ref = (#__class_name__#*) REF_MAP[@(refId)];\n\n    ref.#__setter__# = #__field_value__#;\n    methodResult(@\"success\");\n},\n").readText()
 
     fun objcSetter(): String {
         val setter = field.setterName.depointer()

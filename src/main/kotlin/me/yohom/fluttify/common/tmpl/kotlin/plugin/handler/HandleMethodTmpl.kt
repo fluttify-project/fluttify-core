@@ -23,7 +23,7 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.invoke.InvokeTmpl
 //    #__result__#
 //}
 internal class HandleMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.mtd.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/method_handler.stmt.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
         val methodName = method.methodName()

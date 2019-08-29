@@ -70,9 +70,10 @@ fun List<Type>.filterType(): List<Type> {
 fun List<Type>.filterConstructable(): List<Type> {
     return filterType()
         .asSequence()
+        .filter { (!it.isAbstract).apply { if (!this) println("filterConstructor: $it 由于是抽象类 被过滤") } }
         // 目前先只支持生成没有参数构造器的类
         .filter {
-            it.constructors.any { it.formalParams.isEmpty() }
+            it.constructors.any { it.formalParams.isEmpty() && it.isPublic == true }
                 .apply { if (!this) println("filterConstructor: $it 由于构造器含有参数 被过滤") }
         }
         .toList()
