@@ -96,20 +96,21 @@ fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
         ?.propertyAttribute()
         ?.map { it.text }
 
-    val getter = propertyAttributes
-        ?.find { it.contains("getter") }
-        ?.run { split("=")[1] } ?: ""
-
-    val setter = propertyAttributes
-        ?.find { it.contains("setter") }
-        ?.run { split("=")[1] } ?: ""
+//    // 如果只设置了getter的名称, setter没有设置, 不代表是只读的
+//    val getter = propertyAttributes
+//        ?.find { it.contains("getter") }
+//        ?.run { split("=")[1] } ?: ""
+//
+//    val setter = propertyAttributes
+//        ?.find { it.contains("setter") }
+//        ?.run { split("=")[1] } ?: ""
 
     val readonly = propertyAttributes?.contains("readonly") == true
 
-    // 高德地图 AMapService.apiKey是copy的, 但是不是只读的
-    val copy = propertyAttributes?.contains("copy") == true
+//    // 高德地图 AMapService.apiKey是copy的, 但是不是只读的
+//    val copy = propertyAttributes?.contains("copy") == true
 
-    return readonly /*|| copy*/ || (getter.isNotEmpty() && setter.isEmpty())
+    return readonly /*|| copy || (getter.isNotEmpty() && setter.isEmpty())*/
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {
