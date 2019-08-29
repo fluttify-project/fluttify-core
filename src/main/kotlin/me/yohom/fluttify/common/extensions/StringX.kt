@@ -207,6 +207,13 @@ fun String.depointer(): String {
 }
 
 /**
+ * 为指针类型加上`*`号
+ */
+fun String.enpointer(): String {
+    return if (endsWith("*")) this else "$this *"
+}
+
+/**
  * 获取泛型类型名称
  */
 fun TYPE_NAME.genericType(): TYPE_NAME {

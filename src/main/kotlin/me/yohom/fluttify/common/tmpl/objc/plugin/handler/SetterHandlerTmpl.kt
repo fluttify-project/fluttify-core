@@ -1,13 +1,11 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handler
 
-import me.yohom.fluttify.common.extensions.depointer
-import me.yohom.fluttify.common.extensions.isCType
-import me.yohom.fluttify.common.extensions.isObjcValueType
-import me.yohom.fluttify.common.extensions.toObjcType
+import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Field
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-//    #__field_type__# #__field_name__# = (#__field_type__#) args[@"#__field_name__#"];
+//    // 参数
+//    #__args__#
 //
 //    NSInteger refId = [args[@"refId"] integerValue];
 //    #__class_name__#* ref = (#__class_name__#*) REF_MAP[@(refId)];
@@ -20,18 +18,21 @@ internal class SetterHandlerTmpl(private val field: Field) {
 
     fun objcSetter(): String {
         val setter = field.setterName.depointer()
-        val fieldName = field.variable.name
-        val fieldType = when {
-            field.variable.isList -> "List<${field.variable.typeName}>"
-            field.variable.typeName.isObjcValueType() -> field.variable.typeName.toObjcType()
-            else -> "${field.variable.typeName} *"
+        // setter参数分为两种, 分情况分别构造以下两种模板
+        // 1. 枚举
+        // 2. jsonable
+        val args = when {
+            field.variable.typeName.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
+            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
+            else -> ArgRefTmpl(field.variable).objcArgRef() // 暂时过滤了引入类型的setter
         }
+        val fieldName = field.variable.name
         val className = field.className
 
         return tmpl
             .replace("#__method_name__#", field.setterMethodName())
+            .replaceParagraph("#__args__#", args)
             .replace("#__setter__#", setter)
-            .replace("#__field_name__#", fieldName.depointer())
             .replace("#__field_value__#", fieldName.depointer().run {
                 if (field.variable.typeName.isCType()) {
                     "$this.${field.variable.typeName}Value"
@@ -39,7 +40,6 @@ internal class SetterHandlerTmpl(private val field: Field) {
                     this
                 }
             })
-            .replace("#__field_type__#", fieldType)
             .replace("#__class_name__#", className)
     }
 }

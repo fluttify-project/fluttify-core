@@ -184,13 +184,57 @@ fun OBJC_FILE.objcType(): List<Type> {
             isAbstract = true
         }
 
+        //region 枚举
         override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
+            // 碰到了
+            //
+            //enum MALineCapType
+            //{
+            //    kMALineCapButt,     ///< 普通头
+            //    kMALineCapSquare,   ///< 扩展头
+            //    kMALineCapArrow,    ///< 箭头
+            //    kMALineCapRound     ///< 圆形头
+            //};
+            //typedef enum MALineCapType MALineCapType;
+            //
+            // 这种情况, 导致MALineCapType在dart端的内容是空的, 这里如果碰到的枚举是已经定义过的, 那么就跳过
+            if (result.map { it.name }.contains(ctx.identifier()?.text)) return
+
             typeType = TypeType.Enum
             name = ctx.identifier()?.text
                 ?: ctx.enumSpecifier().identifier().firstOrNull { it != null }?.text
                         ?: ""
             isAbstract = false
         }
+
+        override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
+            if (result.map { it.name }.contains(ctx.ancestorOf(ObjectiveCParser.EnumDeclarationContext::class)?.identifier()?.text)) return
+
+            enumConstants.add(ctx.text)
+        }
+
+        override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
+            if (result.map { it.name }.contains(ctx.identifier()?.text)) return
+
+            if (name.isNotEmpty()) {
+                result.add(Type().also {
+                    it.typeType = typeType
+                    it.isPublic = true
+                    it.isAbstract = isAbstract
+                    it.name = name
+                    it.superClass = superClass
+                    it.fields.addAll(fields)
+                    it.methods.addAll(methods)
+                    it.constants.addAll(enumConstants)
+                    it.platform = Platform.iOS
+                })
+                // 创新创建fields和methods
+                fields = mutableListOf()
+                methods = mutableListOf()
+                enumConstants = mutableListOf()
+            }
+        }
+        //endregion
 
         override fun enterCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
             typeType = TypeType.Class
@@ -235,10 +279,6 @@ fun OBJC_FILE.objcType(): List<Type> {
                     ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
-        }
-
-        override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
-            enumConstants.add(ctx.text)
         }
 
         override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
@@ -293,26 +333,6 @@ fun OBJC_FILE.objcType(): List<Type> {
             }
             fields = mutableListOf()
             methods = mutableListOf()
-        }
-
-        override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
-            if (name.isNotEmpty()) {
-                result.add(Type().also {
-                    it.typeType = typeType
-                    it.isPublic = true
-                    it.isAbstract = isAbstract
-                    it.name = name
-                    it.superClass = superClass
-                    it.fields.addAll(fields)
-                    it.methods.addAll(methods)
-                    it.constants.addAll(enumConstants)
-                    it.platform = Platform.iOS
-                })
-                // 创新创建fields和methods
-                fields = mutableListOf()
-                methods = mutableListOf()
-                enumConstants = mutableListOf()
-            }
         }
     })
 
