@@ -160,7 +160,7 @@ fun OBJC_FILE.objcType(): List<Type> {
     val result = mutableListOf<Type>()
 
     var fields = mutableListOf<Field>()
-    val enumConstants = mutableListOf<String>()
+    var enumConstants = mutableListOf<String>()
     var methods = mutableListOf<Method>()
     var name = ""
     var typeType: TypeType? = null
@@ -192,6 +192,13 @@ fun OBJC_FILE.objcType(): List<Type> {
             isAbstract = false
         }
 
+        override fun enterCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
+            typeType = TypeType.Class
+            name = ctx.categoryName.text
+            superClass = ""
+            isAbstract = false
+        }
+
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
             // 只接收property
             ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
@@ -214,34 +221,18 @@ fun OBJC_FILE.objcType(): List<Type> {
             )
         }
 
-        override fun enterClassMethodDeclaration(ctx: ObjectiveCParser.ClassMethodDeclarationContext) {
+        override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
             methods.add(
                 Method(
-                    ctx.methodDeclaration().returnType(),
-                    ctx.methodDeclaration().name(),
-                    ctx.methodDeclaration().formalParams(),
-                    true,
+                    ctx.returnType(),
+                    ctx.name(),
+                    ctx.formalParams(),
+                    ctx.isChildOf(ObjectiveCParser.ClassMethodDeclarationContext::class),
                     null,
                     true,
                     name,
                     Platform.iOS,
-                    ctx.methodDeclaration().macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
-                )
-            )
-        }
-
-        override fun enterInstanceMethodDeclaration(ctx: ObjectiveCParser.InstanceMethodDeclarationContext) {
-            methods.add(
-                Method(
-                    ctx.methodDeclaration().returnType(),
-                    ctx.methodDeclaration().name(),
-                    ctx.methodDeclaration().formalParams(),
-                    false,
-                    null,
-                    true,
-                    name,
-                    Platform.iOS,
-                    ctx.methodDeclaration().macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+                    ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
         }
@@ -292,6 +283,18 @@ fun OBJC_FILE.objcType(): List<Type> {
             }
         }
 
+        override fun exitCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
+            // 先在已识别出来的类型列表中寻找是否存在Category对应的类型
+            val categoryClass = result.find { it.name == ctx.categoryName.text }
+            // 如果存在的话, 那么把收集到的属性和方法数据添加进去, 否则什么都不做, 并清空属性和方法列表
+            categoryClass?.run {
+                categoryClass.fields.addAll(fields)
+                categoryClass.methods.addAll(methods)
+            }
+            fields = mutableListOf()
+            methods = mutableListOf()
+        }
+
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
             if (name.isNotEmpty()) {
                 result.add(Type().also {
@@ -308,6 +311,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 // 创新创建fields和methods
                 fields = mutableListOf()
                 methods = mutableListOf()
+                enumConstants = mutableListOf()
             }
         }
     })

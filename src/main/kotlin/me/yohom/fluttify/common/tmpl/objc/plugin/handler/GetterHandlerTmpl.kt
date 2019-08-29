@@ -10,8 +10,8 @@ import me.yohom.fluttify.common.model.Field
 //
 //    methodResult(#__getter__#);
 //},
-internal class GetterMethodTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("@\"#__method_name__#\": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {\n    // 引用对象\n    NSInteger refId = [args[@\"refId\"] integerValue];\n    #__class_name__#* ref = (#__class_name__#*) REF_MAP[@(refId)];\n\n    methodResult(#__getter__#);\n},\n").readText()
+internal class GetterHandlerTmpl(private val field: Field) {
+    private val tmpl = this::class.java.getResource("/tmpl/objc/getter_handler.stmt.m.tmpl").readText()
 
     fun objcGetter(): String {
         return tmpl

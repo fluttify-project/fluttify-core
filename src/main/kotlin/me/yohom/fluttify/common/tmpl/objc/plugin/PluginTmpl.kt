@@ -3,9 +3,9 @@ package me.yohom.fluttify.common.tmpl.objc.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.GetterMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.SetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.GetterHandlerTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.MethodHandlerTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.SetterHandlerTmpl
 
 //#import "#__plugin_name__#Plugin.h"
 //#__imports__#
@@ -84,21 +84,21 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterMethodTmpl(it).objcGetter() }
+            .map { GetterHandlerTmpl(it).objcGetter() }
 
         val setterHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterMethodTmpl(it).objcSetter() }
+            .map { SetterHandlerTmpl(it).objcSetter() }
 
         val methodHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { HandleMethodTmpl(it).objcHandlerMethod() }
+            .map { MethodHandlerTmpl(it).objcHandlerMethod() }
 
         return mTmpl
             .replace("#__imports__#", libs
