@@ -25,7 +25,9 @@
 }
 
 - (UIView *)view {
-  return [[#__native_view__# alloc] init];
+  #__native_view__# *view = [[#__native_view__# alloc] init];
+  REF_MAP[@(_viewId)] = view;
+  return view;
 }
 
 - (void)dealloc {
