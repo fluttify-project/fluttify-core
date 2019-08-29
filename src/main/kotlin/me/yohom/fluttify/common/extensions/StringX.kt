@@ -48,6 +48,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
 fun TYPE_NAME.isList(): Boolean {
     return Regex("\\w*List<(\\w*|.*)>").matches(this)
             || Regex("Iterable<(\\w*|.*)>").matches(this)
+            || Regex("NSArray.*\\*?").matches(this)
 }
 
 /**
@@ -129,9 +130,9 @@ fun TYPE_NAME.isCType(): Boolean {
  */
 fun TYPE_NAME.toObjcType(): String {
     return when (this) {
-        "double" -> "NSNumber*"
-        "float" -> "NSNumber*"
-        "int" -> "NSNumber*"
+//        "double" -> "NSNumber*"
+//        "float" -> "NSNumber*"
+//        "int" -> "NSNumber*"
         else -> this
     }
 }

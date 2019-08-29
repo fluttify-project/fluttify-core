@@ -18,6 +18,8 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
 fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
     return asSequence()
         .filter { !it.isDeprecated }
+        // todo 暂时不处理带有列表参数的方法
+        .filter { (!it.formalParams.any { it.variable.typeName.isList() }).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") }  }
         .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterMethod: $it 由于所在类是接口 被过滤") } }
         .filter { !(it.platform == Platform.iOS && it.name.startsWith("init")) } // ios端的init系列函数作为构造器而不是普通方法
         .filter { method ->
@@ -37,6 +39,8 @@ fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Met
  */
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
+        // todo 暂时不处理带有列表参数的方法
+        .filter { (!it.variable.typeName.isList()).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") }  }
         .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
         .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
         .filter { (it.variable.typeName.findType().run { jsonable() || isEnum() }).apply { if (!this) println("filterGetters: $it 由于是非jsonable且非enum类型 被过滤") } }
@@ -53,6 +57,8 @@ fun List<Field>.filterGetters(): List<Field> {
  */
 fun List<Field>.filterSetters(): List<Field> {
     return asSequence()
+        // todo 暂时不处理带有列表参数的方法
+        .filter { (!it.variable.typeName.isList()).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") }  }
         .filter { (it.isFinal == false).apply { if (!this) println("filterSetters: $it 由于是final字段 被过滤") } }
         .filter { (it.isPublic == true).apply { if (!this) println("filterSetters: $it 由于不是公开field 被过滤") } }
         .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }

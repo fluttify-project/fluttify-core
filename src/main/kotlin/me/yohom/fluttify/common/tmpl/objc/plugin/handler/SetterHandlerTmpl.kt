@@ -1,6 +1,9 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handler
 
-import me.yohom.fluttify.common.extensions.*
+import me.yohom.fluttify.common.extensions.depointer
+import me.yohom.fluttify.common.extensions.findType
+import me.yohom.fluttify.common.extensions.jsonable
+import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Field
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
@@ -33,13 +36,7 @@ internal class SetterHandlerTmpl(private val field: Field) {
             .replace("#__method_name__#", field.setterMethodName())
             .replaceParagraph("#__args__#", args)
             .replace("#__setter__#", setter)
-            .replace("#__field_value__#", fieldName.depointer().run {
-                if (field.variable.typeName.isCType()) {
-                    "$this.${field.variable.typeName}Value"
-                } else {
-                    this
-                }
-            })
+            .replace("#__field_value__#", fieldName.depointer())
             .replace("#__class_name__#", className)
     }
 }
