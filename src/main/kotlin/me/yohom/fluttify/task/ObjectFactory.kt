@@ -2,6 +2,9 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.common.extensions.fromJson
+import me.yohom.fluttify.common.model.SDK
+import me.yohom.fluttify.common.tmpl.dart.objectfactory.ObjectFactoryTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -17,34 +20,16 @@ open class ObjectFactory : DefaultTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val dartBuilder = StringBuilder()
-        val createObjects = StringBuilder("")
 
-//        project.projectDir.iterate("java") {
-//            if (!it.nameWithoutExtension.isObfuscated()
-//                && it.readText().run { javaPublicNonDependencyConstructor() && !javaAllMemberStatic() }
-//            ) {
-//                println("处理文件: $it")
-//
-////                createObjects.appendln(
-////                    Tmpl.Dart.createObjectMethodBuilder
-////                        .replace("#__class_name__#", it.javaType().name.toDartType())
-////                        .replace("#__formal_params__#", "")
-////                        .replace("#__separator__#", "")
-////                        .replace("#__params__#", "")
-////                )
-//            }
-//        }
+        val androidSdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
+        val iosSdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
 
-//        dartBuilder.appendln(
-//            Tmpl.Dart.objectCreatorBuilder
-//                .replace("#__current_package__#", "$outputProjectName/$outputProjectName")
-//                .replace("#__org__#", outputOrg)
-//                .replaceParagraph("#__create_objects__#", createObjects.toString())
-//        )
-
-        "${project.projectDir}/output-project/${ext.outputProjectName}src/object_factory.dart"
+        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.dart"
             .file()
-            .writeText(dartBuilder.toString())
+            .writeText(ObjectFactoryTmpl(androidSdk.libs, ext).dartObjectFactory())
+
+        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.dart"
+            .file()
+            .writeText(ObjectFactoryTmpl(iosSdk.libs, ext).dartObjectFactory())
     }
 }

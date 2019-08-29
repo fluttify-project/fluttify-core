@@ -3,8 +3,8 @@ package me.yohom.fluttify.common.tmpl.dart.objectfactory
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Type
 
-//static Future<#__class_name__#> create#__class_name__#(#__formal_params__#) async {
-//  final int refId = await _channel.invokeMethod('ObjectFactory::create#__class_name__#'#__separator__##__params__#);
+//static Future<#__class_name__#> create#__class_name__#() async {
+//  final int refId = await _channel.invokeMethod('ObjectFactory::create#__class_name__#');
 //  return #__class_name__#.withRefId(refId);
 //}
 class CreateObjectTmpl(val type: Type) {
@@ -13,6 +13,5 @@ class CreateObjectTmpl(val type: Type) {
     fun dartCreateObject(): String {
         return tmpl
             .replace("#__class_name__#", type.name.toDartType())
-//            .replace("#__formal_params__#", type.con)
     }
 }

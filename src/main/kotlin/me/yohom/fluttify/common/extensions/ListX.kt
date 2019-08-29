@@ -12,6 +12,9 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
     return joinToString(prefix = "{", postfix = "}") { "\"${it.name}\": ${valueBuilder(it)}" }
 }
 
+/**
+ * 过滤出可以自动生成的方法
+ */
 fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
     return asSequence()
         .filter { !it.isDeprecated }
@@ -29,6 +32,9 @@ fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Met
         .toList()
 }
 
+/**
+ * 从field中过滤出getter
+ */
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
         .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
@@ -42,6 +48,9 @@ fun List<Field>.filterGetters(): List<Field> {
         .toList()
 }
 
+/**
+ * 过滤出可以自动生成的类
+ */
 fun List<Type>.filterType(): List<Type> {
     return asSequence()
         .filter { it.isPublic.apply { if (!this) println("filterType: $it 由于不是公开类 被过滤") } }
@@ -55,6 +64,23 @@ fun List<Type>.filterType(): List<Type> {
         .toList()
 }
 
+/**
+ * 过滤出可以直接构造的类
+ */
+fun List<Type>.filterConstructable(): List<Type> {
+    return filterType()
+        .asSequence()
+        // 目前先只支持生成没有参数构造器的类
+        .filter {
+            it.constructors.any { it.formalParams.isEmpty() }
+                .apply { if (!this) println("filterConstructor: $it 由于构造器含有参数 被过滤") }
+        }
+        .toList()
+}
+
+/**
+ * 过滤出可以自动生成的参数
+ */
 fun List<Parameter>.filterFormalParams(): List<Parameter> {
     return asSequence()
         // 要过滤掉是接口, 却不是回调类的参数
@@ -64,6 +90,9 @@ fun List<Parameter>.filterFormalParams(): List<Parameter> {
         .toList()
 }
 
+/**
+ * 从field中过滤出setter
+ */
 fun List<Field>.filterSetters(): List<Field> {
     return asSequence()
         .filter { (it.isFinal == false).apply { if (!this) println("filterSetters: $it 由于是final字段 被过滤") } }
