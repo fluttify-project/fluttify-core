@@ -27,6 +27,7 @@ internal class SetterHandlerTmpl(private val field: Field) {
             .replace("#__field_type__#", fieldType)
             .replace("#__class_name__#", className)
             .replace("#__field_value__#", fieldName.run {
+                // 因为dart到kotlin这边都是double类型, 如果参数实际类型是float的话, 需要转一手
                 if (field.variable.typeName.toLowerCase() == "float") {
                     "${this}.toFloat()"
                 } else {
