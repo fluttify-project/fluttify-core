@@ -39,12 +39,29 @@ fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
         .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
         .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
-        .filter { (it.variable.typeName.findType().jsonable()).apply { if (!this) println("filterGetters: $it 由于是非jsonable类型 被过滤") } }
+        .filter { (it.variable.typeName.findType().run { jsonable() || isEnum() }).apply { if (!this) println("filterGetters: $it 由于是非jsonable且非enum类型 被过滤") } }
         .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
         .filter { (!it.variable.typeName.findType().isInterface()).apply { if (!this) println("filterGetters: $it 由于是接口类型 被过滤") } }
         .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterGetters: $it 由于所在类是接口 被过滤") } }
         .filter { (it.variable.typeName.findType().isPublic).apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
         .filter { println("字段${it}通过Getter过滤"); true }
+        .toList()
+}
+
+/**
+ * 从field中过滤出setter
+ */
+fun List<Field>.filterSetters(): List<Field> {
+    return asSequence()
+        .filter { (it.isFinal == false).apply { if (!this) println("filterSetters: $it 由于是final字段 被过滤") } }
+        .filter { (it.isPublic == true).apply { if (!this) println("filterSetters: $it 由于不是公开field 被过滤") } }
+        .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }
+        .filter { (it.variable.typeName.findType().run { jsonable() || isEnum() }).apply { if (!this) println("filterGetters: $it 由于是非jsonable且非enum类型 被过滤") } }
+        .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterSetters: $it 由于是未知类型 被过滤") } }
+        .filter { (!it.variable.typeName.findType().isInterface()).apply { if (!this) println("filterSetters: $it 由于是接口类型 被过滤") } }
+        .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterSetters: $it 由于所在类是接口 被过滤") } }
+        .filter { (it.variable.typeName.findType().isPublic).apply { if (!this) println("filterSetters: $it 由于字段类型不是公开类型 被过滤") } }
+        .filter { println("字段${it}通过Setter过滤"); true }
         .toList()
 }
 
@@ -94,23 +111,6 @@ fun List<Parameter>.filterFormalParams(): List<Parameter> {
         .filter { (!it.variable.typeName.findType().run { isInterface() && !isCallback() }).apply { if (!this) println("filterFormalParams: $it 由于是接口, 却不是回调类 被过滤") } }
         .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterFormalParams: $it 由于是未知类型 被过滤") } }
         .filter { println("参数${it}通过过滤"); true }
-        .toList()
-}
-
-/**
- * 从field中过滤出setter
- */
-fun List<Field>.filterSetters(): List<Field> {
-    return asSequence()
-        .filter { (it.isFinal == false).apply { if (!this) println("filterSetters: $it 由于是final字段 被过滤") } }
-        .filter { (it.isPublic == true).apply { if (!this) println("filterSetters: $it 由于不是公开field 被过滤") } }
-        .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }
-        .filter { (it.variable.typeName.findType().jsonable()).apply { if (!this) println("filterSetters: $it 由于是非jsonable类型 被过滤") } }
-        .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterSetters: $it 由于是未知类型 被过滤") } }
-        .filter { (!it.variable.typeName.findType().isInterface()).apply { if (!this) println("filterSetters: $it 由于是接口类型 被过滤") } }
-        .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterSetters: $it 由于所在类是接口 被过滤") } }
-        .filter { (it.variable.typeName.findType().isPublic).apply { if (!this) println("filterSetters: $it 由于字段类型不是公开类型 被过滤") } }
-        .filter { println("字段${it}通过Setter过滤"); true }
         .toList()
 }
 
