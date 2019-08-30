@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handler
 
+import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
@@ -23,7 +24,7 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.handler.invoke.InvokeTmpl
 //    #__result__#
 //},
 internal class MethodHandlerTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/object_factory_ios.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/method_handler.stmt.m.tmpl").readText()
 
     fun objcHandlerMethod(): String {
         val methodName = method.methodName()
@@ -37,6 +38,7 @@ internal class MethodHandlerTmpl(private val method: Method) {
                 when {
                     it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).objcArgJsonable()
                     it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
+                    it.variable.typeName.findType().isStruct() -> ArgStructTmpl(it.variable).objcArgStruct()
                     else -> ArgRefTmpl(it.variable).objcArgRef()
                 }
             }
@@ -53,7 +55,10 @@ internal class MethodHandlerTmpl(private val method: Method) {
         val invoke = InvokeTmpl(method).objcInvoke()
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
-        val result = RefResultTmpl(method.returnType).objcRefResult()
+        val result = when {
+            method.returnType.depointer().findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()
+            else -> ResultRefTmpl(method.returnType).objcResultRef()
+        }
         return tmpl
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)

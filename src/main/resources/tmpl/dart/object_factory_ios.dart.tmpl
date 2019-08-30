@@ -7,7 +7,7 @@ class ObjectFactory_iOS {
   static final _channel = MethodChannel('#__method_chanel__#');
 
   static Future<CLLocationCoordinate2D> createCLLocationCoordinate2D(double latitude, double longitude) async {
-    final int refId = await _channel.invokeMethod('ObjectFactory::createCLLocationCoordinate2D, {'latitude': latitude, 'longitude': longitude});
+    final int refId = await _channel.invokeMethod('ObjectFactory::createCLLocationCoordinate2D', {'latitude': latitude, 'longitude': longitude});
     return CLLocationCoordinate2D.withRefId(refId);
   }
 

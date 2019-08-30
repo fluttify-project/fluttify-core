@@ -118,6 +118,10 @@ open class Type : PlatformAware {
         return typeType == TypeType.Enum
     }
 
+    fun isStruct(): Boolean {
+        return typeType == TypeType.Struct
+    }
+
     fun isInterface(): Boolean {
         return typeType == TypeType.Interface
     }
@@ -165,5 +169,5 @@ open class Type : PlatformAware {
 }
 
 enum class TypeType {
-    Class, Enum, Interface, Lambda
+    Class, Enum, Interface, Lambda, Struct
 }

@@ -1,6 +1,6 @@
 package me.yohom.fluttify.common.model
 
-import me.yohom.fluttify.common.SYSTEM_CLASS
+import me.yohom.fluttify.common.SYSTEM_TYPE
 import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.jsonable
 
@@ -49,7 +49,7 @@ class SDK : PlatformAware {
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName; isJsonable = true }
                 // 已支持的系统类
-                fullName in SYSTEM_CLASS -> Type().apply { name = fullName }
+                fullName in SYSTEM_TYPE.map { it.name } -> SYSTEM_TYPE.first { it.name == fullName }
                 // lambda
                 fullName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda

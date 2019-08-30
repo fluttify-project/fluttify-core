@@ -170,6 +170,7 @@ fun OBJC_FILE.objcType(): List<Type> {
     val constructors = mutableListOf<Constructor>()
 
     source.walkTree(object : ObjectiveCParserBaseListener() {
+        //region 类
         override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
             typeType = TypeType.Class
             name = ctx.className.text
@@ -177,12 +178,57 @@ fun OBJC_FILE.objcType(): List<Type> {
             isAbstract = false
         }
 
+        override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
+            if (name.isNotEmpty()) {
+                result.add(
+                    Type().also {
+                        it.typeType = typeType
+                        it.isPublic = true
+                        it.isAbstract = isAbstract
+                        it.name = name
+                        it.superClass = superClass
+                        it.fields.addAll(fields)
+                        it.methods.addAll(methods)
+                        it.constants.addAll(enumConstants)
+                        it.platform = Platform.iOS
+                    }
+                )
+                // 创新创建fields和methods
+                fields = mutableListOf()
+                methods = mutableListOf()
+            }
+        }
+        //endregion
+
+        //region 协议
         override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
             typeType = TypeType.Interface
             name = ctx.protocolName().text
             superClass = ""
             isAbstract = true
         }
+
+        override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
+            if (name.isNotEmpty()) {
+                result.add(
+                    Type().also {
+                        it.typeType = typeType
+                        it.isPublic = true
+                        it.isAbstract = isAbstract
+                        it.name = name
+                        it.superClass = superClass
+                        it.fields.addAll(fields)
+                        it.methods.addAll(methods)
+                        it.constants.addAll(enumConstants)
+                        it.platform = Platform.iOS
+                    }
+                )
+                // 创新创建fields和methods
+                fields = mutableListOf()
+                methods = mutableListOf()
+            }
+        }
+        //endregion
 
         //region 枚举
         override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
@@ -236,12 +282,54 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
         //endregion
 
+        //region 分类
         override fun enterCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
             typeType = TypeType.Class
             name = ctx.categoryName.text
             superClass = ""
             isAbstract = false
         }
+
+        override fun exitCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
+            // 先在已识别出来的类型列表中寻找是否存在Category对应的类型
+            val categoryClass = result.find { it.name == ctx.categoryName.text }
+            // 如果存在的话, 那么把收集到的属性和方法数据添加进去, 否则什么都不做, 并清空属性和方法列表
+            categoryClass?.run {
+                categoryClass.fields.addAll(fields)
+                categoryClass.methods.addAll(methods)
+            }
+            fields = mutableListOf()
+            methods = mutableListOf()
+        }
+        //endregion
+
+        //region 结构体
+        override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+            typeType = TypeType.Struct
+            name = ctx.identifier().text
+        }
+
+        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext?) {
+            if (name.isNotEmpty()) {
+                result.add(
+                    Type().also {
+                        it.typeType = typeType
+                        it.isPublic = true
+                        it.isAbstract = isAbstract
+                        it.name = name
+                        it.superClass = superClass
+                        it.fields.addAll(fields)
+                        it.methods.addAll(methods)
+                        it.constants.addAll(enumConstants)
+                        it.platform = Platform.iOS
+                    }
+                )
+                // 创新创建fields和methods
+                fields = mutableListOf()
+                methods = mutableListOf()
+            }
+        }
+        //endregion
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
             // 只接收property
@@ -279,60 +367,6 @@ fun OBJC_FILE.objcType(): List<Type> {
                     ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                 )
             )
-        }
-
-        override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
-            if (name.isNotEmpty()) {
-                result.add(
-                    Type().also {
-                        it.typeType = typeType
-                        it.isPublic = true
-                        it.isAbstract = isAbstract
-                        it.name = name
-                        it.superClass = superClass
-                        it.fields.addAll(fields)
-                        it.methods.addAll(methods)
-                        it.constants.addAll(enumConstants)
-                        it.platform = Platform.iOS
-                    }
-                )
-                // 创新创建fields和methods
-                fields = mutableListOf()
-                methods = mutableListOf()
-            }
-        }
-
-        override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
-            if (name.isNotEmpty()) {
-                result.add(
-                    Type().also {
-                        it.typeType = typeType
-                        it.isPublic = true
-                        it.isAbstract = isAbstract
-                        it.name = name
-                        it.superClass = superClass
-                        it.fields.addAll(fields)
-                        it.methods.addAll(methods)
-                        it.constants.addAll(enumConstants)
-                        it.platform = Platform.iOS
-                    }
-                )
-                // 创新创建fields和methods
-                fields = mutableListOf()
-                methods = mutableListOf()
-            }
-        }
-
-        override fun exitCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
-            // 先在已识别出来的类型列表中寻找是否存在Category对应的类型
-            val categoryClass = result.find { it.name == ctx.categoryName.text }
-            // 如果存在的话, 那么把收集到的属性和方法数据添加进去, 否则什么都不做, 并清空属性和方法列表
-            categoryClass?.run {
-                categoryClass.fields.addAll(fields)
-                categoryClass.methods.addAll(methods)
-            }
-            fields = mutableListOf()
-            methods = mutableListOf()
         }
     })
 

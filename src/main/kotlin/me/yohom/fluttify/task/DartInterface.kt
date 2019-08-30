@@ -43,7 +43,7 @@ open class AndroidDartInterface : DefaultTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Class, TypeType.Struct -> ClassTmpl(it, ext).dartClass()
                     TypeType.Enum -> EnumTmpl(it).dartEnum()
                     TypeType.Interface -> ""
                     TypeType.Lambda -> ""
@@ -93,7 +93,7 @@ open class IOSDartInterface : DefaultTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Class, TypeType.Struct -> ClassTmpl(it, ext).dartClass()
                     TypeType.Enum -> EnumTmpl(it).dartEnum()
                     TypeType.Interface -> ""
                     TypeType.Lambda -> ""

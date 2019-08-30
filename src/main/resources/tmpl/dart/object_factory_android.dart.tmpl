@@ -8,28 +8,28 @@ class ObjectFactory_Android {
 
   static Future<android_app_Application> getandroid_app_Application() async {
     final refId =
-        await _channel.invokeMethod('SystemRef::getandroid_app_Application');
+        await _channel.invokeMethod('ObjectFactory::getandroid_app_Application');
     return android_app_Application.withRefId(refId);
   }
 
   static Future<android_app_Activity> getandroid_app_Activity() async {
     final refId =
-        await _channel.invokeMethod('SystemRef::getandroid_app_Activity');
+        await _channel.invokeMethod('ObjectFactory::getandroid_app_Activity');
     return android_app_Activity.withRefId(refId);
   }
 
   static Future<android_os_Bundle> createandroid_os_Bundle() async {
     final refId =
-        await _channel.invokeMethod('SystemRef::createandroid_os_Bundle');
+        await _channel.invokeMethod('ObjectFactory::createandroid_os_Bundle');
     return android_os_Bundle.withRefId(refId);
   }
 
   static Future<String> release(int refId) async {
-    return await _channel.invokeMethod('SystemRef::release', {'refId': refId});
+    return await _channel.invokeMethod('ObjectFactory::release', {'refId': refId});
   }
 
   static Future<android_app_Activity> clearRefMap() async {
-    return await _channel.invokeMethod('SystemRef::clearRefMap');
+    return await _channel.invokeMethod('ObjectFactory::clearRefMap');
   }
 
   #__create_objects__#

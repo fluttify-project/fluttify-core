@@ -17,24 +17,24 @@ class #__plugin_name__#Plugin {
                 val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
                 when (methodCall.method) {
                     // 获取Application对象
-                    "SystemRef::getandroid_app_Application" -> {
+                    "ObjectFactory::getandroid_app_Application" -> {
                         methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
                     }
                     // 获取FlutterActivity对象
-                    "SystemRef::getandroid_app_Activity" -> {
+                    "ObjectFactory::getandroid_app_Activity" -> {
                         methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
                     }
                     // 创建android.os.Bundle对象
-                    "SystemRef::createandroid_os_Bundle" -> {
+                    "ObjectFactory::createandroid_os_Bundle" -> {
                         methodResult.success(Bundle().apply { REF_MAP[hashCode()] = this }.hashCode())
                     }
                     // 释放一个对象
-                    "SystemRef::release" -> {
+                    "ObjectFactory::release" -> {
                         REF_MAP.remove(args["refId"] as Int)
                         methodResult.success("success")
                     }
                     // 清空REF_MAP中所有对象
-                    "SystemRef::clearRefMap" -> {
+                    "ObjectFactory::clearRefMap" -> {
                         REF_MAP.clear()
                         methodResult.success("success")
                     }

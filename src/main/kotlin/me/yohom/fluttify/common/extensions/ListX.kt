@@ -1,6 +1,6 @@
 package me.yohom.fluttify.common.extensions
 
-import me.yohom.fluttify.common.IGNORE_CLASS
+import me.yohom.fluttify.common.IGNORE_TYPE
 import me.yohom.fluttify.common.model.*
 
 
@@ -89,7 +89,7 @@ fun List<Type>.filterType(): List<Type> {
             }
         }
         .filter { (!it.isObfuscated()).apply { if (!this) println("filterType: $it 由于是混淆类 被过滤") } }
-        .filter { (it.superClass !in IGNORE_CLASS).apply { if (!this) println("filterType: $it 由于父类是忽略类 被过滤") } }
+        .filter { (it.superClass !in IGNORE_TYPE).apply { if (!this) println("filterType: $it 由于父类是忽略类 被过滤") } }
         .filter { println("类${it}通过过滤"); true }
         .toList()
 }

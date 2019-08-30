@@ -8,11 +8,11 @@ import me.yohom.fluttify.common.extensions.jsonable
 //REF_MAP[@(returnRefId)] = result;
 //
 //methodResult(returnRefId);
-internal class RefResultTmpl(val returnType: TYPE_NAME) {
+internal class ResultRefTmpl(val returnType: TYPE_NAME) {
 
-    private val tmpl = this::class.java.getResource("/tmpl/objc/ref_result.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/result_ref.stmt.m.tmpl").readText()
 
-    fun objcRefResult(): String {
+    fun objcResultRef(): String {
         return when {
             returnType == "void" -> "methodResult(@\"success\");"
             returnType.isObjcValueType() -> "methodResult(@(result));"
