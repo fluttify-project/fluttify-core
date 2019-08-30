@@ -3,10 +3,10 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.GetterHandlerTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerGetterTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandleMethodTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ObjectFactoryTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.SetterHandlerTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerSetterTmpl
 
 //package #__package_name__#
 //
@@ -92,13 +92,13 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterHandlerTmpl(it).kotlinGetter() }
+            .map { HandlerGetterTmpl(it).kotlinGetter() }
 
         val setterHandlers = lib.types
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterHandlerTmpl(it).kotlinSetter() }
+            .map { HandlerSetterTmpl(it).kotlinSetter() }
 
         val methodHandlers = lib.types
             .filterType()

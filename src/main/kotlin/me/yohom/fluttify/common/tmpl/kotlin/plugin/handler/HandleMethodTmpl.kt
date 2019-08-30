@@ -23,7 +23,7 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.invoke.InvokeTmpl
 //    #__result__#
 //}
 internal class HandleMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/method_handler.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.stmt.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
         val methodName = method.methodName()
@@ -53,7 +53,7 @@ internal class HandleMethodTmpl(private val method: Method) {
         val invoke = InvokeTmpl(method).kotlinInvoke()
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
-        val result = RefResultTmpl(method.returnType).kotlinRefResult()
+        val result = ResultRefTmpl(method.returnType).kotlinRefResult()
         return tmpl
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)
