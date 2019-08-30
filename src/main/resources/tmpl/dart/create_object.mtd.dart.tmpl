@@ -1,4 +1,4 @@
-static Future<#__class_name__#> create#__class_name__#() async {
-  final int refId = await _channel.invokeMethod('ObjectFactory::create#__class_name__#');
+static Future<#__class_name__#> create#__creator_name__#(#__formal_params__#) async {
+  final int refId = await _channel.invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
   return #__class_name__#.withRefId(refId);
 }

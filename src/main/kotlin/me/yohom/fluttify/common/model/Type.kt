@@ -37,9 +37,9 @@ open class Type : PlatformAware {
     var isInnerClass: Boolean = false
 
     /**
-     * 是否primitive
+     * 是否jsonable
      */
-    var isPrimitive: Boolean = false
+    var isJsonable: Boolean = false
 
     /**
      * 父类全名
@@ -89,7 +89,11 @@ open class Type : PlatformAware {
                 // 返回类型必须是void或者Boolean
                 && methods.all { it.returnType.toDartType() in listOf("void", "bool") }
                 // 参数类型必须是jsonable或者引用类型
-                && methods.all { it.formalParams.all { it.variable.typeName.findType().run { jsonable() || !isInterface() } } }
+                && methods.all {
+            it.formalParams.all {
+                it.variable.typeName.findType().run { jsonable() || !isInterface() }
+            }
+        }
                 // 必须没有父类
                 && superClass.isEmpty()
                 // 或者是lambda
@@ -101,6 +105,13 @@ open class Type : PlatformAware {
      */
     fun isDelegate(): Boolean {
         return false
+    }
+
+    fun constructable(): Boolean {
+        return !isAbstract
+                && this != UNKNOWN_TYPE
+                && !isList()
+                && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
     }
 
     fun isEnum(): Boolean {
@@ -145,7 +156,7 @@ open class Type : PlatformAware {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isPrimitive=$isPrimitive, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {

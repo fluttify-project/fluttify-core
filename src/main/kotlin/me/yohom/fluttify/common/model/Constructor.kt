@@ -8,7 +8,7 @@ data class Constructor(
     /**
      * 形参
      */
-    var formalParams: List<Variable>,
+    var formalParams: List<Parameter>,
     /**
      * 是否公开
      */

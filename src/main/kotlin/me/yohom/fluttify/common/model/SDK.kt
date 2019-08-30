@@ -47,7 +47,7 @@ class SDK : PlatformAware {
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
                 allTypes.map { it.name.depointer() }.contains(fullName) -> allTypes.first { it.name.depointer() == fullName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
-                fullName.jsonable() -> Type().apply { name = fullName }
+                fullName.jsonable() -> Type().apply { name = fullName; isJsonable = true }
                 // 已支持的系统类
                 fullName in SYSTEM_CLASS -> Type().apply { name = fullName }
                 // lambda

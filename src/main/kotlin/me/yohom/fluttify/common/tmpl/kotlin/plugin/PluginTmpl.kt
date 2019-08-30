@@ -108,7 +108,7 @@ class PluginTmpl(
 
         val objectFactoryHandlers = lib.types
             .filterConstructable()
-            .map { ObjectFactoryTmpl(it).kotlinObjectFactory() }
+            .flatMap { ObjectFactoryTmpl(it).kotlinObjectFactory() }
 
         return tmpl
             .replace("#__package_name__#", packageName)

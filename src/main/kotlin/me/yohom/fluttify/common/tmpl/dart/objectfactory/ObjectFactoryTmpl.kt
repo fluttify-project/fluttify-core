@@ -33,6 +33,6 @@ class ObjectFactoryTmpl(
             .replaceParagraph("#__create_objects__#", libs
                 .flatMap { it.types }
                 .filterConstructable()
-                .joinToString("\n") { CreateObjectTmpl(it).dartCreateObject() })
+                .joinToString("\n") { CreateObjectTmpl(it).dartCreateObject().joinToString("\n") })
     }
 }
