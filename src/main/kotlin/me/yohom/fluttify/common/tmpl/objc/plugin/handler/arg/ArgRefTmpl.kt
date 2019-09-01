@@ -1,13 +1,13 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler
+package me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg
 
 import me.yohom.fluttify.common.model.Variable
 
 //// 引用参数
-//val #__arg_name__# = REF_MAP[args["#__arg_name__#"] as Int] as #__type_name__#
+//let #__arg_name__# = REF_MAP[args["#__arg_name__#"] as Int] as! #__type_name__#
 internal class ArgRefTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/arg_ref.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/arg_ref.stmt.m.tmpl").readText()
 
-    fun kotlinArgRef(): String {
+    fun objcArgRef(): String {
         return tmpl
             .replace("#__type_name__#", if (variable.isList) "List<${variable.typeName}>" else variable.typeName)
             .replace("#__arg_name__#", variable.name)

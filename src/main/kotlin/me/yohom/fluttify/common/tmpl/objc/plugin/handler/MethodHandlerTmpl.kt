@@ -5,7 +5,13 @@ import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgEnumTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgJsonableTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgRefTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgStructTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handler.invoke.InvokeTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.result.ResultRefTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.result.ResultStructTmpl
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 参数
@@ -36,9 +42,15 @@ internal class MethodHandlerTmpl(private val method: Method) {
             .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).objcArgJsonable()
-                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
-                    it.variable.typeName.findType().isStruct() -> ArgStructTmpl(it.variable).objcArgStruct()
+                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(
+                        it.variable
+                    ).objcArgJsonable()
+                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
+                        it.variable
+                    ).objcArgEnum()
+                    it.variable.typeName.findType().isStruct() -> ArgStructTmpl(
+                        it.variable
+                    ).objcArgStruct()
                     else -> ArgRefTmpl(it.variable).objcArgRef()
                 }
             }
@@ -56,7 +68,9 @@ internal class MethodHandlerTmpl(private val method: Method) {
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = when {
-            method.returnType.depointer().findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()
+            method.returnType.depointer().findType().isStruct() -> ResultStructTmpl(
+                method.returnType
+            ).objcResultStruct()
             else -> ResultRefTmpl(method.returnType).objcResultRef()
         }
         return tmpl

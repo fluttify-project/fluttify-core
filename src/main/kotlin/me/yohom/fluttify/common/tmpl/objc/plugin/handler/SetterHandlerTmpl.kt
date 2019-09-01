@@ -5,6 +5,10 @@ import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Field
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgEnumTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgJsonableTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgRefTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgStructTmpl
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 参数
@@ -25,9 +29,15 @@ internal class SetterHandlerTmpl(private val field: Field) {
         // 1. 枚举
         // 2. jsonable
         val args = when {
-            field.variable.typeName.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
-            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
-            field.variable.typeName.findType().isStruct() -> ArgStructTmpl(field.variable).objcArgStruct()
+            field.variable.typeName.jsonable() -> ArgJsonableTmpl(
+                field.variable
+            ).objcArgJsonable()
+            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
+                field.variable
+            ).objcArgEnum()
+            field.variable.typeName.findType().isStruct() -> ArgStructTmpl(
+                field.variable
+            ).objcArgStruct()
             else -> ArgRefTmpl(field.variable).objcArgRef() // 暂时过滤了引入类型的setter
         }
         val fieldName = field.variable.name

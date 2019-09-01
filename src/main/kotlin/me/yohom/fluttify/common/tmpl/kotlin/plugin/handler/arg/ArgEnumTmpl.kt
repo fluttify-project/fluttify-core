@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler
+package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg
 
 import me.yohom.fluttify.common.model.Variable
 
