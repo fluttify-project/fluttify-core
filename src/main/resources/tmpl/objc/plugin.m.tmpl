@@ -4,7 +4,18 @@ typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSStri
 
 NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 
-@implementation #__plugin_name__#Plugin
+@implementation #__plugin_name__#Plugin {
+  NSObject <FlutterPluginRegistrar> * _registrar;
+}
+
+- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar {
+  self = [super init];
+  if (self) {
+    _registrar = registrar;
+  }
+
+  return self;
+}
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
   FlutterMethodChannel *channel = [FlutterMethodChannel

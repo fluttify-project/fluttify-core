@@ -3,7 +3,6 @@ package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.invoke
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Type
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.invoke.CallbackMethodTmpl
 
 //object : #__callback_class_name__# {
 //    // method channel
@@ -22,6 +21,6 @@ internal class CallbackTmpl(private val callerMethod: Method, private val callba
             .replace("#__caller_method_name__#", callerMethod.name)
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods
-                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).objcCallbackMethod() })
+                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).kotlinCallbackMethod() })
     }
 }

@@ -107,7 +107,11 @@ open class Type : PlatformAware {
      * 是否是delegate, 与callback类似, 但是callback侧重于异步, 而delegate侧重于委托
      */
     fun isDelegate(): Boolean {
-        return false
+        return isCallback() && name.endsWith("Delegate")
+    }
+
+    fun subtypes(): List<Type> {
+        return SDK.sdks.flatMap { it.libs }.flatMap { it.types }.filter { it.superClass == this.name }
     }
 
     fun constructable(): Boolean {

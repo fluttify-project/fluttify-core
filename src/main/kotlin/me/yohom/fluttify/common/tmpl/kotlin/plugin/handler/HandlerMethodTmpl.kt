@@ -39,12 +39,8 @@ internal class HandlerMethodTmpl(private val method: Method) {
             .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(
-                        it.variable
-                    ).kotlinArgJsonable()
-                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
-                        it.variable
-                    ).kotlinArgEnum()
+                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
+                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
                     else -> ArgRefTmpl(it.variable).kotlinArgRef()
                 }
             }

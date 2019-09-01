@@ -67,6 +67,14 @@ fun TYPE_NAME.simpleName(): String {
 }
 
 /**
+ * todo
+ * 去掉`id<XXX>`的`id<>`
+ */
+fun TYPE_NAME.deProtocol(): String {
+    return substringAfterLast(".")
+}
+
+/**
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {

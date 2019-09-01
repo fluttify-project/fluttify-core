@@ -3,6 +3,7 @@ package me.yohom.fluttify.common.tmpl.objc.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
+import me.yohom.fluttify.common.tmpl.objc.plugin.delegate_method.DelegateMethodTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handler.GetterHandlerTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handler.MethodHandlerTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handler.SetterHandlerTmpl
@@ -106,6 +107,14 @@ class PluginTmpl(
             .flatMap { it.methods }
             .filterMethod()
             .map { MethodHandlerTmpl(it).objcHandlerMethod() }
+
+        val delegateMethods = libs
+            .flatMap { it.types }
+            .filterType()
+            .filter { it.isDelegate() }
+            .flatMap { it.methods }
+            .filterMethod()
+            .map { DelegateMethodTmpl(it).objcDelegateMethod() }
 
         return listOf(
             hTmpl
