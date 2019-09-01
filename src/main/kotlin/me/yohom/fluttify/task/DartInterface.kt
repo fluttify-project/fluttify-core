@@ -7,6 +7,7 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.model.SDK
 import me.yohom.fluttify.common.model.TypeType
+import me.yohom.fluttify.common.tmpl.dart.clazz.ref_class.RefClassTmpl
 import me.yohom.fluttify.common.tmpl.dart.clazz.sdk_class.SdkClassTmpl
 import me.yohom.fluttify.common.tmpl.dart.enumeration.EnumTmpl
 import me.yohom.fluttify.common.tmpl.dart.view.AndroidViewTmpl
@@ -43,10 +44,7 @@ open class AndroidDartInterface : DefaultTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> SdkClassTmpl(
-                        it,
-                        ext
-                    ).dartClass()
+                    TypeType.Class, TypeType.Struct -> SdkClassTmpl(it, ext).dartClass()
                     TypeType.Enum -> EnumTmpl(it).dartEnum()
                     TypeType.Interface -> ""
                     TypeType.Lambda -> ""
@@ -63,6 +61,12 @@ open class AndroidDartInterface : DefaultTask() {
                     resultFile.file().writeText(resultDart)
                 }
             }
+
+        // 在Ref类中为每个类生成类型检查和转型方法
+        RefClassTmpl(sdk, ext).dartRefClass().run {
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/ref.dart".file()
+                .writeText(this)
+        }
     }
 
 }
@@ -116,5 +120,11 @@ open class IOSDartInterface : DefaultTask() {
                     resultFile.file().writeText(resultDart)
                 }
             }
+
+        // 在Ref类中为每个类生成类型检查和转型方法
+        RefClassTmpl(sdk, ext).dartRefClass().run {
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ref.dart".file()
+                .writeText(this)
+        }
     }
 }
