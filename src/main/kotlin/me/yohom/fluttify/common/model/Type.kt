@@ -87,11 +87,14 @@ open class Type : PlatformAware {
     fun isCallback(): Boolean {
         return typeType == TypeType.Interface // 必须是接口
                 // 返回类型必须是void或者Boolean
-                && methods.all { it.returnType.toDartType() in listOf("void", "bool") }
+                && methods.all { it.returnType in listOf("void", "boolean", "BOOL") }
                 // 参数类型必须是jsonable或者引用类型
                 && methods.all {
             it.formalParams.all {
-                it.variable.typeName.findType().run { jsonable() || !isInterface() }
+                it.variable
+                    .typeName
+                    .findType()
+                    .run { this != UNKNOWN_TYPE && !isInterface() }
             }
         }
                 // 必须没有父类
