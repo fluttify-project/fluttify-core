@@ -1,16 +1,10 @@
-@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+"ObjectFactory::create#__creator_name__#" to { registrar, args, methodResult ->
     // 参数
     #__args__#
 
-    // 调用对象引用
-    #__ref__#
+    // 创建对象
+    val obj = #__class_name__#(#__args_value__#)
+    REF_MAP[obj.hashCode()] = obj
 
-    // 日志打印
-    #__log__#
-
-    // 开始调用
-    #__invoke__#
-
-    // 调用结果
-    #__result__#
-},
+    methodResult.success(obj.hashCode())
+}

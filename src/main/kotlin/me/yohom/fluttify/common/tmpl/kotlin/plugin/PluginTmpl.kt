@@ -4,9 +4,9 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerGetterTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ObjectFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerMethodTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerSetterTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ObjectFactoryTmpl
 
 //package #__package_name__#
 //
@@ -27,24 +27,24 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerSetterTmpl
 //                val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
 //                when (methodCall.method) {
 //                    // 获取Application对象
-//                    "SystemRef::getandroid_app_Application" -> {
+//                    "ObjectFactory::getandroid_app_Application" -> {
 //                        methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
 //                    }
 //                    // 获取FlutterActivity对象
-//                    "SystemRef::getandroid_app_Activity" -> {
+//                    "ObjectFactory::getandroid_app_Activity" -> {
 //                        methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
 //                    }
 //                    // 创建android.os.Bundle对象
-//                    "SystemRef::createandroid_os_Bundle" -> {
+//                    "ObjectFactory::createandroid_os_Bundle" -> {
 //                        methodResult.success(Bundle().apply { REF_MAP[hashCode()] = this }.hashCode())
 //                    }
 //                    // 释放一个对象
-//                    "SystemRef::release" -> {
+//                    "ObjectFactory::release" -> {
 //                        REF_MAP.remove(args["refId"] as Int)
 //                        methodResult.success("success")
 //                    }
 //                    // 清空REF_MAP中所有对象
-//                    "SystemRef::clearRefMap" -> {
+//                    "ObjectFactory::clearRefMap" -> {
 //                        REF_MAP.clear()
 //                        methodResult.success("success")
 //                    }
@@ -104,7 +104,7 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { HandleMethodTmpl(it).kotlinHandlerMethod() }
+            .map { HandlerMethodTmpl(it).kotlinHandlerMethod() }
 
         val objectFactoryHandlers = lib.types
             .filterConstructable()
