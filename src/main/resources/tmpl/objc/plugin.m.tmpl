@@ -1,5 +1,4 @@
 #import "#__plugin_name__#Plugin.h"
-#__imports__#
 
 typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 
@@ -52,5 +51,8 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
   // 注册View
   #__register_platform_views__#
 }
+
+// 委托方法们
+#__delegate_methods__#
 
 @end

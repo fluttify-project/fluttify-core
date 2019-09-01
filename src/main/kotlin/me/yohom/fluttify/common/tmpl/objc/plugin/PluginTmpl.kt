@@ -7,6 +7,12 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.handler.GetterHandlerTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handler.MethodHandlerTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.handler.SetterHandlerTmpl
 
+//#import <Flutter/Flutter.h>
+//#__imports__#
+//
+//@interface #__plugin_name__#Plugin : NSObject<FlutterPlugin#__protocols__#>
+//@end
+//
 //#import "#__plugin_name__#Plugin.h"
 //#__imports__#
 //
@@ -58,9 +64,10 @@ class PluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
 ) {
+    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin.h.tmpl").readText()
     private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
 
-    fun objcPlugin(): String {
+    fun objcPlugin(): List<String> {
         // 插件名称
         val pluginClassName = ext.outputProjectName.underscore2Camel(true)
 
@@ -100,19 +107,29 @@ class PluginTmpl(
             .filterMethod()
             .map { MethodHandlerTmpl(it).objcHandlerMethod() }
 
-        return mTmpl
-            .replace("#__imports__#", libs
-                .map { "#import <${it.name}/${it.name}.h>" }
-                .union(platformViewHeader)
-                .joinToString("\n"))
-            .replace("#__plugin_name__#", pluginClassName)
-            .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__getter_branches__#", "")
-            .replaceParagraph("#__setter_branches__#", "")
-            .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
-            .replaceParagraph(
-                "#__handlers__#",
-                methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
-            )
+        return listOf(
+            hTmpl
+                .replace("#__imports__#", libs
+                    .map { "#import <${it.name}/${it.name}.h>" }
+                    .union(platformViewHeader)
+                    .joinToString("\n"))
+                .replace("#__plugin_name__#", pluginClassName)
+                .replace("#__protocols__#", libs
+                    .flatMap { it.types }
+                    .filter { it.isInterface() }
+                    .map { it.name }
+                    .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
+                    .joinToString(", ")),
+            mTmpl
+                .replace("#__plugin_name__#", pluginClassName)
+                .replace("#__method_channel__#", methodChannel)
+                .replaceParagraph("#__getter_branches__#", "")
+                .replaceParagraph("#__setter_branches__#", "")
+                .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
+                .replaceParagraph(
+                    "#__handlers__#",
+                    methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
+                )
+        )
     }
 }

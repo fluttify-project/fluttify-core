@@ -79,6 +79,10 @@ open class IOSObjcInterface : DefaultTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
+        val pluginHFile =
+            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel(
+                true
+            )}Plugin.h"
         val pluginMFile =
             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel(
                 true
@@ -90,7 +94,8 @@ open class IOSObjcInterface : DefaultTask() {
         ObjcPluginTmpl(sdk.libs, ext)
             .objcPlugin()
             .run {
-                pluginMFile.file().writeText(this)
+                pluginHFile.file().writeText(this[0])
+                pluginMFile.file().writeText(this[1])
             }
 
         // 生成PlatformViewFactory文件
