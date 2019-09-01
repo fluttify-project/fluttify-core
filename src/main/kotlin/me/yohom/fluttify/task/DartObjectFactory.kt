@@ -5,7 +5,7 @@ import me.yohom.fluttify.common.extensions.file
 import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.SDK
-import me.yohom.fluttify.common.tmpl.dart.objectfactory.ObjectFactoryTmpl
+import me.yohom.fluttify.common.tmpl.dart.object_factory.ObjectFactoryTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

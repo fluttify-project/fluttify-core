@@ -6,10 +6,10 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.SDK
-import me.yohom.fluttify.common.tmpl.objc.platformviewfactory.PlatformViewFactoryTmpl
+import me.yohom.fluttify.common.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import me.yohom.fluttify.common.tmpl.kotlin.platformviewfactory.PlatformViewFactoryTmpl as KotlinPlatformViewFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactoryTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
 import me.yohom.fluttify.common.tmpl.objc.plugin.PluginTmpl as ObjcPluginTmpl
 import me.yohom.fluttify.common.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl as SwiftPlatformViewFactoryTmpl

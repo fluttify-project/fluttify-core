@@ -6,7 +6,8 @@ import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerGetterTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerMethodTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerSetterTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ObjectFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.HandlerObjectFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.register_platform_view.RegisterPlatformViewTmpl
 
 //package #__package_name__#
 //
@@ -67,7 +68,7 @@ class PluginTmpl(
     private val lib: Lib,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/plugin.kt.tmpl").readText()
 
     fun kotlinPlugin(): String {
         // 包名
@@ -82,7 +83,10 @@ class PluginTmpl(
         // 注册PlatformView
         val registerPlatformViews = lib.types
             .filter { it.isView() }
-            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).kotlinRegisterPlatformView() }
+            .joinToString("\n") { RegisterPlatformViewTmpl(
+                it,
+                ext
+            ).kotlinRegisterPlatformView() }
 
         // 处理方法们 分三种
         // 1. getter handler
@@ -108,7 +112,7 @@ class PluginTmpl(
 
         val objectFactoryHandlers = lib.types
             .filterConstructable()
-            .flatMap { ObjectFactoryTmpl(it).kotlinObjectFactory() }
+            .flatMap { HandlerObjectFactoryTmpl(it).kotlinObjectFactory() }
 
         return tmpl
             .replace("#__package_name__#", packageName)

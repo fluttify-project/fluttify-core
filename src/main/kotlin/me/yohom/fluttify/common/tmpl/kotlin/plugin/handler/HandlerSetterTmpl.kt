@@ -13,7 +13,7 @@ import me.yohom.fluttify.common.model.Field
 //    methodResult.success("success")
 //}
 internal class HandlerSetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_setter.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/handler/handler_setter.stmt.kt.tmpl").readText()
 
     fun kotlinSetter(): String {
         val setterName = field.setterMethodName()

@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.model.SDK
 import me.yohom.fluttify.common.model.TypeType
-import me.yohom.fluttify.common.tmpl.dart.clazz.ClassTmpl
+import me.yohom.fluttify.common.tmpl.dart.clazz.sdk_class.SdkClassTmpl
 import me.yohom.fluttify.common.tmpl.dart.enumeration.EnumTmpl
 import me.yohom.fluttify.common.tmpl.dart.view.AndroidViewTmpl
 import me.yohom.fluttify.common.tmpl.dart.view.UiKitViewTmpl
@@ -43,7 +43,10 @@ open class AndroidDartInterface : DefaultTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Class, TypeType.Struct -> SdkClassTmpl(
+                        it,
+                        ext
+                    ).dartClass()
                     TypeType.Enum -> EnumTmpl(it).dartEnum()
                     TypeType.Interface -> ""
                     TypeType.Lambda -> ""
@@ -93,7 +96,10 @@ open class IOSDartInterface : DefaultTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Class, TypeType.Struct -> SdkClassTmpl(
+                        it,
+                        ext
+                    ).dartClass()
                     TypeType.Enum -> EnumTmpl(it).dartEnum()
                     TypeType.Interface -> ""
                     TypeType.Lambda -> ""

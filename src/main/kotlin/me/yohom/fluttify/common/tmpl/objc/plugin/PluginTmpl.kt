@@ -4,9 +4,10 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.tmpl.objc.plugin.delegate_method.DelegateMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.GetterHandlerTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.MethodHandlerTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.SetterHandlerTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandlerGetterTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandlerMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandlerSetterTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 
 //#import <Flutter/Flutter.h>
 //#__imports__#
@@ -65,8 +66,8 @@ class PluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
 ) {
-    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin.h.tmpl").readText()
-    private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
+    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin/plugin.h.tmpl").readText()
+    private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin/plugin.m.tmpl").readText()
 
     fun objcPlugin(): List<String> {
         // 插件名称
@@ -81,7 +82,10 @@ class PluginTmpl(
             .flatMap { it.types }
             .filter { it.isView() }
             .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
-            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).objcRegisterPlatformView() }
+            .joinToString("\n") { RegisterPlatformViewTmpl(
+                it,
+                ext
+            ).objcRegisterPlatformView() }
 
         // 处理方法们 分三种
         // 1. getter handler
@@ -92,21 +96,21 @@ class PluginTmpl(
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { GetterHandlerTmpl(it).objcGetter() }
+            .map { HandlerGetterTmpl(it).objcGetter() }
 
         val setterHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { SetterHandlerTmpl(it).objcSetter() }
+            .map { HandlerSetterTmpl(it).objcSetter() }
 
         val methodHandlers = libs
             .flatMap { it.types }
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { MethodHandlerTmpl(it).objcHandlerMethod() }
+            .map { HandlerMethodTmpl(it).objcHandlerMethod() }
 
         val delegateMethods = libs
             .flatMap { it.types }

@@ -1,6 +1,5 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.delegate_method
 
-import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method
 
 //- (#__return_type__#)#__method_name__##__formal_params__#
@@ -12,7 +11,7 @@ import me.yohom.fluttify.common.model.Method
 //  #__delegate__#
 //}
 internal class DelegateMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/delegate_method.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/delegate_method/delegate_method.stmt.m.tmpl").readText()
 
     fun objcDelegateMethod(): String {
         return tmpl
@@ -27,10 +26,7 @@ internal class DelegateMethodTmpl(private val method: Method) {
             )
             .replace(
                 "#__delegate__#",
-                if (method.formalParams.all { !it.variable.typeName.findType().isAbstract })
-                    ConcreteParamTmpl(method).objcConcreteParam()
-                else
-                    AbstractParamTmpl(method).objcAbstractParam()
+                ""
             )
     }
 }

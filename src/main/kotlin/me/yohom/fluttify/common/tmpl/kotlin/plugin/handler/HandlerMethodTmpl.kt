@@ -8,6 +8,7 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgEnumTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgJsonableTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgRefTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.invoke.InvokeTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ref.RefTmpl
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.result.ResultRefTmpl
 
 //"#__method_name__#" to { registrar, args, methodResult ->
@@ -27,7 +28,7 @@ import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.result.ResultRefTmpl
 //    #__result__#
 //}
 internal class HandlerMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/handler/handler_method.stmt.kt.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
         val methodName = method.methodName()
