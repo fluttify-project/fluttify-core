@@ -4,9 +4,7 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.tmpl.objc.plugin.delegate_method.DelegateMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandlerGetterTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandlerMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.HandlerSetterTmpl
+import me.yohom.fluttify.common.tmpl.objc.plugin.handler.*
 import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 
 //#import <Flutter/Flutter.h>
@@ -120,6 +118,20 @@ class PluginTmpl(
             .filterMethod()
             .map { DelegateMethodTmpl(it).objcDelegateMethod() }
 
+        val typeCastHandlers = libs
+            .flatMap { it.types }
+            .filterType()
+            .distinctBy { it.name }
+            .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
+            .map { HandlerTypeCastTmpl(it).objcTypeCast() }
+
+        val typeCheckHandlers = libs
+            .flatMap { it.types }
+            .filterType()
+            .distinctBy { it.name }
+            .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
+            .map { HandlerTypeCheckTmpl(it).objcTypeCheck() }
+
         return listOf(
             hTmpl
                 .replace("#__imports__#", libs
@@ -141,7 +153,11 @@ class PluginTmpl(
                 .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
                 .replaceParagraph(
                     "#__handlers__#",
-                    methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
+                    methodHandlers.union(getterHandlers)
+                        .union(setterHandlers)
+                        .union(typeCheckHandlers)
+                        .union(typeCastHandlers)
+                        .joinToString("\n")
                 )
         )
     }

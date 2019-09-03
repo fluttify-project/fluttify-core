@@ -1,8 +1,8 @@
-@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+@"RefClass::isKindOf#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
     // 引用对象
     NSInteger refId = [args[@"refId"] integerValue];
-    id ref = (#__class_name__#*) REF_MAP[@(refId)];
+    id ref = REF_MAP[@(refId)];
 
-    BOOL isTargetType = [ref isKindOfClass:[#__target_type__# class]];
+    BOOL isTargetType = [ref isKindOfClass:[#__type_name__# class]];
     methodResult(@(isTargetType));
 },

@@ -1,10 +1,10 @@
-@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+@"RefClass::as#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
     // 引用对象
     NSInteger refId = [args[@"refId"] integerValue];
-    id ref = (#__class_name__#*) REF_MAP[@(refId)];
+    id ref = REF_MAP[@(refId)];
 
     // 转型
-    ref = (#__cast_type__#) ref;
+    ref = (#__type_name__# *) ref;
     // 放回REF_MAP
     REF_MAP[@(refId)] = ref;
 

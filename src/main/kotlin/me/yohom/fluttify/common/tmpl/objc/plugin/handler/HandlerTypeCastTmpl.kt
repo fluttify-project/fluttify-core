@@ -1,16 +1,24 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handler
 
-import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.extensions.toUnderscore
+import me.yohom.fluttify.common.model.Type
 
-//val refId = args["refId"] as Int
-//val ref = REF_MAP[refId] as #__class_name__#
-internal class HandlerTypeCastTmpl(private val method: Method) {
+//@"RefClass::cast#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+//    // 引用对象
+//    NSInteger refId = [args[@"refId"] integerValue];
+//    id ref = REF_MAP[@(refId)];
+//
+//    // 转型
+//    ref = (#__type_name__#) ref;
+//    // 放回REF_MAP
+//    REF_MAP[@(refId)] = ref;
+//
+//    methodResult(@(refId));
+//},
+internal class HandlerTypeCastTmpl(private val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_type_cast.stmt.m.tmpl").readText()
 
     fun objcTypeCast(): String {
-        return if (method.isStatic)
-            ""
-        else
-            tmpl.replace("#__class_name__#", method.className)
+        return tmpl.replace("#__type_name__#", type.name.toUnderscore())
     }
 }

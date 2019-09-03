@@ -1,7 +1,7 @@
 package me.yohom.fluttify.common.tmpl.dart.clazz.ref_class
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.toDartType
+import me.yohom.fluttify.common.extensions.toUnderscore
 import me.yohom.fluttify.common.model.Type
 
 //Future<#__type_name__#> cast#__type_name__#() async {
@@ -14,7 +14,7 @@ class TypeCastTmpl(private val type: Type, private val ext: FluttifyExtension) {
     fun dartTypeCast(): String {
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
         return tmpl
-            .replace("#__type_name__#", type.name.toDartType())
+            .replace("#__type_name__#", type.name.toUnderscore())
             .replace("#__method_channel__#", methodChannel)
     }
 }

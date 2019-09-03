@@ -8,7 +8,7 @@ import me.yohom.fluttify.common.TYPE_NAME
 //methodResult(@(resultValue.hash));
 internal class ResultStructTmpl(val returnType: TYPE_NAME) {
 
-    private val tmpl = this::class.java.getResource("/tmpl/objc/result_struct.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/result/result_struct.stmt.m.tmpl").readText()
 
     fun objcResultStruct(): String {
         return tmpl.replace("#__result_type__#", returnType)

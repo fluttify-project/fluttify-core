@@ -1,4 +1,4 @@
-Future<#__type_name__#> cast#__type_name__#() async {
-  final result = await MethodChannel('#__method_channel__#').invokeMethod('RefClass::cast#__type_name__#', {'refId': refId});
-  return #__type_name__#.withRefId(result);
+Future<bool> isKindOf#__type_name__#() async {
+  final result = await MethodChannel('#__method_channel__#').invokeMethod('RefClass::isKindOf#__type_name__#', {'refId': refId});
+  return result;
 }

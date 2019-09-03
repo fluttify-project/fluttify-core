@@ -1,16 +1,20 @@
 package me.yohom.fluttify.common.tmpl.objc.plugin.handler
 
-import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.extensions.toUnderscore
+import me.yohom.fluttify.common.model.Type
 
-//val refId = args["refId"] as Int
-//val ref = REF_MAP[refId] as #__class_name__#
-internal class HandlerTypeCheckTmpl(private val method: Method) {
+//@"RefClass::isKindOf#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+//    // 引用对象
+//    NSInteger refId = [args[@"refId"] integerValue];
+//    id ref = REF_MAP[@(refId)];
+//
+//    BOOL isTargetType = [ref isKindOfClass:[#__type_name__# class]];
+//    methodResult(@(isTargetType));
+//},
+internal class HandlerTypeCheckTmpl(private val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_type_check.stmt.m.tmpl").readText()
 
     fun objcTypeCheck(): String {
-        return if (method.isStatic)
-            ""
-        else
-            tmpl.replace("#__class_name__#", method.className)
+        return tmpl.replace("#__type_name__#", type.name.toUnderscore())
     }
 }

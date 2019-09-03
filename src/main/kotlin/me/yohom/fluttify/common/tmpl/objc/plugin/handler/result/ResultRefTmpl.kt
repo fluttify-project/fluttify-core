@@ -10,7 +10,7 @@ import me.yohom.fluttify.common.extensions.jsonable
 //methodResult(returnRefId);
 internal class ResultRefTmpl(val returnType: TYPE_NAME) {
 
-    private val tmpl = this::class.java.getResource("/tmpl/objc/result_ref.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/result/result_ref.stmt.m.tmpl").readText()
 
     fun objcResultRef(): String {
         return when {
