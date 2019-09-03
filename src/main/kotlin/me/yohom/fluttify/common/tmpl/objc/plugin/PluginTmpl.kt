@@ -10,18 +10,30 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.Register
 //#import <Flutter/Flutter.h>
 //#__imports__#
 //
-//@interface #__plugin_name__#Plugin : NSObject<FlutterPlugin#__protocols__#>
+//@interface #__plugin_name__#Plugin : NSObject<#__protocols__#>
+//
+//- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar;
+//
 //@end
 //
+//
 //#import "#__plugin_name__#Plugin.h"
-//#__imports__#
 //
 //typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 //
 //NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 //
 //@implementation #__plugin_name__#Plugin {
-//  NSObject <FlutterPluginRegistrar> *_flutterPluginRegistrar;
+//  NSObject <FlutterPluginRegistrar> * _registrar;
+//}
+//
+//- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar {
+//  self = [super init];
+//  if (self) {
+//    _registrar = registrar;
+//  }
+//
+//  return self;
 //}
 //
 //+ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
@@ -33,20 +45,31 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.Register
 //  REF_MAP = @{}.mutableCopy;
 //
 //  // 处理方法们
-//  NSDictionary<NSString *, Handler> *_handlerMap = {
+//  NSDictionary<NSString *, Handler> *_handlerMap = @{
 //    #__handlers__#
 //  };
 //
 //  // 处理channel
 //  [channel setMethodCallHandler:^(FlutterMethodCall * _Nonnull methodCall, FlutterResult  _Nonnull methodResult) {
-//          NSDictionary<NSString *, NSObject *> *args = (NSDictionary<NSString *, NSObject *> *) [methodCall arguments];
-//          if ([@"SystemRef::release" isEqualToString:methodCall.method]) {
+//          NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
+//          if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
 //              [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
 //              methodResult(@"success");
-//          } else if ([@"SystemRef::clearRefMap" isEqualToString:methodCall.method]) {
+//          } else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
 //              [REF_MAP removeAllObjects];
 //              methodResult(@"success");
-//          } else {
+//          } else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
+//              CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
+//              CLLocationDegrees longitude = [args[@"longitude"] doubleValue];
+//
+//              CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
+//
+//              NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
+//              REF_MAP[@(dataValue.hash)] = dataValue;
+//
+//              methodResult(@(dataValue.hash));
+//          }
+//          else {
 //              if (_handlerMap[methodCall.method] != nil) {
 //                  _handlerMap[methodCall.method](registrar, args, methodResult);
 //              } else {
@@ -58,6 +81,9 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.Register
 //  // 注册View
 //  #__register_platform_views__#
 //}
+//
+//// 委托方法们
+//#__delegate_methods__#
 //
 //@end
 class PluginTmpl(
@@ -110,14 +136,6 @@ class PluginTmpl(
             .filterMethod()
             .map { HandlerMethodTmpl(it).objcHandlerMethod() }
 
-        val delegateMethods = libs
-            .flatMap { it.types }
-            .filterType()
-            .filter { it.isDelegate() }
-            .flatMap { it.methods }
-            .filterMethod()
-            .map { DelegateMethodTmpl(it).objcDelegateMethod() }
-
         val typeCastHandlers = libs
             .flatMap { it.types }
             .filterType()
@@ -132,6 +150,14 @@ class PluginTmpl(
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCheckTmpl(it).objcTypeCheck() }
 
+        val delegateMethods = libs
+            .flatMap { it.types }
+            .filterType()
+            .filter { it.isDelegate() }
+            .flatMap { it.methods }
+            .distinctBy { "${it.name}${it.formalParams}" }
+            .map { DelegateMethodTmpl(it).objcDelegateMethod() }
+
         return listOf(
             hTmpl
                 .replace("#__imports__#", libs
@@ -141,7 +167,7 @@ class PluginTmpl(
                 .replace("#__plugin_name__#", pluginClassName)
                 .replace("#__protocols__#", libs
                     .flatMap { it.types }
-                    .filter { it.isInterface() }
+                    .filter { it.isDelegate() }
                     .map { it.name }
                     .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
                     .joinToString(", ")),
@@ -158,6 +184,10 @@ class PluginTmpl(
                         .union(typeCheckHandlers)
                         .union(typeCastHandlers)
                         .joinToString("\n")
+                )
+                .replaceParagraph(
+                    "#__delegate_methods__#",
+                    delegateMethods.joinToString("\n")
                 )
         )
     }

@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.model.Method
 //MethodChannel('#__callback_channel__#' + refId.toString())
 //    .setMethodCallHandler((methodCall) async {
 //      final args = methodCall.arguments as Map;
-//      final refId = args['refId'] as int;
+//      final refId = args['callerRefId'] as int;
 //      if (refId != this.refId) return;
 //
 //      switch (methodCall.method) {
@@ -31,10 +31,7 @@ class CallbackTmpl(private val callerMethod: Method) {
             .flatMap { it.variable.typeName.findType().methods }
 
         val className = "${callerMethod.className}::${callerMethod.name}_Callback"
-        val callbackCases = callbackMethods.map { CallbackCaseTmpl(
-            callerMethod,
-            it
-        ).callbackCase() }
+        val callbackCases = callbackMethods.map { CallbackCaseTmpl(callerMethod, it).callbackCase() }
 
         return tmpl
             .replace("#__callback_channel__#", className)

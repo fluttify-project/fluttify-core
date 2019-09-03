@@ -14,7 +14,7 @@ import me.yohom.fluttify.common.model.Method
 //        "#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#",
 //        mapOf<String, Any?>(
 //            #__callback_params__#
-//            "refId" to refId
+//            "callerRefId" to refId
 //        )
 //    )
 //

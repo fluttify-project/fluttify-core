@@ -1,0 +1,12 @@
+__block #__return_type__# _result = nil;
+[channel invokeMethod:@"#__callback_method__#"
+            arguments:@{#__callback_args__#}
+               result:^(id result) {
+                 _result = (#__return_type__#) result;
+               }];
+
+while (!_result) {
+  // _result有值前, 空转
+}
+
+return _result;
