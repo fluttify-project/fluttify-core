@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart.clazz.sdk_class
+package me.yohom.fluttify.common.tmpl.dart.type.sdk_type
 
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Method
@@ -23,7 +23,7 @@ import me.yohom.fluttify.common.model.Variable
  * 生成普通类的dart接口
  */
 class MethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/clazz/sdk_class/method.mtd.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/method.mtd.dart.tmpl").readText()
 
     fun dartMethod(): String {
         val static = if (method.isStatic) "static" else ""

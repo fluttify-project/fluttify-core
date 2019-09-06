@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart.clazz.sdk_class
+package me.yohom.fluttify.common.tmpl.dart.type.sdk_type
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
@@ -20,7 +20,7 @@ import me.yohom.fluttify.common.model.Method
  * 回调代码
  */
 class CallbackTmpl(private val callerMethod: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/clazz/sdk_class/callback.stmt.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/callback.stmt.dart.tmpl").readText()
 
     fun callback(): String {
         // 如果方法参数中没有回调类型的参数, 那么直接返回空字符串

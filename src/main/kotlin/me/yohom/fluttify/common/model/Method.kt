@@ -84,6 +84,12 @@ data class Method(
             !formalParams.all { it.variable.typeName.findType() != Type.UNKNOWN_TYPE } -> {
                 false.apply { println("方法${this@Method} 由于`形参类型必须全部都不是未知类型`, 被过滤") }
             }
+            // 形参父类必须全部都不是未知类型
+            !formalParams.all {
+                it.variable.typeName.findType().superClass.run { isEmpty() || findType() != Type.UNKNOWN_TYPE }
+            } -> {
+                false.apply { println("方法${this@Method} 由于`形参父类必须全部都不是未知类型`, 被过滤") }
+            }
             else -> {
                 true.apply { println("方法${this@Method} 通过过滤") }
             }

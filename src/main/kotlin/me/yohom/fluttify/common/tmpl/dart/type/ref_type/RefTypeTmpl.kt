@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart.clazz.ref_class
+package me.yohom.fluttify.common.tmpl.dart.type.ref_type
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.filterType
@@ -20,11 +20,11 @@ import me.yohom.fluttify.common.model.SDK
 //
 //  #__type_casts__#
 //}
-class RefClassTmpl(
+class RefTypeTmpl(
     private val sdk: SDK,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/clazz/ref_class/ref_class.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/type/ref_type/ref_type.dart.tmpl").readText()
 
     fun dartRefClass(): String {
         val currentPackage = ext.outputProjectName

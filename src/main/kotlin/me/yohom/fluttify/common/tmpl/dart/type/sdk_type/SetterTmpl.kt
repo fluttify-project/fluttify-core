@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart.clazz.sdk_class
+package me.yohom.fluttify.common.tmpl.dart.type.sdk_type
 
 import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.findType
@@ -12,7 +12,7 @@ import me.yohom.fluttify.common.model.Field
  * 生成普通类的dart接口
  */
 class SetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/clazz/sdk_class/setter.mtd.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/setter.mtd.dart.tmpl").readText()
 
     fun dartSetter(): String {
         return field.variable.run {

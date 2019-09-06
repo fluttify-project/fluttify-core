@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.dart.clazz.sdk_class
+package me.yohom.fluttify.common.tmpl.dart.type.sdk_type
 
 import me.yohom.fluttify.common.extensions.filterFormalParams
 import me.yohom.fluttify.common.extensions.jsonable
@@ -21,7 +21,7 @@ class CallbackCaseTmpl(
     private val callerMethod: Method,
     private val callbackMethod: Method
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/clazz/sdk_class/callback_case.stmt.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/callback_case.stmt.dart.tmpl").readText()
 
     fun callbackCase(): String {
         val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${callbackMethod.name}"
