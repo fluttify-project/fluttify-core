@@ -55,6 +55,7 @@ fun JavaParser.FieldDeclarationContext.isFinal(): Boolean {
         ?.modifier()
         ?.map { it.text }
         ?.contains("final") == true
+            || isChildOf(JavaParser.InterfaceDeclarationContext::class)
 }
 
 fun JavaParser.FieldDeclarationContext?.value(): String? {

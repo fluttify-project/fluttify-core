@@ -1,7 +1,6 @@
 package me.yohom.fluttify.common.tmpl.dart.type.sdk_type
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.SYSTEM_TYPE
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Type
 
@@ -37,7 +36,7 @@ class SdkTypeTmpl(
     fun dartClass(): String {
         val currentPackage = ext.outputProjectName
         val className = type.name.toDartType()
-        val superClass = if (type.superClass.run { isEmpty() || this in SYSTEM_TYPE.map { it.name } })
+        val superClass = if (type.superClass.isEmpty())
             "Ref_${type.platform}"
         else
             type.superClass.toDartType()
