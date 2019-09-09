@@ -20,15 +20,8 @@ fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Met
         .filter { !it.isDeprecated }
         // todo 暂时不处理带有列表参数的方法
         .filter { (!it.formalParams.any { it.variable.typeName.isList() }).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
-        .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterMethod: $it 由于所在类是接口 被过滤") } }
+//        .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterMethod: $it 由于所在类是接口 被过滤") } }
         .filter { !(it.platform == Platform.iOS && it.name.startsWith("init")) } // ios端的init系列函数作为构造器而不是普通方法
-        .filter { method ->
-            (distinctSource.isEmpty() or distinctSource.none { it.contains(method.name) }).apply {
-                if (!this) println(
-                    "filterMethod: $method 由于与distinctSource中的方法重复 被过滤"
-                )
-            }
-        }
         .distinctBy { "${it.className}::${it.name}" }
         .filter { it.isOk() }
         .toList()

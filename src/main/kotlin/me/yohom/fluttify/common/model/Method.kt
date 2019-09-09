@@ -65,9 +65,9 @@ data class Method(
                 false.apply { println("方法${this@Method} 由于`返回类型不能是未知类`, 被过滤") }
             }
             // 返回类型不能是接口
-            returnType.depointer().findType().isInterface() -> {
-                false.apply { println("方法${this@Method} 由于`返回类型不能是接口`, 被过滤") }
-            }
+//            returnType.depointer().findType().isInterface() -> {
+//                false.apply { println("方法${this@Method} 由于`返回类型不能是接口`, 被过滤") }
+//            }
             // 返回类型不能含有泛型
             returnType.depointer().findType().genericTypes.isNotEmpty() -> {
                 false.apply { println("方法${this@Method} 由于`返回类型不能含有泛型`, 被过滤") }

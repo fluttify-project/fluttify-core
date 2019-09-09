@@ -78,7 +78,7 @@ fun TYPE_NAME.deProtocol(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    return SDK.findType(this)
+    return SDK.findType(this.depointer())
 }
 
 /**

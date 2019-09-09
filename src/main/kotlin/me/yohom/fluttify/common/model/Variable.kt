@@ -2,7 +2,6 @@ package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.extensions.depointer
-import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.toDartType
 
 /**
@@ -15,19 +14,6 @@ data class Variable(
     override var platform: Platform
 ) : PlatformAware {
     fun toDartString(): String {
-        return if (typeName.findType().isCallback()) {
-            val type = typeName.findType()
-            type.methods
-                // 过滤掉方法参数中含有不认识类的方法
-                .filter { it.formalParams.none { it.variable.typeName.findType() == Type.UNKNOWN_TYPE } }
-                .distinctBy { it.name }
-                .takeIf { it.isNotEmpty() }
-                ?.joinToString(prefix = "{", postfix = "}") {
-                    "void ${it.name}(${it.formalParams.joinToString { it.variable.toDartString() }})"
-                }
-                ?: ""
-        } else {
-            "${typeName.toDartType()} ${name.depointer()}"
-        }
+        return "${typeName.toDartType()} ${name.depointer()}"
     }
 }
