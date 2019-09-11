@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.dart
 import org.junit.Test
 
 
-internal class CallbackCaseTmplTest {
+internal class CallbackDelegateCaseTmplTest {
 
     @Test
     fun callbackCase() {

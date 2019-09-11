@@ -1,6 +1,5 @@
 package me.yohom.fluttify.common.tmpl.dart.type.interface_type
 
-import me.yohom.fluttify.common.extensions.filterFormalParams
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
 
@@ -12,9 +11,7 @@ class InterfaceMethodTmpl(private val method: Method) {
     fun dartMethod(): String {
         val returnType = method.returnType.toDartType()
         val name = method.name + method.formalParams.joinToString("") { it.named }.capitalize()
-        val formalParams = method.formalParams
-            .filterFormalParams()
-            .joinToString { it.variable.toDartString() }
+        val formalParams = method.formalParams.joinToString { it.variable.toDartString() }
 
         return tmpl
             .replace("#__return_type__#", returnType)

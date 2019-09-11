@@ -5,6 +5,7 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
 import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.Variable
+import me.yohom.fluttify.common.tmpl.dart.type.sdk_type.callback.CallbackTmpl
 
 //#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  // 日志打印
@@ -29,8 +30,8 @@ class MethodTmpl(private val method: Method) {
         val static = if (method.isStatic) "static" else ""
         val returnType = method.returnType.toDartType()
         val name = method.name
+        // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
         val formalParams = method.formalParams
-            .filterFormalParams()
             .map { it.variable.toDartString() }
             .sortedBy { it } // 这里排序是为了让所有的lambda到后面去, `{`排序优先级默认在字母后面
             .joinToString()

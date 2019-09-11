@@ -178,7 +178,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
-    return when (this) {
+    return when (this?.depointer()) {
         "String" -> "String"
         "boolean", "Boolean" -> "bool"
         "byte", "Byte", "int", "Integer", "long", "Long" -> "int"

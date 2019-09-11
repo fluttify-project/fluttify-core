@@ -99,9 +99,9 @@ open class Type : PlatformAware {
 //        }
                 // 必须没有父类
                 && superClass.isEmpty()
-                // 或者是lambda
-                || typeType == TypeType.Lambda
     }
+
+    fun isLambda(): Boolean = typeType == TypeType.Lambda
 
     /**
      * 是否是delegate, 与callback类似, 但是callback侧重于异步, 而delegate侧重于委托

@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.model
 
 import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.extensions.depointer
+import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.toDartType
 
 /**
@@ -14,6 +15,11 @@ data class Variable(
     override var platform: Platform
 ) : PlatformAware {
     fun toDartString(): String {
-        return "${typeName.toDartType()} ${name.depointer()}"
+        return if (typeName.findType().isLambda()) {
+            val type = typeName.findType()
+            "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
+        } else {
+            "${typeName.toDartType()} ${name.depointer()}"
+        }
     }
 }

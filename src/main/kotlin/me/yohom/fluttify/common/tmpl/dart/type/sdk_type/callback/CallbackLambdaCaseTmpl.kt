@@ -1,9 +1,10 @@
-package me.yohom.fluttify.common.tmpl.dart.type.sdk_type
+package me.yohom.fluttify.common.tmpl.dart.type.sdk_type.callback
 
-import me.yohom.fluttify.common.extensions.filterFormalParams
+import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
+import me.yohom.fluttify.common.model.Parameter
 
 //case '#__callback_case__#':
 //  if (#__callback_handler__# != null) {
@@ -17,19 +18,17 @@ import me.yohom.fluttify.common.model.Method
 /**
  * 回调case
  */
-class CallbackCaseTmpl(
+class CallbackLambdaCaseTmpl(
     private val callerMethod: Method,
-    private val callbackMethod: Method
+    private val lambdaParam: Parameter
 ) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/callback_case.stmt.dart.tmpl").readText()
 
     fun callbackCase(): String {
-        val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${callbackMethod.name}"
-        val log =
-            "print('fluttify-dart-callback: ${callerMethod.className}::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
-        val callbackHandler = callbackMethod.name
-        val callbackArgs = callbackMethod.formalParams
-            .filterFormalParams()
+        val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${lambdaParam.variable.name}"
+        val log = ""
+        val callbackHandler = lambdaParam.variable.name
+        val callbackArgs = lambdaParam.variable.typeName.findType().formalParams
             .joinToString {
                 if (it.variable.typeName.jsonable()) {
                     "args['${it.variable.name}']"
