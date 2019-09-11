@@ -67,14 +67,6 @@ fun TYPE_NAME.simpleName(): String {
 }
 
 /**
- * todo
- * 去掉`id<XXX>`的`id<>`
- */
-fun TYPE_NAME.deProtocol(): String {
-    return substringAfterLast(".")
-}
-
-/**
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
@@ -199,10 +191,10 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "BOOL" -> "bool"
         "CGFloat" -> "double"
         else -> {
-            if (Regex("ArrayList<\\w*>").matches(this)) {
-                removePrefix("Array")
-            } else {
-                this
+            when {
+                Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
+                Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
+                else -> this
             }
         }
     }.replace("$", ".").replace(".", "_").depointer()
