@@ -190,9 +190,11 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "NSInteger" -> "int"
         "BOOL" -> "bool"
         "CGFloat" -> "double"
+        "CLLocationDirection" -> "double"
         else -> {
             when {
                 Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
+                startsWith("NSArray") -> "List<${genericType().depointer()}>"
                 Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
                 else -> this
             }

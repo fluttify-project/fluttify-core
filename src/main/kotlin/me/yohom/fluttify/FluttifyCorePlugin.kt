@@ -32,13 +32,13 @@ open class FluttifyCorePlugin : Plugin<Project> {
 //
 //        androidJsonRepresentation.dependsOn(decompileClass)
 
-        androidDartInterface.dependsOn(androidAddDependency)
-        androidDartInterface.dependsOn(androidJsonRepresentation)
+//        androidDartInterface.dependsOn(androidAddDependency)
+//        androidDartInterface.dependsOn(androidJsonRepresentation)
 
 //        androidKotlinInterface.dependsOn(decompileClass)
 
-        dartfmt.dependsOn(androidDartInterface)
+//        dartfmt.dependsOn(androidDartInterface)
 
-        export.dependsOn(androidDartInterface)
+//        export.dependsOn(androidDartInterface)
     }
 }

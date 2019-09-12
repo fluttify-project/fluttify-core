@@ -745,7 +745,7 @@ unaryOperator
 
 postfixExpression
     : primaryExpression postfix*
-    | postfixExpression (DOT | STRUCTACCESS) identifier postfix*  // TODO: get rid of property and postfix expression.
+    | postfixExpression (DOT | STRUCTACCESS) identifier postfix*
     ;
 
 postfix
