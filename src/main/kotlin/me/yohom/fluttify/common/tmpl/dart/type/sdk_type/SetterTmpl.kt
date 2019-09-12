@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.tmpl.dart.type.sdk_type
 
 import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.findType
+import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Field
 
@@ -20,10 +21,10 @@ class SetterTmpl(private val field: Field) {
                 .replace("#__type__#", typeName.toDartType())
                 .replace("#__name__#", name.toDartType())
                 .replace("#__arg_value__#", name.depointer().run {
-                    if (field.variable.typeName.findType().isEnum()) {
-                        "$this.index"
-                    } else {
-                        this
+                    when {
+                        field.variable.typeName.findType().isEnum() -> "$this.index"
+                        field.variable.typeName.jsonable() -> this
+                        else -> "${this}.refId"
                     }
                 })
                 .replace("#__setter_method__#", field.setterMethodName())
