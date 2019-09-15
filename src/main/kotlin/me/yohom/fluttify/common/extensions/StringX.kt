@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.common.PATH
+import me.yohom.fluttify.common.SYSTEM_TYPEDEF
 import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.model.SDK
 import me.yohom.fluttify.common.model.Type
@@ -113,9 +114,9 @@ fun TYPE_NAME.isObjcValueType(): Boolean {
     return (this in listOf(
         "BOOL",
         "NSInteger",
-        "CGFloat",
-        "CLLocationDirection"
-    )) or this.findType().isEnum() or isCType()
+        "NSUInteger",
+        "CGFloat"
+    )) or this.findType().isEnum() or isCType() or (this in SYSTEM_TYPEDEF)
 }
 
 /**
@@ -188,7 +189,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "NSString", "NSString*" -> "String"
         "nil" -> "null"
         "NSArray", "NSArray*" -> "List"
-        "NSInteger" -> "int"
+        "NSInteger", "NSUInteger" -> "int"
         "BOOL" -> "bool"
         "CGFloat" -> "double"
         "CLLocationDirection" -> "double"
@@ -219,6 +220,13 @@ fun String.depointer(): String {
  */
 fun String.deprotocol(): String {
     return removePrefix("id<").removeSuffix(">")
+}
+
+/**
+ * 去除协议类型的id<>
+ */
+fun String.enprotocol(): String {
+    return "id<${this}>"
 }
 
 /**

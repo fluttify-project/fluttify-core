@@ -51,7 +51,7 @@ class SdkTypeTmpl(
             .map { SetterTmpl(it).dartSetter() }
 
         val methods = type.methods
-            .filterMethod(getters.union(setters).toList())
+            .filterMethod()
             .map { MethodTmpl(it).dartMethod() }
 
         return tmpl

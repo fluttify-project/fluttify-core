@@ -1,9 +1,6 @@
 package me.yohom.fluttify.common.tmpl.objc.common.handler
 
-import me.yohom.fluttify.common.extensions.depointer
-import me.yohom.fluttify.common.extensions.findType
-import me.yohom.fluttify.common.extensions.jsonable
-import me.yohom.fluttify.common.extensions.replaceParagraph
+import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Field
 import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgEnumTmpl
 import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgJsonableTmpl
@@ -15,7 +12,7 @@ import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgStructTmpl
 //    #__args__#
 //
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__#* ref = (#__class_name__#*) REF_MAP[@(refId)];
+//    #__class_name__# ref = (#__class_name__#) REF_MAP[@(refId)];
 //
 //    ref.#__setter__# = #__field_value__#;
 //    methodResult(@"success");
@@ -29,19 +26,17 @@ internal class HandlerSetterTmpl(private val field: Field) {
         // 1. 枚举
         // 2. jsonable
         val args = when {
-            field.variable.typeName.jsonable() -> ArgJsonableTmpl(
-                field.variable
-            ).objcArgJsonable()
-            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
-                field.variable
-            ).objcArgEnum()
-            field.variable.typeName.findType().isStruct() -> ArgStructTmpl(
-                field.variable
-            ).objcArgStruct()
+            field.variable.typeName.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
+            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
+            field.variable.typeName.findType().isStruct() -> ArgStructTmpl(field.variable).objcArgStruct()
             else -> ArgRefTmpl(field.variable).objcArgRef() // 暂时过滤了引入类型的setter
         }
         val fieldName = field.variable.name
-        val className = field.className
+        val className = if (field.className.findType().isInterface()) {
+            "id<${field.className}>"
+        } else {
+            field.className.enpointer()
+        }
 
         return tmpl
             .replace("#__method_name__#", field.setterMethodName())

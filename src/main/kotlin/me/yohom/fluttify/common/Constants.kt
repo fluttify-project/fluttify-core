@@ -18,6 +18,10 @@ val IGNORE_METHOD = listOf(
     "loadTileAtPath" // ios端的这个方法比较复杂, 先忽略
 )
 
+val SYSTEM_TYPEDEF = mapOf(
+    "CLLocationDirection" to "double"
+)
+
 /**
  * 保留的类
  */

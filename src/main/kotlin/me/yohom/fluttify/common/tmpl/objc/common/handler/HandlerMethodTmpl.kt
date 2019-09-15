@@ -50,9 +50,9 @@ internal class HandlerMethodTmpl(private val method: Method) {
                 }
             }
         val log = if (method.isStatic) {
-            "NSLog(\"fluttify-objc: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
+            "NSLog(@\"fluttify-objc: ${method.className}::${method.name}(暂未实现参数打印)\");"
         } else {
-            "NSLog(\"fluttify-objc: ${method.className}@\\(refId)::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":\\(${it.variable.name})\\n" }})\")"
+            "NSLog(@\"fluttify-objc: ${method.className}@%@::${method.name}(暂未实现参数打印)\", @(refId));"
         }
 
         // 获取当前调用方法的对象引用
@@ -72,7 +72,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)
             .replaceParagraph("#__ref__#", ref)
-            .replaceParagraph("#__log__#", "")
+            .replaceParagraph("#__log__#", log)
             .replaceParagraph("#__invoke__#", invoke)
             .replaceParagraph("#__result__#", result)
     }

@@ -15,12 +15,13 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
 /**
  * 过滤出可以自动生成的方法
  */
-fun List<Method>.filterMethod(distinctSource: List<String> = listOf()): List<Method> {
+fun List<Method>.filterMethod(): List<Method> {
     return asSequence()
         .filter { !it.isDeprecated }
         // todo 暂时不处理带有列表参数的方法
         .filter { (!it.formalParams.any { it.variable.typeName.isList() }).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
-//        .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterMethod: $it 由于所在类是接口 被过滤") } }
+        // 类似float*返回这样的类型的方法都暂时不处理
+        .filter { !it.returnType.run { contains("*") && depointer().isCType() } }
         .filter { !(it.platform == Platform.iOS && it.name.startsWith("init")) } // ios端的init系列函数作为构造器而不是普通方法
         .distinctBy { "${it.className}::${it.name}" }
         .filter { it.isOk() }

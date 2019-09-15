@@ -118,6 +118,7 @@ class PluginTmpl(
         val getterHandlers = libs
             .flatMap { it.types }
             .filterType()
+            .filter { !it.isView() } // View相关的逻辑都在PlatformView里了
             .flatMap { it.fields }
             .filterGetters()
             .map { HandlerGetterTmpl(it).objcGetter() }
@@ -125,6 +126,7 @@ class PluginTmpl(
         val setterHandlers = libs
             .flatMap { it.types }
             .filterType()
+            .filter { !it.isView() } // View相关的逻辑都在PlatformView里了
             .flatMap { it.fields }
             .filterSetters()
             .map { HandlerSetterTmpl(it).objcSetter() }
@@ -132,6 +134,7 @@ class PluginTmpl(
         val methodHandlers = libs
             .flatMap { it.types }
             .filterType()
+            .filter { !it.isView() } // View相关的逻辑都在PlatformView里了
             .flatMap { it.methods }
             .filterMethod()
             .map { HandlerMethodTmpl(it).objcHandlerMethod() }
