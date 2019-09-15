@@ -3,8 +3,8 @@ package me.yohom.fluttify.common.tmpl.objc.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.objc.plugin.delegate_method.DelegateMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.*
+import me.yohom.fluttify.common.tmpl.objc.common.delegate_method.DelegateMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.common.handler.*
 import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 
 //#import <Flutter/Flutter.h>

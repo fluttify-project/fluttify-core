@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.objc.plugin.handler.invoke
+package me.yohom.fluttify.common.tmpl.objc.common.handler.invoke
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method
@@ -23,8 +23,9 @@ internal class InvokeTmpl(private val method: Method) {
     }
 
     private fun var2formalParam(it: Parameter): String {
-        return if (it.variable.typeName.findType().isCallback()) {
-            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
+        return if (it.variable.typeName.findType().isLambda()) {
+            "${it.named}: nil /* lambda回调暂时不支持 */"
+//            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
         } else {
             when {
                 it.named.isNotEmpty() -> "${it.named}: ${it.variable.name}"

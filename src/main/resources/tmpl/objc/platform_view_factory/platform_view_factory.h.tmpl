@@ -1,13 +1,13 @@
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
+#import #__import__#
 
 extern NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 
 @interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
+- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar;
 @end
 
-@interface #__native_view__#PlatformView: NSObject <FlutterPlatformView>
-
-- (instancetype) initWithViewId: (NSInteger) viewId;
-
+@interface #__native_view__#PlatformView : NSObject <#__protocols__#>
+- (instancetype)initWithViewId:(NSInteger)viewId registrar:(NSObject <FlutterPluginRegistrar> *)registrar;
 @end

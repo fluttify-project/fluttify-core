@@ -70,7 +70,7 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    return SDK.findType(this.depointer())
+    return SDK.findType(this.depointer().deprotocol())
 }
 
 /**
@@ -113,7 +113,8 @@ fun TYPE_NAME.isObjcValueType(): Boolean {
     return (this in listOf(
         "BOOL",
         "NSInteger",
-        "CGFloat"
+        "CGFloat",
+        "CLLocationDirection"
     )) or this.findType().isEnum() or isCType()
 }
 
@@ -214,6 +215,13 @@ fun String.depointer(): String {
 }
 
 /**
+ * 去除协议类型的id<>
+ */
+fun String.deprotocol(): String {
+    return removePrefix("id<").removeSuffix(">")
+}
+
+/**
  * 为指针类型加上`*`号
  */
 fun String.enpointer(): String {
@@ -285,13 +293,6 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
  */
 fun String.objc2SwiftSpec(): String {
     return replace("URL", "url")
-}
-
-/**
- * 包名转换为路径
- */
-fun String.package2Path(): String {
-    return replace(".", File.separator)
 }
 
 /**

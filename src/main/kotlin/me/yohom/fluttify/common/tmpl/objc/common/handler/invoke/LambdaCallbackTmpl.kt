@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.objc.plugin.handler.invoke
+package me.yohom.fluttify.common.tmpl.objc.common.handler.invoke
 
 import me.yohom.fluttify.common.extensions.isObjcValueType
 import me.yohom.fluttify.common.extensions.jsonable
@@ -10,7 +10,7 @@ import me.yohom.fluttify.common.model.Type
 //: ^(#__formal_params__#) {
 //    // method channel
 //    FlutterMethodChannel *callbackChannel = [FlutterMethodChannel
-//          methodChannelWithName:@"#__caller_class_name__#::#__caller_method_name__#_Callback\(refId)"
+//          methodChannelWithName:@"#__caller_class_name__#::#__caller_method_name__#_Callback"
 //                binaryMessenger:[registrar messenger]];
 //
 //    // 日志打印
@@ -34,7 +34,7 @@ internal class LambdaCallbackTmpl(private val callerMethod: Method, private val 
             .replace("#__callback_method__#", callbackLambda.name)
             .replace(
                 "#__formal_params__#",
-                callbackLambda.formalParams.joinToString { "${if (it.variable.isList) "List<${it.variable.typeName}>" else it.variable.typeName} ${it.variable.name}" }
+                callbackLambda.formalParams.joinToString { "${if (it.variable.isList) "NSArray<${it.variable.typeName}>*" else it.variable.typeName} ${it.variable.name}" }
             )
             .replace("#__return_type__#", callbackLambda.returnType.toSwiftType())
             .replace("#__caller_class_name__#", callerMethod.className)

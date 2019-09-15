@@ -29,8 +29,15 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Bundle"; typeType = TypeType.Class },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class },
     Type().apply { name = "android.widget.FrameLayout"; typeType = TypeType.Class },
+    Type().apply { name = "CLLocationManager"; typeType = TypeType.Class },
     Type().apply { name = "CLLocationCoordinate2D"; typeType = TypeType.Struct },
+    Type().apply { name = "UIEdgeInsets"; typeType = TypeType.Struct },
+    Type().apply { name = "CFTimeInterval"; typeType = TypeType.Struct },
+    Type().apply { name = "CGRect"; typeType = TypeType.Struct },
+    Type().apply { name = "CGPoint"; typeType = TypeType.Struct },
+    Type().apply { name = "NSError"; typeType = TypeType.Class },
     Type().apply { name = "NSObject"; typeType = TypeType.Class },
+    Type().apply { name = "UIControl"; typeType = TypeType.Class },
     Type().apply { name = "UIView"; typeType = TypeType.Class }
 )
 

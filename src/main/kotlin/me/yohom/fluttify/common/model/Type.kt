@@ -146,7 +146,7 @@ open class Type : PlatformAware {
     }
 
     fun isRefType(): Boolean {
-        return typeType == TypeType.Class
+        return typeType == TypeType.Class || typeType == TypeType.Interface
     }
 
     fun isObfuscated(): Boolean {

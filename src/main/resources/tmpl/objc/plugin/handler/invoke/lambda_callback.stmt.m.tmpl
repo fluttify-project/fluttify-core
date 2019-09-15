@@ -1,7 +1,7 @@
 : ^(#__formal_params__#) {
     // method channel
     FlutterMethodChannel *callbackChannel = [FlutterMethodChannel
-          methodChannelWithName:@"#__caller_class_name__#::#__caller_method_name__#_Callback\(refId)"
+          methodChannelWithName:@"#__caller_class_name__#::#__caller_method_name__#_Callback"
                 binaryMessenger:[registrar messenger]];
 
     // 日志打印

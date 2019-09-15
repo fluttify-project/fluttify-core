@@ -1,14 +1,14 @@
-package me.yohom.fluttify.common.tmpl.objc.plugin.handler
+package me.yohom.fluttify.common.tmpl.objc.common.handler
 
 import me.yohom.fluttify.common.extensions.depointer
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Field
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgEnumTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgJsonableTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgRefTmpl
-import me.yohom.fluttify.common.tmpl.objc.plugin.handler.arg.ArgStructTmpl
+import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgEnumTmpl
+import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgJsonableTmpl
+import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgRefTmpl
+import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgStructTmpl
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 参数

@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.objc.plugin.handler.result
+package me.yohom.fluttify.common.tmpl.objc.common.handler.result
 
 import me.yohom.fluttify.common.TYPE_NAME
 

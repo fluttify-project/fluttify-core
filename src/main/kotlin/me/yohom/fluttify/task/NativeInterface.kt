@@ -109,7 +109,7 @@ open class IOSObjcInterface : DefaultTask() {
                         val factoryMFile =
                             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.m".file()
 
-                        PlatformViewFactoryTmpl(it, lib)
+                        PlatformViewFactoryTmpl(it, lib, ext)
                             .objcPlatformViewFactory()
                             .run {
                                 factoryHFile.writeText(this[0])

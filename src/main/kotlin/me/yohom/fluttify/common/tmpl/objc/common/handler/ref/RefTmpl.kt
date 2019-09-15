@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.objc.plugin.handler.ref
+package me.yohom.fluttify.common.tmpl.objc.common.handler.ref
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method

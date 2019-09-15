@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.objc.plugin.handler
+package me.yohom.fluttify.common.tmpl.objc.common.handler
 
 import me.yohom.fluttify.common.extensions.isObjcValueType
 import me.yohom.fluttify.common.model.Field
