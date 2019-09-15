@@ -11,13 +11,17 @@ internal class InvokeTmpl(private val method: Method) {
             if (method.returnType == "void") {
                 "[${method.className} ${method.name} ${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
             } else {
-                "${method.returnType} result = [${method.className} ${method.name}${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
+                "${method.returnType} result = [${method.className} ${method.name}${method.formalParams.joinToString(" ") {
+                    var2formalParam(it)
+                }}];"
             }
         } else {
             if (method.returnType == "void") {
                 "[ref ${method.name} ${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
             } else {
-                "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
+                "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") {
+                    var2formalParam(it)
+                }}];"
             }
         }
     }
@@ -27,10 +31,7 @@ internal class InvokeTmpl(private val method: Method) {
             "${it.named}: nil /* lambda回调暂时不支持 */"
 //            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
         } else {
-            when {
-                it.named.isNotEmpty() -> "${it.named}: ${it.variable.name}"
-                else -> ": ${it.variable.name}"
-            }
+            "${it.named}: ${if (it.variable.typeName.findType().isDelegate()) "self" else it.variable.name}"
         }
     }
 }

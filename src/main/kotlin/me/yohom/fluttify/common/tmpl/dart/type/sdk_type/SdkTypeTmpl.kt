@@ -40,7 +40,10 @@ class SdkTypeTmpl(
             "Ref_${type.platform}"
         else
             type.superClass.toDartType()
-        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
+        val methodChannel = if (type.isView())
+            "${ext.outputOrg}/${ext.outputProjectName}/${type.name}"
+        else
+            "${ext.outputOrg}/${ext.outputProjectName}"
 
         val getters = type.fields
             .filterGetters()

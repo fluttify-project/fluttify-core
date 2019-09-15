@@ -39,7 +39,7 @@ class CallbackTmpl(private val callerMethod: Method) {
         val callbackDelegateCases = callbackDelegates
             .map { param ->
                 val callbackMethods = param.variable.typeName.findType().methods
-                callbackMethods.map {
+                callbackMethods.joinToString("\n") {
                     CallbackDelegateCaseTmpl(callerMethod, it, param.variable.name).callbackCase()
                 }
             }

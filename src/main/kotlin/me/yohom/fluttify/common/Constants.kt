@@ -15,11 +15,13 @@ val IGNORE_METHOD = listOf(
     "hashCode",
     "addView",
     "removeView",
-    "loadTileAtPath" // ios端的这个方法比较复杂, 先忽略
+    "loadTileAtPath", // ios端的这个方法比较复杂, 先忽略
+    "takeSnapshotInRect" // ios端的这个方法比较复杂, 先忽略
 )
 
 val SYSTEM_TYPEDEF = mapOf(
-    "CLLocationDirection" to "double"
+    "CLLocationDirection" to "double",
+    "CFTimeInterval" to "double"
 )
 
 /**
@@ -36,7 +38,6 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "CLLocationManager"; typeType = TypeType.Class },
     Type().apply { name = "CLLocationCoordinate2D"; typeType = TypeType.Struct },
     Type().apply { name = "UIEdgeInsets"; typeType = TypeType.Struct },
-    Type().apply { name = "CFTimeInterval"; typeType = TypeType.Struct },
     Type().apply { name = "CGRect"; typeType = TypeType.Struct },
     Type().apply { name = "CGPoint"; typeType = TypeType.Struct },
     Type().apply { name = "NSError"; typeType = TypeType.Class },

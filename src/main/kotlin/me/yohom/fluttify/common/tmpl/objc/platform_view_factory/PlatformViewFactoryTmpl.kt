@@ -1,12 +1,13 @@
 package me.yohom.fluttify.common.tmpl.objc.platform_view_factory
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.replaceParagraph
-import me.yohom.fluttify.common.extensions.underscore2Camel
+import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.model.Type
 import me.yohom.fluttify.common.tmpl.objc.common.delegate_method.DelegateMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.common.handler.HandlerGetterTmpl
 import me.yohom.fluttify.common.tmpl.objc.common.handler.HandlerMethodTmpl
+import me.yohom.fluttify.common.tmpl.objc.common.handler.HandlerSetterTmpl
 
 //#import <Foundation/Foundation.h>
 //#import <Flutter/Flutter.h>
@@ -120,8 +121,27 @@ class PlatformViewFactoryTmpl(
             .joinToString(", ")
 
         val plugin = ext.outputProjectName.underscore2Camel()
-        val handlers = viewType.methods.joinToString("\n") { HandlerMethodTmpl(it).objcHandlerMethod() }
+        // 处理方法们 分三种
+        // 1. getter handler
+        // 2. setter handler
+        // 3. 普通方法 handler
+        val getterHandlers = viewType
+            .fields
+            .filterGetters()
+            .map { HandlerGetterTmpl(it).objcGetter() }
+
+        val setterHandlers = viewType
+            .fields
+            .filterSetters()
+            .map { HandlerSetterTmpl(it).objcSetter() }
+
+        val methodHandlers = viewType
+            .methods
+            .filterMethod()
+            .map { HandlerMethodTmpl(it).objcHandlerMethod() }
+
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}/${viewType.name}"
+
         val delegateMethods = lib
             .types
             .filter { it.isDelegate() }
@@ -137,7 +157,10 @@ class PlatformViewFactoryTmpl(
             mTmpl
                 .replace("#__native_view__#", nativeView)
                 .replace("#__plugin__#", plugin)
-                .replaceParagraph("#__handlers__#", handlers)
+                .replaceParagraph(
+                    "#__handlers__#",
+                    methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
+                )
                 .replace("#__method_channel__#", methodChannel)
                 .replaceParagraph("#__delegate_methods__#", delegateMethods)
         )

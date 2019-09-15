@@ -172,7 +172,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
-    return when (this?.depointer()) {
+    return SYSTEM_TYPEDEF[this?.depointer()] ?: when (this?.depointer()) {
         "String" -> "String"
         "boolean", "Boolean" -> "bool"
         "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
@@ -192,7 +192,6 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "NSInteger", "NSUInteger" -> "int"
         "BOOL" -> "bool"
         "CGFloat" -> "double"
-        "CLLocationDirection" -> "double"
         else -> {
             when {
                 Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
