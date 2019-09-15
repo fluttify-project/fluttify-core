@@ -26,6 +26,7 @@ fun JAVA_FILE.javaType(): Type {
     var simpleName = ""
     var typeType: TypeType? = null
     var superClass = ""
+    var interfaces = mutableListOf<String>() // todo 实现kotlin端的接口列表
     var isPublic = false
     var isAbstract = false
     var isInnerClass = false
@@ -165,6 +166,7 @@ fun OBJC_FILE.objcType(): List<Type> {
     var name = ""
     var typeType: TypeType? = null
     var superClass = ""
+    var interfaces = mutableListOf<String>()
     var isAbstract = false
     var genericTypes = listOf<TYPE_NAME>()
     val constructors = mutableListOf<Constructor>()
@@ -175,6 +177,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             typeType = TypeType.Class
             name = ctx.className.text
             superClass = ctx.superclassName.text
+            interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
             isAbstract = false
         }
 
@@ -187,6 +190,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isAbstract = isAbstract
                         it.name = name
                         it.superClass = superClass
+                        it.interfaces = interfaces
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
                         it.constants.addAll(enumConstants)
@@ -195,6 +199,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 )
                 // 创新创建fields和methods
                 fields = mutableListOf()
+                interfaces = mutableListOf()
                 methods = mutableListOf()
             }
         }
@@ -205,6 +210,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             typeType = TypeType.Interface
             name = ctx.protocolName().text
             superClass = ""
+            interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
             isAbstract = true
         }
 
@@ -217,6 +223,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isAbstract = isAbstract
                         it.name = name
                         it.superClass = superClass
+                        it.interfaces = interfaces
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
                         it.constants.addAll(enumConstants)
@@ -225,6 +232,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 )
                 // 创新创建fields和methods
                 fields = mutableListOf()
+                interfaces = mutableListOf()
                 methods = mutableListOf()
             }
         }

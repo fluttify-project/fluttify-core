@@ -47,6 +47,11 @@ open class Type : PlatformAware {
     var superClass: String = ""
 
     /**
+     * 实现的接口全名
+     */
+    var interfaces: List<String> = mutableListOf()
+
+    /**
      * 所有的构造器
      */
     var constructors: MutableList<Constructor> = mutableListOf()

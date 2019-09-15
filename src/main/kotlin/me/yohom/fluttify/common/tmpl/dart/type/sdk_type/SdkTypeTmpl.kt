@@ -10,8 +10,8 @@ import me.yohom.fluttify.common.model.Type
 //import 'package:flutter/services.dart';
 //
 //// ignore_for_file: non_constant_identifier_names, camel_case_types
-//class #__class_name__# extends #__super_class__# {
-//  #__class_name__#.withRefId(int refId): super(refId);
+//class #__class_name__# extends #__super_class__# #__mixins__# {
+//  #__class_name__#.withRefId(int refId) : super.withRefId(refId);
 //
 //  static final _channel = MethodChannel('#__method_channel__#');
 //
@@ -40,6 +40,13 @@ class SdkTypeTmpl(
             "Ref_${type.platform}"
         else
             type.superClass.toDartType()
+
+        val mixins = if (type.interfaces.isNotEmpty()) {
+            "with ${type.interfaces.joinToString()}"
+        } else {
+            ""
+        }
+
         val methodChannel = if (type.isView())
             "${ext.outputOrg}/${ext.outputProjectName}/${type.name}"
         else
@@ -61,6 +68,7 @@ class SdkTypeTmpl(
             .replace("#__current_package__#", currentPackage)
             .replace("#__class_name__#", className)
             .replace("#__super_class__#", superClass)
+            .replace("#__mixins__#", mixins)
             .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__getters__#", getters.joinToString("\n"))
             .replaceParagraph("#__setters__#", setters.joinToString("\n"))
