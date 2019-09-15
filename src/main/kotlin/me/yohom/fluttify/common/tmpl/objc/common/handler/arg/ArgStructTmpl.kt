@@ -10,8 +10,10 @@ internal class ArgStructTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/arg/arg_struct.stmt.m.tmpl").readText()
 
     fun objcArgStruct(): String {
+        val typeName = if (variable.isList) "NSArray<${variable.typeName}>" else variable.typeName
+        val argName = variable.name
         return tmpl
-            .replace("#__type_name__#", if (variable.isList) "List<${variable.typeName}>" else variable.typeName)
-            .replace("#__arg_name__#", variable.name)
+            .replace("#__type_name__#", typeName)
+            .replace("#__arg_name__#", argName)
     }
 }

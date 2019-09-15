@@ -110,31 +110,36 @@ class PlatformViewFactoryTmpl(
         this::class.java.getResource("/tmpl/objc/platform_view_factory/platform_view_factory.m.tmpl").readText()
 
     fun objcPlatformViewFactory(): List<String> {
+        val imports = "<${lib.name}/${lib.name}.h>"
+        val nativeView = viewType.name
+        val protocols = lib
+            .types
+            .filter { it.isDelegate() }
+            .map { it.name }
+            .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
+            .joinToString(", ")
+
+        val plugin = ext.outputProjectName.underscore2Camel()
+        val handlers = viewType.methods.joinToString("\n") { HandlerMethodTmpl(it).objcHandlerMethod() }
+        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}/${viewType.name}"
+        val delegateMethods = lib
+            .types
+            .filter { it.isDelegate() }
+            .flatMap { it.methods }
+            .distinctBy { "${it.name}${it.formalParams.joinToString()}" }
+            .joinToString("\n") { DelegateMethodTmpl(it).objcDelegateMethod() }
+
         return listOf(
             hTmpl
-                .replace("#__import__#", "<${lib.name}/${lib.name}.h>")
-                .replace("#__native_view__#", viewType.name)
-                .replace("#__protocols__#", lib
-                    .types
-                    .filter { it.isDelegate() }
-                    .map { it.name }
-                    .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
-                    .joinToString(", ")),
+                .replace("#__import__#", imports)
+                .replace("#__native_view__#", nativeView)
+                .replace("#__protocols__#", protocols),
             mTmpl
-                .replace("#__native_view__#", viewType.name)
-                .replace("#__plugin__#", ext.outputProjectName.underscore2Camel())
-                .replaceParagraph(
-                    "#__handlers__#",
-                    viewType.methods.joinToString("\n") { HandlerMethodTmpl(it).objcHandlerMethod() })
-                .replace("#__method_channel__#", "${ext.outputOrg}/${ext.outputProjectName}/${viewType.name}")
-                .replaceParagraph(
-                    "#__delegate_methods__#",
-                    lib
-                        .types
-                        .filter { it.isDelegate() }
-                        .flatMap { it.methods }
-                        .distinctBy { "${it.name}${it.formalParams.joinToString()}" }
-                        .joinToString("\n") { DelegateMethodTmpl(it).objcDelegateMethod() })
+                .replace("#__native_view__#", nativeView)
+                .replace("#__plugin__#", plugin)
+                .replaceParagraph("#__handlers__#", handlers)
+                .replace("#__method_channel__#", methodChannel)
+                .replaceParagraph("#__delegate_methods__#", delegateMethods)
         )
     }
 }

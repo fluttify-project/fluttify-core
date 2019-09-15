@@ -10,10 +10,14 @@ internal class RefTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/ref/ref.stmt.m.tmpl").readText()
 
     fun objcRef(): String {
+        val empty = ""
+        val protocol = "id<${method.className}>"
+        val `class` = method.className.enpointer()
+
         return when {
-            method.isStatic -> ""
-            method.className.findType().isInterface() -> tmpl.replace("#__class_name__#", "id<${method.className}>")
-            else -> tmpl.replace("#__class_name__#", method.className.enpointer())
+            method.isStatic -> empty
+            method.className.findType().isInterface() -> tmpl.replace("#__class_name__#", protocol)
+            else -> tmpl.replace("#__class_name__#", `class`)
         }
     }
 }

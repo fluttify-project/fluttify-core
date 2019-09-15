@@ -8,8 +8,11 @@ internal class ArgEnumTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/arg/arg_enum.stmt.m.tmpl").readText()
 
     fun objcArgEnum(): String {
+        val typeName = variable.typeName
+        val name = variable.name
+        
         return tmpl
-            .replace("#__type_name__#", variable.typeName)
-            .replace("#__arg_name__#", variable.name)
+            .replace("#__type_name__#", typeName)
+            .replace("#__arg_name__#", name)
     }
 }

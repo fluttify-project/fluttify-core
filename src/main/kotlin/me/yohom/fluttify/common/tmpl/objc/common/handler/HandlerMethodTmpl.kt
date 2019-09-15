@@ -68,6 +68,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
             ).objcResultStruct()
             else -> ResultRefTmpl(method.returnType).objcResultRef()
         }
+
         return tmpl
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)

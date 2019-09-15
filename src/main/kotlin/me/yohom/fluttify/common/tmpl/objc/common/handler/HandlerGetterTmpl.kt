@@ -16,24 +16,25 @@ internal class HandlerGetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_getter.stmt.m.tmpl").readText()
 
     fun objcGetter(): String {
-        return tmpl
-            .replace("#__method_name__#", field.getterMethodName())
-            .replace(
-                "#__class_name__#", if (field.className.findType().isInterface()) {
-                    "id<${field.className}>"
-                } else {
-                    field.className.enpointer()
-                }
-            )
-            .replace("#__getter__#", field.run {
-                when {
-                    variable.typeName.isObjcValueType() -> "@(ref.$getterName)"
-                    variable.typeName.findType().isStruct() -> {
-                        "nil/* 结构体getter暂时不支持 */"
+        val methodName = field.getterMethodName()
+        val className = if (field.className.findType().isInterface()) {
+            "id<${field.className}>"
+        } else {
+            field.className.enpointer()
+        }
+        val getter = field.run {
+            when {
+                variable.typeName.isObjcValueType() -> "@(ref.$getterName)"
+                variable.typeName.findType().isStruct() -> {
+                    "nil/* 结构体getter暂时不支持 */"
 //                        "@(${StructToNSValueTmpl(field.variable).objcStructToNSValue()}.hash)"
-                    }
-                    else -> "ref.$getterName"
                 }
-            })
+                else -> "ref.$getterName"
+            }
+        }
+        return tmpl
+            .replace("#__method_name__#", methodName)
+            .replace("#__class_name__#", className)
+            .replace("#__getter__#", getter)
     }
 }

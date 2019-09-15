@@ -13,10 +13,14 @@ internal class ResultRefTmpl(val returnType: TYPE_NAME) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/result/result_ref.stmt.m.tmpl").readText()
 
     fun objcResultRef(): String {
+        val returnVoid = "methodResult(@\"success\");"
+        val returnValue = "methodResult(@\"success\");"
+        val returnJsonable = "methodResult(result);"
+
         return when {
-            returnType == "void" -> "methodResult(@\"success\");"
-            returnType.isObjcValueType() -> "methodResult(@(result));"
-            returnType.jsonable() -> "methodResult(result);"
+            returnType == "void" -> returnVoid
+            returnType.isObjcValueType() -> returnValue
+            returnType.jsonable() -> returnJsonable
             else -> tmpl
         }
     }

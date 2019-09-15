@@ -9,11 +9,16 @@ internal class RegisterPlatformViewTmpl(
     private val viewType: Type,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/register_platform_view/register_platform_view.stmt.m.tmpl").readText()
+    private val tmpl =
+        this::class.java.getResource("/tmpl/objc/plugin/register_platform_view/register_platform_view.stmt.m.tmpl")
+            .readText()
 
     fun objcRegisterPlatformView(): String {
+        val viewType = "${ext.outputOrg}/${viewType.name}"
+        val factoryName = this.viewType.name.simpleName()
+
         return tmpl
-            .replace("#__view_type__#", "${ext.outputOrg}/${viewType.name}")
-            .replace("#__factory_name__#", viewType.name.simpleName())
+            .replace("#__view_type__#", viewType)
+            .replace("#__factory_name__#", factoryName)
     }
 }
