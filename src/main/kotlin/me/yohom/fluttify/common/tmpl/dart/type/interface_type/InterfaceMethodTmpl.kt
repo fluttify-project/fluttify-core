@@ -3,7 +3,7 @@ package me.yohom.fluttify.common.tmpl.dart.type.interface_type
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
 
-//#__return_type__# #__interface_method__#(#__formal_params__#);
+//Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {}
 class InterfaceMethodTmpl(private val method: Method) {
     private val tmpl =
         this::class.java.getResource("/tmpl/dart/type/interface_type/interface_method.dart.tmpl").readText()

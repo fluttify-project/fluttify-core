@@ -1,11 +1,9 @@
 package me.yohom.fluttify.common.tmpl.dart.type.interface_type
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Type
-import me.yohom.fluttify.common.tmpl.dart.common.MethodStubTmpl
 
 //import 'dart:typed_data';
 //
@@ -25,20 +23,17 @@ class InterfaceTypeTmpl(
     fun dartInterface(): String {
         val currentPackage = ext.outputProjectName
         val className = type.name.toDartType()
-        val superClass = if (type.superClass.isEmpty())
-            "Ref_${type.platform}"
-        else
-            type.superClass.toDartType()
+
+        val allSuperType = type.interfaces.union(listOf(type.superClass)).filter { it.isNotBlank() }
+        val superClass = if (allSuperType.isEmpty()) "Object" else allSuperType.joinToString()
 
         val methods = type.methods
             .map { InterfaceMethodTmpl(it).dartMethod() }
-
-        val stubs = type.interfaces.flatMap { it.findType().methods }.map { MethodStubTmpl(it).dartMethodStub() }
 
         return tmpl
             .replace("#__current_package__#", currentPackage)
             .replace("#__interface_type__#", className)
             .replace("#__super_mixins__#", superClass)
-            .replaceParagraph("#__interface_methods__#", methods.union(stubs).joinToString("\n"))
+            .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
     }
 }

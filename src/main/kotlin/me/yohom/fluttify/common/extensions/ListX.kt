@@ -22,7 +22,6 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { (!it.formalParams.any { it.variable.typeName.isList() }).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
         // 类似float*返回这样的类型的方法都暂时不处理
         .filter { !it.returnType.run { contains("*") && depointer().isCType() } }
-        .filter { !(it.platform == Platform.iOS && it.name.startsWith("init")) } // ios端的init系列函数作为构造器而不是普通方法
         .distinctBy { "${it.className}::${it.name}" }
         .filter { it.isOk() }
         .toList()

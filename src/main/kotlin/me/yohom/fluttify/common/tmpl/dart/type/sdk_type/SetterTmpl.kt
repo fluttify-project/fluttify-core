@@ -24,6 +24,8 @@ class SetterTmpl(private val field: Field) {
                     when {
                         field.variable.typeName.findType().isEnum() -> "$this.index"
                         field.variable.typeName.jsonable() -> this
+                        // 如果参数是抽象类型, 那么native端一定会用self/this作为参数传进去, 这边就不用传了
+                        field.variable.typeName.findType().isInterface() -> "\"\""
                         else -> "${this}.refId"
                     }
                 })

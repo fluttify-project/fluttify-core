@@ -31,10 +31,9 @@ class MethodTmpl(private val method: Method) {
         val returnType = method.returnType.toDartType()
         val name = method.name
         // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
-        val formalParams = method.formalParams
-            .map { it.variable.toDartString() }
-            .sortedBy { it } // 这里排序是为了让所有的lambda到后面去, `{`排序优先级默认在字母后面
-            .joinToString()
+        val formalParams = method
+            .formalParams
+            .joinToString { it.variable.toDartString() }
         val log = if (method.isStatic) {
             "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
         } else {
@@ -68,7 +67,7 @@ class MethodTmpl(private val method: Method) {
 
         val actualParams = params
             .filterFormalParams()
-            .filter { !it.variable.typeName.findType().isCallback() }
+            .filter { !it.variable.typeName.findType().isInterface() }
             .toMutableList()
             .apply {
                 if (!isStatic) add(

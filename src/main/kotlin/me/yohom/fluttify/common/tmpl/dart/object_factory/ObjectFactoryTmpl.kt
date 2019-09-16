@@ -80,6 +80,7 @@ class ObjectFactoryTmpl(
             .replaceParagraph("#__create_objects__#", libs
                 .flatMap { it.types }
                 .filterConstructable()
+                .distinctBy { it.name }
                 .joinToString("\n") { CreateObjectTmpl(it).dartCreateObject().joinToString("\n") })
 
     }

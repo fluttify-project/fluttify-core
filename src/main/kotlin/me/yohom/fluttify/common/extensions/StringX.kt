@@ -188,6 +188,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         // 开始objc
         "NSString", "NSString*" -> "String"
         "nil" -> "null"
+        "id" -> "Object"
         "NSArray", "NSArray*" -> "List"
         "NSInteger", "NSUInteger" -> "int"
         "BOOL" -> "bool"

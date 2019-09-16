@@ -42,7 +42,8 @@ class SdkTypeTmpl(
             type.superClass.toDartType()
 
         val mixins = if (type.interfaces.isNotEmpty()) {
-            "with ${type.interfaces.joinToString()}"
+            // todo 使用递归处理完全, 现在只是写死了只处理了两层
+            "with ${type.interfaces.union(type.interfaces.flatMap { it.findType().interfaces }).filter { it.findType().isInterface() }.reversed().joinToString()}"
         } else {
             ""
         }

@@ -123,6 +123,7 @@ open class Type : PlatformAware {
         return !isAbstract
                 && this != UNKNOWN_TYPE
                 && !isList()
+                && !isEnum()
                 && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
     }
 
