@@ -1,4 +1,4 @@
 Future<#__type_name__#> as#__type_name__#() async {
   final result = await MethodChannel('#__method_channel__#').invokeMethod('RefClass::as#__type_name__#', {'refId': refId});
-  return #__type_name__#.withRefId(result);
+  return #__type_name__#()..refId = result;
 }

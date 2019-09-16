@@ -33,7 +33,7 @@ class CallbackLambdaCaseTmpl(
                 if (it.variable.typeName.jsonable()) {
                     "args['${it.variable.name}']"
                 } else {
-                    "${it.variable.typeName.toDartType()}.withRefId(args['${it.variable.name}'])"
+                    "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name}'])"
                 }
             }
 

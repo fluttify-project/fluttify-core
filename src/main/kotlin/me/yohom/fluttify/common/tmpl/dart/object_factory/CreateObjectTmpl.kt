@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.model.Type
 
 //static Future<#__class_name__#> create#__creator_name__#(#__formal_params__#) async {
 //  final int refId = await _channel.invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
-//  return #__class_name__#.withRefId(refId);
+//  return #__class_name__#()..refId = refId;
 //}
 class CreateObjectTmpl(val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/object_factory/create_object.mtd.dart.tmpl").readText()

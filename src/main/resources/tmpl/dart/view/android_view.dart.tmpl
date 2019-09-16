@@ -34,7 +34,7 @@ class #__view__#_Android extends StatelessWidget {
   }
 
   void _onViewCreated(int id) {
-    final controller = #__view__#.withRefId(id);
+    final controller = #__view__#()..refId = id;
     if (onViewCreated != null) {
       onViewCreated(controller);
     }

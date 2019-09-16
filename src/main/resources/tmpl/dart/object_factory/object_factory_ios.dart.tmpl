@@ -8,50 +8,32 @@ class ObjectFactory_iOS {
 
   static Future<CLLocationCoordinate2D> createCLLocationCoordinate2D(double latitude, double longitude) async {
     final int refId = await _channel.invokeMethod('ObjectFactory::createCLLocationCoordinate2D', {'latitude': latitude, 'longitude': longitude});
-    return CLLocationCoordinate2D.withRefId(refId);
+    return CLLocationCoordinate2D()..refId = refId;
   }
 
   #__create_objects__#
 }
 
-class NSObject extends Ref_iOS {
-  NSObject.withRefId(int refId) : super.withRefId(refId);
-}
+class NSObject extends Ref_iOS {}
 
 // 结构体
-class CLLocationCoordinate2D extends Ref_iOS {
-  CLLocationCoordinate2D.withRefId(int refId) : super.withRefId(refId);
-}
+class CLLocationCoordinate2D extends Ref_iOS {}
 
-class CLLocation extends Ref_iOS {
-  CLLocation.withRefId(int refId) : super.withRefId(refId);
-}
+class CLLocation extends Ref_iOS {}
 
-class CGRect extends Ref_iOS {
-  CGRect.withRefId(int refId) : super.withRefId(refId);
-}
+class CGRect extends Ref_iOS {}
 
-class CGPoint extends Ref_iOS {
-  CGPoint.withRefId(int refId) : super.withRefId(refId);
-}
+class CGPoint extends Ref_iOS {}
 
 // 类
-class CLLocationManager extends Ref_iOS {
-  CLLocationManager.withRefId(int refId) : super.withRefId(refId);
-}
+class CLLocationManager extends Ref_iOS {}
 
-class NSError extends Ref_iOS {
-  NSError.withRefId(int refId) : super.withRefId(refId);
-}
+class NSError extends Ref_iOS {}
 
 mixin NSCoding on Ref_iOS {}
 
 mixin NSCopying on Ref_iOS {}
 
-class UIView extends Ref_iOS {
-  UIView.withRefId(int refId) : super.withRefId(refId);
-}
+class UIView extends Ref_iOS {}
 
-class UIControl extends UIView {
-  UIControl.withRefId(int refId) : super.withRefId(refId);
-}
+class UIControl extends UIView {}
