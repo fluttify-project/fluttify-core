@@ -5,7 +5,7 @@ import me.yohom.fluttify.common.model.Method
 import me.yohom.fluttify.common.model.Parameter
 import me.yohom.fluttify.common.model.Platform
 import me.yohom.fluttify.common.model.Variable
-import me.yohom.fluttify.common.tmpl.dart.type.sdk_type.callback.CallbackTmpl
+import me.yohom.fluttify.common.tmpl.dart.type.sdk_type.callback.CallbackMethodTmpl
 
 //#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  // 日志打印
@@ -40,7 +40,7 @@ class MethodTmpl(private val method: Method) {
             "print('fluttify-dart: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
         }
         val invoke = invokeString(method.isStatic, method.className, method.name, method.formalParams)
-        val callback = CallbackTmpl(method).callback()
+        val callback = CallbackMethodTmpl(method).callback()
         val returnStatement = returnString(method.returnType)
 
         return tmpl

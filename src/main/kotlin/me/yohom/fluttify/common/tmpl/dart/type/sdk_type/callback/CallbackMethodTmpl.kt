@@ -19,7 +19,7 @@ import me.yohom.fluttify.common.model.Method
 /**
  * 回调代码
  */
-class CallbackTmpl(private val callerMethod: Method) {
+class CallbackMethodTmpl(private val callerMethod: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/callback.stmt.dart.tmpl").readText()
 
     fun callback(): String {
@@ -35,19 +35,23 @@ class CallbackTmpl(private val callerMethod: Method) {
         val callbackLambdas = callerMethod.formalParams
             .filter { it.variable.typeName.findType().isLambda() }
 
-        val className = "${callerMethod.className}::${callerMethod.name}_Callback"
+        val callbackChannel = "${callerMethod.className}::${callerMethod.name}_Callback"
         val callbackDelegateCases = callbackDelegates
             .map { param ->
-                val callbackMethods = param.variable.typeName.findType().methods
-                callbackMethods.joinToString("\n") {
-                    CallbackDelegateCaseTmpl(callerMethod, it, param.variable.name).callbackCase()
-                }
+                param
+                    .variable
+                    .typeName
+                    .findType()
+                    .methods
+                    .joinToString("\n") {
+                        CallbackDelegateCaseTmpl("${callerMethod.className}::${callerMethod.name}", it, param.variable.name).dartCallbackDelegateCase()
+                    }
             }
         val callbackLambdaCases = callbackLambdas
             .map { CallbackLambdaCaseTmpl(callerMethod, it).callbackCase() }
 
         return tmpl
-            .replace("#__callback_channel__#", className)
+            .replace("#__callback_channel__#", callbackChannel)
             .replaceParagraph("#__cases__#", callbackDelegateCases.union(callbackLambdaCases).joinToString("\n"))
     }
 }

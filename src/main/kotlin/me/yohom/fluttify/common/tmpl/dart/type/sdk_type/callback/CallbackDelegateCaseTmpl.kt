@@ -1,39 +1,44 @@
 package me.yohom.fluttify.common.tmpl.dart.type.sdk_type.callback
 
+import me.yohom.fluttify.common.extensions.findType
+import me.yohom.fluttify.common.extensions.isList
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Method
 
 //case '#__callback_case__#':
-//  if (#__callback_handler__# != null) {
-//    // 日志打印
-//    #__log__#
+//  // 日志打印
+//  #__log__#
 //
 //    // 调用回调方法
-//    #__callback_handler__#(#__callback_args__#);
-//  }
+//  #__callback_handler__#(#__callback_args__#);
 //  break;
 /**
  * 回调Delegate的一个case
  */
 class CallbackDelegateCaseTmpl(
-    private val callerMethod: Method,
+    private val caller: String,
     private val callbackMethod: Method,
     private val callbackObject: String
 ) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/callback_case.stmt.dart.tmpl").readText()
 
-    fun callbackCase(): String {
-        val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${callbackMethod.name}"
+    fun dartCallbackDelegateCase(): String {
+        val callbackMethodName =
+            "${callbackMethod.name}${callbackMethod.formalParams.joinToString("") { it.named }.capitalize()}"
+
+        val callbackCase = "${caller}_Callback::${callbackMethodName}"
         val log =
-            "print('fluttify-dart-callback: ${callerMethod.className}::${callerMethod.name}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
-        val callbackHandler = "${callbackObject}.${callbackMethod.name}"
+            "print('fluttify-dart-callback: ${caller}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
+        val callbackHandler = "${callbackObject}?.${callbackMethodName}"
         val callbackArgs = callbackMethod.formalParams
             .joinToString {
-                if (it.variable.typeName.jsonable()) {
-                    "args['${it.variable.name}']"
-                } else {
-                    "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name}'])"
+                when {
+                    it.variable.typeName.jsonable() -> "args['${it.variable.name}']"
+                    it.variable.typeName.isList() -> "[]" // 列表暂时不处理
+                    it.variable.typeName.findType().isInterface() -> "${it.variable.typeName.toDartType()}_Ref()..refId = (args['${it.variable.name}'])"
+                    it.variable.typeName.findType().isEnum() -> "${it.variable.typeName.toDartType()}.values[(args['${it.variable.name}'])]"
+                    else -> "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name}'])"
                 }
             }
 
