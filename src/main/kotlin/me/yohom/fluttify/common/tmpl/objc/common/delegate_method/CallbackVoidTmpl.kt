@@ -13,7 +13,7 @@ internal class CallbackVoidTmpl(private val method: Method) {
         return tmpl
             .replace(
                 "#__callback_method__#",
-                "${method.name}:${method.formalParams.joinToString(":") { it.variable.typeName }}"
+                "Callback::${method.className}::${method.name}${method.formalParams.joinToString("") { it.named }.capitalize()}"
             )
             .replace(
                 "#__callback_args__#",

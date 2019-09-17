@@ -29,7 +29,7 @@ internal class HandlerGetterTmpl(private val field: Field) {
                     "nil/* 结构体getter暂时不支持 */"
 //                        "@(${StructToNSValueTmpl(field.variable).objcStructToNSValue()}.hash)"
                 }
-                else -> "ref.$getterName"
+                else -> "@(ref.$getterName.hash)"
             }
         }
         return tmpl

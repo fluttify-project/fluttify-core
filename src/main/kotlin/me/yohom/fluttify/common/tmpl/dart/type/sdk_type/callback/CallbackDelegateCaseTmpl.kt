@@ -17,7 +17,6 @@ import me.yohom.fluttify.common.model.Method
  * 回调Delegate的一个case
  */
 class CallbackDelegateCaseTmpl(
-    private val caller: String,
     private val callbackMethod: Method,
     private val callbackObject: String
 ) {
@@ -27,9 +26,9 @@ class CallbackDelegateCaseTmpl(
         val callbackMethodName =
             "${callbackMethod.name}${callbackMethod.formalParams.joinToString("") { it.named }.capitalize()}"
 
-        val callbackCase = "${caller}_Callback::${callbackMethodName}"
+        val callbackCase = "Callback::${callbackMethod.className}::${callbackMethodName}"
         val log =
-            "print('fluttify-dart-callback: ${caller}_${callbackMethod.name}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
+            "print('fluttify-dart-callback: ${callbackMethod.name}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
         val callbackHandler = "${callbackObject}?.${callbackMethodName}"
         val callbackArgs = callbackMethod.formalParams
             .joinToString {

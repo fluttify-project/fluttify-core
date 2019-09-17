@@ -18,6 +18,8 @@ internal class DelegateMethodTmpl(private val method: Method) {
         this::class.java.getResource("/tmpl/objc/plugin/delegate_method/delegate_method.stmt.m.tmpl").readText()
 
     fun objcDelegateMethod(): String {
+        val callbackMethodName = "${method.name}${method.formalParams.joinToString("") { it.named }.capitalize()}"
+
         return tmpl
             .replace("#__return_type__#", method.returnType)
             .replace("#__method_name__#", method.name)

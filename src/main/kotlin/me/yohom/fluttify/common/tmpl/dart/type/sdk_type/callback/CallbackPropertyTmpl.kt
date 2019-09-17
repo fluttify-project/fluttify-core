@@ -33,7 +33,7 @@ class CallbackPropertyTmpl(private val field: Field) {
             .findType()
             .methods
             .joinToString("\n") {
-                CallbackDelegateCaseTmpl("${field.className}::${field.variable.name}", it, field.variable.name).dartCallbackDelegateCase()
+                CallbackDelegateCaseTmpl(it, field.variable.name).dartCallbackDelegateCase()
             }
 
         return tmpl

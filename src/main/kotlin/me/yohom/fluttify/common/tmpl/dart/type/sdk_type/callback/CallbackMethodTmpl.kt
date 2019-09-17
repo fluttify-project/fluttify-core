@@ -44,7 +44,7 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
                     .findType()
                     .methods
                     .joinToString("\n") {
-                        CallbackDelegateCaseTmpl("${callerMethod.className}::${callerMethod.name}", it, param.variable.name).dartCallbackDelegateCase()
+                        CallbackDelegateCaseTmpl(it, param.variable.name).dartCallbackDelegateCase()
                     }
             }
         val callbackLambdaCases = callbackLambdas
