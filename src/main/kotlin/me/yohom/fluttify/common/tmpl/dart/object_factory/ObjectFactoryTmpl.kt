@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.tmpl.dart.object_factory
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.filterConstructable
+import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.model.Platform
@@ -90,6 +91,8 @@ import me.yohom.fluttify.common.model.Platform
 //class UIView extends Ref_iOS {}
 //
 //class UIControl extends UIView {}
+//
+//#__interface_refs__#
 /**
  * 对象工厂
  */
@@ -116,6 +119,18 @@ class ObjectFactoryTmpl(
                 .filterConstructable()
                 .distinctBy { it.name }
                 .joinToString("\n") { CreateObjectTmpl(it).dartCreateObject().joinToString("\n") })
-
+            .replaceParagraph("#__interface_refs__#", libs
+                .flatMap { it.types }
+                .filter { it.isInterface() }
+                .joinToString("\n") {
+                    // todo 目前只展开了两层, 之后用递归实现
+                    val interfaces = it
+                        .interfaces
+                        .union(it.interfaces.flatMap { it.findType().interfaces })
+                        .reversed()
+                        .union(listOf(it.name))
+                        .filter { it != "NSObject" }
+                    "class ${it.name}_Ref = NSObject with ${interfaces.joinToString()};"
+                })
     }
 }
