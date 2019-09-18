@@ -36,9 +36,7 @@ internal class CallbackReturnTmpl(private val method: Method) {
                 "#__callback_args__#",
                 method.formalParams.joinToString {
                     if (it.variable.typeName.findType().isStruct()) {
-                        "@\"${it.variable.name}\": @(${StructToNSValueTmpl(
-                            it.variable
-                        ).objcStructToNSValue()}.hash)"
+                        "@\"${it.variable.name}\": @(${StructToNSValueTmpl(it.variable).objcStructToNSValue()}.hash)"
                     } else if (it.variable.typeName.findType().isRefType()){
                         "@\"${it.variable.name}\": @(${it.variable.name}.hash)"
                     } else {

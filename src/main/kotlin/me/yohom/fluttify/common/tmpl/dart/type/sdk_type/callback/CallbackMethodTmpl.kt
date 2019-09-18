@@ -4,11 +4,11 @@ import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
 
-//MethodChannel('#__callback_channel__#' + refId.toString())
+//MethodChannel('#__callback_channel__#')
 //    .setMethodCallHandler((methodCall) async {
 //      final args = methodCall.arguments as Map;
-//      final refId = args['callerRefId'] as int;
-//      if (refId != this.refId) return;
+//      // final refId = args['callerRefId'] as int;
+//      // if (refId != this.refId) return;
 //
 //      switch (methodCall.method) {
 //        #__cases__#
@@ -35,7 +35,7 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
         val callbackLambdas = callerMethod.formalParams
             .filter { it.variable.typeName.findType().isLambda() }
 
-        val callbackChannel = "${callerMethod.className}::${callerMethod.name}_Callback"
+        val callbackChannel = "${callerMethod.className}::Callback"
         val callbackDelegateCases = callbackDelegates
             .map { param ->
                 param
