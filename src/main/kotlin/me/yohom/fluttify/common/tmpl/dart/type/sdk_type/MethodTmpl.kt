@@ -67,7 +67,6 @@ class MethodTmpl(private val method: Method) {
 
         val actualParams = params
             .filterFormalParams()
-            .filter { !it.variable.typeName.findType().isInterface() }
             .toMutableList()
             .apply {
                 if (!isStatic) add(

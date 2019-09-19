@@ -115,7 +115,7 @@ class PlatformViewFactoryTmpl(
         val nativeView = viewType.name
         val protocols = lib
             .types
-            .filter { it.isDelegate() }
+            .filter { it.isCallback() }
             .map { it.name }
             .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
             .joinToString(", ")
@@ -144,7 +144,7 @@ class PlatformViewFactoryTmpl(
 
         val delegateMethods = lib
             .types
-            .filter { it.isDelegate() }
+            .filter { it.isCallback() }
             .flatMap { it.methods }
             .distinctBy { "${it.name}${it.formalParams.joinToString()}" }
             .joinToString("\n") { DelegateMethodTmpl(it).objcDelegateMethod() }

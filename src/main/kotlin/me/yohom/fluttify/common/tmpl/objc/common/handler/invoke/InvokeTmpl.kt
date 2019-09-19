@@ -31,7 +31,7 @@ internal class InvokeTmpl(private val method: Method) {
             "${it.named}: nil /* lambda回调暂时不支持 */"
 //            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
         } else {
-            "${it.named}: ${if (it.variable.typeName.findType().isDelegate()) "self" else it.variable.name}"
+            "${it.named}: ${if (it.variable.typeName.findType().isCallback()) "self" else it.variable.name}"
         }
     }
 }

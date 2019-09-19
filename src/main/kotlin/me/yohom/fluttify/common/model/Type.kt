@@ -88,20 +88,14 @@ open class Type : PlatformAware {
 
     /**
      * 是否是回调
+     *
+     * 查找sdk中所有的类, 如果没有一个类是当前类的子类, 且当前类是接口类型, 那么就认为这个类是回调类
      */
     fun isCallback(): Boolean {
-        return typeType == TypeType.Interface // 必须是接口
-                && superClass.isEmpty() // 必须没有父类
+        return isInterface() && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) }
     }
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda
-
-    /**
-     * 是否是delegate, 与callback类似, 但是callback侧重于异步, 而delegate侧重于委托
-     */
-    fun isDelegate(): Boolean {
-        return isCallback() && name.endsWith("Delegate")
-    }
 
     fun subtypes(): List<Type> {
         return SDK.sdks.flatMap { it.libs }.flatMap { it.types }.filter { it.superClass == this.name }

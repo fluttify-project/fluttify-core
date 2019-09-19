@@ -7,16 +7,6 @@ import me.yohom.fluttify.common.tmpl.objc.common.delegate_method.DelegateMethodT
 import me.yohom.fluttify.common.tmpl.objc.common.handler.*
 import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 
-//#import <Flutter/Flutter.h>
-//#__imports__#
-//
-//@interface #__plugin_name__#Plugin : NSObject<#__protocols__#>
-//
-//- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar;
-//
-//@end
-//
-//
 //#import "#__plugin_name__#Plugin.h"
 //
 //typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
@@ -41,6 +31,15 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.Register
 //      methodChannelWithName:@"#__method_channel__#"
 //            binaryMessenger:[registrar messenger]];
 //
+//  [registrar addMethodCallDelegate:[[#__plugin_name__#Plugin alloc] initWithFlutterPluginRegistrar:registrar]
+//                           channel:channel];
+//
+//  // 注册View
+//  #__register_platform_views__#
+//}
+//
+//// Method Handlers
+//- (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
 //  // 引用Map
 //  REF_MAP = @{}.mutableCopy;
 //
@@ -49,37 +48,30 @@ import me.yohom.fluttify.common.tmpl.objc.plugin.register_platform_view.Register
 //    #__handlers__#
 //  };
 //
-//  // 处理channel
-//  [channel setMethodCallHandler:^(FlutterMethodCall * _Nonnull methodCall, FlutterResult  _Nonnull methodResult) {
-//          NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
-//          if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
-//              [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
-//              methodResult(@"success");
-//          } else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
-//              [REF_MAP removeAllObjects];
-//              methodResult(@"success");
-//          } else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
-//              CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
-//              CLLocationDegrees longitude = [args[@"longitude"] doubleValue];
+//  NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
+//  if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
+//    [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
+//    methodResult(@"success");
+//  } else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
+//    [REF_MAP removeAllObjects];
+//    methodResult(@"success");
+//  } else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
+//    CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
+//    CLLocationDegrees longitude = [args[@"longitude"] doubleValue];
 //
-//              CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
+//    CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
 //
-//              NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
-//              REF_MAP[@(dataValue.hash)] = dataValue;
+//    NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
+//    REF_MAP[@(dataValue.hash)] = dataValue;
 //
-//              methodResult(@(dataValue.hash));
-//          }
-//          else {
-//              if (_handlerMap[methodCall.method] != nil) {
-//                  _handlerMap[methodCall.method](registrar, args, methodResult);
-//              } else {
-//                  methodResult(FlutterMethodNotImplemented);
-//              }
-//          }
-//      }];
-//
-//  // 注册View
-//  #__register_platform_views__#
+//    methodResult(@(dataValue.hash));
+//  } else {
+//    if (_handlerMap[methodCall.method] != nil) {
+//      _handlerMap[methodCall.method](_registrar, args, methodResult);
+//    } else {
+//      methodResult(FlutterMethodNotImplemented);
+//    }
+//  }
 //}
 //
 //// 委托方法们
@@ -153,10 +145,17 @@ class PluginTmpl(
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCheckTmpl(it).objcTypeCheck() }
 
-        val delegateMethods = libs
+        val createObjectHandlers = libs
             .flatMap { it.types }
             .filterType()
-            .filter { it.isDelegate() }
+            .distinctBy { it.name }
+            .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
+            .map { HandlerObjectFactoryTmpl(it).objcObjectFactory() }
+
+        val callbackMethods = libs
+            .flatMap { it.types }
+            .filterType()
+            .filter { it.isCallback() }
             .flatMap { it.methods }
             .distinctBy { "${it.name}${it.formalParams}" }
             .map { DelegateMethodTmpl(it).objcDelegateMethod() }
@@ -170,7 +169,7 @@ class PluginTmpl(
                 .replace("#__plugin_name__#", pluginClassName)
                 .replace("#__protocols__#", libs
                     .flatMap { it.types }
-                    .filter { it.isDelegate() }
+                    .filter { it.isCallback() }
                     .map { it.name }
                     .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
                     .joinToString(", ")),
@@ -186,11 +185,12 @@ class PluginTmpl(
                         .union(setterHandlers)
                         .union(typeCheckHandlers)
                         .union(typeCastHandlers)
+                        .union(createObjectHandlers)
                         .joinToString("\n")
                 )
                 .replaceParagraph(
                     "#__delegate_methods__#",
-                    delegateMethods.joinToString("\n")
+                    callbackMethods.joinToString("\n")
                 )
         )
     }

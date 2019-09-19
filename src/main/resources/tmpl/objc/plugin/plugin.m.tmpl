@@ -18,6 +18,9 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 }
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
+  // 引用Map
+  REF_MAP = @{}.mutableCopy;
+
   FlutterMethodChannel *channel = [FlutterMethodChannel
       methodChannelWithName:@"#__method_channel__#"
             binaryMessenger:[registrar messenger]];
@@ -31,9 +34,6 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 
 // Method Handlers
 - (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
-  // 引用Map
-  REF_MAP = @{}.mutableCopy;
-
   // 处理方法们
   NSDictionary<NSString *, Handler> *_handlerMap = @{
     #__handlers__#
