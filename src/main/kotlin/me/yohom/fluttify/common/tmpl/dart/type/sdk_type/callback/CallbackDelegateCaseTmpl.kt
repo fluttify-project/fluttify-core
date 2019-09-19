@@ -28,7 +28,7 @@ class CallbackDelegateCaseTmpl(
 
         val callbackCase = "Callback::${callbackMethod.className}::${callbackMethodName}"
         val log =
-            "print('fluttify-dart-callback: ${callbackMethod.name}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
+            "print('fluttify-dart-callback: ${callbackMethodName}(${callbackMethod.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':\$args[${it.variable.name}]" }})');"
         val callbackHandler = "${callbackObject}?.${callbackMethodName}"
         val callbackArgs = callbackMethod.formalParams
             .joinToString {

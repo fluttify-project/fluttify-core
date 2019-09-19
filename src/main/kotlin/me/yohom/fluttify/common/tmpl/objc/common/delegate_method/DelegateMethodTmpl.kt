@@ -29,6 +29,7 @@ internal class DelegateMethodTmpl(private val method: Method) {
             .replaceParagraph(
                 "#__delegate__#",
                 when {
+                    method.returnType != "void" -> "// 由于flutter无法同步调用method channel, 所以暂不支持有返回值的回调方法\n// 相关issue https://github.com/flutter/flutter/issues/28310\nreturn nil;"
                     method.formalParams.any { it.variable.typeName.isList() } -> "// 暂不支持含有数组的方法"
                     method.returnType == "void" -> CallbackVoidTmpl(method).objcCallbackVoid()
                     else -> CallbackReturnTmpl(method).objcCallbackReturn()
