@@ -102,7 +102,7 @@ data class Method(
     }
 
     fun methodName(): String {
-        return "${className}::$name"
+        return "${className}::$name${formalParams.joinToString("") { it.named }.capitalize()}"
     }
 
     override fun toString(): String {

@@ -11,6 +11,8 @@ import me.yohom.fluttify.common.tmpl.objc.common.delegate_method.callback_return
 //      methodChannelWithName:@"#__method_channel__#"
 //            binaryMessenger:[_registrar messenger]];
 //
+//  NSLog(@"#__method_name__#");
+//
 //  #__delegate__#
 //}
 internal class DelegateMethodTmpl(private val method: Method) {
@@ -20,7 +22,7 @@ internal class DelegateMethodTmpl(private val method: Method) {
     fun objcDelegateMethod(): String {
         return tmpl
             .replace("#__return_type__#", method.returnType)
-            .replace("#__method_name__#", method.name)
+            .replace("#__method_name__#", method.methodName())
             .replace("#__method_channel__#", "${method.className}::Callback")
             .replace(
                 "#__formal_params__#",
@@ -29,10 +31,10 @@ internal class DelegateMethodTmpl(private val method: Method) {
             .replaceParagraph(
                 "#__delegate__#",
                 when {
-                    method.returnType != "void" -> "// 由于flutter无法同步调用method channel, 所以暂不支持有返回值的回调方法\n// 相关issue https://github.com/flutter/flutter/issues/28310\nreturn nil;"
+                    method.returnType != "void" -> "// 由于flutter无法同步调用method channel, 所以暂不支持有返回值的回调方法\n// 相关issue https://github.com/flutter/flutter/issues/28310\nNSLog(@\"暂不支持有返回值的回调方法\");\nreturn nil;"
                     method.formalParams.any { it.variable.typeName.isList() } -> "// 暂不支持含有数组的方法"
                     method.returnType == "void" -> CallbackVoidTmpl(method).objcCallbackVoid()
-                    else -> CallbackReturnTmpl(method).objcCallbackReturn()
+                    else -> CallbackReturnTmpl(method).objcCallbackReturn() // 因为上面两个分支已经覆盖了void和非void情况, 所以这里不会走到
                 }
             )
     }

@@ -6,9 +6,13 @@ import me.yohom.fluttify.common.extensions.isObjcValueType
 import me.yohom.fluttify.common.model.Field
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+//    NSLog(@"#__method_name__#");
+//
 //    // 引用对象
 //    NSInteger refId = [args[@"refId"] integerValue];
 //    #__class_name__# ref = (#__class_name__#) REF_MAP[@(refId)];
+//
+//    #__note__#
 //
 //    methodResult(#__getter__#);
 //},
@@ -32,9 +36,11 @@ internal class HandlerGetterTmpl(private val field: Field) {
                 else -> "@(ref.$getterName.hash)"
             }
         }
+        val note = if (field.variable.typeName.findType().isStruct()) "NSLog(@\"${methodName}:结构体getter暂时不支持\");" else ""
         return tmpl
             .replace("#__method_name__#", methodName)
             .replace("#__class_name__#", className)
+            .replace("#__note__#", note)
             .replace("#__getter__#", getter)
     }
 }
