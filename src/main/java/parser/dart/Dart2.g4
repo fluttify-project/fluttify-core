@@ -400,7 +400,7 @@ NEWLINE
 // 16.5.1 String Interpolation
 stringInterpolation
 //  : '$' IDENTIFIER_NO_DOLLAR
-  : '$' identifier// FIXME
+  : '$' identifier
   | '${' expression '}'
   ;
 

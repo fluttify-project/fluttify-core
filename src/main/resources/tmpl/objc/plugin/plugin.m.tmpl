@@ -1,0 +1,71 @@
+#import "#__plugin_name__#Plugin.h"
+
+typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
+
+NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
+
+@implementation #__plugin_name__#Plugin {
+  NSObject <FlutterPluginRegistrar> * _registrar;
+  NSDictionary<NSString *, Handler> *_handlerMap;
+}
+
+- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar {
+  self = [super init];
+  if (self) {
+    _registrar = registrar;
+    // 处理方法们
+    _handlerMap = @{
+      #__handlers__#
+    };
+  }
+
+  return self;
+}
+
++ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
+  // 引用Map
+  REF_MAP = @{}.mutableCopy;
+
+  FlutterMethodChannel *channel = [FlutterMethodChannel
+      methodChannelWithName:@"#__method_channel__#"
+            binaryMessenger:[registrar messenger]];
+
+  [registrar addMethodCallDelegate:[[#__plugin_name__#Plugin alloc] initWithFlutterPluginRegistrar:registrar]
+                           channel:channel];
+
+  // 注册View
+  #__register_platform_views__#
+}
+
+// Method Handlers
+- (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
+  NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
+  if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
+    [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
+    methodResult(@"success");
+  } else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
+    [REF_MAP removeAllObjects];
+    methodResult(@"success");
+  } else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
+    CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
+    CLLocationDegrees longitude = [args[@"longitude"] doubleValue];
+
+    CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
+
+    NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
+    REF_MAP[@(dataValue.hash)] = dataValue;
+
+    methodResult(@(dataValue.hash));
+  } else {
+    if (_handlerMap[methodCall.method] != nil) {
+      _handlerMap[methodCall.method](_registrar, args, methodResult);
+    } else {
+      methodResult(FlutterMethodNotImplemented);
+    }
+  }
+}
+
+// 委托方法们
+#__delegate_methods__#
+
+@end

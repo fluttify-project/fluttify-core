@@ -41,10 +41,12 @@ data class Field(
      */
     var isDeprecated: Boolean = false
 ) : PlatformAware {
+    @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("getterMethodName"))
     fun nativeHandleGetterMethodName(): String {
         return "handle${className.toUnderscore()}_get_${getterName.depointer()}"
     }
 
+    @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("setterMethodName"))
     fun nativeHandleSetterMethodName(): String {
         return "handle${className.toUnderscore()}_set_${setterName.depointer()}"
     }

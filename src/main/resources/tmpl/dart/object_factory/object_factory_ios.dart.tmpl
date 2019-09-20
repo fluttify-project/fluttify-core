@@ -1,0 +1,41 @@
+import 'package:flutter/services.dart';
+
+import 'package:#__current_package__#.dart';
+
+// ignore_for_file: non_constant_identifier_names, camel_case_types
+class ObjectFactory_iOS {
+  static final _channel = MethodChannel('#__method_chanel__#');
+
+  static Future<CLLocationCoordinate2D> createCLLocationCoordinate2D(double latitude, double longitude) async {
+    final int refId = await _channel.invokeMethod('ObjectFactory::createCLLocationCoordinate2D', {'latitude': latitude, 'longitude': longitude});
+    return CLLocationCoordinate2D()..refId = refId;
+  }
+
+  #__create_objects__#
+}
+
+class NSObject extends Ref_iOS {}
+
+// 结构体
+class CLLocationCoordinate2D extends Ref_iOS {}
+
+class CLLocation extends Ref_iOS {}
+
+class CGRect extends Ref_iOS {}
+
+class CGPoint extends Ref_iOS {}
+
+// 类
+class CLLocationManager extends Ref_iOS {}
+
+class NSError extends Ref_iOS {}
+
+mixin NSCoding on Ref_iOS {}
+
+mixin NSCopying on Ref_iOS {}
+
+class UIView extends Ref_iOS {}
+
+class UIControl extends UIView {}
+
+//#__interface_refs__#

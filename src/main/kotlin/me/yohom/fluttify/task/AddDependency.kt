@@ -8,6 +8,7 @@ import org.gradle.api.tasks.TaskAction
 
 /**
  * 为生成android工程加入目标jar到libs文件夹
+ * todo 避免拷贝unzip文件夹
  */
 open class AndroidAddDependency : DefaultTask() {
 
@@ -26,6 +27,12 @@ open class AndroidAddDependency : DefaultTask() {
 
 /**
  * 为生成ios工程加入目标framework到文件夹
+ *
+ * todo 加入引入资源的选项 在podspec文件中加
+ *
+ *  # 需要引入的资源文件
+ *  s.resource = "MAMapKit.framework/AMap.bundle"
+ *
  */
 open class IOSAddDependency : DefaultTask() {
 

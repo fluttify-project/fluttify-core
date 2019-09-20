@@ -2,6 +2,7 @@ package me.yohom.fluttify.common.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.common.PATH
+import me.yohom.fluttify.common.SYSTEM_TYPEDEF
 import me.yohom.fluttify.common.TYPE_NAME
 import me.yohom.fluttify.common.model.SDK
 import me.yohom.fluttify.common.model.Type
@@ -48,6 +49,8 @@ fun TYPE_NAME?.jsonable(): Boolean {
 fun TYPE_NAME.isList(): Boolean {
     return Regex("\\w*List<(\\w*|.*)>").matches(this)
             || Regex("Iterable<(\\w*|.*)>").matches(this)
+            || Regex("\\w*\\[]").matches(this)
+            || Regex("NSArray.*\\*?").matches(this)
 }
 
 /**
@@ -68,7 +71,7 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    return SDK.findType(this)
+    return SDK.findType(this.depointer().deprotocol())
 }
 
 /**
@@ -78,6 +81,7 @@ fun TYPE_NAME.toKotlinType(): String {
     return when {
         this == "void" -> "Unit"
         this == "Integer" -> "Int"
+//        this == "float" -> "Double" // 到kotlin的时候, 一律是Double
         jsonable() -> capitalize()
         else -> this
     }.replace("[]", "Array")
@@ -109,8 +113,10 @@ fun TYPE_NAME.toSwiftType(): String {
 fun TYPE_NAME.isObjcValueType(): Boolean {
     return (this in listOf(
         "BOOL",
-        "NSInteger"
-    )) or this.findType().isEnum() or isCType()
+        "NSInteger",
+        "NSUInteger",
+        "CGFloat"
+    )) or this.findType().isEnum() or isCType() or (this in SYSTEM_TYPEDEF)
 }
 
 /**
@@ -129,9 +135,9 @@ fun TYPE_NAME.isCType(): Boolean {
  */
 fun TYPE_NAME.toObjcType(): String {
     return when (this) {
-        "double" -> "NSNumber*"
-        "float" -> "NSNumber*"
-        "int" -> "NSNumber*"
+//        "double" -> "NSNumber*"
+//        "float" -> "NSNumber*"
+//        "int" -> "NSNumber*"
         else -> this
     }
 }
@@ -166,7 +172,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME?.toDartType(): TYPE_NAME {
-    return when (this) {
+    return SYSTEM_TYPEDEF[this?.depointer()] ?: when (this?.depointer()) {
         "String" -> "String"
         "boolean", "Boolean" -> "bool"
         "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
@@ -182,14 +188,17 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         // 开始objc
         "NSString", "NSString*" -> "String"
         "nil" -> "null"
+        "id" -> "Object"
         "NSArray", "NSArray*" -> "List"
-        "NSInteger" -> "int"
+        "NSInteger", "NSUInteger" -> "int"
         "BOOL" -> "bool"
+        "CGFloat" -> "double"
         else -> {
-            if (Regex("ArrayList<\\w*>").matches(this)) {
-                removePrefix("Array")
-            } else {
-                this
+            when {
+                Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
+                startsWith("NSArray") -> "List<${genericType().depointer()}>"
+                Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
+                else -> this
             }
         }
     }.replace("$", ".").replace(".", "_").depointer()
@@ -204,6 +213,27 @@ fun TYPE_NAME.toUnderscore(): String {
  */
 fun String.depointer(): String {
     return removePrefix("*").removeSuffix("*")
+}
+
+/**
+ * 去除协议类型的id<>
+ */
+fun String.deprotocol(): String {
+    return removePrefix("id<").removeSuffix(">")
+}
+
+/**
+ * 去除协议类型的id<>
+ */
+fun String.enprotocol(): String {
+    return "id<${this}>"
+}
+
+/**
+ * 为指针类型加上`*`号
+ */
+fun String.enpointer(): String {
+    return if (endsWith("*")) this else "$this *"
 }
 
 /**
@@ -271,13 +301,6 @@ fun String.replaceBatch(vararg sourcesAndDestination: String): String {
  */
 fun String.objc2SwiftSpec(): String {
     return replace("URL", "url")
-}
-
-/**
- * 包名转换为路径
- */
-fun String.package2Path(): String {
-    return replace(".", File.separator)
 }
 
 /**

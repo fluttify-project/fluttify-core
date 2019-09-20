@@ -15,17 +15,9 @@ data class Variable(
     override var platform: Platform
 ) : PlatformAware {
     fun toDartString(): String {
-        return if (typeName.findType().isCallback()) {
+        return if (typeName.findType().isLambda()) {
             val type = typeName.findType()
-            type.methods
-                // 过滤掉方法参数中含有不认识类的方法
-                .filter { it.formalParams.none { it.variable.typeName.findType() == Type.UNKNOWN_TYPE } }
-                .distinctBy { it.name }
-                .takeIf { it.isNotEmpty() }
-                ?.joinToString(prefix = "{", postfix = "}") {
-                    "void ${it.name}(${it.formalParams.joinToString { it.variable.toDartString() }})"
-                }
-                ?: ""
+            "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
             "${typeName.toDartType()} ${name.depointer()}"
         }

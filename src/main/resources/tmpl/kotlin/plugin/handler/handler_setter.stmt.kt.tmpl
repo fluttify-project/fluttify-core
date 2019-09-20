@@ -1,0 +1,9 @@
+"#__setter_name__#" to { registrar, args, methodResult ->
+    val #__field_name__# = args["#__field_name__#"] as #__field_type__#
+
+    val refId = args["refId"] as Int
+    val ref = REF_MAP[refId] as #__class_name__#
+
+    ref.#__field_name__# = #__field_value__#
+    methodResult.success("success")
+}

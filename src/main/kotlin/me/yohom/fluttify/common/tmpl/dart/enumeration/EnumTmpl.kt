@@ -11,7 +11,7 @@ import me.yohom.fluttify.common.model.Type
  * 生成普通类的dart接口
  */
 class EnumTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/enum.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/enumeration/enum.dart.tmpl").readText()
 
     fun dartEnum(): String {
         return tmpl

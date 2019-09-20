@@ -27,19 +27,29 @@ open class Type : PlatformAware {
     var isPublic: Boolean = true
 
     /**
+     * 是否抽象
+     */
+    var isAbstract: Boolean = false
+
+    /**
      * 是否是内部类
      */
     var isInnerClass: Boolean = false
 
     /**
-     * 是否primitive
+     * 是否jsonable
      */
-    var isPrimitive: Boolean = false
+    var isJsonable: Boolean = false
 
     /**
      * 父类全名
      */
     var superClass: String = ""
+
+    /**
+     * 实现的接口全名
+     */
+    var interfaces: List<String> = mutableListOf()
 
     /**
      * 所有的构造器
@@ -78,28 +88,36 @@ open class Type : PlatformAware {
 
     /**
      * 是否是回调
+     *
+     * 查找sdk中所有的类, 如果没有一个类是当前类的子类, 且当前类是接口类型, 那么就认为这个类是回调类
      */
     fun isCallback(): Boolean {
-        return typeType == TypeType.Interface // 必须是接口
-                // 返回类型必须是void或者Boolean
-                && methods.all { it.returnType.toDartType() in listOf("void", "bool") }
-                // 参数类型必须是jsonable或者引用类型
-                && methods.all { it.formalParams.all { it.variable.typeName.findType().run { jsonable() || !isInterface() } } }
-                // 必须没有父类
-                && superClass.isEmpty()
-                // 或者是lambda
-                || typeType == TypeType.Lambda
+        return isInterface()
+                && isPublic
+                && genericTypes.isEmpty()
+                && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) || it.superClass == this.name }
     }
 
-    /**
-     * 是否是delegate, 与callback类似, 但是callback侧重于异步, 而delegate侧重于委托
-     */
-    fun isDelegate(): Boolean {
-        return false
+    fun isLambda(): Boolean = typeType == TypeType.Lambda
+
+    fun subtypes(): List<Type> {
+        return SDK.sdks.flatMap { it.libs }.flatMap { it.types }.filter { it.superClass == this.name }
+    }
+
+    fun constructable(): Boolean {
+        return !isAbstract
+                && this != UNKNOWN_TYPE
+                && !isList()
+                && !isEnum()
+                && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
     }
 
     fun isEnum(): Boolean {
         return typeType == TypeType.Enum
+    }
+
+    fun isStruct(): Boolean {
+        return typeType == TypeType.Struct
     }
 
     fun isInterface(): Boolean {
@@ -119,7 +137,7 @@ open class Type : PlatformAware {
     }
 
     fun isRefType(): Boolean {
-        return typeType == TypeType.Class
+        return typeType == TypeType.Class || typeType == TypeType.Interface
     }
 
     fun isObfuscated(): Boolean {
@@ -140,7 +158,7 @@ open class Type : PlatformAware {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isPrimitive=$isPrimitive, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {
@@ -149,5 +167,5 @@ open class Type : PlatformAware {
 }
 
 enum class TypeType {
-    Class, Enum, Interface, Lambda
+    Class, Enum, Interface, Lambda, Struct
 }

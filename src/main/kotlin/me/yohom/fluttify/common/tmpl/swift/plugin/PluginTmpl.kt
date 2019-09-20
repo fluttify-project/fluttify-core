@@ -3,9 +3,9 @@ package me.yohom.fluttify.common.tmpl.swift.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.GetterMethodTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.HandleMethodTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.handlemethod.SetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.handler.GetterMethodTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.handler.HandleMethodTmpl
+import me.yohom.fluttify.common.tmpl.swift.plugin.handler.SetterMethodTmpl
 
 //import Flutter
 //import UIKit

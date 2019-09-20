@@ -1,0 +1,19 @@
+: ^(#__formal_params__#) {
+    // method channel
+    FlutterMethodChannel *callbackChannel = [FlutterMethodChannel
+          methodChannelWithName:@"#__caller_class_name__#::#__caller_method_name__#_Callback"
+                binaryMessenger:[registrar messenger]];
+
+    // 日志打印
+    #__log__#
+
+    // 开始回调
+    [callbackChannel invokeMethod:@"#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#"
+                        arguments:@{
+                             #__callback_params__#
+                             @"refId": @(refId)
+                        }];
+
+    // 方法返回值
+    #__return_stmt__#
+}

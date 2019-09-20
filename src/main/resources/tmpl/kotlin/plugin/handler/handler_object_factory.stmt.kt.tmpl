@@ -1,0 +1,10 @@
+"ObjectFactory::create#__creator_name__#" to { registrar, args, methodResult ->
+    // 参数
+    #__args__#
+
+    // 创建对象
+    val obj = #__class_name__#(#__args_value__#)
+    REF_MAP[obj.hashCode()] = obj
+
+    methodResult.success(obj.hashCode())
+}

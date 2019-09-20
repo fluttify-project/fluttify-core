@@ -7,8 +7,10 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.model.SDK
 import me.yohom.fluttify.common.model.TypeType
-import me.yohom.fluttify.common.tmpl.dart.clazz.ClassTmpl
 import me.yohom.fluttify.common.tmpl.dart.enumeration.EnumTmpl
+import me.yohom.fluttify.common.tmpl.dart.type.interface_type.InterfaceTypeTmpl
+import me.yohom.fluttify.common.tmpl.dart.type.ref_type.RefTypeTmpl
+import me.yohom.fluttify.common.tmpl.dart.type.sdk_type.SdkTypeTmpl
 import me.yohom.fluttify.common.tmpl.dart.view.AndroidViewTmpl
 import me.yohom.fluttify.common.tmpl.dart.view.UiKitViewTmpl
 import org.gradle.api.DefaultTask
@@ -43,9 +45,9 @@ open class AndroidDartInterface : DefaultTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Class, TypeType.Struct -> SdkTypeTmpl(it, ext).dartClass()
                     TypeType.Enum -> EnumTmpl(it).dartEnum()
-                    TypeType.Interface -> ""
+                    TypeType.Interface -> InterfaceTypeTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
                     null -> ""
                 }
@@ -60,6 +62,12 @@ open class AndroidDartInterface : DefaultTask() {
                     resultFile.file().writeText(resultDart)
                 }
             }
+
+        // 在Ref类中为每个类生成类型检查和转型方法
+        RefTypeTmpl(sdk, ext).dartRefClass().run {
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/ref.dart".file()
+                .writeText(this)
+        }
     }
 
 }
@@ -90,12 +98,13 @@ open class IOSDartInterface : DefaultTask() {
         // 处理普通类
         sdk.libs
             .flatMap { it.types }
+            .onEach { if (it.isEnum()) println("类${it.name}是枚举") }
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class -> ClassTmpl(it, ext).dartClass()
+                    TypeType.Class, TypeType.Struct -> SdkTypeTmpl(it, ext).dartClass()
                     TypeType.Enum -> EnumTmpl(it).dartEnum()
-                    TypeType.Interface -> ""
+                    TypeType.Interface -> InterfaceTypeTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
                     null -> ""
                 }
@@ -110,5 +119,11 @@ open class IOSDartInterface : DefaultTask() {
                     resultFile.file().writeText(resultDart)
                 }
             }
+
+        // 在Ref类中为每个类生成类型检查和转型方法
+        RefTypeTmpl(sdk, ext).dartRefClass().run {
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ref.dart".file()
+                .writeText(this)
+        }
     }
 }
