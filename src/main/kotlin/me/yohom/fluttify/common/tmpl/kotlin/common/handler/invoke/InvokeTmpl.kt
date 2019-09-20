@@ -22,15 +22,15 @@ internal class InvokeTmpl(private val method: Method) {
         }
     }
 
-    private fun var2formalParam(it: Variable): String {
-        return if (it.typeName.findType().isCallback()) {
-            CallbackTmpl(method, it.typeName.findType()).kotlinCallback()
+    private fun var2formalParam(variable: Variable): String {
+        return if (variable.typeName.findType().isCallback()) {
+            CallbackTmpl(method, variable.typeName.findType()).kotlinCallback()
         } else {
             when {
-                it.isList -> "ArrayList(${it.name})"
+                variable.isList -> "ArrayList(${variable.run { if (typeName.contains("float", true)) "$name.map { it.toFloat() }" else name }})"
                 // 由于dart端的double到kotlin这边都是double, 如果方法参数是float的话, 需要转一手
-                it.typeName.toLowerCase() == "float" -> "${it.name}.toFloat()"
-                else -> it.name
+                variable.typeName.toLowerCase() == "float" -> "${variable.name}.toFloat()"
+                else -> variable.name
             }
         }
     }

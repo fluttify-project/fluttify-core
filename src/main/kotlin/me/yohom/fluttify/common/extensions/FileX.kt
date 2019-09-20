@@ -44,11 +44,19 @@ fun JAVA_FILE.javaType(): Type {
             genericTypes = ctx.genericTypes()
             isAbstract = ctx.isAbstract()
 
+            // 列出所有的import
             val imports = ctx
                 .ancestorOf(CompilationUnitContext::class)
                 ?.importDeclaration()
                 ?.map { it.qualifiedName().text } ?: listOf()
+            // 从这些import中找出extends后面的类
             superClass = imports.firstOrNull { it.substringAfterLast(".") == ctx.typeType()?.text } ?: ""
+            interfaces.addAll(imports.filter {
+                ctx.typeList()
+                    ?.typeType()
+                    ?.map { it.text }
+                    ?.contains(it.substringAfterLast(".")) == true
+            })
         }
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {

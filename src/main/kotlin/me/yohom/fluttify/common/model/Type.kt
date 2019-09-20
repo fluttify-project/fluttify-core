@@ -95,7 +95,7 @@ open class Type : PlatformAware {
         return isInterface()
                 && isPublic
                 && genericTypes.isEmpty()
-                && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) }
+                && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) || it.superClass == this.name }
     }
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda

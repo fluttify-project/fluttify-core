@@ -31,7 +31,12 @@ internal class CallbackMethodTmpl(private val callbackMethod: Method) {
                 "#__formal_params__#",
                 callbackMethod.formalParams.joinToString { "${it.variable.name}: ${if (it.variable.isList) "List<${it.variable.typeName.toKotlinType()}>" else it.variable.typeName.toKotlinType()}" }
             )
-            .replace("#__return_type__#", callbackMethod.returnType.toKotlinType())
+            .replace("#__return_type__#", when (callbackMethod.returnType.toKotlinType()) {
+                // 原始类型使用非可空类型
+                "Boolean", "Int", "Float", "Double", "Unit" -> callbackMethod.returnType.toKotlinType()
+                // 引用类型使用可空类型
+                else -> "${callbackMethod.returnType.toKotlinType()}?"
+            })
             .replace(
                 "#__callback_params__#",
                 callbackMethod.formalParams.joinToString(",\n") {
@@ -47,7 +52,10 @@ internal class CallbackMethodTmpl(private val callbackMethod: Method) {
                 when (callbackMethod.returnType.toKotlinType()) {
                     "Boolean" -> "return true"
                     "Int" -> "return 0"
-                    else -> ""
+                    "Float" -> "return 0f"
+                    "Double" -> "return 0.0"
+                    "Unit" -> ""
+                    else -> "return null"
                 }
             )
     }

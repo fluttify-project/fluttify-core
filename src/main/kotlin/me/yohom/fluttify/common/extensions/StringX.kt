@@ -81,7 +81,7 @@ fun TYPE_NAME.toKotlinType(): String {
     return when {
         this == "void" -> "Unit"
         this == "Integer" -> "Int"
-        this == "float" -> "Double" // 到kotlin的时候, 一律是Double
+//        this == "float" -> "Double" // 到kotlin的时候, 一律是Double
         jsonable() -> capitalize()
         else -> this
     }.replace("[]", "Array")
