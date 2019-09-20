@@ -6,11 +6,11 @@ import me.yohom.fluttify.common.extensions.fromJson
 import me.yohom.fluttify.common.extensions.simpleName
 import me.yohom.fluttify.common.extensions.underscore2Camel
 import me.yohom.fluttify.common.model.SDK
-import me.yohom.fluttify.common.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import me.yohom.fluttify.common.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactoryTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactory
 import me.yohom.fluttify.common.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
+import me.yohom.fluttify.common.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
 import me.yohom.fluttify.common.tmpl.objc.plugin.PluginTmpl as ObjcPluginTmpl
 import me.yohom.fluttify.common.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl as SwiftPlatformViewFactoryTmpl
 import me.yohom.fluttify.common.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
@@ -47,21 +47,24 @@ open class AndroidKotlinInterface : DefaultTask() {
 
         // 生成PlatformViewFactory文件
         sdk.libs
-            .flatMap { it.types }
-            .filter { it.isView() }
-            .forEach {
-                val factoryOutputFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
-                        ".",
-                        "/"
-                    )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
+            .forEach { lib ->
+                lib.types
+                    .filter { it.isView() }
+                    .forEach {
+                        val factoryOutputFile =
+                            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
+                                ".",
+                                "/"
+                            )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
 
-                KotlinPlatformViewFactoryTmpl(it, ext)
-                    .kotlinPlatformViewFactory()
-                    .run {
-                        factoryOutputFile.writeText(this)
+                        KotlinPlatformViewFactory(it, lib, ext)
+                            .kotlinPlatformViewFactory()
+                            .run {
+                                factoryOutputFile.writeText(this)
+                            }
                     }
             }
+
     }
 
 }
@@ -109,7 +112,7 @@ open class IOSObjcInterface : DefaultTask() {
                         val factoryMFile =
                             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.m".file()
 
-                        PlatformViewFactoryTmpl(it, lib, ext)
+                        ObjcPlatformViewFactory(it, lib, ext)
                             .objcPlatformViewFactory()
                             .run {
                                 factoryHFile.writeText(this[0])

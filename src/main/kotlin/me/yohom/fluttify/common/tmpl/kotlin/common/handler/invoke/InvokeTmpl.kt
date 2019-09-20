@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.invoke
+package me.yohom.fluttify.common.tmpl.kotlin.common.handler.invoke
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.model.Method

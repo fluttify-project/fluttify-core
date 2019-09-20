@@ -1,10 +1,10 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler
+package me.yohom.fluttify.common.tmpl.kotlin.common.handler
 
 import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.common.model.Type
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgEnumTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgJsonableTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgRefTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.arg.ArgEnumTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.arg.ArgJsonableTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.arg.ArgRefTmpl
 
 //"ObjectFactory::create#__creator_name__#" to { registrar, args, methodResult ->
 //    // 参数

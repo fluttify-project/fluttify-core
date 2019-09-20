@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ref
+package me.yohom.fluttify.common.tmpl.kotlin.common.handler.ref
 
 import me.yohom.fluttify.common.model.Method
 

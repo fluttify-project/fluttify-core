@@ -84,6 +84,12 @@ class Lib {
      */
     var types: MutableList<Type> = mutableListOf()
 
+    /**
+     * 回调类们
+     */
+    val callbacks: List<Type>
+        get() = types.filter { it.isCallback() }
+
     override fun toString(): String {
         return "Lib(name='$name', types=$types)"
     }

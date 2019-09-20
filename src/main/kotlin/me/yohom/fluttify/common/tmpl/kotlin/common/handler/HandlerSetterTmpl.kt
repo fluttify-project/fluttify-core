@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler
+package me.yohom.fluttify.common.tmpl.kotlin.common.handler
 
 import me.yohom.fluttify.common.extensions.toKotlinType
 import me.yohom.fluttify.common.model.Field

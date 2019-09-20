@@ -35,7 +35,7 @@ fun List<Field>.filterGetters(): List<Field> {
         // todo 暂时不处理带有列表参数的方法
         .filter { (!it.variable.typeName.isList()).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
         .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
-//        .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
+        .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
 //        .filter { (it.variable.typeName.findType().run { jsonable() || isEnum() }).apply { if (!this) println("filterGetters: $it 由于是非jsonable且非enum类型 被过滤") } }
         .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
 //        .filter { (!it.variable.typeName.findType().isInterface()).apply { if (!this) println("filterGetters: $it 由于是接口类型 被过滤") } }
@@ -54,7 +54,7 @@ fun List<Field>.filterSetters(): List<Field> {
         .filter { (!it.variable.typeName.isList()).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
         .filter { (it.isFinal == false).apply { if (!this) println("filterSetters: $it 由于是final字段 被过滤") } }
         .filter { (it.isPublic == true).apply { if (!this) println("filterSetters: $it 由于不是公开field 被过滤") } }
-//        .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }
+        .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }
 //        .filter { (it.variable.typeName.findType().run { jsonable() || isEnum() }).apply { if (!this) println("filterGetters: $it 由于是非jsonable且非enum类型 被过滤") } }
         .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterSetters: $it 由于是未知类型 被过滤") } }
 //        .filter { (!it.variable.typeName.findType().isInterface()).apply { if (!this) println("filterSetters: $it 由于是接口类型 被过滤") } }

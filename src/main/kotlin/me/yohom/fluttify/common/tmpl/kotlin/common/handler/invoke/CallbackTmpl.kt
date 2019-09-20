@@ -1,4 +1,4 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.invoke
+package me.yohom.fluttify.common.tmpl.kotlin.common.handler.invoke
 
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
@@ -21,6 +21,6 @@ internal class CallbackTmpl(private val callerMethod: Method, private val callba
             .replace("#__caller_method_name__#", callerMethod.name)
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods
-                .joinToString("\n") { CallbackMethodTmpl(callerMethod, it).kotlinCallbackMethod() })
+                .joinToString("\n") { CallbackMethodTmpl(it).kotlinCallbackMethod() })
     }
 }

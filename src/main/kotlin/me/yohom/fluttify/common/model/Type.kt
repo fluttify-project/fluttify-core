@@ -92,7 +92,10 @@ open class Type : PlatformAware {
      * 查找sdk中所有的类, 如果没有一个类是当前类的子类, 且当前类是接口类型, 那么就认为这个类是回调类
      */
     fun isCallback(): Boolean {
-        return isInterface() && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) }
+        return isInterface()
+                && isPublic
+                && genericTypes.isEmpty()
+                && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) }
     }
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda

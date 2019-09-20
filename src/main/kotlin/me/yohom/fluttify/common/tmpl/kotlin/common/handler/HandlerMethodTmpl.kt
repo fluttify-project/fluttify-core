@@ -1,15 +1,15 @@
-package me.yohom.fluttify.common.tmpl.kotlin.plugin.handler
+package me.yohom.fluttify.common.tmpl.kotlin.common.handler
 
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.jsonable
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.model.Method
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgEnumTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgJsonableTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.arg.ArgRefTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.invoke.InvokeTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.ref.RefTmpl
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.handler.result.ResultRefTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.arg.ArgEnumTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.arg.ArgJsonableTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.arg.ArgRefTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.invoke.InvokeTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.ref.RefTmpl
+import me.yohom.fluttify.common.tmpl.kotlin.common.handler.result.ResultRefTmpl
 
 //"#__method_name__#" to { registrar, args, methodResult ->
 //    // 参数

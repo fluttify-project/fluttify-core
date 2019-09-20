@@ -6,12 +6,17 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 
 @implementation #__plugin_name__#Plugin {
   NSObject <FlutterPluginRegistrar> * _registrar;
+  NSDictionary<NSString *, Handler> *_handlerMap;
 }
 
 - (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar {
   self = [super init];
   if (self) {
     _registrar = registrar;
+    // 处理方法们
+    _handlerMap = @{
+      #__handlers__#
+    };
   }
 
   return self;
@@ -34,11 +39,6 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 
 // Method Handlers
 - (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
-  // 处理方法们
-  NSDictionary<NSString *, Handler> *_handlerMap = @{
-    #__handlers__#
-  };
-
   NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
   if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
     [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
