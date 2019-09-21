@@ -1,7 +1,6 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.IGNORE_TYPE
-import me.yohom.fluttify.common.model.*
 import me.yohom.fluttify.model.*
 
 

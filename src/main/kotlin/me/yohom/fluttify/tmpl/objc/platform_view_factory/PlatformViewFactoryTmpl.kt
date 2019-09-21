@@ -1,14 +1,13 @@
 package me.yohom.fluttify.tmpl.objc.platform_view_factory
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.objc.common.delegate_method.DelegateMethodTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerGetterTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerMethodTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerSetterTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
 
 //#import <Foundation/Foundation.h>
 //#import <Flutter/Flutter.h>

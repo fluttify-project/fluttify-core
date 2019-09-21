@@ -7,6 +7,7 @@ import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Platform
+import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 
 //import 'package:flutter/services.dart';
 //

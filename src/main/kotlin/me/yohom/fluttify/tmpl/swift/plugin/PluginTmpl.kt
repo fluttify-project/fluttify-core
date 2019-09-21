@@ -1,7 +1,6 @@
 package me.yohom.fluttify.tmpl.swift.plugin
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.swift.plugin.handler.GetterMethodTmpl

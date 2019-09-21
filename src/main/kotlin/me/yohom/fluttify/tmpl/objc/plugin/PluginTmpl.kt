@@ -1,17 +1,15 @@
 package me.yohom.fluttify.tmpl.objc.plugin
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.delegate_method.DelegateMethodTmpl
-import me.yohom.fluttify.common.tmpl.objc.common.handler.*
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerGetterTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerMethodTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerObjectFactoryTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerSetterTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerTypeCastTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.HandlerTypeCheckTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.HandlerObjectFactoryTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_cast.HandlerTypeCastTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 
 //#import "#__plugin_name__#Plugin.h"

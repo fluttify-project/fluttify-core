@@ -1,13 +1,12 @@
 package me.yohom.fluttify.tmpl.kotlin.plugin
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
-import me.yohom.fluttify.tmpl.kotlin.common.handler.HandlerGetterTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.HandlerMethodTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.HandlerObjectFactoryTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.HandlerSetterTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_getter.HandlerGetterTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethodTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_object_factory.HandlerObjectFactoryTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatformViewTmpl
 
 //package #__package_name__#

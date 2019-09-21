@@ -1,7 +1,6 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.TYPE_NAME
-import me.yohom.fluttify.common.extensions.*
 import me.yohom.fluttify.extensions.*
 
 open class Type : PlatformAware {

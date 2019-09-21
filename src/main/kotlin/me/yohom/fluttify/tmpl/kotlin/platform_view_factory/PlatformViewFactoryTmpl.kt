@@ -7,7 +7,7 @@ import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.kotlin.common.handler.HandlerMethodTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethodTmpl
 
 //package #__package_name__#
 //
