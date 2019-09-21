@@ -22,6 +22,8 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { (!it.formalParams.any { it.variable.typeName.isList() }).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
         // 类似float*返回这样的类型的方法都暂时不处理
         .filter { !it.returnType.run { contains("*") && depointer().isCType() } }
+        // 返回值是接口类型的都不处理
+        .filter { !it.returnType.findType().isInterface() }
         .distinctBy { "${it.className}::${it.name}" }
         .filter { it.isOk() }
         .toList()
@@ -73,11 +75,11 @@ fun List<Type>.filterType(): List<Type> {
         .filter { it.isPublic.apply { if (!this) println("filterType: $it 由于不是公开类 被过滤") } }
         // 有泛型的类暂不支持处理
         .filter { it.genericTypes.isEmpty().apply { if (!this) println("filterType: $it 由于含有泛型 被过滤") } }
-        .filter {
-            (it.constructors.any { it.isPublic == true } || it.isEnum() || it.constructors.isEmpty()).apply {
-                if (!this) println("filterType: $it 由于构造器不是全公开且是内部类 被过滤")
-            }
-        }
+//        .filter {
+//            (it.constructors.any { it.isPublic == true } || it.isEnum() || it.constructors.isEmpty()).apply {
+//                if (!this) println("filterType: $it 由于构造器不是全公开且是内部类 被过滤")
+//            }
+//        }
         .filter { (!it.isObfuscated()).apply { if (!this) println("filterType: $it 由于是混淆类 被过滤") } }
         .filter { (it.superClass !in IGNORE_TYPE).apply { if (!this) println("filterType: $it 由于父类是忽略类 被过滤") } }
         .filter { (it.superClass.run { isEmpty() || findType() != Type.UNKNOWN_TYPE }).apply { if (!this) println("filterType: $it 由于父类是未知类 被过滤") } }

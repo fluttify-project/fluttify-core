@@ -4,6 +4,7 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.common.extensions.filterConstructable
 import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
+import me.yohom.fluttify.common.extensions.toUnderscore
 import me.yohom.fluttify.common.model.Lib
 import me.yohom.fluttify.common.model.Platform
 
@@ -51,6 +52,26 @@ import me.yohom.fluttify.common.model.Platform
 //class android_app_Activity extends android_content_Context {}
 //
 //class android_os_Bundle extends Ref_Android {}
+//
+//class android_view_View extends Ref_Android {}
+//
+//class android_widget_FrameLayout extends Ref_Android {}
+//
+//class android_view_ViewGroup extends Ref_Android {}
+//
+//class android_graphics_Point extends Ref_Android {}
+//
+//class android_graphics_PointF extends Ref_Android {}
+//
+//class android_graphics_Bitmap extends Ref_Android {}
+//
+//class android_location_Location extends Ref_Android {}
+//
+//class android_view_MotionEvent extends Ref_Android {}
+//
+//class android_graphics_drawable_Drawable extends Ref_Android {}
+//
+////#__interface_refs__#
 //
 //import 'package:flutter/services.dart';
 //
@@ -130,7 +151,13 @@ class ObjectFactoryTmpl(
                         .reversed()
                         .union(listOf(it.name))
                         .filter { it != "NSObject" }
-                    "class ${it.name}_Ref = NSObject with ${interfaces.joinToString()};"
+                    val rootClass = when (it.platform) {
+                        Platform.General -> "Object"
+                        Platform.iOS -> "NSObject"
+                        Platform.Android -> "java_lang_Object"
+                        Platform.Unknown -> "Object"
+                    }
+                    "class ${it.name.toUnderscore()}_Ref = $rootClass with ${interfaces.joinToString { it.toUnderscore() }};"
                 })
     }
 }

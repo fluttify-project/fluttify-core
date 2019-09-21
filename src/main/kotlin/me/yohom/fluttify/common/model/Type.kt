@@ -109,6 +109,7 @@ open class Type : PlatformAware {
                 && this != UNKNOWN_TYPE
                 && !isList()
                 && !isEnum()
+                && superClass.findType() != UNKNOWN_TYPE
                 && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
     }
 

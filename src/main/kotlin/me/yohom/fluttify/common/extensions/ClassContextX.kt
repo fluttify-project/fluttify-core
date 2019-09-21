@@ -82,8 +82,8 @@ fun JavaParser.InterfaceDeclarationContext.genericTypes(): List<String> {
 /**
  * 获取父类名称
  */
-fun JavaParser.InterfaceDeclarationContext.superClass(): String? {
-    return typeList()?.typeType()?.get(0)?.text?.run { typeFullName(this) }
+fun JavaParser.InterfaceDeclarationContext.superInterfaces(): List<String> {
+    return typeList()?.typeType()?.map { it.text?.run { typeFullName(this) } ?: "" } ?: listOf()
 }
 //endregion
 

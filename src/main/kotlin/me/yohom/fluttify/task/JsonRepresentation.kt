@@ -23,10 +23,7 @@ open class AndroidJsonRepresentation : DefaultTask() {
             ?.forEach {
                 val lib = Lib().apply { name = it.nameWithoutExtension }
                 it.iterate("java") { javaFile ->
-                    val type = javaFile.javaType()
-                    if (!type.name.isObfuscated() && type.isPublic) {
-                        lib.types.add(javaFile.javaType())
-                    }
+                    lib.types.add(javaFile.javaType())
                 }
                 sdk.libs.add(lib)
             }

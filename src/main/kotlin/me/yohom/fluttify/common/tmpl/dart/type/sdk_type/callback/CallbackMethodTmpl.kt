@@ -43,6 +43,8 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
                     .typeName
                     .findType()
                     .methods
+                    .distinctBy { it.methodName() }
+                    .filter { it.formalParams.none { it.variable.typeName.findType().isAbstract } }
                     .joinToString("\n") {
                         CallbackDelegateCaseTmpl(it, param.variable.name).dartCallbackDelegateCase()
                     }

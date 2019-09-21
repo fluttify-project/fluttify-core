@@ -65,7 +65,7 @@ fun JAVA_FILE.javaType(): Type {
             isInnerClass = simpleName.contains("$")
             typeType = TypeType.Interface
             genericTypes = ctx.genericTypes()
-            superClass = ctx.superClass() ?: ""
+            interfaces.addAll(ctx.superInterfaces())
             isAbstract = true
         }
 

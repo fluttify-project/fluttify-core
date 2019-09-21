@@ -1,6 +1,8 @@
 package me.yohom.fluttify.common.tmpl.dart.type.interface_type
 
 import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.common.extensions.filterMethod
+import me.yohom.fluttify.common.extensions.findType
 import me.yohom.fluttify.common.extensions.replaceParagraph
 import me.yohom.fluttify.common.extensions.toDartType
 import me.yohom.fluttify.common.model.Type
@@ -25,15 +27,18 @@ class InterfaceTypeTmpl(
         val className = type.name.toDartType()
 
         val allSuperType = type.interfaces.union(listOf(type.superClass)).filter { it.isNotBlank() }
-        val superClass = if (allSuperType.isEmpty()) "Object" else allSuperType.joinToString()
+        val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
 
         val methods = type.methods
+            .filterMethod()
+            .filter { it.returnType.findType() != Type.UNKNOWN_TYPE }
+            .distinctBy { it.name }
             .map { InterfaceMethodTmpl(it).dartMethod() }
 
         return tmpl
             .replace("#__current_package__#", currentPackage)
             .replace("#__interface_type__#", className)
-            .replace("#__super_mixins__#", superClass)
+            .replace("#__super_mixins__#", superClass.toDartType())
             .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
     }
 }
