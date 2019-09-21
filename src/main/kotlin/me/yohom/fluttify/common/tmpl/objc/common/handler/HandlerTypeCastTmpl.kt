@@ -16,7 +16,7 @@ import me.yohom.fluttify.common.model.Type
 //    methodResult(@(refId));
 //},
 internal class HandlerTypeCastTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_type_cast.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_type_cast.stmt.m.tmpl").readText()
 
     fun objcTypeCast(): String {
         return tmpl.replace("#__type_name__#", type.name.toUnderscore())

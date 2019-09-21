@@ -22,7 +22,7 @@ class CallbackLambdaCaseTmpl(
     private val callerMethod: Method,
     private val lambdaParam: Parameter
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/callback_case.stmt.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText()
 
     fun callbackCase(): String {
         val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${lambdaParam.variable.name}"

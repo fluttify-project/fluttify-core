@@ -82,8 +82,8 @@ class PluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
 ) {
-    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin/plugin.h.tmpl").readText()
-    private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin/plugin.m.tmpl").readText()
+    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin.h.tmpl").readText()
+    private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
 
     fun objcPlugin(): List<String> {
         // 插件名称

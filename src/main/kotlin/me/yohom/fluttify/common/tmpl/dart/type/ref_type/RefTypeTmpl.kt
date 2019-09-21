@@ -24,7 +24,7 @@ class RefTypeTmpl(
     private val sdk: SDK,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/type/ref_type/ref_type.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/ref_type.dart.tmpl").readText()
 
     fun dartRefClass(): String {
         val currentPackage = ext.outputProjectName

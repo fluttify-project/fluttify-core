@@ -57,7 +57,7 @@ class UiKitViewTmpl(
     private val viewClass: Type,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/view/uikit_view.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/uikit_view.dart.tmpl").readText()
 
     fun dartUiKitView(): String {
         val currentPackage = ext.outputProjectName

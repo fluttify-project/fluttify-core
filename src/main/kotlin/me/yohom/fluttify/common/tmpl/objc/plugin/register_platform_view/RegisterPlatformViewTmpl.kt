@@ -10,7 +10,7 @@ internal class RegisterPlatformViewTmpl(
     private val ext: FluttifyExtension
 ) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/objc/plugin/register_platform_view/register_platform_view.stmt.m.tmpl")
+        this::class.java.getResource("/tmpl/objc/register_platform_view.stmt.m.tmpl")
             .readText()
 
     fun objcRegisterPlatformView(): String {

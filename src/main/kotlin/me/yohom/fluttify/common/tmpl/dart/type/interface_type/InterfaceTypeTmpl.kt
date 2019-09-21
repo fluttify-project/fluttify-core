@@ -20,7 +20,7 @@ class InterfaceTypeTmpl(
     private val type: Type,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/type/interface_type/interface_type.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/interface_type.dart.tmpl").readText()
 
     fun dartInterface(): String {
         val currentPackage = ext.outputProjectName

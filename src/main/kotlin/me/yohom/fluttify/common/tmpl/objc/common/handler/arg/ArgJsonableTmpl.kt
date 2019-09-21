@@ -10,7 +10,7 @@ import me.yohom.fluttify.common.model.Variable
 //// jsonable参数
 //#__type_name__# #__arg_name__# = #__right_value__#;
 internal class ArgJsonableTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/arg/arg_jsonable.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
 
     fun objcArgJsonable(): String {
         val typeName = when {

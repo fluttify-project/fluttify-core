@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.model.Variable
 //// 引用参数
 //#__type_name__# #__arg_name__# = (#__type_name__#) REF_MAP[@([args[@"#__arg_name__#"] integerValue])];
 internal class ArgRefTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/arg/arg_ref.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/arg_ref.stmt.m.tmpl").readText()
 
     fun objcArgRef(): String {
         val typeName = when {

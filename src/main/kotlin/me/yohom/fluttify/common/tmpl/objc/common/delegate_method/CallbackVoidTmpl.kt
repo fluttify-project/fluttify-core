@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.tmpl.objc.common.nsvalue_struct.StructToNSValueT
 //[channel invokeMethod:@"#__callback_method__#" arguments:@{#__callback_args__#}];
 internal class CallbackVoidTmpl(private val method: Method) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/objc/plugin/delegate_method/callback_void.stmt.m.tmpl").readText()
+        this::class.java.getResource("/tmpl/objc/callback_void.stmt.m.tmpl").readText()
 
     fun objcCallbackVoid(): String {
         return tmpl

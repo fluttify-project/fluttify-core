@@ -8,7 +8,7 @@ import me.yohom.fluttify.common.model.Type
 //    methodResult(@(ref.hash));
 //},
 internal class HandlerObjectFactoryTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_object_factory.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_object_factory.stmt.m.tmpl").readText()
 
     fun objcObjectFactory(): String {
         return tmpl

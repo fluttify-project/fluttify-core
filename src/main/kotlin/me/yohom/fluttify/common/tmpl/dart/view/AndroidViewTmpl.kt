@@ -57,7 +57,7 @@ class AndroidViewTmpl(
     private val viewClass: Type,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/view/android_view.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/android_view.dart.tmpl").readText()
 
     fun dartAndroidView(): String {
         val currentPackage = ext.outputProjectName

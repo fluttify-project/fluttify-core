@@ -12,7 +12,7 @@ import me.yohom.fluttify.common.model.Type
 //    methodResult(@(isTargetType));
 //},
 internal class HandlerTypeCheckTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_type_check.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_type_check.stmt.m.tmpl").readText()
 
     fun objcTypeCheck(): String {
         return tmpl.replace("#__type_name__#", type.name.toUnderscore())

@@ -71,7 +71,7 @@ class PluginTmpl(
     private val lib: Lib,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/plugin.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin.kt.tmpl").readText()
 
     fun kotlinPlugin(): String {
         // 包名

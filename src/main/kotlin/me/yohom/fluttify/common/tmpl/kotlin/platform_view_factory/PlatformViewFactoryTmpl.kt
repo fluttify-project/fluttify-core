@@ -53,7 +53,7 @@ class PlatformViewFactoryTmpl(
     private val ext: FluttifyExtension
 ) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/kotlin/platform_view_factory/platform_view_factory.kt.tmpl").readText()
+        this::class.java.getResource("/tmpl/kotlin/platform_view_factory.kt.tmpl").readText()
 
     fun kotlinPlatformViewFactory(): String {
         return tmpl

@@ -31,7 +31,7 @@ class SdkTypeTmpl(
     private val type: Type,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/sdk_type.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
     fun dartClass(): String {
         val currentPackage = ext.outputProjectName

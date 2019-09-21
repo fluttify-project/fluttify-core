@@ -7,7 +7,7 @@ import me.yohom.fluttify.common.model.Variable
 //#__type_name__# #__arg_name__#;
 //[#__arg_name__#Value getValue:&#__arg_name__#];
 internal class ArgStructTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/arg/arg_struct.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/arg_struct.stmt.m.tmpl").readText()
 
     fun objcArgStruct(): String {
         val typeName = if (variable.isList) "NSArray<${variable.typeName}>" else variable.typeName

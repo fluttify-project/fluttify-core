@@ -17,7 +17,7 @@ import me.yohom.fluttify.common.tmpl.objc.common.delegate_method.callback_return
 //}
 internal class DelegateMethodTmpl(private val method: Method) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/objc/plugin/delegate_method/delegate_method.stmt.m.tmpl").readText()
+        this::class.java.getResource("/tmpl/objc/delegate_method.stmt.m.tmpl").readText()
 
     fun objcDelegateMethod(): String {
         return tmpl

@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.model.Method
 //_callbackResult = (#__ref_type__#) REF_MAP[@(refId)];
 internal class ReturnRefTmpl(private val method: Method) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/objc/plugin/delegate_method/callback_return/return_ref.stmt.m.tmpl").readText()
+        this::class.java.getResource("/tmpl/objc/return_ref.stmt.m.tmpl").readText()
 
     fun objcReturnRef(): String {
         return tmpl

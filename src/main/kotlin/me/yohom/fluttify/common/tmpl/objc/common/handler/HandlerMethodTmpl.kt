@@ -31,7 +31,7 @@ import me.yohom.fluttify.common.tmpl.objc.common.handler.result.ResultStructTmpl
 //    #__result__#
 //},
 internal class HandlerMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_method.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_method.stmt.m.tmpl").readText()
 
     fun objcHandlerMethod(): String {
         val methodName = method.methodName()

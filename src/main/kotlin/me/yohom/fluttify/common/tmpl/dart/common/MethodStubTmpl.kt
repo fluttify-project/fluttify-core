@@ -9,7 +9,7 @@ import me.yohom.fluttify.common.model.Method
 //}
 @Deprecated("暂时不用")
 class MethodStubTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/common/method_stub.mtd.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/method_stub.mtd.dart.tmpl").readText()
 
     fun dartMethodStub(): String {
         return tmpl

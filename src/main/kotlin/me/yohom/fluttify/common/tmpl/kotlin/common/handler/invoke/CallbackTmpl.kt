@@ -12,7 +12,7 @@ import me.yohom.fluttify.common.model.Type
 //    #__callback_methods__#
 //}
 internal class CallbackTmpl(private val callerMethod: Method, private val callbackType: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/handler/invoke/callback.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback.stmt.kt.tmpl").readText()
 
     fun kotlinCallback(): String {
         return tmpl

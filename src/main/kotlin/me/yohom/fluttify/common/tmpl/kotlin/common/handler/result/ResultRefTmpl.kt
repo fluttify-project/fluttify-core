@@ -9,7 +9,7 @@ import me.yohom.fluttify.common.extensions.jsonable
 //methodResult.success(returnRefId)
 internal class ResultRefTmpl(val returnType: TYPE_NAME) {
 
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/handler/result/result_ref.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/result_ref.stmt.kt.tmpl").readText()
 
     fun kotlinRefResult(): String {
         return when {

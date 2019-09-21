@@ -123,9 +123,9 @@ class ObjectFactoryTmpl(
     val platform: Platform
 ) {
     private val androidTmpl =
-        this::class.java.getResource("/tmpl/dart/object_factory/object_factory_android.dart.tmpl").readText()
+        this::class.java.getResource("/tmpl/dart/object_factory_android.dart.tmpl").readText()
     private val iosTmpl =
-        this::class.java.getResource("/tmpl/dart/object_factory/object_factory_ios.dart.tmpl").readText()
+        this::class.java.getResource("/tmpl/dart/object_factory_ios.dart.tmpl").readText()
 
     fun dartObjectFactory(): String {
         return when (platform) {

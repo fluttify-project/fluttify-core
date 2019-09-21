@@ -9,7 +9,7 @@ import me.yohom.fluttify.common.model.Type
 //  return #__class_name__#()..refId = refId;
 //}
 class CreateObjectTmpl(val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/object_factory/create_object.mtd.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/create_object.mtd.dart.tmpl").readText()
 
     fun dartCreateObject(): List<String> {
         return when (type.platform) {

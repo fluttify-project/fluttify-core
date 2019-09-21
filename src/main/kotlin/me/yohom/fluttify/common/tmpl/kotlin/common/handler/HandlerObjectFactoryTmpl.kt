@@ -17,7 +17,7 @@ import me.yohom.fluttify.common.tmpl.kotlin.common.handler.arg.ArgRefTmpl
 //    methodResult.success(obj.hashCode())
 //}
 internal class HandlerObjectFactoryTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/handler/handler_object_factory.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_object_factory.stmt.kt.tmpl").readText()
 
     fun kotlinObjectFactory(): List<String> {
         return type.constructors

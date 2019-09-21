@@ -23,7 +23,7 @@ import me.yohom.fluttify.common.tmpl.objc.common.nsvalue_struct.StructToNSValueT
 //return #__callback_result__#;
 internal class CallbackReturnTmpl(private val method: Method) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/objc/plugin/delegate_method/callback_return/callback_return.stmt.m.tmpl").readText()
+        this::class.java.getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText()
 
     fun objcCallbackReturn(): String {
         return tmpl

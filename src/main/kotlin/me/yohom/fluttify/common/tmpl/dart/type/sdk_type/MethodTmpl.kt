@@ -24,7 +24,7 @@ import me.yohom.fluttify.common.tmpl.dart.type.sdk_type.callback.CallbackMethodT
  * 生成普通类的dart接口
  */
 class MethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/method.mtd.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
 
     fun dartMethod(): String {
         val static = if (method.isStatic) "static" else ""

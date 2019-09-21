@@ -11,7 +11,7 @@ internal class RegisterPlatformViewTmpl(
     private val viewType: Type,
     private val ext: FluttifyExtension
 ) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/register_platform_view/register_platform_view.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/register_platform_view.stmt.kt.tmpl").readText()
 
     fun kotlinRegisterPlatformView(): String {
         return tmpl

@@ -106,9 +106,9 @@ class PlatformViewFactoryTmpl(
     private val ext: FluttifyExtension
 ) {
     private val hTmpl =
-        this::class.java.getResource("/tmpl/objc/platform_view_factory/platform_view_factory.h.tmpl").readText()
+        this::class.java.getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText()
     private val mTmpl =
-        this::class.java.getResource("/tmpl/objc/platform_view_factory/platform_view_factory.m.tmpl").readText()
+        this::class.java.getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
 
     fun objcPlatformViewFactory(): List<String> {
         val imports = "<${lib.name}/${lib.name}.h>"

@@ -18,7 +18,7 @@ import me.yohom.fluttify.common.tmpl.objc.common.handler.arg.ArgStructTmpl
 //    methodResult(@"success");
 //},
 internal class HandlerSetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_setter.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_setter.stmt.m.tmpl").readText()
 
     fun objcSetter(): String {
         val setter = field.setterName.depointer()

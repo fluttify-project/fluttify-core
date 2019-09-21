@@ -20,7 +20,7 @@ import me.yohom.fluttify.common.model.Field
  * 回调代码
  */
 class CallbackPropertyTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/type/sdk_type/callback.stmt.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText()
 
     fun callback(): String {
         if (!field.variable.typeName.findType().isCallback())

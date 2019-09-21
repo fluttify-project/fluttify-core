@@ -17,7 +17,7 @@ import me.yohom.fluttify.common.model.Field
 //    methodResult(#__getter__#);
 //},
 internal class HandlerGetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/plugin/handler/handler_getter.stmt.m.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_getter.stmt.m.tmpl").readText()
 
     fun objcGetter(): String {
         val methodName = field.getterMethodName()

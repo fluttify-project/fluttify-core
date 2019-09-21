@@ -11,7 +11,7 @@ import me.yohom.fluttify.common.model.Field
 //    methodResult.success(ref.#__field_name__#)
 //}
 internal class HandlerGetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin/handler/handler_getter.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_getter.stmt.kt.tmpl").readText()
 
     fun kotlinGetter(): String {
         return tmpl

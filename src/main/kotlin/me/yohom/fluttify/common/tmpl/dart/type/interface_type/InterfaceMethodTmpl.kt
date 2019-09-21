@@ -6,7 +6,7 @@ import me.yohom.fluttify.common.model.Method
 //Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {}
 class InterfaceMethodTmpl(private val method: Method) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/dart/type/interface_type/interface_method.dart.tmpl").readText()
+        this::class.java.getResource("/tmpl/dart/interface_method.dart.tmpl").readText()
 
     fun dartMethod(): String {
         val returnType = method.returnType.toDartType()
