@@ -42,7 +42,7 @@ class TypeSdkTmpl(
         else
             type.superClass.toDartType()
 
-        val mixins = if (type.interfaces.isNotEmpty()) {
+        val mixins = if (type.interfaces.isNotEmpty() && type.interfaces.none { it.findType() == Type.UNKNOWN_TYPE }) {
             // todo 使用递归处理完全, 现在只是写死了只处理了两层
             "with ${type.interfaces.union(type.interfaces.flatMap { it.findType().interfaces }).filter { it.findType().isInterface() }.reversed().joinToString()}"
         } else {
@@ -50,7 +50,7 @@ class TypeSdkTmpl(
         }
 
         val methodChannel = if (type.isView())
-            "${ext.outputOrg}/${ext.outputProjectName}/${type.name}"
+            "${ext.outputOrg}/${ext.outputProjectName}/${type.name.toUnderscore()}"
         else
             "${ext.outputOrg}/${ext.outputProjectName}"
 

@@ -92,9 +92,15 @@ open class Type : PlatformAware {
      * 查找sdk中所有的类, 如果没有一个类是当前类的子类, 且当前类是接口类型, 那么就认为这个类是回调类
      */
     fun isCallback(): Boolean {
-        return isInterface()
+        return isInterface() // 必须是接口
+                // 必须公开
                 && isPublic
+                // 不能有泛型
                 && genericTypes.isEmpty()
+                // 回调类不能有超类
+                && superClass == ""
+                && interfaces.isEmpty()
+                // 必须没有子类
                 && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) || it.superClass == this.name }
     }
 
@@ -109,7 +115,8 @@ open class Type : PlatformAware {
                 && this != UNKNOWN_TYPE
                 && !isList()
                 && !isEnum()
-                && superClass.findType() != UNKNOWN_TYPE
+                && (constructors.any { it.isPublic == true } || constructors.isEmpty())
+                && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
                 && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
     }
 

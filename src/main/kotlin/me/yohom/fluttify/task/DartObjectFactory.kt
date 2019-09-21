@@ -27,20 +27,10 @@ open class DartObjectFactory : DefaultTask() {
 
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.dart"
             .file()
-            .writeText(
-                ObjectFactoryTmpl(
-                    androidSdk.libs,
-                    ext,
-                    Platform.Android
-                ).dartObjectFactory())
+            .writeText(ObjectFactoryTmpl(androidSdk.libs, ext, Platform.Android).dartObjectFactory())
 
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.dart"
             .file()
-            .writeText(
-                ObjectFactoryTmpl(
-                    iosSdk.libs,
-                    ext,
-                    Platform.iOS
-                ).dartObjectFactory())
+            .writeText(ObjectFactoryTmpl(iosSdk.libs, ext, Platform.iOS).dartObjectFactory())
     }
 }

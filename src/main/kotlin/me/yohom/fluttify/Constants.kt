@@ -39,6 +39,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.graphics.Point"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.PointF"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.Bitmap"; typeType = TypeType.Class },
+    Type().apply { name = "java.lang.Object"; typeType = TypeType.Class },
     Type().apply { name = "android.location.Location"; typeType = TypeType.Class },
     Type().apply { name = "android.view.MotionEvent"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.drawable.Drawable"; typeType = TypeType.Class },

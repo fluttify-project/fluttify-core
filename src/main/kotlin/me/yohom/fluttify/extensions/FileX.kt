@@ -156,6 +156,7 @@ fun JAVA_FILE.javaType(): Type {
         it.isInnerClass = isInnerClass
         it.genericTypes.addAll(genericTypes)
         it.constructors = constructors
+        it.interfaces = interfaces
         it.name = "$packageName.${simpleName.replace("$", ".")}"
         it.superClass = superClass
         it.fields.addAll(fields)

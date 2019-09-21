@@ -49,7 +49,7 @@ open class AndroidKotlinInterface : DefaultTask() {
         sdk.libs
             .forEach { lib ->
                 lib.types
-                    .filter { it.isView() }
+                    .filter { it.isView() && !it.isObfuscated() }
                     .forEach {
                         val factoryOutputFile =
                             "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
@@ -57,7 +57,7 @@ open class AndroidKotlinInterface : DefaultTask() {
                                 "/"
                             )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
 
-                        KotlinPlatformViewFactory(it, lib, ext)
+                        KotlinPlatformViewFactory(it, ext)
                             .kotlinPlatformViewFactory()
                             .run {
                                 factoryOutputFile.writeText(this)
@@ -105,7 +105,7 @@ open class IOSObjcInterface : DefaultTask() {
         sdk.libs
             .forEach { lib ->
                 lib.types
-                    .filter { it.isView() }
+                    .filter { it.isView() && !it.isObfuscated() }
                     .forEach {
                         val factoryHFile =
                             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.h".file()

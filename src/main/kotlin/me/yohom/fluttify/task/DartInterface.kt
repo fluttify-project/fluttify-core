@@ -30,7 +30,7 @@ open class AndroidDartInterface : DefaultTask() {
         // 处理View, 生成AndroidView
         sdk.libs
             .flatMap { it.types }
-            .filter { it.isView() }
+            .filter { it.isView() && !it.isObfuscated() }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
                 val androidViewFile =
@@ -45,15 +45,9 @@ open class AndroidDartInterface : DefaultTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(
-                        it,
-                        ext
-                    ).dartClass()
+                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it, ext).dartClass()
                     TypeType.Enum -> EnumerationTmpl(it).dartEnum()
-                    TypeType.Interface -> TypeInterfaceTmpl(
-                        it,
-                        ext
-                    ).dartInterface()
+                    TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
                     null -> ""
                 }
@@ -92,7 +86,7 @@ open class IOSDartInterface : DefaultTask() {
         // 处理View, 生成UiKitView
         sdk.libs
             .flatMap { it.types }
-            .filter { it.isView() }
+            .filter { it.isView() && !it.isObfuscated() }
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it, ext).dartUiKitView()
                 val uiKitViewFile =

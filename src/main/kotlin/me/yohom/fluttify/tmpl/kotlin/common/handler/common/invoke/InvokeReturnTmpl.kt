@@ -19,10 +19,7 @@ class InvokeReturnTmpl(private val method: Method) {
 
     private fun var2formalParam(variable: Variable): String {
         return if (variable.typeName.findType().isCallback()) {
-            CallbackTmpl(
-                method,
-                variable.typeName.findType()
-            ).kotlinCallback()
+            CallbackTmpl(method, variable.typeName.findType()).kotlinCallback()
         } else {
             when {
                 variable.isList -> "ArrayList(${variable.run { if (typeName.contains("float", true)) "$name.map { it.toFloat() }" else name }})"

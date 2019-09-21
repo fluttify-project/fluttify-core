@@ -85,7 +85,7 @@ class PluginTmpl(
 
         // 注册PlatformView
         val registerPlatformViews = lib.types
-            .filter { it.isView() }
+            .filter { it.isView() && !it.isObfuscated() }
             .joinToString("\n") { RegisterPlatformViewTmpl(
                 it,
                 ext

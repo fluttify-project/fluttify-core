@@ -40,9 +40,7 @@ class MethodTmpl(private val method: Method) {
             "print('fluttify-dart: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
         }
         val invoke = invokeString(method.isStatic, method.className, method.name, method.formalParams)
-        val callback = CallbackMethodTmpl(
-            method
-        ).callback()
+        val callback = CallbackMethodTmpl(method).callback()
         val returnStatement = returnString(method.returnType)
 
         return tmpl

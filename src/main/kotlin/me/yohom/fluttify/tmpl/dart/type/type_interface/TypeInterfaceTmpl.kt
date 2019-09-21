@@ -27,7 +27,8 @@ class TypeInterfaceTmpl(
         val currentPackage = ext.outputProjectName
         val className = type.name.toDartType()
 
-        val allSuperType = type.interfaces.union(listOf(type.superClass)).filter { it.isNotBlank() }
+        val allSuperType = type.interfaces.union(listOf(type.superClass))
+            .filter { it.isNotBlank() && it.findType() != Type.UNKNOWN_TYPE }
         val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
 
         val methods = type.methods

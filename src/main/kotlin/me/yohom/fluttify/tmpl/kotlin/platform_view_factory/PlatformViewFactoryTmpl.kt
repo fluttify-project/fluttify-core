@@ -5,7 +5,6 @@ import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.extensions.toUnderscore
-import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethodTmpl
 
@@ -49,7 +48,6 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethod
 //}
 class PlatformViewFactoryTmpl(
     private val viewType: Type,
-    private val lib: Lib,
     private val ext: FluttifyExtension
 ) {
     private val tmpl =
