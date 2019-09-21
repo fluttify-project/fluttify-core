@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter
 
+import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
@@ -33,13 +34,11 @@ class CallbackSetterTmpl(private val field: Field) {
             .typeName
             .findType()
             .methods
+            .filterMethod()
             .distinctBy { it.methodName() }
             .filter { it.formalParams.none { it.variable.typeName.findType().isAbstract } }
             .joinToString("\n") {
-                CallbackCaseDelegateTmpl(
-                    it,
-                    field.variable.name
-                ).dartCallbackDelegateCase()
+                CallbackCaseDelegateTmpl(it, field.variable.name).dartCallbackDelegateCase()
             }
 
         return tmpl

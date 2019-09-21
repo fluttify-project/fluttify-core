@@ -99,7 +99,7 @@ open class Type : PlatformAware {
                 && genericTypes.isEmpty()
                 // 回调类不能有超类
                 && superClass == ""
-                && interfaces.isEmpty()
+                && (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 // 必须没有子类
                 && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) || it.superClass == this.name }
     }

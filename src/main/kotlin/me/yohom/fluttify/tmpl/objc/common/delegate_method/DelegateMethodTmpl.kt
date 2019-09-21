@@ -12,7 +12,7 @@ import me.yohom.fluttify.tmpl.objc.common.delegate_method.delegate.callback_void
 //      methodChannelWithName:@"#__method_channel__#"
 //            binaryMessenger:[_registrar messenger]];
 //
-//  NSLog(@"#__method_name__#");
+//  NSLog(@"#__log__#");
 //
 //  #__delegate__#
 //}
@@ -23,7 +23,8 @@ internal class DelegateMethodTmpl(private val method: Method) {
     fun objcDelegateMethod(): String {
         return tmpl
             .replace("#__return_type__#", method.returnType)
-            .replace("#__method_name__#", method.methodName())
+            .replace("#__method_name__#", method.name)
+            .replace("#__log__#", method.methodName())
             .replace("#__method_channel__#", "${method.className}::Callback")
             .replace(
                 "#__formal_params__#",
