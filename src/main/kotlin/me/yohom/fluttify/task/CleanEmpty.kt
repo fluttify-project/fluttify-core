@@ -1,6 +1,6 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.common.extensions.iterate
+import me.yohom.fluttify.extensions.iterate
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

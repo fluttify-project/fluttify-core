@@ -1,11 +1,11 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.file
-import me.yohom.fluttify.common.extensions.fromJson
-import me.yohom.fluttify.common.model.Platform
-import me.yohom.fluttify.common.model.SDK
-import me.yohom.fluttify.common.tmpl.dart.object_factory.ObjectFactoryTmpl
+import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.fromJson
+import me.yohom.fluttify.model.Platform
+import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.tmpl.dart.object_factory.ObjectFactoryTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
