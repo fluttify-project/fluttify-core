@@ -1,9 +1,10 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.common.extensions.*
-import me.yohom.fluttify.common.model.Lib
-import me.yohom.fluttify.common.model.Platform
-import me.yohom.fluttify.common.model.SDK
+import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Lib
+import me.yohom.fluttify.model.Platform
+import me.yohom.fluttify.model.SDK
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

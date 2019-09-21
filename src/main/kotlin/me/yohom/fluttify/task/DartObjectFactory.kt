@@ -1,11 +1,11 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.file
-import me.yohom.fluttify.common.extensions.fromJson
-import me.yohom.fluttify.common.model.Platform
-import me.yohom.fluttify.common.model.SDK
-import me.yohom.fluttify.common.tmpl.dart.object_factory.ObjectFactoryTmpl
+import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.fromJson
+import me.yohom.fluttify.model.Platform
+import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.tmpl.dart.object_factory.ObjectFactoryTmpl
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -27,10 +27,20 @@ open class DartObjectFactory : DefaultTask() {
 
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.dart"
             .file()
-            .writeText(ObjectFactoryTmpl(androidSdk.libs, ext, Platform.Android).dartObjectFactory())
+            .writeText(
+                ObjectFactoryTmpl(
+                    androidSdk.libs,
+                    ext,
+                    Platform.Android
+                ).dartObjectFactory())
 
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.dart"
             .file()
-            .writeText(ObjectFactoryTmpl(iosSdk.libs, ext, Platform.iOS).dartObjectFactory())
+            .writeText(
+                ObjectFactoryTmpl(
+                    iosSdk.libs,
+                    ext,
+                    Platform.iOS
+                ).dartObjectFactory())
     }
 }

@@ -1,0 +1,26 @@
+package me.yohom.fluttify.tmpl.kotlin.common.handler.invoke
+
+import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Type
+
+//object : #__callback_class_name__# {
+//    // method channel
+//    // val callbackChannel = MethodChannel(registrar.messenger(), "#__caller_class_name__#::#__caller_method_name__#_Callback" + refId)
+//
+//    // 回调方法们
+//    #__callback_methods__#
+//}
+internal class CallbackTmpl(private val callerMethod: Method, private val callbackType: Type) {
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback.stmt.kt.tmpl").readText()
+
+    fun kotlinCallback(): String {
+        return tmpl
+            .replace("#__callback_class_name__#", callbackType.name)
+            .replace("#__caller_class_name__#", callerMethod.className)
+            .replace("#__caller_method_name__#", callerMethod.name)
+            .replaceParagraph("#__callback_methods__#", callbackType
+                .methods
+                .joinToString("\n") { CallbackMethodTmpl(it).kotlinCallbackMethod() })
+    }
+}

@@ -1,5 +1,6 @@
 package me.yohom.fluttify.common.extensions
 
+import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.sdk
 import org.junit.Test
 

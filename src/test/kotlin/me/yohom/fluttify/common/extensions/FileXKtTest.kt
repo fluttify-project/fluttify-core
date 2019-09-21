@@ -1,7 +1,7 @@
 package me.yohom.fluttify.common.extensions
 
-import me.yohom.fluttify.common.extensions.file
-import me.yohom.fluttify.common.extensions.objcType
+import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.objcType
 import org.junit.Test
 
 class FileXKtTest {

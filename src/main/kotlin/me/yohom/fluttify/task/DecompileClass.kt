@@ -1,7 +1,7 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.file
+import me.yohom.fluttify.extensions.file
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler

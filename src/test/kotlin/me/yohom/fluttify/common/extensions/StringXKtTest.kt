@@ -1,5 +1,8 @@
 package me.yohom.fluttify.common.extensions
 
+import me.yohom.fluttify.extensions.camel2Underscore
+import me.yohom.fluttify.extensions.genericType
+import me.yohom.fluttify.extensions.replaceBatch
 import org.junit.Assert
 import org.junit.Test
 

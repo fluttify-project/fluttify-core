@@ -1,19 +1,19 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.common.extensions.file
-import me.yohom.fluttify.common.extensions.fromJson
-import me.yohom.fluttify.common.extensions.simpleName
-import me.yohom.fluttify.common.extensions.underscore2Camel
-import me.yohom.fluttify.common.model.SDK
+import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.fromJson
+import me.yohom.fluttify.extensions.simpleName
+import me.yohom.fluttify.extensions.underscore2Camel
+import me.yohom.fluttify.model.SDK
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import me.yohom.fluttify.common.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactory
-import me.yohom.fluttify.common.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
-import me.yohom.fluttify.common.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
-import me.yohom.fluttify.common.tmpl.objc.plugin.PluginTmpl as ObjcPluginTmpl
-import me.yohom.fluttify.common.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl as SwiftPlatformViewFactoryTmpl
-import me.yohom.fluttify.common.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
+import me.yohom.fluttify.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactory
+import me.yohom.fluttify.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
+import me.yohom.fluttify.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
+import me.yohom.fluttify.tmpl.objc.plugin.PluginTmpl as ObjcPluginTmpl
+import me.yohom.fluttify.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl as SwiftPlatformViewFactoryTmpl
+import me.yohom.fluttify.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
 
 /**
  * Android端接口生成
