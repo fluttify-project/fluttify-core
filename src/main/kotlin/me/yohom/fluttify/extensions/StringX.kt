@@ -183,7 +183,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
         "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
         "Map" -> "Map"
-        "void" -> "String"
+//        "void" -> "void"
         null -> "null"
         // 开始objc
         "NSString", "NSString*" -> "String"

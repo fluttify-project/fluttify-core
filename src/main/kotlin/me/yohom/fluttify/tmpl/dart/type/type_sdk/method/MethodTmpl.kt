@@ -102,7 +102,7 @@ class MethodTmpl(private val method: Method) {
     private fun returnString(returnType: String): String {
         val resultBuilder = StringBuilder("")
 
-        if (returnType.jsonable()) {
+        if (returnType.jsonable() || returnType == "void") {
             if (returnType.isList()) {
                 resultBuilder.append(
                     "(result as List).cast<${returnType.genericType().toDartType()}>()"
