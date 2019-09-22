@@ -35,20 +35,12 @@ internal class HandlerMethodTmpl(private val method: Method) {
 
     fun objcHandlerMethod(): String {
         val methodName = method.nameWithClass()
-        // 参数分为三种, 分情况分别构造以下三种模板
-        // 1. 枚举
-        // 2. jsonable
-        // 3. 引用
         val args = method.formalParams
             .joinToString("\n") {
                 when {
                     it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).objcArgJsonable()
-                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
-                        it.variable
-                    ).objcArgEnum()
-                    it.variable.typeName.findType().isStruct() -> ArgStructTmpl(
-                        it.variable
-                    ).objcArgStruct()
+                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
+                    it.variable.typeName.findType().isStruct() -> ArgStructTmpl(it.variable).objcArgStruct()
                     it.variable.typeName.findType().isLambda() -> ""
                     else -> ArgRefTmpl(it.variable).objcArgRef()
                 }
@@ -67,9 +59,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = when {
-            method.returnType.depointer().findType().isStruct() -> ResultStructTmpl(
-                method.returnType
-            ).objcResultStruct()
+            method.returnType.depointer().findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()
             else -> ResultRefTmpl(method.returnType).objcResultRef()
         }
 

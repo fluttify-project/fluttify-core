@@ -26,7 +26,7 @@ fun JAVA_FILE.javaType(): Type {
     var simpleName = ""
     var typeType: TypeType? = null
     var superClass = ""
-    var interfaces = mutableListOf<String>() // todo 实现kotlin端的接口列表
+    val interfaces = mutableListOf<String>()
     var isPublic = false
     var isAbstract = false
     var isInnerClass = false

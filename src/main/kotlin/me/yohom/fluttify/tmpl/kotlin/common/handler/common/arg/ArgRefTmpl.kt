@@ -9,7 +9,7 @@ internal class ArgRefTmpl(private val variable: Variable) {
 
     fun kotlinArgRef(): String {
         return tmpl
-            .replace("#__type_name__#", if (variable.isList) "List<${variable.typeName}>" else variable.typeName)
+            .replace("#__type_name__#", variable.typeName)
             .replace("#__arg_name__#", variable.name)
     }
 }

@@ -4,6 +4,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
 
 //"ObjectFactory::create#__creator_name__#" to { registrar, args, methodResult ->
@@ -27,16 +28,14 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                 // 1. 枚举
                 // 2. jsonable
                 // 3. 引用
+                // 4. 列表
                 val args = it.formalParams
                     .filter { !it.variable.typeName.findType().isCallback() }
                     .joinToString("\n") {
                         when {
-                            it.variable.typeName.jsonable() -> ArgJsonableTmpl(
-                                it.variable
-                            ).kotlinArgJsonable()
-                            it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
-                                it.variable
-                            ).kotlinArgEnum()
+                            it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
+                            it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
+                            it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
                             else -> ArgRefTmpl(it.variable).kotlinArgRef()
                         }
                     }

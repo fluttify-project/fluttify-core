@@ -1,7 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case
 
 import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isList
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Method
@@ -34,7 +33,7 @@ class CallbackCaseDelegateTmpl(
             .joinToString {
                 when {
                     it.variable.typeName.jsonable() -> "args['${it.variable.name}']"
-                    it.variable.typeName.isList() -> "[]" // 列表暂时不处理
+                    it.variable.isList -> "[]" // 列表暂时不处理
                     it.variable.typeName.findType().isInterface() -> "${it.variable.typeName.toDartType()}_Ref()..refId = (args['${it.variable.name}'])"
                     it.variable.typeName.findType().isEnum() -> "${it.variable.typeName.toDartType()}.values[(args['${it.variable.name}'])]"
                     else -> "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name}'])"

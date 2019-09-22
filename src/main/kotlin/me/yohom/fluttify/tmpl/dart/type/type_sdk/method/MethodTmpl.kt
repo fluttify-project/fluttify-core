@@ -71,11 +71,7 @@ class MethodTmpl(private val method: Method) {
             .apply {
                 if (!isStatic) add(
                     Parameter(
-                        variable = Variable(
-                            "int",
-                            "refId",
-                            platform = Platform.General
-                        ),
+                        variable = Variable("int", "refId", platform = Platform.General),
                         platform = Platform.General
                     )
                 )
@@ -84,8 +80,8 @@ class MethodTmpl(private val method: Method) {
             .toDartMap {
                 when {
                     it.typeName.findType().isEnum() -> "${it.name}.index"
-                    it.typeName.findType().isList() -> "${it.name}.map((it) => it.refId).toList()"
                     it.typeName.jsonable() -> it.name
+                    it.isList -> "${it.name}.map((it) => it.refId).toList()"
                     else -> "${it.name}.refId"
                 }
             }

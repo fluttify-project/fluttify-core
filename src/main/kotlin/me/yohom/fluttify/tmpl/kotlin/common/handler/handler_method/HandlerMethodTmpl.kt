@@ -6,6 +6,7 @@ import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.InvokeReturnTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.InvokeVoidTmpl
@@ -37,16 +38,14 @@ internal class HandlerMethodTmpl(private val method: Method) {
         // 1. 枚举
         // 2. jsonable
         // 3. 引用
+        // 4. 列表
         val args = method.formalParams
             .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(
-                        it.variable
-                    ).kotlinArgJsonable()
-                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
-                        it.variable
-                    ).kotlinArgEnum()
+                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
+                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
+                    it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
                     else -> ArgRefTmpl(it.variable).kotlinArgRef()
                 }
             }

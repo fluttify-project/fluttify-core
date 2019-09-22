@@ -19,7 +19,7 @@ data class Variable(
             val type = typeName.findType()
             "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
-            "${typeName.toDartType()} ${name.depointer()}"
+            "${typeName.toDartType().run { if (isList) "List<$this>" else this }} ${name.depointer()}"
         }
     }
 }
