@@ -183,7 +183,6 @@ fun OBJC_FILE.objcType(): List<Type> {
     var interfaces = mutableListOf<String>()
     var isAbstract = false
     var genericTypes = listOf<TYPE_NAME>()
-    val constructors = mutableListOf<Constructor>()
 
     source.walkTree(object : ObjectiveCParserBaseListener() {
         //region 类
@@ -361,7 +360,8 @@ fun OBJC_FILE.objcType(): List<Type> {
             val variable = Variable(
                 ctx.type(),
                 ctx.name(),
-                platform = Platform.iOS
+                platform = Platform.iOS,
+                isList = ctx.isListType()
             )
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(

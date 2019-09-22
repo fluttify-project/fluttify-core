@@ -128,6 +128,18 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
     return fieldDeclaratorList().text
 }
 
+/**
+ * 判断一个字段是否是列表
+ *
+ * 规则:
+ *   1. 类型是否是NSArray
+ * 由于需要判断字段的类型是否是结构体(需要读取SDK的数据, SDK的数据从json中反序列化而来), 但是当下阶段又是在生成json的过程中,
+ * 导致了先有鸡还是先有蛋的问题, 所以这里暂时就先只判断是否是NSArray
+ */
+fun ObjectiveCParser.FieldDeclarationContext.isListType(): Boolean {
+    return specifierQualifierList().text.isList()
+}
+
 fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {
     return false
 }

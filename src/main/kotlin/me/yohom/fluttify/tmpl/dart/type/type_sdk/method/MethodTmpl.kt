@@ -39,7 +39,7 @@ class MethodTmpl(private val method: Method) {
         } else {
             "print('fluttify-dart: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
         }
-        val invoke = invokeString(method.isStatic, method.className, method.name, method.formalParams)
+        val invoke = invokeString(method.isStatic, method.nameWithClass(), method.formalParams)
         val callback = CallbackMethodTmpl(method).callback()
         val returnStatement = returnString(method.returnType)
 
@@ -59,8 +59,7 @@ class MethodTmpl(private val method: Method) {
      */
     private fun invokeString(
         isStatic: Boolean,
-        className: String,
-        methodName: String,
+        channelName: String,
         params: List<Parameter>
     ): String {
         val resultBuilder = StringBuilder("")
@@ -81,13 +80,13 @@ class MethodTmpl(private val method: Method) {
                 when {
                     it.typeName.findType().isEnum() -> "${it.name}.index"
                     it.typeName.jsonable() -> it.name
-                    it.isList -> "${it.name}.map((it) => it.refId).toList()"
+                    it.isList || it.isStructPointer() -> "${it.name}.map((it) => it.refId).toList()"
                     else -> "${it.name}.refId"
                 }
             }
 
         resultBuilder.append(
-            "final result = await _channel.invokeMethod('$className::$methodName', $actualParams);\n"
+            "final result = await _channel.invokeMethod('$channelName', $actualParams);\n"
         )
         return resultBuilder.toString()
     }

@@ -216,6 +216,13 @@ fun String.depointer(): String {
 }
 
 /**
+ * 取出指针变量的值 也就是前面加`*`
+ */
+fun String.pointerValue(): String {
+    return "* $this"
+}
+
+/**
  * 去除协议类型的id<>
  */
 fun String.deprotocol(): String {

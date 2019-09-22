@@ -28,12 +28,8 @@ internal class HandlerSetterTmpl(private val field: Field) {
         val args = when {
             field.variable.typeName.findType().isCallback() -> ""
             field.variable.typeName.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
-            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(
-                field.variable
-            ).objcArgEnum()
-            field.variable.typeName.findType().isStruct() -> ArgStructTmpl(
-                field.variable
-            ).objcArgStruct()
+            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
+            field.variable.typeName.findType().isStruct() -> ArgStructTmpl(field.variable).objcArgStruct()
             else -> ArgRefTmpl(field.variable).objcArgRef() // 暂时过滤了引入类型的setter
         }
         val fieldName = field.variable.name
