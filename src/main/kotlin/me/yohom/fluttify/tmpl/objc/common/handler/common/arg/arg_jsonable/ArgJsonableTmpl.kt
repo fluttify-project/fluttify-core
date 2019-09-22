@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.handler.common.arg
+package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable
 
 import me.yohom.fluttify.SYSTEM_TYPEDEF
 import me.yohom.fluttify.extensions.depointer

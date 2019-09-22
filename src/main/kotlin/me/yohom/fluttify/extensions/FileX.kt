@@ -356,7 +356,6 @@ fun OBJC_FILE.objcType(): List<Type> {
             // 只接收property
             ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
 
-            // todo 判断是否是list
             val variable = Variable(
                 ctx.type(),
                 ctx.name(),

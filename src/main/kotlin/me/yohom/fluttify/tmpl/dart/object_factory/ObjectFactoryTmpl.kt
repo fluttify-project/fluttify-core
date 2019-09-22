@@ -130,10 +130,10 @@ class ObjectFactoryTmpl(
 
     fun dartObjectFactory(): String {
         return when (platform) {
-            Platform.General -> TODO()
+            Platform.General -> ""
             Platform.iOS -> iosTmpl
             Platform.Android -> androidTmpl
-            Platform.Unknown -> TODO()
+            Platform.Unknown -> ""
         }.replace("#__current_package__#", "${ext.outputProjectName}/${ext.outputProjectName}")
             .replace("#__method_chanel__#", "${ext.outputOrg}/${ext.outputProjectName}")
             .replaceParagraph("#__create_objects__#", libs

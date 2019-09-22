@@ -1,11 +1,15 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_setter
 
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.enpointer
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgEnumTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgJsonableTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgRefTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_ref.ArgRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStructTmpl
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 参数
@@ -22,14 +26,12 @@ internal class HandlerSetterTmpl(private val field: Field) {
 
     fun objcSetter(): String {
         val setter = field.setterName.depointer()
-        // setter参数分为两种, 分情况分别构造以下两种模板
-        // 1. 枚举
-        // 2. jsonable
         val args = when {
-            field.variable.typeName.findType().isCallback() -> ""
-            field.variable.typeName.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
-            field.variable.typeName.findType().isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
-            field.variable.typeName.findType().isStruct() -> ArgStructTmpl(field.variable).objcArgStruct()
+            field.variable.isStructPointer() -> ArgListStructTmpl(field.variable).objcArgListStruct()
+            field.variable.isCallback() -> ""
+            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
+            field.variable.isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
+            field.variable.isStruct() -> ArgStructTmpl(field.variable).objcArgStruct()
             else -> ArgRefTmpl(field.variable).objcArgRef() // 暂时过滤了引入类型的setter
         }
         val fieldName = field.variable.name

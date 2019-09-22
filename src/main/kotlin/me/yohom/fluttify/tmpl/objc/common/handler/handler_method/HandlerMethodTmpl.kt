@@ -2,13 +2,13 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_method
 
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgEnumTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgJsonableTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgRefTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.ArgStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_ref.ArgRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.RefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.ResultRefTmpl
@@ -38,10 +38,11 @@ internal class HandlerMethodTmpl(private val method: Method) {
         val args = method.formalParams
             .joinToString("\n") {
                 when {
-                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).objcArgJsonable()
-                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
-                    it.variable.typeName.findType().isStruct() -> ArgStructTmpl(it.variable).objcArgStruct()
-                    it.variable.typeName.findType().isLambda() -> ""
+                    it.variable.isStructPointer() -> ArgListStructTmpl(it.variable).objcArgListStruct()
+                    it.variable.jsonable() -> ArgJsonableTmpl(it.variable).objcArgJsonable()
+                    it.variable.isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
+                    it.variable.isStruct() -> ArgStructTmpl(it.variable).objcArgStruct()
+                    it.variable.isLambda() -> ""
                     else -> ArgRefTmpl(it.variable).objcArgRef()
                 }
             }

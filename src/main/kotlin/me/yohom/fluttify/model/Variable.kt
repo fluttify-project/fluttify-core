@@ -3,6 +3,7 @@ package me.yohom.fluttify.model
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.toDartType
 
 /**
@@ -20,6 +21,22 @@ data class Variable(
 
     fun isStruct(): Boolean {
         return typeName.findType().isStruct()
+    }
+
+    fun isEnum(): Boolean {
+        return typeName.findType().isEnum()
+    }
+
+    fun jsonable(): Boolean {
+        return typeName.jsonable()
+    }
+
+    fun isLambda(): Boolean {
+        return typeName.findType().isLambda()
+    }
+
+    fun isCallback(): Boolean {
+        return typeName.findType().isCallback()
     }
 
     fun isInterface(): Boolean {

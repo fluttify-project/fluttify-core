@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.handler.common.arg
+package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct
 
 import me.yohom.fluttify.model.Variable
 
