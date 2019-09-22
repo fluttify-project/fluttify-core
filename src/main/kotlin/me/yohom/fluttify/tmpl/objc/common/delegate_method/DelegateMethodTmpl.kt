@@ -24,7 +24,7 @@ internal class DelegateMethodTmpl(private val method: Method) {
         return tmpl
             .replace("#__return_type__#", method.returnType)
             .replace("#__method_name__#", method.name)
-            .replace("#__log__#", method.methodName())
+            .replace("#__log__#", method.nameWithClass())
             .replace("#__method_channel__#", "${method.className}::Callback")
             .replace(
                 "#__formal_params__#",

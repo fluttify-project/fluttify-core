@@ -38,7 +38,7 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
         val callbackLambdas = callerMethod.formalParams
             .filter { it.variable.typeName.findType().isLambda() }
 
-        val callbackChannel = "${callerMethod.className}::Callback"
+        val callbackChannel = "${callerMethod.nameWithClass()}::Callback"
         val callbackDelegateCases = callbackDelegates
             .map { param ->
                 param
@@ -47,7 +47,7 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
                     .findType()
                     .methods
                     .filterMethod()
-                    .distinctBy { it.methodName() }
+                    .distinctBy { it.nameWithClass() }
                     .filter { it.formalParams.none { it.variable.typeName.findType().isAbstract } }
                     .joinToString("\n") {
                         CallbackCaseDelegateTmpl(it, param.variable.name).dartCallbackDelegateCase()

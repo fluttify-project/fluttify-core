@@ -34,7 +34,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/handler_method.stmt.m.tmpl").readText()
 
     fun objcHandlerMethod(): String {
-        val methodName = method.methodName()
+        val methodName = method.nameWithClass()
         // 参数分为三种, 分情况分别构造以下三种模板
         // 1. 枚举
         // 2. jsonable

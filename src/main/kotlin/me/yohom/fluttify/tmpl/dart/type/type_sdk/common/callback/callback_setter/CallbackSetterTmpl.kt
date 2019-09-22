@@ -35,7 +35,7 @@ class CallbackSetterTmpl(private val field: Field) {
             .findType()
             .methods
             .filterMethod()
-            .distinctBy { it.methodName() }
+            .distinctBy { it.nameWithClass() }
             .filter { it.formalParams.none { it.variable.typeName.findType().isAbstract } }
             .joinToString("\n") {
                 CallbackCaseDelegateTmpl(it, field.variable.name).dartCallbackDelegateCase()

@@ -101,7 +101,7 @@ data class Method(
         return "handle${className.toDartType()}_$name"
     }
 
-    fun methodName(): String {
+    fun nameWithClass(): String {
         return "${className}::$name${formalParams.joinToString("") { it.named }.capitalize()}"
     }
 

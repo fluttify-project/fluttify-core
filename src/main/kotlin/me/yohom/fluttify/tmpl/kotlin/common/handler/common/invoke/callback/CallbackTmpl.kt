@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Type
 
 //object : #__callback_class_name__# {
 //    // method channel
-//    // val callbackChannel = MethodChannel(registrar.messenger(), "#__caller_class_name__#::#__caller_method_name__#_Callback" + refId)
+//    val callbackChannel = MethodChannel(registrar.messenger(), "#__callback_channel__#::Callback" + refId)
 //
 //    // 回调方法们
 //    #__callback_methods__#
@@ -17,8 +17,7 @@ internal class CallbackTmpl(private val callerMethod: Method, private val callba
     fun kotlinCallback(): String {
         return tmpl
             .replace("#__callback_class_name__#", callbackType.name)
-            .replace("#__caller_class_name__#", callerMethod.className)
-            .replace("#__caller_method_name__#", callerMethod.name)
+            .replace("#__callback_channel__#", callerMethod.nameWithClass())
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods
                 .joinToString("\n") { CallbackMethodTmpl(

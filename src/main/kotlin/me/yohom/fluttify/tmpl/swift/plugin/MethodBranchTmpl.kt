@@ -8,7 +8,7 @@ internal class MethodBranchTmpl(private val method: Method) {
 
     fun swiftMethodBranch(): String {
         return tmpl
-            .replace("#__method_name__#", method.methodName())
+            .replace("#__method_name__#", method.nameWithClass())
             .replace("#__handler__#", method.handleMethodName())
     }
 }

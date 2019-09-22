@@ -1,6 +1,6 @@
 object : #__callback_class_name__# {
     // method channel
-    val callbackChannel = MethodChannel(registrar.messenger(), "#__caller_class_name__#::#__caller_method_name__#_Callback" + refId)
+    val callbackChannel = MethodChannel(registrar.messenger(), "#__callback_channel__#::Callback")
 
     // 回调方法们
     #__callback_methods__#

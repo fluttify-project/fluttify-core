@@ -9,8 +9,6 @@ import me.yohom.fluttify.model.Method
 //    // 日志打印
 //    #__log__#
 //
-//    val callbackChannel = MethodChannel(registrar.messenger(), "#__method_channel__#")
-//
 //    // 开始回调
 //    callbackChannel.invokeMethod(
 //        "Callback::#__callback_method__#",
@@ -26,6 +24,7 @@ internal class CallbackMethodTmpl(private val callbackMethod: Method) {
     fun kotlinCallbackMethod(): String {
         return tmpl
             .replace("#__callback_method__#", callbackMethod.name)
+            .replace("#__callback_method_name__#", callbackMethod.nameWithClass())
             .replace("#__method_channel__#", "${callbackMethod.className}::Callback")
             .replace(
                 "#__formal_params__#",
