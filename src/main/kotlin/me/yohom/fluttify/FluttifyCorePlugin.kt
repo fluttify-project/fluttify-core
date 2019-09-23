@@ -13,6 +13,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val androidAddDependency = project.tasks.create("androidAddDependency", AndroidAddDependency::class.java)
         val iOSAddDependency = project.tasks.create("iOSAddDependency", IOSAddDependency::class.java)
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
+        val tweakDefaultProject = project.tasks.create("tweakDefaultProject", TweakDefaultProject::class.java)
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
         val export = project.tasks.create("export", Export::class.java)
