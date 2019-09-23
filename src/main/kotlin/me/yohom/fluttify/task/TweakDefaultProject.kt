@@ -27,7 +27,7 @@ open class TweakDefaultProject : DefaultTask() {
 
         "${outputProjectPath}/example/ios/Runner/Info.plist"
             .file()
-            .writeText(infoPlistTmpl.replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}"))
+            .writeText(infoPlistTmpl.replace("#__project_name__#", ext.outputProjectName))
 
         "${outputProjectPath}/ios/${ext.outputProjectName}.podspec"
             .file()
