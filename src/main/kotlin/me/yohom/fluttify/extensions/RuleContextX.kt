@@ -22,7 +22,7 @@ fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
 }
 
 fun RuleContext.typeFullName(typeSimpleName: String): String {
-    return if (typeSimpleName.jsonable() || typeSimpleName == "Object") {
+    return if (typeSimpleName.jsonable() || typeSimpleName == "Object" || typeSimpleName == "void") {
         typeSimpleName
     } else {
         ancestorOf(JavaParser.CompilationUnitContext::class)

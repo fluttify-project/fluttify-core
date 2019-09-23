@@ -20,7 +20,7 @@ open class OutputProject : DefaultTask() {
 
         val process = Runtime
             .getRuntime()
-            .exec("flutter create --offline -a ${ext.androidLanguage} -i ${ext.iOSLanguage} --template plugin --org ${ext.outputOrg} $outputProjectPath")
+            .exec("flutter create --no-pub -a ${ext.androidLanguage} -i ${ext.iOSLanguage} --androidx --template plugin --org ${ext.outputOrg} $outputProjectPath")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
     }
