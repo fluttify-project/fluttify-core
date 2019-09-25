@@ -1,6 +1,9 @@
 package me.yohom.fluttify.tmpl.dart.object_factory.create_object
 
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.filterConstructor
+import me.yohom.fluttify.extensions.jsonable
+import me.yohom.fluttify.extensions.toDartMap
+import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
@@ -28,8 +31,8 @@ class CreateObjectTmpl(val type: Type) {
                         .replace("#__separator__#", if (it.formalParams.isEmpty()) "" else ", ")
                         .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap {
                             when {
-                                it.typeName.findType().isEnum() -> "${it.name}.index"
-                                it.typeName.findType().isList() -> "${it.name}.map((it) => it.refId).toList()"
+                                it.isEnum() -> "${it.name}.index"
+                                it.isList -> "${it.name}.map((it) => it.refId).toList()"
                                 it.typeName.jsonable() -> it.name
                                 else -> "${it.name}.refId"
                             }
