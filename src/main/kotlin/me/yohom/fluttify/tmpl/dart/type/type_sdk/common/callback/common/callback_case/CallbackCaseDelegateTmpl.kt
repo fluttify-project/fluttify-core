@@ -33,7 +33,7 @@ class CallbackCaseDelegateTmpl(
             .joinToString {
                 when {
                     it.variable.typeName.jsonable() -> "args['${it.variable.name}']"
-                    it.variable.isList -> "[]" // 列表暂时不处理
+                    it.variable.isList -> "[]" //  todo 列表暂时不处理
                     it.variable.typeName.findType().isInterface() -> "${it.variable.typeName.toDartType()}_Ref()..refId = (args['${it.variable.name}'])"
                     it.variable.typeName.findType().isEnum() -> "${it.variable.typeName.toDartType()}.values[(args['${it.variable.name}'])]"
                     else -> "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name}'])"

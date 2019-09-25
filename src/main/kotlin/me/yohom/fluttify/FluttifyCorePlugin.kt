@@ -25,6 +25,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val dartObjectFactory = project.tasks.create("dartObjectFactory", DartObjectFactory::class.java)
         val export = project.tasks.create("export", Export::class.java)
 
+        // todo 删除test文件夹和example文件夹内会报错的文件
         // 可选任务
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
