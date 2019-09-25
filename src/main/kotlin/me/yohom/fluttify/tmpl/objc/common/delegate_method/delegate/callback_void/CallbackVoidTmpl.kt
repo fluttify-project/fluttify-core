@@ -1,6 +1,5 @@
 package me.yohom.fluttify.tmpl.objc.common.delegate_method.delegate.callback_void
 
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.nsvalue_struct.struct_to_nsvalue.StructToNSValueTmpl
 
@@ -18,14 +17,12 @@ internal class CallbackVoidTmpl(private val method: Method) {
             .replace(
                 "#__callback_args__#",
                 method.formalParams.joinToString {
-                    if (it.variable.typeName.findType().isStruct()) {
-                        "@\"${it.variable.name}\": @(${StructToNSValueTmpl(
-                            it.variable
-                        ).objcStructToNSValue()}.hash)"
-                    } else if (it.variable.typeName.findType().isRefType()){
-                        "@\"${it.variable.name}\": @(${it.variable.name}.hash)"
-                    } else {
-                        "@\"${it.variable.name}\": @(${it.variable.name})"
+                    when {
+                        it.variable.isStruct() -> "@\"${it.variable.name}\": @(${StructToNSValueTmpl(it.variable).objcStructToNSValue()}.hash)"
+                        it.variable.isRefType() -> "@\"${it.variable.name}\": @(${it.variable.name}.hash)"
+                        // 如果碰到id类型的参数, 那么一律转为NSObject处理
+                        it.variable.typeName == "id" -> "@\"${it.variable.name}\": @(((NSObject*) ${it.variable.name}).hash)"
+                        else -> "@\"${it.variable.name}\": @(${it.variable.name})"
                     }
                 }
             )

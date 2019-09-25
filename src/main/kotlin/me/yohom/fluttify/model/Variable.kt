@@ -43,6 +43,10 @@ data class Variable(
         return typeName.findType().isInterface()
     }
 
+    fun isRefType(): Boolean {
+        return typeName.findType().isRefType()
+    }
+
     fun toDartString(): String {
         return if (typeName.findType().isLambda()) {
             val type = typeName.findType()
