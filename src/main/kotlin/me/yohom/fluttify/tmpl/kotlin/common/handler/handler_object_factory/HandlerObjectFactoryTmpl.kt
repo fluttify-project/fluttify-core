@@ -24,11 +24,6 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
         return type.constructors
             .filterConstructor()
             .map {
-                // 参数分为三种, 分情况分别构造以下三种模板
-                // 1. 枚举
-                // 2. jsonable
-                // 3. 引用
-                // 4. 列表
                 val args = it.formalParams
                     .filter { !it.variable.typeName.findType().isCallback() }
                     .joinToString("\n") {
@@ -44,11 +39,12 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                 }}"
                 val argsValue = it.formalParams.joinToString {
                     it.variable.name.run {
-                        // 因为dart到kotlin这边都是double类型, 如果参数实际类型是float的话, 需要转一手
-                        if (it.variable.typeName.toLowerCase() == "float") {
-                            "${this}.toFloat()"
-                        } else {
-                            this
+                        when {
+                            // 因为dart到kotlin这边都是double类型, 如果参数实际类型是float的话, 需要转一手
+                            it.variable.typeName.toLowerCase() == "float" -> "${this}.toFloat()"
+                            // 如果是列表参数, 统一成ArrayList
+                            it.variable.isList -> "ArrayList($this)"
+                            else -> this
                         }
                     }
                 }
