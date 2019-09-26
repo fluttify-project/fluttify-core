@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.common.result
 import me.yohom.fluttify.TYPE_NAME
 
 //NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
-//REF_MAP[@(resultValue.hash)] = resultValue;
+//HEAP[@(resultValue.hash)] = resultValue;
 //
 //methodResult(@(resultValue.hash));
 internal class ResultStructTmpl(val returnType: TYPE_NAME) {

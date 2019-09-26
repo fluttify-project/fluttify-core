@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //
 //typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 //
-//NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
+//NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 //
 //@implementation #__plugin_name__#Plugin {
 //  NSObject <FlutterPluginRegistrar> * _registrar;
@@ -46,7 +46,7 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //// Method Handlers
 //- (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
 //  // 引用Map
-//  REF_MAP = @{}.mutableCopy;
+//  HEAP = @{}.mutableCopy;
 //
 //  // 处理方法们
 //  NSDictionary<NSString *, Handler> *_handlerMap = @{
@@ -55,10 +55,10 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //
 //  NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
 //  if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
-//    [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
+//    [HEAP removeObjectForKey:(NSNumber *) args[@"refId"]];
 //    methodResult(@"success");
 //  } else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
-//    [REF_MAP removeAllObjects];
+//    [HEAP removeAllObjects];
 //    methodResult(@"success");
 //  } else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
 //    CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
@@ -67,7 +67,7 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //    CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
 //
 //    NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
-//    REF_MAP[@(dataValue.hash)] = dataValue;
+//    HEAP[@(dataValue.hash)] = dataValue;
 //
 //    methodResult(@(dataValue.hash));
 //  } else {

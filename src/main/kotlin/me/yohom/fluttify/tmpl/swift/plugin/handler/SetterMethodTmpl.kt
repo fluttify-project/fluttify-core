@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Field
 //    let #__field_name__# = args["#__field_name__#"] as #__field_type__#
 //
 //    let refId = args["refId"] as Int
-//    let ref = REF_MAP[refId] as #__class_name__#
+//    let ref = HEAP[refId] as #__class_name__#
 //
 //    ref.#__setter__# = #__field_name__#
 //    methodResult("success")

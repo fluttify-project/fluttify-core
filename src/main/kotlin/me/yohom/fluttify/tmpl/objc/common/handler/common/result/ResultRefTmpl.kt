@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.isObjcValueType
 import me.yohom.fluttify.extensions.jsonable
 
 //NSInteger returnRefId = [result hashValue];
-//REF_MAP[@(returnRefId)] = result;
+//HEAP[@(returnRefId)] = result;
 //
 //methodResult(returnRefId);
 internal class ResultRefTmpl(val returnType: TYPE_NAME) {

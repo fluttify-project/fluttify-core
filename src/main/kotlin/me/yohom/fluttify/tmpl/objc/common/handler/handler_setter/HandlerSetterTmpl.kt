@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStruc
 //    #__args__#
 //
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__# ref = (#__class_name__#) REF_MAP[@(refId)];
+//    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
 //
 //    ref.#__setter__# = #__field_value__#;
 //    methodResult(@"success");

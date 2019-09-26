@@ -13,7 +13,7 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
 //
 //    // 创建对象
 //    val obj = #__class_name__#(#__args_value__#)
-//    REF_MAP[obj.hashCode()] = obj
+//    HEAP[obj.hashCode()] = obj
 //
 //    methodResult.success(obj.hashCode())
 //}

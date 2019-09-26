@@ -1,7 +1,7 @@
 private func #__getter_method_name__#(registrar: FlutterPluginRegistrar, args: Dictionary<String, Any>, methodResult: FlutterResult) {
     // 引用对象
     let refId = args["refId"] as! Int
-    let ref = REF_MAP[refId] as! #__class_name__#
+    let ref = HEAP[refId] as! #__class_name__#
 
     methodResult(ref.#__getter__#)
 }

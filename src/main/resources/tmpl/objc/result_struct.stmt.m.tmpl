@@ -1,4 +1,4 @@
 NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
-REF_MAP[@(resultValue.hash)] = resultValue;
+HEAP[@(resultValue.hash)] = resultValue;
 
 methodResult(@(resultValue.hash));

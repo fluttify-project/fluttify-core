@@ -4,7 +4,7 @@ import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.jsonable
 
 //val returnRefId = result.hashCode()
-//REF_MAP[returnRefId] = result
+//HEAP[returnRefId] = result
 //
 //methodResult.success(returnRefId)
 internal class ResultRefTmpl(val returnType: TYPE_NAME) {

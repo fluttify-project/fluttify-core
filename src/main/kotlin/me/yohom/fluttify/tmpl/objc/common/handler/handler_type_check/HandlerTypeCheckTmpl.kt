@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Type
 //@"RefClass::isKindOf#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 引用对象
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    id ref = REF_MAP[@(refId)];
+//    id ref = HEAP[@(refId)];
 //
 //    BOOL isTargetType = [ref isKindOfClass:[#__type_name__# class]];
 //    methodResult(@(isTargetType));

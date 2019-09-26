@@ -6,12 +6,12 @@ import me.yohom.fluttify.model.Type
 //@"RefClass::cast#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 引用对象
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    id ref = REF_MAP[@(refId)];
+//    id ref = HEAP[@(refId)];
 //
 //    // 转型
 //    ref = (#__type_name__#) ref;
-//    // 放回REF_MAP
-//    REF_MAP[@(refId)] = ref;
+//    // 放回HEAP
+//    HEAP[@(refId)] = ref;
 //
 //    methodResult(@(refId));
 //},

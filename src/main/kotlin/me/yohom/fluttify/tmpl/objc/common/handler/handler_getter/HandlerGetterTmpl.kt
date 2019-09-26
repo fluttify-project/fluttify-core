@@ -10,7 +10,7 @@ import me.yohom.fluttify.model.Field
 //
 //    // 引用对象
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__# ref = (#__class_name__#) REF_MAP[@(refId)];
+//    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
 //
 //    #__note__#
 //

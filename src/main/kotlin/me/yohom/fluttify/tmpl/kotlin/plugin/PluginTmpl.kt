@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //import io.flutter.plugin.common.MethodChannel
 //import io.flutter.plugin.common.PluginRegistry.Registrar
 //
-//val REF_MAP = mutableMapOf<Int, Any>()
+//val HEAP = mutableMapOf<Int, Any>()
 //
 //@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 //class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.MethodCallHandler {
@@ -41,24 +41,24 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //        when (methodCall.method) {
 //            // 获取Application对象
 //            "ObjectFactory::getandroid_app_Application" -> {
-//                methodResult.success(registrar.activity().application.apply { REF_MAP[hashCode()] = this }.hashCode())
+//                methodResult.success(registrar.activity().application.apply { HEAP[hashCode()] = this }.hashCode())
 //            }
 //            // 获取FlutterActivity对象
 //            "ObjectFactory::getandroid_app_Activity" -> {
-//                methodResult.success(registrar.activity().apply { REF_MAP[hashCode()] = this }.hashCode())
+//                methodResult.success(registrar.activity().apply { HEAP[hashCode()] = this }.hashCode())
 //            }
 //            // 创建android.os.Bundle对象
 //            "ObjectFactory::createandroid_os_Bundle" -> {
-//                methodResult.success(Bundle().apply { REF_MAP[hashCode()] = this }.hashCode())
+//                methodResult.success(Bundle().apply { HEAP[hashCode()] = this }.hashCode())
 //            }
 //            // 释放一个对象
 //            "ObjectFactory::release" -> {
-//                REF_MAP.remove(args["refId"] as Int)
+//                HEAP.remove(args["refId"] as Int)
 //                methodResult.success("success")
 //            }
-//            // 清空REF_MAP中所有对象
+//            // 清空HEAP中所有对象
 //            "ObjectFactory::clearRefMap" -> {
-//                REF_MAP.clear()
+//                HEAP.clear()
 //                methodResult.success("success")
 //            }
 //            else -> {

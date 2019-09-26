@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Field
 //"#__getter_name__#" to { registrar, args, methodResult ->
 //    // 引用对象
 //    val refId = args["refId"] as Int
-//    val ref = REF_MAP[refId] as #__class_name__#
+//    val ref = HEAP[refId] as #__class_name__#
 //
 //    methodResult.success(ref.#__field_name__#)
 //}

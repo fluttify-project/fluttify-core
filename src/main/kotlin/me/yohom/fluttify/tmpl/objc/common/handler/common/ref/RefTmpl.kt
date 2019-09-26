@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.model.Method
 
 //NSInteger refId = [args[@"refId"] integerValue];
-//#__class_name__# ref = (#__class_name__#) REF_MAP[@(refId)];
+//#__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
 internal class RefTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/ref.stmt.m.tmpl").readText()
 

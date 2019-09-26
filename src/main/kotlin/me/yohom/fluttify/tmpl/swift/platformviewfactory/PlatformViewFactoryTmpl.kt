@@ -22,12 +22,12 @@ import me.yohom.fluttify.model.Type
 //
 //   func view() -> UIView {
 //       let nativeView = #__native_view__#()
-//       REF_MAP[viewId] = nativeView
+//       HEAP[viewId] = nativeView
 //       return nativeView
 //   }
 //
 //   deinit {
-//       REF_MAP.removeValue(forKey: Int(viewId))
+//       HEAP.removeValue(forKey: Int(viewId))
 //   }
 //}
 class PlatformViewFactoryTmpl(

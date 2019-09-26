@@ -13,7 +13,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //#import <Flutter/Flutter.h>
 //#import #__import__#
 //
-//extern NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
+//extern NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 //
 //@interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
 //- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar;
@@ -65,7 +65,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //
 //- (UIView *)view {
 //  #__native_view__# *view = [[#__native_view__# alloc] init];
-//  REF_MAP[@(_viewId)] = view;
+//  HEAP[@(_viewId)] = view;
 //
 //  //region handlers
 //  _handlerMap = @{
@@ -91,7 +91,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //}
 //
 //- (void)dealloc {
-//  [REF_MAP removeObjectForKey:@(_viewId)];
+//  [HEAP removeObjectForKey:@(_viewId)];
 //}
 //
 //

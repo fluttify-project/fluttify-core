@@ -39,7 +39,7 @@ internal class CallbackMethodTmpl(private val callbackMethod: Method) {
             .replace(
                 "#__callback_params__#",
                 callbackMethod.formalParams.joinToString(",\n") {
-                    "\"${it.variable.name}\" to ${if (it.variable.typeName.jsonable()) it.variable.name else "${it.variable.name}.hashCode().apply { REF_MAP[this] = ${it.variable.name} }"}"
+                    "\"${it.variable.name}\" to ${if (it.variable.typeName.jsonable()) it.variable.name else "${it.variable.name}.hashCode().apply { HEAP[this] = ${it.variable.name} }"}"
                 }
             )
             .replaceParagraph(

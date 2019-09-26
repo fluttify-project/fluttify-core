@@ -40,7 +40,7 @@ internal class LambdaCallbackTmpl(private val callerMethod: Method, private val 
             "@\"${it.variable.name}\": ${when {
                 it.variable.typeName.isObjcValueType() -> "@(${it.variable.name})"
                 it.variable.typeName.jsonable() -> it.variable.typeName
-                else -> "${it.variable.name}.hashCode().apply { REF_MAP[this] = ${it.variable.name} }"
+                else -> "${it.variable.name}.hashCode().apply { HEAP[this] = ${it.variable.name} }"
             }},\n"
         }
         val log = "NSLog(@\"fluttify-objc-callback: ${callerMethod.className}@%@::${callerMethod.name}_${callbackLambda.name}(参数打印暂未实现)\", @(refId));"

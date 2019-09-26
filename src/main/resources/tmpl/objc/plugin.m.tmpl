@@ -2,7 +2,7 @@
 
 typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 
-NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
+NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 
 @implementation #__plugin_name__#Plugin {
   NSObject <FlutterPluginRegistrar> * _registrar;
@@ -24,7 +24,7 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
   // 引用Map
-  REF_MAP = @{}.mutableCopy;
+  HEAP = @{}.mutableCopy;
 
   FlutterMethodChannel *channel = [FlutterMethodChannel
       methodChannelWithName:@"#__method_channel__#"
@@ -41,10 +41,10 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
 - (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
   NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
   if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
-    [REF_MAP removeObjectForKey:(NSNumber *) args[@"refId"]];
+    [HEAP removeObjectForKey:(NSNumber *) args[@"refId"]];
     methodResult(@"success");
   } else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
-    [REF_MAP removeAllObjects];
+    [HEAP removeAllObjects];
     methodResult(@"success");
   } else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
     CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
@@ -53,7 +53,7 @@ NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
     CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
 
     NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
-    REF_MAP[@(dataValue.hash)] = dataValue;
+    HEAP[@(dataValue.hash)] = dataValue;
 
     methodResult(@(dataValue.hash));
   } else {

@@ -11,7 +11,7 @@ import me.yohom.fluttify.tmpl.swift.plugin.handler.SetterMethodTmpl
 //import UIKit
 //#__imports__#
 //
-//var REF_MAP = [Int : Any]()
+//var HEAP = [Int : Any]()
 //
 //public class Swift#__plugin_name__#Plugin: NSObject, FlutterPlugin {
 //
@@ -39,11 +39,11 @@ import me.yohom.fluttify.tmpl.swift.plugin.handler.SetterMethodTmpl
 //        switch methodCall.method {
 //        // 释放一个对象
 //        case "SystemRef::release":
-//            REF_MAP.removeValue(forKey: args["refId"] as! Int)
+//            HEAP.removeValue(forKey: args["refId"] as! Int)
 //            methodResult("success")
-//        // 清空REF_MAP中所有对象
+//        // 清空HEAP中所有对象
 //        case "SystemRef::clearRefMap":
-//            REF_MAP.removeAll()
+//            HEAP.removeAll()
 //            methodResult("success")
 //        default:
 //            handlerMap[methodCall.method]?.self(registrar, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
