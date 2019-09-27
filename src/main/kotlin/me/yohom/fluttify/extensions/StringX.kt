@@ -71,7 +71,7 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    return SDK.findType(this.depointer().deprotocol())
+    return SDK.findType((depointer().deprotocol().let { if (it.isList()) it.genericType() else it }).apply { println("查找:$this") })
 }
 
 /**
@@ -226,7 +226,7 @@ fun String.pointerValue(): String {
  * 去除协议类型的id<>
  */
 fun String.deprotocol(): String {
-    return removePrefix("id<").removeSuffix(">")
+    return if (startsWith("id<")) removePrefix("id<").removeSuffix(">") else this
 }
 
 /**
@@ -248,7 +248,7 @@ fun String.enpointer(): String {
  */
 fun TYPE_NAME.genericType(): TYPE_NAME {
     return if (contains("<") && contains(">")) {
-        substringAfter("<").run { substringBefore(">") }
+        substringAfter("<").substringBefore(">")
     } else {
         this
     }

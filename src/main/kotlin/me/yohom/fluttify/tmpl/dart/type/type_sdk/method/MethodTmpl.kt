@@ -108,7 +108,7 @@ class MethodTmpl(private val method: Method) {
         } else if (returnType.findType().isEnum()) {
             resultBuilder.append("${returnType.toDartType()}.values[result]")
         } else {
-            if (returnType.findType().isList()) {
+            if (returnType.isList()) {
                 resultBuilder.append(
                     "(result as List).map((it) => ${returnType.genericType().toDartType()}()..refId = it)"
                 )

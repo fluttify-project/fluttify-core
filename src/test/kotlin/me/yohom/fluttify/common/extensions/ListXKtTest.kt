@@ -8,9 +8,9 @@ class ListXKtTest {
 
     @Test
     fun filterMethod() {
-        sdk.libs[0]
+        sdk.libs[1]
             .types.apply { println("types:$this") }
-            .find { it.name == "com.amap.api.maps.AMap" }
+            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
             ?.methods
             ?.apply { println("before:$this") }
             ?.filterMethod()

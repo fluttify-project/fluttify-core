@@ -17,15 +17,16 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
  */
 fun List<Method>.filterMethod(): List<Method> {
     return asSequence()
-        .filter { !it.isDeprecated }
+        .filter { (!it.isDeprecated).apply { if (!this) println("filterMethod: $it 由于是废弃方法 被过滤") } }
         // todo 解除带有列表参数的方法的限制
         .filter { (!it.formalParams.any { it.variable.typeName.isList() }).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
         // 类似float*返回这样的类型的方法都暂时不处理
-        .filter { !it.returnType.run { contains("*") && depointer().isCType() } }
+        .filter { (!it.returnType.run { contains("*") && depointer().isCType() }).apply { if (!this) println("filterMethod: $it 由于是结构体指针 被过滤") } }
         // 返回值是接口类型的都不处理
-        .filter { !it.returnType.findType().isInterface() }
+        .filter { (!it.returnType.findType().isInterface()).apply { if (!this) println("filterMethod: $it 由于是返回值是接口类型 被过滤") } }
         .distinctBy { "${it.className}::${it.name}" }
         .filter { it.isOk() }
+        .filter { println("方法${it}通过Method过滤"); true }
         .toList()
 }
 
@@ -35,7 +36,7 @@ fun List<Method>.filterMethod(): List<Method> {
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
         // todo 解除带有列表参数的方法的限制
-        .filter { (!it.variable.isList).apply { if (!this) println("filterMethod: $it 由于参数中有数组 被过滤") } }
+        .filter { (!it.variable.isList).apply { if (!this) println("filterGetters: $it 由于参数中有数组 被过滤") } }
         .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
         .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
 //        .filter { (it.variable.typeName.findType().run { jsonable() || isEnum() }).apply { if (!this) println("filterGetters: $it 由于是非jsonable且非enum类型 被过滤") } }
