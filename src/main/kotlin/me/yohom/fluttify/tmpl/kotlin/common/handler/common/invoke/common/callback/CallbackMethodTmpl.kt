@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.callback
+package me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.replaceParagraph

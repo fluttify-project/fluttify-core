@@ -110,7 +110,7 @@ class MethodTmpl(private val method: Method) {
         } else {
             if (returnType.isList()) {
                 resultBuilder.append(
-                    "(result as List).map((it) => ${returnType.genericType().toDartType()}()..refId = it)"
+                    "(result as List).cast<int>().map((it) => ${returnType.genericType().toDartType()}()..refId = it).toList()"
                 )
             } else {
                 resultBuilder.append("${returnType.toDartType()}()..refId = result")

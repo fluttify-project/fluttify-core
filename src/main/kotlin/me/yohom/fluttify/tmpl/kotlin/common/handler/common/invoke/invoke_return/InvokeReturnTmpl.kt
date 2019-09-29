@@ -1,15 +1,16 @@
-package me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke
+package me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.invoke_return
 
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Variable
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.callback.CallbackTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback.CallbackTmpl
 
-//#__invoke_target__#.#__method_name__#(#__actual_params__#)
-class InvokeVoidTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/invoke_void.stmt.kt.tmpl").readText()
+//val result = #__invoke_target__#.#__method_name__#(#__actual_params__#)
+class InvokeReturnTmpl(private val method: Method) {
+    private val tmpl = this::class.java.getResource("/tmpl/kotlin/invoke_return.stmt.kt.tmpl").readText()
 
-    fun kotlinInvokeVoid(): String {
+    fun kotlinInvokeReturn(): String {
+        // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return tmpl
             .replace("#__invoke_target__#", if (method.isStatic) method.className else "ref")
             .replace("#__method_name__#", method.name)
@@ -21,13 +22,7 @@ class InvokeVoidTmpl(private val method: Method) {
             CallbackTmpl(method, variable.typeName.findType()).kotlinCallback()
         } else {
             when {
-                variable.isList -> "ArrayList(${variable.run {
-                    if (typeName.contains(
-                            "float",
-                            true
-                        )
-                    ) "$name.map { it.toFloat() }" else name
-                }})"
+                variable.isList -> "ArrayList(${variable.run { if (typeName.contains("float", true)) "$name.map { it.toFloat() }" else name }})"
                 // 由于dart端的double到kotlin这边都是double, 如果方法参数是float的话, 需要转一手
                 variable.typeName.toLowerCase() == "float" -> "${variable.name}.toFloat()"
                 else -> variable.name

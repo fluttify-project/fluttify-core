@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method
 
 import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.isList
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
@@ -8,10 +9,13 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgJsonableTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.InvokeReturnTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.InvokeVoidTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.invoke_return.InvokeReturnTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.invoke_void.InvokeVoidTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.ref.RefTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.ResultRefTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_jsonable.ResultJsonableTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_list.ResultListTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_ref.ResultRefTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_void.ResultVoidTmpl
 
 //"#__method_name__#" to { registrar, args, methodResult ->
 //    // 参数
@@ -34,11 +38,6 @@ internal class HandlerMethodTmpl(private val method: Method) {
 
     fun kotlinHandlerMethod(): String {
         val methodName = method.nameWithClass()
-        // 参数分为三种, 分情况分别构造以下三种模板
-        // 1. 枚举
-        // 2. jsonable
-        // 3. 引用
-        // 4. 列表
         val args = method.formalParams
             .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
@@ -65,7 +64,12 @@ internal class HandlerMethodTmpl(private val method: Method) {
             InvokeReturnTmpl(method).kotlinInvokeReturn()
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
-        val result = ResultRefTmpl(method.returnType).kotlinRefResult()
+        val result = when {
+            method.returnType.jsonable() -> ResultJsonableTmpl().kotlinJsonableResult()
+            method.returnType.isList() -> ResultListTmpl().kotlinListResult()
+            method.returnType == "void" -> ResultVoidTmpl().kotlinVoidResult()
+            else -> ResultRefTmpl().kotlinRefResult()
+        }
         return tmpl
             .replace("#__method_name__#", methodName)
             .replaceParagraph("#__args__#", args)
