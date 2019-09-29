@@ -134,7 +134,7 @@ class ObjectFactoryTmpl(
             Platform.iOS -> iosTmpl
             Platform.Android -> androidTmpl
             Platform.Unknown -> ""
-        }.replace("#__current_package__#", "${ext.outputProjectName}/${ext.outputProjectName}")
+        }.replace("#__current_package__#", ext.outputProjectName)
             .replace("#__method_chanel__#", "${ext.outputOrg}/${ext.outputProjectName}")
             .replaceParagraph("#__create_objects__#", libs
                 .flatMap { it.types }

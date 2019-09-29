@@ -2,7 +2,7 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
-import org.apache.commons.io.FileUtils
+import me.yohom.fluttify.extensions.iterate
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -20,18 +20,27 @@ open class Export : DefaultTask() {
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
 
-        val dartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/".file()
-        val exportFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/${ext.outputProjectName}.dart".file()
+        val androidDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file()
+        val iosDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file()
 
-        val result = StringBuilder()
-        FileUtils
-            .iterateFiles(dartSrcDir, arrayOf("dart"), true)
-            .forEach {
-                result.append("export '${it.toRelativeString(exportFile).removePrefix("../")}';\n")
-            }
-        result.append("\n")
+        val androidExportFile =
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/android.export.dart".file()
+        val iosExportFile =
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ios.export.dart".file()
 
-        exportFile.writeText(result.toString())
+        val androidResult = StringBuilder()
+        val iosResult = StringBuilder()
+
+        androidDartSrcDir.iterate("dart") {
+            val relativePath = it.toRelativeString(androidExportFile).removePrefix("../")
+            if (relativePath.isNotBlank()) androidResult.appendln("export '${relativePath}';")
+        }
+        iosDartSrcDir.iterate("dart") {
+            val relativePath = it.toRelativeString(iosExportFile).removePrefix("../")
+            if (relativePath.isNotBlank()) iosResult.appendln("export '${relativePath}';")
+        }
+
+        androidExportFile.writeText(androidResult.toString())
+        iosExportFile.writeText(iosResult.toString())
     }
 }
