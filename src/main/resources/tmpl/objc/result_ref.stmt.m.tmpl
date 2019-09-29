@@ -1,4 +1,3 @@
-NSInteger returnRefId = [result hash];
-HEAP[@(returnRefId)] = result;
-
-methodResult(@(returnRefId));
+// 返回值: 引用
+HEAP[@(result.hash)] = result;
+methodResult(@(result.hash));

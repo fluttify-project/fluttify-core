@@ -2,8 +2,11 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_getter
 
 import me.yohom.fluttify.extensions.enpointer
 import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isObjcValueType
+import me.yohom.fluttify.extensions.isObjcPrimitive
+import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    NSLog(@"#__method_name__#");
@@ -12,9 +15,12 @@ import me.yohom.fluttify.model.Field
 //    NSInteger refId = [args[@"refId"] integerValue];
 //    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
 //
+//    // 开始调用
+//    #__invoke__#
+//
 //    #__note__#
 //
-//    methodResult(#__getter__#);
+//    #__result__#
 //},
 internal class HandlerGetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/handler_getter.stmt.m.tmpl").readText()
@@ -26,21 +32,21 @@ internal class HandlerGetterTmpl(private val field: Field) {
         } else {
             field.className.enpointer()
         }
-        val getter = field.run {
-            when {
-                variable.typeName.isObjcValueType() -> "@(ref.$getterName)"
-                variable.typeName.findType().isStruct() -> {
-                    "nil/* 结构体getter暂时不支持 */"
-//                        "@(${StructToNSValueTmpl(field.variable).objcStructToNSValue()}.hash)"
-                }
-                else -> "@(ref.$getterName.hash)"
-            }
+        // 调用objc端对应的方法
+        val invoke = InvokeTmpl(field).objcInvoke()
+        val result = when {
+            field.variable.typeName.isObjcPrimitive() -> ResultValueTmpl().objcResultValue()
+            field.variable.jsonable() -> ResultJsonableTmpl().objcResultJsonable()
+            field.variable.isList -> ResultListTmpl().objcResultList()
+            field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName).objcResultStruct()
+            else -> ResultRefTmpl().objcResultRef()
         }
-        val note = if (field.variable.typeName.findType().isStruct()) "NSLog(@\"${methodName}:结构体getter暂时不支持\");" else ""
+        val note = if (field.variable.isStruct()) "NSLog(@\"${methodName}:结构体getter暂时不支持\");" else ""
         return tmpl
             .replace("#__method_name__#", methodName)
             .replace("#__class_name__#", className)
+            .replace("#__invoke__#", invoke)
             .replace("#__note__#", note)
-            .replace("#__getter__#", getter)
+            .replaceParagraph("#__result__#", result)
     }
 }

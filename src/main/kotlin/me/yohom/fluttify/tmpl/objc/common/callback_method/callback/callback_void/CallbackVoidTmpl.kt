@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.delegate_method.delegate.callback_void
+package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_void
 
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.nsvalue_struct.struct_to_nsvalue.StructToNSValueTmpl

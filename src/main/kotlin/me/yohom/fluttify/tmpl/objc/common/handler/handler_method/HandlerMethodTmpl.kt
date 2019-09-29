@@ -1,8 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_method
 
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
@@ -11,8 +9,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_ref.ArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.RefTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.result.ResultRefTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.result.ResultStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 参数
@@ -55,13 +52,16 @@ internal class HandlerMethodTmpl(private val method: Method) {
         // 获取当前调用方法的对象引用
         val ref = RefTmpl(method).objcRef()
 
-        // 调用kotlin端对应的方法
+        // 调用objc端对应的方法
         val invoke = InvokeTmpl(method).objcInvoke()
 
-        // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = when {
-            method.returnType.depointer().findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()
-            else -> ResultRefTmpl(method.returnType).objcResultRef()
+            method.returnType.isObjcPrimitive() -> ResultValueTmpl().objcResultValue()
+            method.returnType.jsonable() -> ResultJsonableTmpl().objcResultJsonable()
+            method.returnType.isList() -> ResultListTmpl().objcResultList()
+            method.returnType.findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()
+            method.returnType.isVoid() -> ResultVoidTmpl().objcResultVoid()
+            else -> ResultRefTmpl().objcResultRef()
         }
 
         return tmpl

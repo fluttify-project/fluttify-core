@@ -1,4 +1,7 @@
-NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
-HEAP[@(resultValue.hash)] = resultValue;
+// 返回值: 结构体
+// NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
+// HEAP[@(resultValue.hash)] = resultValue;
+//
+// methodResult(@(resultValue.hash));
 
-methodResult(@(resultValue.hash));
+methodResult(nil/* 结构体getter暂时不支持 */);

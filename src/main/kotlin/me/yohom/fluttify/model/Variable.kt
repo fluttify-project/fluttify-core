@@ -43,6 +43,14 @@ data class Variable(
         return typeName.findType().isInterface()
     }
 
+    fun isAbstract(): Boolean {
+        return typeName.findType().isAbstract
+    }
+
+    fun isConcret(): Boolean {
+        return !isAbstract()
+    }
+
     fun isRefType(): Boolean {
         return typeName.findType().isRefType()
     }

@@ -61,6 +61,13 @@ fun TYPE_NAME.isArrayList(): Boolean {
 }
 
 /**
+ * 是否是void类型
+ */
+fun TYPE_NAME.isVoid(): Boolean {
+    return this.toLowerCase() == "void";
+}
+
+/**
  * 简写类名
  */
 fun TYPE_NAME.simpleName(): String {
@@ -110,13 +117,13 @@ fun TYPE_NAME.toSwiftType(): String {
 /**
  * 是否是值类型(相对指针类型)
  */
-fun TYPE_NAME.isObjcValueType(): Boolean {
+fun TYPE_NAME.isObjcPrimitive(): Boolean {
     return (this in listOf(
         "BOOL",
         "NSInteger",
         "NSUInteger",
         "CGFloat"
-    )) or this.findType().isEnum() or isCType() or (this in SYSTEM_TYPEDEF)
+    )) or findType().isEnum() or isCType() or (this in SYSTEM_TYPEDEF)
 }
 
 /**

@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.delegate_method.delegate.callback_return
+package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return
 
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.jsonable

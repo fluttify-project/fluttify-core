@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable
 import me.yohom.fluttify.SYSTEM_TYPEDEF
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.enpointer
-import me.yohom.fluttify.extensions.isObjcValueType
+import me.yohom.fluttify.extensions.isObjcPrimitive
 import me.yohom.fluttify.extensions.toObjcType
 import me.yohom.fluttify.model.Variable
 
@@ -15,10 +15,10 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
     fun objcArgJsonable(): String {
         val typeName = when {
             variable.isList -> "List<${variable.typeName}>"
-            variable.typeName.isObjcValueType() -> variable.typeName.depointer().toObjcType()
+            variable.typeName.isObjcPrimitive() -> variable.typeName.depointer().toObjcType()
             else -> variable.typeName.enpointer()
         }
-        val rightValue = if (variable.typeName.isObjcValueType()) {
+        val rightValue = if (variable.typeName.isObjcPrimitive()) {
             var methodPrefix = SYSTEM_TYPEDEF[variable.typeName] ?: variable
                 .typeName
                 .depointer()

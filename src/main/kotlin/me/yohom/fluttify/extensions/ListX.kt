@@ -39,6 +39,7 @@ fun List<Field>.filterGetters(): List<Field> {
         .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
         .filter { it.variable.isKnownType().apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
         .filter { it.variable.isPublicType().apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
+        .filter { it.variable.isConcret().apply { if (!this) println("filterGetters: $it 由于是抽象类型 被过滤") } }
         .filter { println("字段${it}通过Getter过滤"); true }
         .toList()
 }
