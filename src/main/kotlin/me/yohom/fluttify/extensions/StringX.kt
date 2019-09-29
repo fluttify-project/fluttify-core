@@ -186,6 +186,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         null -> "null"
         // 开始objc
         "NSString", "NSString*" -> "String"
+        "NSArray<NSString*>", "NSArray<NSString *>", "NSArray<NSString*>*", "NSArray<NSString *> *" -> "List<String>"
         "nil" -> "null"
         "id" -> "Object"
         "NSArray", "NSArray*" -> "List"
@@ -250,7 +251,7 @@ fun TYPE_NAME.genericType(): TYPE_NAME {
         substringAfter("<").substringBefore(">")
     } else {
         this
-    }
+    }.depointer()
 }
 
 /**

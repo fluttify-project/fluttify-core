@@ -47,6 +47,18 @@ data class Variable(
         return typeName.findType().isRefType()
     }
 
+    fun isUnknownType(): Boolean {
+        return typeName.findType() == Type.UNKNOWN_TYPE
+    }
+
+    fun isKnownType(): Boolean {
+        return typeName.findType() != Type.UNKNOWN_TYPE
+    }
+
+    fun isPublicType(): Boolean {
+        return typeName.findType().isPublic
+    }
+
     fun toDartString(): String {
         return if (typeName.findType().isLambda()) {
             val type = typeName.findType()

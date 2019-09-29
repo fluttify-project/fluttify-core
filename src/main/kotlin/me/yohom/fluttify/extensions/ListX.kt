@@ -35,15 +35,10 @@ fun List<Method>.filterMethod(): List<Method> {
  */
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
-        // todo 解除带有列表参数的方法的限制
-        .filter { (!it.variable.isList).apply { if (!this) println("filterGetters: $it 由于参数中有数组 被过滤") } }
         .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
         .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
-//        .filter { (it.variable.typeName.findType().run { jsonable() || isEnum() }).apply { if (!this) println("filterGetters: $it 由于是非jsonable且非enum类型 被过滤") } }
-        .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
-//        .filter { (!it.variable.typeName.findType().isInterface()).apply { if (!this) println("filterGetters: $it 由于是接口类型 被过滤") } }
-//        .filter { (!it.className.findType().isInterface()).apply { if (!this) println("filterGetters: $it 由于所在类是接口 被过滤") } }
-        .filter { (it.variable.typeName.findType().isPublic).apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
+        .filter { it.variable.isKnownType().apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
+        .filter { it.variable.isPublicType().apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
         .filter { println("字段${it}通过Getter过滤"); true }
         .toList()
 }
