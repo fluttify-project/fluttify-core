@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callba
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback.callback_method.CallbackMethodTmpl
 
 //object : #__callback_class_name__# {
 //    // method channel

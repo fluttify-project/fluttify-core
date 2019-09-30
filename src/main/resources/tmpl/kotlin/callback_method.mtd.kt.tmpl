@@ -5,7 +5,9 @@ override fun #__callback_method__#(#__formal_params__#): #__return_type__# {
     // 开始回调
     callbackChannel.invokeMethod(
         "Callback::#__callback_method_name__#",
-        mapOf<String, Any?>(#__callback_params__#)
+        mapOf<String, Any?>(
+            #__callback_params__#
+        )
     )
 
     // 方法返回值
