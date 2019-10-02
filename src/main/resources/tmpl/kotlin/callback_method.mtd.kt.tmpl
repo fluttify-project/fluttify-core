@@ -2,11 +2,14 @@ override fun #__callback_method__#(#__formal_params__#): #__return_type__# {
     // 日志打印
     #__log__#
 
+    // 处理成可以传输的参数
+    #__local_args__#
+
     // 开始回调
     callbackChannel.invokeMethod(
         "Callback::#__callback_method_name__#",
         mapOf<String, Any?>(
-            #__callback_params__#
+            #__callback_args__#
         )
     )
 
