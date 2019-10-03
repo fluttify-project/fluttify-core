@@ -1,10 +1,10 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return
+package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return.callback_return_ref
 
 import me.yohom.fluttify.model.Method
 
 //NSInteger refId = (NSInteger) result;
 //_callbackResult = (#__ref_type__#) HEAP[@(refId)];
-internal class ReturnRefTmpl(private val method: Method) {
+internal class CallbackReturnRefTmpl(private val method: Method) {
     private val tmpl =
         this::class.java.getResource("/tmpl/objc/return_ref.stmt.m.tmpl").readText()
 

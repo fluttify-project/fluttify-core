@@ -3,11 +3,11 @@ package me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callba
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.toKotlinType
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_list.CallbackArgListTmpl
-import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.common.callback.callback_method.callback_return.CallbackReturnTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_list.CallbackArgListTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 
 //override fun #__callback_method__#(#__formal_params__#): #__return_type__# {
 //    // 日志打印
