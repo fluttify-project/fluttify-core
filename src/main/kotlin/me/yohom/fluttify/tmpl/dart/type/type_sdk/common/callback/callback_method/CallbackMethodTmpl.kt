@@ -4,8 +4,8 @@ import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.CallbackCaseDelegateTmpl
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.CallbackCaseLambdaTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda.CallbackCaseLambdaTmpl
 
 //MethodChannel('#__callback_channel__#')
 //    .setMethodCallHandler((methodCall) async {
@@ -52,11 +52,17 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
                     .distinctBy { it.nameWithClass() }
                     .filter { it.formalParams.none { it.variable.typeName.findType().isAbstract } }
                     .joinToString("\n") {
-                        CallbackCaseDelegateTmpl(it, param.variable.name).dartCallbackDelegateCase()
+                        CallbackCaseDelegateTmpl(
+                            it,
+                            param.variable.name
+                        ).dartCallbackDelegateCase()
                     }
             }
         val callbackLambdaCases = callbackLambdas
-            .map { CallbackCaseLambdaTmpl(callerMethod, it).callbackCase() }
+            .map { CallbackCaseLambdaTmpl(
+                callerMethod,
+                it
+            ).callbackCase() }
 
         return tmpl
             .replace("#__callback_channel__#", callbackChannel)

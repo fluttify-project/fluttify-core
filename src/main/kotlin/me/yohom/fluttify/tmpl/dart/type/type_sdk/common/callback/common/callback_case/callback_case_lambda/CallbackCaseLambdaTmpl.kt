@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case
+package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda
 
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.jsonable

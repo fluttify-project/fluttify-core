@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.CallbackCaseDelegateTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
 
 //MethodChannel('#__callback_channel__#')
 //    .setMethodCallHandler((methodCall) async {
@@ -38,7 +38,10 @@ class CallbackSetterTmpl(private val field: Field) {
             .distinctBy { it.nameWithClass() }
             .filter { it.formalParams.none { it.variable.typeName.findType().isAbstract } }
             .joinToString("\n") {
-                CallbackCaseDelegateTmpl(it, field.variable.name).dartCallbackDelegateCase()
+                CallbackCaseDelegateTmpl(
+                    it,
+                    field.variable.name
+                ).dartCallbackDelegateCase()
             }
 
         return tmpl

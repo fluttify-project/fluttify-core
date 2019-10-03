@@ -1,9 +1,12 @@
-package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case
+package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate
 
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.jsonable
-import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_enum.CallbackCaseArgEnumTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_interface.CallbackCaseArgInterfaceTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_jsonable.CallbackCaseArgJsonableTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_list.CallbackCaseArgListTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_ref.CallbackCaseArgRefTmpl
 
 //case '#__callback_case__#':
 //  // 日志打印
@@ -32,11 +35,11 @@ class CallbackCaseDelegateTmpl(
         val callbackArgs = callbackMethod.formalParams
             .joinToString {
                 when {
-                    it.variable.typeName.jsonable() -> "args['${it.variable.name}']"
-                    it.variable.isList -> "[]" //  todo 列表暂时不处理
-                    it.variable.typeName.findType().isInterface() -> "${it.variable.typeName.toDartType()}_Ref()..refId = (args['${it.variable.name}'])"
-                    it.variable.typeName.findType().isEnum() -> "${it.variable.typeName.toDartType()}.values[(args['${it.variable.name}'])]"
-                    else -> "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name}'])"
+                    it.variable.jsonable() -> CallbackCaseArgJsonableTmpl(it).dartCallbackCaseArgJsonable()
+                    it.variable.isList -> CallbackCaseArgListTmpl(it).dartCallbackCaseArgList()
+                    it.variable.isInterface() -> CallbackCaseArgInterfaceTmpl(it).dartCallbackCaseArgInterface()
+                    it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it).dartCallbackCaseArgEnum()
+                    else -> CallbackCaseArgRefTmpl(it).dartCallbackCaseArgRef()
                 }
             }
 
