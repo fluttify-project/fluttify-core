@@ -46,7 +46,7 @@ class StringXKtTest {
 
     @Test
     fun genericType() {
-        println("List<Abc>".genericType())
+        println("List<List<List<Abc>>>".genericType())
     }
 
     @Test

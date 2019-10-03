@@ -254,11 +254,11 @@ fun String.enpointer(): String {
  * 获取泛型类型名称
  */
 fun TYPE_NAME.genericType(): TYPE_NAME {
-    return if (contains("<") && contains(">")) {
-        substringAfter("<").substringBefore(">")
-    } else {
-        this
-    }.depointer()
+    var result = this
+    while (result.contains("<") && result.contains(">")) {
+        result = result.substringAfter("<").substringBeforeLast(">")
+    }
+    return result.depointer()
 }
 
 /**

@@ -112,8 +112,7 @@ open class Type : PlatformAware {
 
     fun constructable(): Boolean {
         return !isAbstract
-                && this != UNKNOWN_TYPE
-                && !isList()
+                && (this != UNKNOWN_TYPE || isList())
                 && !isEnum()
                 && (constructors.any { it.isPublic == true } || constructors.isEmpty())
                 && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
