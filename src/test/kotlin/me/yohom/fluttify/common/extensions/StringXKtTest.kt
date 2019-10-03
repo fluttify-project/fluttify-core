@@ -1,6 +1,7 @@
 package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.extensions.camel2Underscore
+import me.yohom.fluttify.extensions.genericLevel
 import me.yohom.fluttify.extensions.genericType
 import me.yohom.fluttify.extensions.replaceBatch
 import org.junit.Assert
@@ -47,6 +48,11 @@ class StringXKtTest {
     @Test
     fun genericType() {
         println("List<List<List<Abc>>>".genericType())
+    }
+
+    @Test
+    fun genericLevel() {
+        println("List<List<List<Abc>>>".genericLevel())
     }
 
     @Test

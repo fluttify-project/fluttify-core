@@ -127,6 +127,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
                         formalParam.typeType().text.isList(),
+                        formalParam.typeType().text.genericLevel(),
                         Platform.Android
                     ),
                     platform = Platform.Android
@@ -146,6 +147,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         variableDeclaratorId().text,
                         typeType().text.isList(),
+                        typeType().text.genericLevel(),
                         Platform.Android
                     ),
                     platform = Platform.Android
@@ -173,6 +175,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
                         formalParam.typeType().text.isList(),
+                        formalParam.typeType().text.genericLevel(),
                         Platform.Android
                     ),
                     platform = Platform.Android
@@ -192,6 +195,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                         typeFullName,
                         variableDeclaratorId().text,
                         typeType().text.isList(),
+                        typeType().text.genericLevel(),
                         Platform.Android
                     ),
                     platform = Platform.Android
@@ -247,6 +251,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                             blockType()?.run { "${returnType()}|${parameters()}" } ?: text
                         },
                         it.identifier().text,
+                        // todo isList和genericLevel实现
                         platform = Platform.iOS
                     ),
                     platform = Platform.iOS

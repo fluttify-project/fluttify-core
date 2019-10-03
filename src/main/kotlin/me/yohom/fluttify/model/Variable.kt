@@ -13,6 +13,7 @@ data class Variable(
     val typeName: TYPE_NAME,
     val name: String,
     val isList: Boolean = false,
+    val genericLevel: Int = 0,
     override var platform: Platform
 ) : PlatformAware {
     fun isStructPointer(): Boolean {
@@ -74,7 +75,14 @@ data class Variable(
         } else {
             // 结构体指针认为是列表类型
             val isListType = isList || isStructPointer()
-            "${typeName.toDartType().run { if (isListType) "List<$this>" else this }} ${name.depointer()}"
+            var type = typeName.toDartType()
+            if (isListType) {
+                // 根据List嵌套层次生成类型
+                for (i in 0 until genericLevel) {
+                    type = "List<$type>"
+                }
+            }
+            "$type ${name.depointer()}"
         }
     }
 }

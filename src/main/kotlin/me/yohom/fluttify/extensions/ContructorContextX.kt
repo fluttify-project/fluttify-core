@@ -42,6 +42,7 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
                         formalParam.typeType().text.isList(),
+                        formalParam.typeType().text.genericLevel(),
                         Platform.Android
                     ),
                     platform = Platform.Android
@@ -61,9 +62,9 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         variableDeclaratorId().text,
                         paramType.isList(),
+                        typeType().text.genericLevel(),
                         Platform.Android
-                    )
-                    ,
+                    ),
                     platform = Platform.Android
                 )
             )

@@ -135,6 +135,7 @@ fun JAVA_FILE.javaType(): Type {
                         ctx.type(),
                         ctx.name(),
                         ctx.type().isList(),
+                        ctx.type().genericLevel(),
                         Platform.Android
                     ),
                     "$packageName.${simpleName.replace("$", ".")}",

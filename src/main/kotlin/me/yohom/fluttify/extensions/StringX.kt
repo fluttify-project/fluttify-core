@@ -262,6 +262,19 @@ fun TYPE_NAME.genericType(): TYPE_NAME {
 }
 
 /**
+ * 获取泛型层数 用在List中 表示嵌套了几层
+ */
+fun TYPE_NAME.genericLevel(): Int {
+    var result = this
+    var level = 0
+    while (result.contains("<") && result.contains(">")) {
+        result = result.substringAfter("<").substringBeforeLast(">")
+        level++
+    }
+    return level
+}
+
+/**
  * 下划线风格转为驼峰风格, [capitalized]表示转换后首字母是否大写
  */
 fun String.underscore2Camel(capitalized: Boolean = true): String {
