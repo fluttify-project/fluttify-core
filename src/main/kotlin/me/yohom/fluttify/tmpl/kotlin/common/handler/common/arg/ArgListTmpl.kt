@@ -8,8 +8,16 @@ internal class ArgListTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/arg_list.stmt.kt.tmpl").readText()
 
     fun kotlinArgList(): String {
-        return tmpl
-            .replace("#__type_name__#", variable.typeName)
-            .replace("#__arg_name__#", variable.name)
+        return if (variable.genericLevel <= 1) {
+            tmpl
+                .replace("#__type_name__#", variable.typeName)
+                .replace("#__arg_name__#", variable.name)
+        } else {
+            var typeName = variable.typeName
+            for (i in 0 until (variable.genericLevel - 1)) {
+                typeName = "List<$typeName>"
+            }
+            "val ${variable.name} = listOf<$typeName>()"
+        }
     }
 }

@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Parameter
 internal class CallbackArgJsonableTmpl(private val param: Parameter) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_jsonable.stmt.m.tmpl").readText()
 
-    fun kotlinCallbackArgJsonable(): String {
+    fun objcCallbackArgJsonable(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
     }

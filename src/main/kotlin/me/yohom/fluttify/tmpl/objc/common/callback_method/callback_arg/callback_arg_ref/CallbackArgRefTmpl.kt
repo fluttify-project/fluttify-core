@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Parameter
 internal class CallbackArgRefTmpl(private val param: Parameter) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_ref.stmt.m.tmpl").readText()
 
-    fun kotlinCallbackArgRef(): String {
+    fun objcCallbackArgRef(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
             .replace("#__arg__#", param.variable.run {

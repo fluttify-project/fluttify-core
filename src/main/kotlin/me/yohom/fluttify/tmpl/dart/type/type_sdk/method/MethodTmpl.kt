@@ -80,7 +80,8 @@ class MethodTmpl(private val method: Method) {
                 when {
                     it.typeName.findType().isEnum() -> "${it.name}.index"
                     it.typeName.jsonable() -> it.name
-                    it.isList || it.isStructPointer() -> "${it.name}.map((it) => it.refId).toList()"
+                    (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name}.map((it) => it.refId).toList()"
+                    it.genericLevel > 1 -> "[]" // 多维数组暂不处理
                     else -> "${it.name}.refId"
                 }
             }

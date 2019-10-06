@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Parameter
 internal class CallbackArgEnumTmpl(private val param: Parameter) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_enum.stmt.m.tmpl").readText()
 
-    fun kotlinCallbackArgEnum(): String {
+    fun objcCallbackArgEnum(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
     }

@@ -37,10 +37,10 @@ internal class CallbackMethodTmpl(private val method: Method) {
             .formalParams
             .joinToString("\n") {
                 when {
-                    it.variable.jsonable() -> CallbackArgJsonableTmpl(it).kotlinCallbackArgJsonable()
-                    it.variable.isEnum() -> CallbackArgEnumTmpl(it).kotlinCallbackArgEnum()
-                    it.variable.isList -> CallbackArgListTmpl(it).kotlinCallbackArgList()
-                    else -> CallbackArgRefTmpl(it).kotlinCallbackArgRef()
+                    it.variable.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
+                    it.variable.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
+                    it.variable.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
+                    else -> CallbackArgRefTmpl(it).objcCallbackArgRef()
                 }
             }
         val callback = when {
