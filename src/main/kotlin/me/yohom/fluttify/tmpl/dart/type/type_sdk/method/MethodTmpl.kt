@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
 
-//#__static__# Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+//#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  // 日志打印
 //  #__log__#
 //
@@ -27,7 +27,7 @@ class MethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
 
     fun dartMethod(): String {
-        val static = if (method.isStatic) "static" else ""
+        val static = if (method.isStatic) "static " else ""
         val returnType = method.returnType.toDartType()
         val name = method.name
         // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
