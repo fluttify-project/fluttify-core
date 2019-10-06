@@ -1,7 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.setter
 
 import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Field
@@ -12,30 +11,24 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter
 //
 //  #__callback__#
 //}
-/**
- * 生成普通类的dart接口
- */
 class SetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/setter.mtd.dart.tmpl").readText()
 
     fun dartSetter(): String {
-
         return field.variable.run {
             val typeName = typeName.toDartType()
             val name = name.toDartType()
             val argValue = name.depointer().run {
                 when {
-                    field.variable.typeName.findType().isEnum() -> "$this.index"
-                    field.variable.typeName.jsonable() -> this
-                    // 如果参数是抽象类型, 那么native端一定会用self/this作为参数传进去, 这边就不用传了
-                    field.variable.typeName.findType().isInterface() -> "\"\""
-                    else -> "${this}.refId"
+                    isEnum() -> "${name}.index"
+                    typeName.jsonable() -> name
+                    (isList && genericLevel <= 1) || isStructPointer() -> "${name}.map((it) => it.refId).toList()"
+                    genericLevel > 1 -> "[]" // 多维数组暂不处理
+                    else -> "${name}.refId"
                 }
             }
             val setterMethodName = field.setterMethodName()
-            val callback = CallbackSetterTmpl(
-                field
-            ).callback()
+            val callback = CallbackSetterTmpl(field).callback()
 
             tmpl
                 .replace("#__type__#", typeName)

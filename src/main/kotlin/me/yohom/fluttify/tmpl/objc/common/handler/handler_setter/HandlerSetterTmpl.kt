@@ -27,10 +27,10 @@ internal class HandlerSetterTmpl(private val field: Field) {
     fun objcSetter(): String {
         val setter = field.setterName.depointer()
         val args = when {
-            field.variable.isStructPointer() -> ArgListStructTmpl(field.variable).objcArgListStruct()
-            field.variable.isCallback() -> ""
             field.variable.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
             field.variable.isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
+            field.variable.isStructPointer() -> ArgListStructTmpl(field.variable).objcArgListStruct()
+            field.variable.isCallback() -> ""
             field.variable.isStruct() -> ArgStructTmpl(field.variable).objcArgStruct()
             else -> ArgRefTmpl(field.variable).objcArgRef() // 暂时过滤了引入类型的setter
         }

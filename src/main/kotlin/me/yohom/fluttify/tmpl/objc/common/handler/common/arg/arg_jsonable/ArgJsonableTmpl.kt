@@ -14,7 +14,6 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
 
     fun objcArgJsonable(): String {
         val typeName = when {
-            variable.isList -> "List<${variable.typeName}>"
             variable.typeName.isObjcPrimitive() -> variable.typeName.depointer().toObjcType()
             else -> variable.typeName.enpointer()
         }

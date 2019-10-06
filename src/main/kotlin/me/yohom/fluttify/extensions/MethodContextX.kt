@@ -251,7 +251,8 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                             blockType()?.run { "${returnType()}|${parameters()}" } ?: text
                         },
                         it.identifier().text,
-                        // todo isList和genericLevel实现
+                        isList = it.methodType()[0].typeName().text.isList(),
+                        genericLevel = it.methodType()[0].typeName().text.genericLevel(),
                         platform = Platform.iOS
                     ),
                     platform = Platform.iOS

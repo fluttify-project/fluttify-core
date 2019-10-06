@@ -362,7 +362,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                 ctx.type(),
                 ctx.name(),
                 platform = Platform.iOS,
-                isList = ctx.isListType()
+                isList = ctx.isListType(),
+                genericLevel = ctx.type().genericLevel()
             )
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(
