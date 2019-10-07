@@ -4,6 +4,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_ref.ArgListRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_ref.ArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStructTmpl
@@ -35,8 +36,9 @@ internal class HandlerMethodTmpl(private val method: Method) {
         val args = method.formalParams
             .joinToString("\n") {
                 when {
-                    it.variable.isStructPointer() -> ArgListStructTmpl(it.variable).objcArgListStruct()
                     it.variable.jsonable() -> ArgJsonableTmpl(it.variable).objcArgJsonable()
+                    it.variable.isStructPointer() -> ArgListStructTmpl(it.variable).objcArgListStruct()
+                    it.variable.isList -> ArgListRefTmpl(it.variable).objcArgListRef()
                     it.variable.isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
                     it.variable.isStruct() -> ArgStructTmpl(it.variable).objcArgStruct()
                     it.variable.isLambda() -> ""

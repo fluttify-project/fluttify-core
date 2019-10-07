@@ -49,7 +49,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
 fun TYPE_NAME.isList(): Boolean {
     return Regex("\\w*List<(\\w*|.*)>").matches(this)
             || Regex("Iterable<(\\w*|.*)>").matches(this)
-            || Regex("\\w*\\[]").matches(this)
+//            || Regex("\\w*\\[]").matches(this)
             || Regex("NSArray.*\\*?").matches(this)
 }
 
