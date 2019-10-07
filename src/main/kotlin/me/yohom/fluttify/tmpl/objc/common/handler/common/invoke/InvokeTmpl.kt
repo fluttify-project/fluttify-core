@@ -17,12 +17,15 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     fun objcInvoke(): String {
         val invokeGetter = field?.run {
             val typeName = variable.typeName.run {
-                if (isObjcPrimitive() || findType().isStruct())
+                if (isObjcPrimitive() || findType().isStruct()) {
                     this
-                else if (findType().isInterface())
-                    this.enprotocol()
-                else
+                } else if (findType().isInterface()) {
+                    enprotocol()
+                } else if (variable.isList) {
+                    "NSArray<${this}>*"
+                } else {
                     "$this*"
+                }
             }
 
             "$typeName result = ref.${variable.name.depointer()};"

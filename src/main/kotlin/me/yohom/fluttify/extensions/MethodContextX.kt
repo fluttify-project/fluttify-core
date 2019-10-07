@@ -249,7 +249,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     Variable(
                         it.methodType()[0].typeName().run {
                             blockType()?.run { "${returnType()}|${parameters()}" } ?: text
-                        },
+                        }.genericType(),
                         it.identifier().text,
                         isList = it.methodType()[0].typeName().text.isList(),
                         genericLevel = it.methodType()[0].typeName().text.genericLevel(),

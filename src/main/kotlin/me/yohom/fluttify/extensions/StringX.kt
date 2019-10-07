@@ -247,7 +247,7 @@ fun String.enprotocol(): String {
  * 为指针类型加上`*`号
  */
 fun String.enpointer(): String {
-    return if (endsWith("*")) this else "$this *"
+    return if (endsWith("*")) this else "$this*"
 }
 
 /**
@@ -258,7 +258,7 @@ fun TYPE_NAME.genericType(): TYPE_NAME {
     while (result.contains("<") && result.contains(">")) {
         result = result.substringAfter("<").substringBeforeLast(">")
     }
-    return result.depointer()
+    return result
 }
 
 /**

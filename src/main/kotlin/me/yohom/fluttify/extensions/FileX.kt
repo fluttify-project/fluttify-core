@@ -359,7 +359,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
 
             val variable = Variable(
-                ctx.type(),
+                ctx.type().genericType(),
                 ctx.name(),
                 platform = Platform.iOS,
                 isList = ctx.isListType(),

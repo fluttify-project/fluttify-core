@@ -7,6 +7,7 @@ import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_ref.ArgListRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_ref.ArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStructTmpl
@@ -28,6 +29,7 @@ internal class HandlerSetterTmpl(private val field: Field) {
         val setter = field.setterName.depointer()
         val args = when {
             field.variable.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
+            field.variable.isList -> ArgListRefTmpl(field.variable).objcArgListRef()
             field.variable.isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
             field.variable.isStructPointer() -> ArgListStructTmpl(field.variable).objcArgListStruct()
             field.variable.isCallback() -> ""
