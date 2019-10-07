@@ -18,11 +18,12 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //  #__callback__#
 //
 //  // 返回值
-//  return #__return_statement__#;
+//  if (result == null) {
+//    return null;
+//  } else {
+//    return #__return_statement__#;
+//  }
 //}
-/**
- * 生成普通类的dart接口
- */
 class MethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
 

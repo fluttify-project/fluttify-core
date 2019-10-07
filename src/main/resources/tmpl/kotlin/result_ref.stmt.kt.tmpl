@@ -1,4 +1,8 @@
-val returnRefId = result.hashCode()
-HEAP[returnRefId] = result
+if (result != null) {
+    val returnRefId = result.hashCode()
+    HEAP[returnRefId] = result
 
-methodResult.success(returnRefId)
+    methodResult.success(returnRefId)
+} else {
+    methodResult.success(null)
+}

@@ -1,5 +1,8 @@
-for (item in result) {
-    HEAP[item.hashCode()] = item
+if (result != null) {
+    for (item in result) {
+        HEAP[item.hashCode()] = item
+    }
+    methodResult.success(result.map { it.hashCode() })
+} else {
+    methodResult.success(null)
 }
-
-methodResult.success(result.map { it.hashCode() })
