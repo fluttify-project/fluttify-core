@@ -167,7 +167,7 @@ instanceMethodDeclaration
     ;
 
 methodDeclaration
-    : methodType? methodSelector macro? ';'
+    : methodType? methodSelector attributeSpecifier? macro? ';'
     ;
 
 implementationDefinitionList
@@ -426,7 +426,7 @@ structOrUnionSpecifier
     ;
 
 fieldDeclaration
-    : specifierQualifierList fieldDeclaratorList macro? ';'
+    : specifierQualifierList fieldDeclaratorList attributeSpecifier? macro? ';'
     ;
 
 specifierQualifierList
@@ -534,7 +534,7 @@ enumerator
     ;
 
 enumeratorIdentifier
-    : identifier
+    : identifier (attributeSpecifier)? // 解决枚举中无法识别__attribute__的bug
     | 'default'
     ;
 
@@ -556,7 +556,7 @@ pointer
     ;
 
 macro
-    : identifier (LP primaryExpression (',' primaryExpression)* RP)?
+    : identifier (LP primaryExpression (',' primaryExpression)* RP)? // 解决方法中无法识别__attribute__的bug
     ;
 
 arrayInitializer
