@@ -17,15 +17,21 @@ class GetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
 
     fun dartGetter(): String {
-        val typeName = field.variable.typeName.toDartType()
+        val typeName = field.variable.run {
+            var result = typeName.toDartType()
+            for (i in 0 until genericLevel) {
+                result = "List<$result>"
+            }
+            result
+        }
         val name = field.variable.name.depointer()
         val getter = field.getterMethodName()
         val result = when {
-            field.variable.isEnum() -> ResultEnumTmpl(field.variable.typeName).kotlinResultEnum()
-            field.variable.jsonable() -> ResultJsonableTmpl().kotlinResultJsonable()
-            field.variable.isList -> ResultListTmpl(field.variable.typeName).kotlinResultList()
-            field.variable.typeName.isVoid() -> ResultVoidTmpl().kotlinResultVoid()
-            else -> ResultRefTmpl(field.variable.typeName).kotlinResultRef()
+            field.variable.isEnum() -> ResultEnumTmpl(field.variable.typeName).dartResultEnum()
+            field.variable.jsonable() -> ResultJsonableTmpl().dartResultJsonable()
+            field.variable.isList -> ResultListTmpl(field.variable.typeName).dartResultList()
+            field.variable.typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
+            else -> ResultRefTmpl(field.variable.typeName).dartResultRef()
         }
 
         return field.variable.run {

@@ -6,7 +6,7 @@ import me.yohom.fluttify.TYPE_NAME
 class ResultEnumTmpl(private val returnType: TYPE_NAME) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/result_enum.stmt.dart.tmpl").readText()
 
-    fun kotlinResultEnum(): String {
+    fun dartResultEnum(): String {
         return tmpl
             .replace("#__type_name__#", returnType)
     }

@@ -16,7 +16,13 @@ class SetterTmpl(private val field: Field) {
 
     fun dartSetter(): String {
         return field.variable.run {
-            val typeName = typeName.toDartType()
+            val typeName = field.variable.run {
+                var result = typeName.toDartType()
+                for (i in 0 until genericLevel) {
+                    result = "List<$result>"
+                }
+                result
+            }
             val name = name.toDartType()
             val argValue = name.depointer().run {
                 when {

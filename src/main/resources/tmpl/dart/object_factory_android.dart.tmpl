@@ -24,12 +24,12 @@ class ObjectFactory_Android {
     return android_os_Bundle()..refId = refId;
   }
 
-  static Future<String> release(int refId) async {
-    return await _channel.invokeMethod('ObjectFactory::release', {'refId': refId});
+  static Future<void> release(Ref_Android ref) async {
+    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
   }
 
-  static Future<android_app_Activity> clearRefMap() async {
-    return await _channel.invokeMethod('ObjectFactory::clearRefMap');
+  static Future<void> clearRefMap() async {
+    await _channel.invokeMethod('ObjectFactory::clearRefMap');
   }
 
   #__create_objects__#

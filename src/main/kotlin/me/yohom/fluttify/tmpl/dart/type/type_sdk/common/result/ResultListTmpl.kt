@@ -8,7 +8,7 @@ import me.yohom.fluttify.extensions.genericType
 class ResultListTmpl(private val returnType: TYPE_NAME) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/result_list.stmt.dart.tmpl").readText()
 
-    fun kotlinResultList(): String {
+    fun dartResultList(): String {
         return tmpl
             .replace("#__type_name__#", returnType.depointer().genericType())
     }

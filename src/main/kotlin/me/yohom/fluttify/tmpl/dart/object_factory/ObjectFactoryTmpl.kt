@@ -11,9 +11,9 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 
 //import 'package:flutter/services.dart';
 //
-//import 'package:#__current_package__#.dart';
+//import 'package:#__current_package__#/src/android/android.export.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types
+//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //class ObjectFactory_Android {
 //  static final _channel = MethodChannel('#__method_chanel__#');
 //
@@ -35,56 +35,66 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //    return android_os_Bundle()..refId = refId;
 //  }
 //
-//  static Future<String> release(int refId) async {
-//    return await _channel.invokeMethod('ObjectFactory::release', {'refId': refId});
+//  static Future<void> release(Ref_Android ref) async {
+//    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
 //  }
 //
-//  static Future<android_app_Activity> clearRefMap() async {
-//    return await _channel.invokeMethod('ObjectFactory::clearRefMap');
+//  static Future<void> clearRefMap() async {
+//    await _channel.invokeMethod('ObjectFactory::clearRefMap');
 //  }
 //
 //  #__create_objects__#
 //}
 //
-//class android_content_Context extends Ref_Android {}
+//class java_lang_Object extends Ref_Android {}
+//
+//class android_content_Context extends java_lang_Object {}
 //
 //class android_app_Application extends android_content_Context {}
 //
 //class android_app_Activity extends android_content_Context {}
 //
-//class android_os_Bundle extends Ref_Android {}
+//class android_os_Bundle extends java_lang_Object {}
 //
-//class android_view_View extends Ref_Android {}
+//class android_view_View extends java_lang_Object {}
 //
-//class android_widget_FrameLayout extends Ref_Android {}
+//class android_widget_FrameLayout extends android_view_ViewGroup {}
 //
-//class android_view_ViewGroup extends Ref_Android {}
+//class android_view_ViewGroup extends android_view_View {}
 //
-//class android_graphics_Point extends Ref_Android {}
+//class android_graphics_Point extends java_lang_Object {}
 //
-//class android_graphics_PointF extends Ref_Android {}
+//class android_graphics_PointF extends java_lang_Object {}
 //
-//class android_graphics_Bitmap extends Ref_Android {}
+//class android_graphics_Bitmap extends java_lang_Object {}
 //
-//class android_location_Location extends Ref_Android {}
+//class android_location_Location extends java_lang_Object {}
 //
-//class android_view_MotionEvent extends Ref_Android {}
+//class android_view_MotionEvent extends java_lang_Object {}
 //
-//class android_graphics_drawable_Drawable extends Ref_Android {}
+//class android_graphics_drawable_Drawable extends java_lang_Object {}
 //
-////#__interface_refs__#
+//
 //
 //import 'package:flutter/services.dart';
 //
-//import 'package:#__current_package__#.dart';
+//import 'package:#__current_package__#/src/ios/ios.export.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types
+//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //class ObjectFactory_iOS {
 //  static final _channel = MethodChannel('#__method_chanel__#');
 //
 //  static Future<CLLocationCoordinate2D> createCLLocationCoordinate2D(double latitude, double longitude) async {
 //    final int refId = await _channel.invokeMethod('ObjectFactory::createCLLocationCoordinate2D', {'latitude': latitude, 'longitude': longitude});
 //    return CLLocationCoordinate2D()..refId = refId;
+//  }
+//
+//  static Future<void> release(Ref_iOS ref) async {
+//    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
+//  }
+//
+//  static Future<void> clearRefMap() async {
+//    await _channel.invokeMethod('ObjectFactory::clearRefMap');
 //  }
 //
 //  #__create_objects__#
@@ -106,18 +116,15 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //
 //class NSError extends Ref_iOS {}
 //
-//class NSCoding extends Ref_iOS {}
+//mixin NSCoding on Ref_iOS {}
 //
-//class NSCopying extends Ref_iOS {}
+//mixin NSCopying on Ref_iOS {}
 //
 //class UIView extends Ref_iOS {}
 //
 //class UIControl extends UIView {}
 //
-//#__interface_refs__#
-/**
- * 对象工厂
- */
+////#__interface_refs__#
 class ObjectFactoryTmpl(
     val libs: List<Lib>,
     val ext: FluttifyExtension,

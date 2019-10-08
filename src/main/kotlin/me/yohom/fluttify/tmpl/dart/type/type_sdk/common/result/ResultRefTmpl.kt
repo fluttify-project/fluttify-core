@@ -6,7 +6,7 @@ import me.yohom.fluttify.TYPE_NAME
 class ResultRefTmpl(private val returnType: TYPE_NAME) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/result_ref.stmt.dart.tmpl").readText()
 
-    fun kotlinResultRef(): String {
+    fun dartResultRef(): String {
         return tmpl
             .replace("#__type_name__#", returnType)
     }
