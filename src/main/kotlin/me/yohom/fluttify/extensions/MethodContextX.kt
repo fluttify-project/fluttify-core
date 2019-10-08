@@ -262,27 +262,9 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     return result
 }
 
-fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): List<Parameter> {
-    val result = mutableListOf<Parameter>()
-
-    methodSelector()
-        .keywordDeclarator()
-        ?.forEachIndexed { index, it ->
-            result.add(
-                Parameter(
-                    if (index == 0) "" else it.selector().text ?: "",
-                    Variable(
-                        it.methodType()[0].typeName().run {
-                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
-                        },
-                        it.identifier().text,
-                        platform = Platform.iOS
-                    ),
-                    platform = Platform.iOS
-                )
-            )
-        }
-    return result
+fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
+    return macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+            || attributeSpecifier()?.text?.contains("deprecated") == true
 }
 
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {

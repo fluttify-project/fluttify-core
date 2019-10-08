@@ -382,8 +382,6 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
-            // todo 一个很诡异的bug 当方法中含有__attribute__时, 这个类的所有的成员就都无法生成, 详见 高德搜索库 AMapNearbySearchManager类的init方法,
-            //  去掉__attribute__就能正常生成
             ctx.name().apply { println("类名: $name, 方法名: $this") }
             methods.add(
                 Method(
@@ -395,7 +393,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     true,
                     name,
                     Platform.iOS,
-                    ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+                    ctx.isDeprecated()
                 )
             )
         }
