@@ -132,7 +132,11 @@ fun TYPE_NAME.isCType(): Boolean {
     return (this in listOf(
         "int",
         "float",
-        "double"
+        "double",
+        "BOOL",
+        "NSUInteger",
+        "NSInteger",
+        "CGFloat"
     ))
 }
 

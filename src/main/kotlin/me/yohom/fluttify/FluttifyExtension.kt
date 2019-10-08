@@ -54,4 +54,11 @@ open class FluttifyExtension {
                 ?.map { it.removePrefix("lib").removeSuffix(".tbd") }
                 ?: listOf()
         }
+
+    val iOSResource: List<String>
+        get() {
+            return transitiveDependencies["iOS"]
+                ?.filter { it.endsWith(".bundle") }
+                ?: listOf()
+        }
 }

@@ -27,12 +27,6 @@ open class AndroidAddDependency : DefaultTask() {
 
 /**
  * 为生成ios工程加入目标framework到文件夹
- *
- * todo 加入引入资源的选项 在podspec文件中加
- *
- *  # 需要引入的资源文件
- *  s.resource = "MAMapKit.framework/AMap.bundle"
- *
  */
 open class IOSAddDependency : DefaultTask() {
 
@@ -45,8 +39,9 @@ open class IOSAddDependency : DefaultTask() {
         // 添加间接依赖到podspec中
         val podspecFile = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/${ext.outputProjectName}.podspec".file()
         podspecFile.readText()
-            .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString(",\n\t\t") { "\"$it\"" })
-            .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString(",\n\t\t") { "\"$it\"" })
+            .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
+            .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString { "\"$it\"" })
+            .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
             .run { podspecFile.writeText(this) }
 
         // 添加framework到工程中
