@@ -30,7 +30,6 @@ fun TYPE_NAME?.jsonable(): Boolean {
         "int",
         "double",
         "String",
-        "List",
         "Map<String,dynamic>",
         "Map",
         "null",
@@ -188,7 +187,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "ArrayList<String>" -> "List<String>"
         "List<String>" -> "List<String>"
         "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
-        "double[]", "Double[]", "float[]", "Float[]" -> "List<double>"
+        "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
         "Map" -> "Map"
         null -> "null"
         // 开始objc

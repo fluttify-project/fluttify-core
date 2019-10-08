@@ -1,14 +1,17 @@
 package me.yohom.fluttify.tmpl.objc.common.callback_method
 
+import me.yohom.fluttify.extensions.enprotocol
 import me.yohom.fluttify.extensions.isList
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return.CallbackReturnTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_void.CallbackVoidTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_list.CallbackArgListTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_ref.CallbackArgRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_struct.CallbackArgStructTmpl
 
 //- (#__return_type__#)#__method_name__##__formal_params__#
 //{
@@ -32,7 +35,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
         val log = method.nameWithClass()
         val methodChannel = "${method.className}::Callback"
         val formalParams =
-            " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.typeName})${it.variable.name}" }}"
+            " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.paramType()})${it.variable.name}" }}"
         val localArgs = method
             .formalParams
             .joinToString("\n") {
@@ -40,6 +43,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
                     it.variable.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
                     it.variable.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
                     it.variable.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
+                    it.variable.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()
                     else -> CallbackArgRefTmpl(it).objcCallbackArgRef()
                 }
             }
@@ -57,5 +61,13 @@ internal class CallbackMethodTmpl(private val method: Method) {
             .replace("#__formal_params__#", formalParams)
             .replaceParagraph("#__local_args__#", localArgs)
             .replaceParagraph("#__callback__#", callback)
+    }
+
+    private fun Variable.paramType(): String {
+        return when {
+            isInterface() -> typeName.enprotocol()
+            isList && genericLevel > 0 -> "NSArray<$typeName>*"
+            else -> typeName
+        }
     }
 }

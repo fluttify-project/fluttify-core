@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.enpointer
 import me.yohom.fluttify.model.Parameter
 
 //// 列表参数
-//#__type_name__# arg#__arg_name__#[#__arg_name__#.count];
+//NSMutableArray<NSNumber*>* arg#__arg_name__# = [NSMutableArray arrayWithCapacity:#__arg_name__#.count];
 //for (int i = 0; i < #__arg_name__#.count; i++) {
 //    arg#__arg_name__#[i] = @(#__arg_name__#.hash);
 //    HEAP[@(#__arg_name__#.hash)] = #__arg_name__#;

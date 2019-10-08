@@ -1,8 +1,8 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.invoke
 
 import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.enpointer
 import me.yohom.fluttify.extensions.enprotocol
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.isObjcPrimitive
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Method
@@ -16,15 +16,17 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
 
     fun objcInvoke(): String {
         val invokeGetter = field?.run {
-            val typeName = variable.typeName.run {
-                if (isObjcPrimitive() || findType().isStruct()) {
-                    this
-                } else if (findType().isInterface()) {
-                    enprotocol()
-                } else if (variable.isList) {
-                    "NSArray<${this}>*"
+            val typeName = variable.run {
+                if (isStructPointer()) {
+                    typeName.enpointer()
+                } else if (typeName.isObjcPrimitive() || isStruct()) {
+                    typeName
+                } else if (isInterface()) {
+                    typeName.enprotocol()
+                } else if (isList && genericLevel > 0) {
+                    "NSArray<${typeName}>*"
                 } else {
-                    "$this*"
+                    "$typeName*"
                 }
             }
 
@@ -58,11 +60,11 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     }
 
     private fun var2formalParam(it: Parameter): String {
-        return if (it.variable.typeName.findType().isLambda()) {
+        return if (it.variable.isLambda()) {
             "${it.named}: nil /* lambda回调暂时不支持 */"
 //            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
         } else {
-            "${it.named}: ${if (it.variable.typeName.findType().isCallback()) "self" else it.variable.name}"
+            "${it.named}: ${if (it.variable.isCallback()) "self" else it.variable.name}"
         }
     }
 }

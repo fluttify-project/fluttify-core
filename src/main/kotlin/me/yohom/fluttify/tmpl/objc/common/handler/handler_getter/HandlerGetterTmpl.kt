@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_getter
 
-import me.yohom.fluttify.extensions.enpointer
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isObjcPrimitive
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
@@ -28,7 +25,7 @@ internal class HandlerGetterTmpl(private val field: Field) {
     fun objcGetter(): String {
         val methodName = field.getterMethodName()
         val className = if (field.className.findType().isInterface()) {
-            "id<${field.className}>"
+            field.className.enprotocol()
         } else {
             field.className.enpointer()
         }

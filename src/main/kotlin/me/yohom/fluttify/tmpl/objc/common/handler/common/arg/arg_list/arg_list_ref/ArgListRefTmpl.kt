@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_
 
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.enpointer
+import me.yohom.fluttify.extensions.enprotocol
 import me.yohom.fluttify.model.Variable
 
 //// 列表参数
@@ -15,7 +16,13 @@ internal class ArgListRefTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/arg_list_ref.stmt.m.tmpl").readText()
 
     fun objcArgListRef(): String {
-        val typeName = variable.typeName.enpointer()
+        val typeName = variable.run {
+            if (isInterface()) {
+                typeName.enprotocol()
+            } else {
+                typeName.enpointer()
+            }
+        }
         val argName = variable.name.depointer()
         return tmpl
             .replace("#__type_name__#", typeName)
