@@ -74,13 +74,14 @@ data class Variable(
             "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
             // 结构体指针认为是列表类型
-            val isListType = isList || isStructPointer()
             var type = typeName.toDartType()
-            if (isListType) {
+            if (isList) {
                 // 根据List嵌套层次生成类型
                 for (i in 0 until genericLevel) {
                     type = "List<$type>"
                 }
+            } else if (isStructPointer()) {
+                type = "List<$type>"
             }
             "$type ${name.depointer()}"
         }

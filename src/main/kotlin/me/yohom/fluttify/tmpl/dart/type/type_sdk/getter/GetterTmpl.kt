@@ -27,9 +27,9 @@ class GetterTmpl(private val field: Field) {
         val name = field.variable.name.depointer()
         val getter = field.getterMethodName()
         val result = when {
-            field.variable.isEnum() -> ResultEnumTmpl(field.variable.typeName).dartResultEnum()
             field.variable.jsonable() -> ResultJsonableTmpl().dartResultJsonable()
             field.variable.isList -> ResultListTmpl(field.variable.typeName).dartResultList()
+            field.variable.isEnum() -> ResultEnumTmpl(field.variable.typeName).dartResultEnum()
             field.variable.typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
             else -> ResultRefTmpl(field.variable.typeName).dartResultRef()
         }

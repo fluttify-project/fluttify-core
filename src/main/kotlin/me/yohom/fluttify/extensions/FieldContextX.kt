@@ -117,7 +117,7 @@ fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {
     return specifierQualifierList().text.run {
         if (contains("id<")) {
-            removePrefix("id<").removeSuffix(">")
+            replaceFirst("id<", "").removeSuffix(">")
         } else {
             this
         }
