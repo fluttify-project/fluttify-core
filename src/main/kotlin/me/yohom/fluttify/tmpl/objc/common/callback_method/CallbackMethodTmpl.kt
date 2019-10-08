@@ -7,6 +7,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return.CallbackReturnTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_void.CallbackVoidTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_ctype.CallbackArgCTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_list.CallbackArgListTmpl
@@ -40,6 +41,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
             .formalParams
             .joinToString("\n") {
                 when {
+                    it.variable.isCType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
                     it.variable.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
                     it.variable.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
                     it.variable.isList -> CallbackArgListTmpl(it).objcCallbackArgList()

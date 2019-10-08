@@ -1,10 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.TYPE_NAME
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.jsonable
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 
 /**
  * 表示一个变量(字段, 方法参数, 局部变量)
@@ -30,6 +27,10 @@ data class Variable(
 
     fun jsonable(): Boolean {
         return typeName.jsonable()
+    }
+
+    fun isCType(): Boolean {
+        return typeName.isCType()
     }
 
     fun isLambda(): Boolean {

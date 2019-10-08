@@ -54,7 +54,8 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "UIControl"; typeType = TypeType.Class },
     Type().apply { name = "NSCopying"; typeType = TypeType.Interface },
     Type().apply { name = "NSCoding"; typeType = TypeType.Interface },
-    Type().apply { name = "UIView"; typeType = TypeType.Class }
+    Type().apply { name = "UIView"; typeType = TypeType.Class },
+    Type().apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum }
 )
 
 /**
