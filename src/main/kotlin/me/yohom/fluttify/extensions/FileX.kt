@@ -30,6 +30,7 @@ fun JAVA_FILE.javaType(): Type {
     var isPublic = false
     var isAbstract = false
     var isInnerClass = false
+    var isStaticType = false
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext) {
@@ -37,9 +38,10 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterClassDeclaration(ctx: ClassDeclarationContext) {
-            isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
+            isPublic = ctx.isPublic()
             simpleName = ctx.IDENTIFIER()?.text ?: ""
             isInnerClass = simpleName.contains("$")
+            isStaticType = ctx.isStatic()
             typeType = TypeType.Class
             genericTypes = ctx.genericTypes()
             isAbstract = ctx.isAbstract()
@@ -60,9 +62,10 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {
-            isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
+            isPublic = ctx.isPublic()
             simpleName = ctx.IDENTIFIER().text
             isInnerClass = simpleName.contains("$")
+            isStaticType = ctx.isStatic()
             typeType = TypeType.Interface
             genericTypes = ctx.genericTypes()
             interfaces.addAll(ctx.superInterfaces())
@@ -155,6 +158,7 @@ fun JAVA_FILE.javaType(): Type {
         it.isPublic = isPublic
         it.isAbstract = isAbstract
         it.isInnerClass = isInnerClass
+        it.isStaticType = isStaticType
         it.genericTypes.addAll(genericTypes)
         it.constructors = constructors
         it.interfaces = interfaces

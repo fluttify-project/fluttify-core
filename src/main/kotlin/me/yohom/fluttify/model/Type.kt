@@ -37,6 +37,11 @@ open class Type : PlatformAware {
     var isInnerClass: Boolean = false
 
     /**
+     * 是否是静态(内部)类
+     */
+    var isStaticType: Boolean = false
+
+    /**
      * 是否jsonable
      */
     var isJsonable: Boolean = false

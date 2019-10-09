@@ -49,6 +49,16 @@ fun JavaParser.ClassDeclarationContext.isPublic(): Boolean {
 }
 
 /**
+ * 是否static
+ */
+fun JavaParser.ClassDeclarationContext.isStatic(): Boolean {
+    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+        ?.classOrInterfaceModifier()
+        ?.map { it.text }
+        ?.contains("static") == true
+}
+
+/**
  * 全名
  */
 fun JavaParser.ClassDeclarationContext.fullName(): String {
@@ -84,6 +94,26 @@ fun JavaParser.InterfaceDeclarationContext.genericTypes(): List<String> {
  */
 fun JavaParser.InterfaceDeclarationContext.superInterfaces(): List<String> {
     return typeList()?.typeType()?.map { it.text?.run { typeFullName(this) } ?: "" } ?: listOf()
+}
+
+/**
+ * 是否public
+ */
+fun JavaParser.InterfaceDeclarationContext.isPublic(): Boolean {
+    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+        ?.classOrInterfaceModifier()
+        ?.map { it.text }
+        ?.contains("public") == true
+}
+
+/**
+ * 是否static
+ */
+fun JavaParser.InterfaceDeclarationContext.isStatic(): Boolean {
+    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+        ?.classOrInterfaceModifier()
+        ?.map { it.text }
+        ?.contains("static") == true
 }
 //endregion
 
