@@ -390,7 +390,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     ctx.formalParams(),
                     ctx.isChildOf(ObjectiveCParser.ClassMethodDeclarationContext::class),
                     null,
-                    true,
+                    !ctx.isUnavailable(), // 如果不可用就认为是私有的
                     name,
                     Platform.iOS,
                     ctx.isDeprecated()

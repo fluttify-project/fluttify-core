@@ -267,6 +267,11 @@ fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
             || attributeSpecifier()?.text?.contains("deprecated") == true
 }
 
+fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
+    return macro()?.primaryExpression()?.any { it.text.contains("unavailable") } == true
+            || attributeSpecifier()?.text?.contains("unavailable") == true
+}
+
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {
     return typeSpecifier()[0].text
 }

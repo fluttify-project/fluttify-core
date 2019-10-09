@@ -117,6 +117,8 @@ open class Type : PlatformAware {
                 && (constructors.any { it.isPublic == true } || constructors.isEmpty())
                 && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
                 && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
+                // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
+                && ((platform == Platform.iOS && methods.find { name == "init" }?.isPublic == true) || platform != Platform.iOS)
     }
 
     fun isEnum(): Boolean {

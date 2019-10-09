@@ -1,9 +1,9 @@
 package me.yohom.fluttify.tmpl.objc.plugin
 
 import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.callback_method.CallbackMethodTmpl
-import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.HandlerObjectFactoryTmpl
@@ -152,9 +152,8 @@ class PluginTmpl(
 
         val createObjectHandlers = libs
             .flatMap { it.types }
-            .filterType()
+            .filterConstructable()
             .distinctBy { it.name }
-            .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerObjectFactoryTmpl(it).objcObjectFactory() }
 
         val callbackMethods = libs
