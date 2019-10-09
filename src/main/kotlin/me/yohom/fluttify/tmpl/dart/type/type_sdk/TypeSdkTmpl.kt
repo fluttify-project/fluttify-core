@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
@@ -38,13 +39,19 @@ class TypeSdkTmpl(
         val currentPackage = ext.outputProjectName
         val className = type.name.toDartType()
         val superClass = if (type.superClass.isEmpty())
-            "Ref_${type.platform}"
+            when (type.platform) {
+                Platform.Android -> "java_lang_Object"
+                Platform.iOS -> "NSObject"
+                else -> "Object"
+            }
         else
             type.superClass.toDartType()
 
         val mixins = if (type.interfaces.isNotEmpty() && type.interfaces.none { it.findType() == Type.UNKNOWN_TYPE }) {
             // todo 使用递归处理完全, 现在只是写死了只处理了两层
-            "with ${type.interfaces.union(type.interfaces.flatMap { it.findType().interfaces }).filter { it.findType().isInterface() }.reversed().joinToString()}"
+            "with ${type.interfaces.union(type.interfaces.flatMap { it.findType().interfaces }).filter {
+                it.findType().isInterface()
+            }.reversed().joinToString { it.toDartType() }}"
         } else {
             ""
         }

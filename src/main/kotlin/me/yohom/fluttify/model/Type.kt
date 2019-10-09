@@ -114,6 +114,7 @@ open class Type : PlatformAware {
         return !isAbstract
                 && (this != UNKNOWN_TYPE || isList())
                 && !isEnum()
+                && !isObfuscated()
                 && (constructors.any { it.isPublic == true } || constructors.isEmpty())
                 && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
                 && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)

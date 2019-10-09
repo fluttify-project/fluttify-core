@@ -3,6 +3,7 @@ package me.yohom.fluttify.model
 import me.yohom.fluttify.IGNORE_METHOD
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.isObfuscated
 import me.yohom.fluttify.extensions.toDartType
 
 data class Method(
@@ -79,6 +80,10 @@ data class Method(
             // 形参类型必须全部都不是未知类型
             !formalParams.all { it.variable.typeName.findType() != Type.UNKNOWN_TYPE } -> {
                 false.apply { println("方法${this@Method} 由于`形参类型必须全部都不是未知类型`, 被过滤") }
+            }
+            // 形参类型必须全部都不是混淆类
+            !formalParams.all { !it.variable.typeName.isObfuscated() } -> {
+                false.apply { println("方法${this@Method} 由于`形参类型必须全部都不是混淆类`, 被过滤") }
             }
             // 形参父类必须全部都不是未知类型
             !formalParams.all {
