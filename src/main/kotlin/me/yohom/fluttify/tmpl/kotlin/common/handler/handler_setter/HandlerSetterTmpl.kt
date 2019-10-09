@@ -18,7 +18,17 @@ internal class HandlerSetterTmpl(private val field: Field) {
     fun kotlinSetter(): String {
         val setterName = field.setterMethodName()
         val fieldName = field.variable.name
-        val fieldType = field.variable.typeName.toKotlinType()
+        val fieldType = field.variable.run {
+            if (isList) {
+                var result = typeName.toKotlinType()
+                for (i in 0 until genericLevel) {
+                    result = "List<$result>"
+                }
+                result
+            } else {
+                typeName.toKotlinType()
+            }
+        }
         val className = field.className
 
         return tmpl
