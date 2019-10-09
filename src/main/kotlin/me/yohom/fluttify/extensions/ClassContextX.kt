@@ -49,6 +49,16 @@ fun JavaParser.ClassDeclarationContext.isPublic(): Boolean {
 }
 
 /**
+ * 是否public
+ */
+fun JavaParser.EnumDeclarationContext.isPublic(): Boolean {
+    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+        ?.classOrInterfaceModifier()
+        ?.map { it.text }
+        ?.contains("public") == true
+}
+
+/**
  * 是否static
  */
 fun JavaParser.ClassDeclarationContext.isStatic(): Boolean {

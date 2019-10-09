@@ -73,7 +73,7 @@ fun JAVA_FILE.javaType(): Type {
         }
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
-            isPublic = ctx.ancestorOf(TypeDeclarationContext::class)?.isPublic() == true
+            isPublic = ctx.isPublic() == true
             simpleName = ctx.IDENTIFIER().text
             isInnerClass = simpleName.contains("$")
             typeType = TypeType.Enum
