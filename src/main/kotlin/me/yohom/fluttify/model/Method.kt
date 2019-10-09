@@ -57,6 +57,10 @@ data class Method(
             !className.depointer().findType().isPublic -> {
                 false.apply { println("方法${this@Method} 由于`所在类不能是非公开类`, 被过滤") }
             }
+            // 所在类不能是非公开内部类
+            !className.depointer().findType().run { isInnerClass && constructors.all { it.isPublic != true } } -> {
+                false.apply { println("方法${this@Method} 由于`所在类不能是非公开类`, 被过滤") }
+            }
             // 返回类型不能是混淆类
             returnType.depointer().findType().isObfuscated() -> {
                 false.apply { println("方法${this@Method} 由于`返回类型不能是混淆类`, 被过滤") }
