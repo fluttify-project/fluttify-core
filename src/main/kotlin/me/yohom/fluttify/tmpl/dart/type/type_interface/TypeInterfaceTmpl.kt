@@ -1,10 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_interface
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.filterMethod
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
 
@@ -28,7 +25,9 @@ class TypeInterfaceTmpl(
         val className = type.name.toDartType()
 
         val allSuperType = type.interfaces.union(listOf(type.superClass))
-            .filter { it.isNotBlank() && it.findType() != Type.UNKNOWN_TYPE }
+            .filter { it.isNotBlank() }
+            .filter { it.findType() != Type.UNKNOWN_TYPE }
+            .filter { !it.isObfuscated() }
         val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
 
         val methods = type.methods

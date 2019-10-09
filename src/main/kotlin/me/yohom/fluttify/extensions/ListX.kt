@@ -38,6 +38,7 @@ fun List<Field>.filterGetters(): List<Field> {
         .filter { it.variable.isKnownType().apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
         .filter { it.variable.isPublicType().apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
         .filter { it.variable.isConcret().apply { if (!this) println("filterGetters: $it 由于是抽象类型 被过滤") } }
+        .filter { (!it.variable.typeName.isObfuscated()).apply { if (!this) println("filterGetters: $it 由于是混淆类 被过滤") } }
         .filter { println("字段${it}通过Getter过滤"); true }
         .toList()
 }
@@ -52,6 +53,7 @@ fun List<Field>.filterSetters(): List<Field> {
         .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }
         .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterSetters: $it 由于是未知类型 被过滤") } }
         .filter { (it.variable.typeName.findType().isPublic).apply { if (!this) println("filterSetters: $it 由于字段类型不是公开类型 被过滤") } }
+        .filter { (!it.variable.typeName.isObfuscated()).apply { if (!this) println("filterSetters: $it 由于是混淆类 被过滤") } }
         .filter { println("字段${it}通过Setter过滤"); true }
         .toList()
 }
