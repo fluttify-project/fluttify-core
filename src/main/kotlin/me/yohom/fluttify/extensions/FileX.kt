@@ -132,7 +132,7 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isFinal(),
                     ctx.isStatic(),
                     Variable(
-                        ctx.type(),
+                        ctx.type().genericType(),
                         ctx.name(),
                         ctx.type().isList(),
                         ctx.type().genericLevel(),
