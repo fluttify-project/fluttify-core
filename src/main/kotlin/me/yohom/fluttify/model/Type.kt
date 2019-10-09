@@ -120,6 +120,8 @@ open class Type : PlatformAware {
                 && (this != UNKNOWN_TYPE || isList())
                 && !isEnum()
                 && !isObfuscated()
+                // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
+                && ((isInnerClass && isStaticType) || !isInnerClass)
                 && (constructors.any { it.isPublic == true } || constructors.isEmpty())
                 && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
                 && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
