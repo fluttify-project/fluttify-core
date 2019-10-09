@@ -1,7 +1,6 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.androidSDK
-import me.yohom.fluttify.extensions.filterConstructor
 import org.junit.Test
 
 class TypeTest {
@@ -12,10 +11,18 @@ class TypeTest {
             .libs[1]
             .types
             .find { it.name == "com.amap.api.services.route.RouteSearch.DriveRouteQuery" }
-            ?.constructors
-            ?.filterConstructor()
+            ?.constructable()
             ?.run {
                 println("结果: $this")
             }
+//
+//        iosSDK
+//            .libs[1]
+//            .types
+//            .find { it.name == "AMapNearbySearchManager" }
+//            ?.constructable()
+//            ?.run {
+//                println("结果: $this")
+//            }
     }
 }

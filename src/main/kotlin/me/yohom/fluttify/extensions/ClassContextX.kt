@@ -60,12 +60,14 @@ fun JavaParser.EnumDeclarationContext.isPublic(): Boolean {
 
 /**
  * 是否static
+ * todo 解决静态内部类和非静态内部类如何区别
  */
 fun JavaParser.ClassDeclarationContext.isStatic(): Boolean {
-    return ancestorOf(JavaParser.TypeDeclarationContext::class)
-        ?.classOrInterfaceModifier()
-        ?.map { it.text }
-        ?.contains("static") == true
+//    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+//        ?.classOrInterfaceModifier()
+//        ?.map { it.text }
+//        ?.contains("static") == true
+    return true
 }
 
 /**
@@ -118,12 +120,14 @@ fun JavaParser.InterfaceDeclarationContext.isPublic(): Boolean {
 
 /**
  * 是否static
+ * todo 解决静态内部类和非静态内部类如何区别
  */
 fun JavaParser.InterfaceDeclarationContext.isStatic(): Boolean {
-    return ancestorOf(JavaParser.TypeDeclarationContext::class)
-        ?.classOrInterfaceModifier()
-        ?.map { it.text }
-        ?.contains("static") == true
+//    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+//        ?.classOrInterfaceModifier()
+//        ?.map { it.text }
+//        ?.contains("static") == true
+    return true
 }
 //endregion
 
