@@ -1,12 +1,11 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.SDK
-import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import me.yohom.fluttify.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactory
 import me.yohom.fluttify.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
@@ -22,16 +21,19 @@ import me.yohom.fluttify.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
  * 输出: 对应的method channel文件
  */
 open class AndroidKotlinInterface : FluttifyTask() {
+
+    @InputFile
+    val irFile = "${project.projectDir}/ir/android/json_representation.json".file()
+
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
         val pluginOutputFile =
             "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
                 ".",
                 "/"
             )}/${ext.outputProjectName}/${ext.outputProjectName.underscore2Camel(true)}Plugin.kt"
 
-        val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
+        val sdk = irFile.readText().fromJson<SDK>()
 
         // 生成主plugin文件
         sdk.libs.forEach {
@@ -73,6 +75,9 @@ open class AndroidKotlinInterface : FluttifyTask() {
  * 输出: 对应的method channel文件
  */
 open class IOSObjcInterface : FluttifyTask() {
+    @InputFile
+    val irFile = "${project.projectDir}/ir/ios/json_representation.json".file()
+
     @TaskAction
     fun process() {
         val pluginHFile =
@@ -84,7 +89,7 @@ open class IOSObjcInterface : FluttifyTask() {
                 true
             )}Plugin.m"
 
-        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
+        val sdk = irFile.readText().fromJson<SDK>()
 
         // 生成主plugin文件
         ObjcPluginTmpl(sdk.libs, ext)
@@ -122,13 +127,10 @@ open class IOSObjcInterface : FluttifyTask() {
  * 输入: framework文件夹
  * 输出: 对应的method channel文件
  */
-open class IOSSwiftInterface : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
+open class IOSSwiftInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
         val pluginOutputFile =
             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/Swift${ext.outputProjectName.underscore2Camel(
                 true
