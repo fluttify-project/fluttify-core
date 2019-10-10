@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.filterType
 import me.yohom.fluttify.extensions.fromJson
@@ -13,16 +12,23 @@ import me.yohom.fluttify.tmpl.dart.type.type_ref.TypeRefTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
-import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 /**
  * 生成Java文件的Dart接口文件
  */
 open class AndroidDartInterface : FluttifyTask() {
+    @InputFile
+    val androidIrFile = "${project.projectDir}/ir/android/json_representation.json".file()
+
+    @OutputFile
+    val outputDartDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file()
+
     @TaskAction
     fun process() {
-        val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
+        val sdk = androidIrFile.readText().fromJson<SDK>()
 
         // 处理View, 生成AndroidView
         sdk.libs
@@ -72,13 +78,16 @@ open class AndroidDartInterface : FluttifyTask() {
 /**
  * 生成Objc文件的Dart接口文件
  */
-open class IOSDartInterface : DefaultTask() {
-    override fun getGroup() = "fluttify"
+open class IOSDartInterface : FluttifyTask() {
+    @InputFile
+    val iosIrFile = "${project.projectDir}/ir/ios/json_representation.json".file()
+
+    @OutputFile
+    val outputDartDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file()
 
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
+        val sdk = iosIrFile.readText().fromJson<SDK>()
 
         // 处理View, 生成UiKitView
         sdk.libs
