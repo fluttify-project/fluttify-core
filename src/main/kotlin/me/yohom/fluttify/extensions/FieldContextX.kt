@@ -32,18 +32,7 @@ fun JavaParser.FieldDeclarationContext.isPublic(): Boolean {
 }
 
 fun JavaParser.FieldDeclarationContext.type(): String {
-    val simpleType = typeType().text
-    return ancestorOf(JavaParser.CompilationUnitContext::class)
-        ?.importDeclaration()
-        ?.firstOrNull {
-            !simpleType.jsonable()
-                    && it.qualifiedName().text.length >= simpleType.length
-                    && it.qualifiedName()
-                .text
-                .replace("$", ".")
-                .run { substringAfterLast(".") } == simpleType
-        }
-        ?.qualifiedName()?.text ?: simpleType
+    return typeFullName(typeType().text)
 }
 
 fun JavaParser.FieldDeclarationContext.name(): String {

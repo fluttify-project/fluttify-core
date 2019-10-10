@@ -35,7 +35,7 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
             ?.qualifiedName()
             ?.text
             ?.replace("$", ".")
-        // 如果不是import进来的说明这个类是当前文件的主类, 直接拼接package和类名
+        // 如果不是import进来的说明这个类是当前文件的主类或者相同包下的类, 直接拼接package和类名
             ?: ancestorOf(JavaParser.CompilationUnitContext::class)
                 ?.packageDeclaration()
                 ?.qualifiedName()?.text + "." + typeSimpleName.replace("$", ".")
