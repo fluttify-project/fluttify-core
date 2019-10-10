@@ -1,0 +1,10 @@
+@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+    NSLog(@"#__method_name__#");
+
+    #__type_name__# data;
+
+    NSValue* dataValue = [NSValue value:&data withObjCType:@encode(#__type_name__#)];
+    HEAP[@(dataValue.hash)] = dataValue;
+
+    methodResult(@(dataValue.hash));
+},

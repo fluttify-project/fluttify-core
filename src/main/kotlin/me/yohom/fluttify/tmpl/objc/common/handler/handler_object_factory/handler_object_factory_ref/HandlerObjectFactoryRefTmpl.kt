@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory
+package me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.handler_object_factory_ref
 
 import me.yohom.fluttify.model.Type
 
@@ -7,10 +7,10 @@ import me.yohom.fluttify.model.Type
 //
 //    methodResult(@(ref.hash));
 //},
-internal class HandlerObjectFactoryTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_object_factory.stmt.m.tmpl").readText()
+internal class HandlerObjectFactoryRefTmpl(private val type: Type) {
+    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_object_factory_ref.stmt.m.tmpl").readText()
 
-    fun objcObjectFactory(): String {
+    fun objcObjectFactoryRef(): String {
         return tmpl
             .replace("#__method_name__#", "ObjectFactory::create${type.name}")
             .replace("#__type_name__#", type.name)

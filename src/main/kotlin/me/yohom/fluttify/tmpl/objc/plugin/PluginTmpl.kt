@@ -6,7 +6,8 @@ import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.callback_method.CallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.HandlerObjectFactoryTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.handler_object_factory_ref.HandlerObjectFactoryRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.handler_object_factory_struct.HandlerObjectFactoryStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_cast.HandlerTypeCastTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl
@@ -103,10 +104,12 @@ class PluginTmpl(
             .flatMap { it.types }
             .filter { it.isView() }
             .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
-            .joinToString("\n") { RegisterPlatformViewTmpl(
-                it,
-                ext
-            ).objcRegisterPlatformView() }
+            .joinToString("\n") {
+                RegisterPlatformViewTmpl(
+                    it,
+                    ext
+                ).objcRegisterPlatformView()
+            }
 
         // 处理方法们 分三种
         // 1. getter handler
@@ -154,7 +157,13 @@ class PluginTmpl(
             .flatMap { it.types }
             .filterConstructable()
             .distinctBy { it.name }
-            .map { HandlerObjectFactoryTmpl(it).objcObjectFactory() }
+            .map {
+                if (it.isStruct()) {
+                    HandlerObjectFactoryStructTmpl(it).objcObjectFactoryStruct()
+                } else {
+                    HandlerObjectFactoryRefTmpl(it).objcObjectFactoryRef()
+                }
+            }
 
         val callbackMethods = libs
             .flatMap { it.types }
