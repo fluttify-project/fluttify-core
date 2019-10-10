@@ -18,7 +18,6 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
  */
 fun List<Method>.filterMethod(): List<Method> {
     return asSequence()
-        .filter { it.mustNot("忽略方法") { name in IGNORE_METHOD } }
         .filter { it.must("公开方法") { isPublic } }
         .filter { it.must("所在类是公开类") { className.findType().isPublic } }
         .filter { it.must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } }
@@ -28,6 +27,7 @@ fun List<Method>.filterMethod(): List<Method> {
             }
         }
         .filter { it.must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } }
+        .filter { it.mustNot("忽略方法") { name in IGNORE_METHOD } }
         .filter { it.mustNot("废弃方法") { isDeprecated } }
         // 类似float*返回这样的类型的方法都暂时不处理
         .filter { it.mustNot("返回类型是C类型指针") { returnType.run { contains("*") && depointer().isCType() } } }
