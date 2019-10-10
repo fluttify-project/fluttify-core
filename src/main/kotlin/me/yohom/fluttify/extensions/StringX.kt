@@ -77,7 +77,7 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    return SDK.findType((depointer().deprotocol().let { if (it.isList()) it.genericType() else it }).apply { println("查找:$this") })
+    return SDK.findType((depointer().deprotocol().let { if (it.isList()) it.genericType() else it })/* .apply { println("查找:$this") } */)
 }
 
 /**

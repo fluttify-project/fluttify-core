@@ -1,5 +1,6 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.IGNORE_METHOD
 import me.yohom.fluttify.IGNORE_TYPE
 import me.yohom.fluttify.model.*
 
@@ -17,14 +18,35 @@ fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name })
  */
 fun List<Method>.filterMethod(): List<Method> {
     return asSequence()
-        .filter { (!it.isDeprecated).apply { if (!this) println("filterMethod: $it 由于是废弃方法 被过滤") } }
+        .filter { it.mustNot("忽略方法") { name in IGNORE_METHOD } }
+        .filter { it.must("公开方法") { isPublic } }
+        .filter { it.must("所在类是公开类") { className.findType().isPublic } }
+        .filter { it.must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } }
+        .filter {
+            it.must("所在类是非公开内部类") {
+                className.findType().run { (isInnerClass && constructors.all { !it.isPublic }) || !isInnerClass }
+            }
+        }
+        .filter { it.must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } }
+        .filter { it.mustNot("废弃方法") { isDeprecated } }
         // 类似float*返回这样的类型的方法都暂时不处理
-        .filter { (!it.returnType.run { contains("*") && depointer().isCType() }).apply { if (!this) println("filterMethod: $it 由于是结构体指针 被过滤") } }
+        .filter { it.mustNot("返回类型是C类型指针") { returnType.run { contains("*") && depointer().isCType() } } }
         // 返回值是接口类型的都不处理
-        .filter { (!it.returnType.findType().isInterface()).apply { if (!this) println("filterMethod: $it 由于是返回值是接口类型 被过滤") } }
+        .filter { it.mustNot("返回类型是接口类型") { returnType.findType().isInterface() } }
+        .filter { it.mustNot("返回类型是混淆类") { returnType.isObfuscated() } }
+        .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
+        .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
+        .filter { it.mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } } }
+        .filter { it.mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } } }
+        .filter {
+            it.mustNot("形参父类含有未知类型") {
+                formalParams
+                    .map { it.variable.typeName.findType().superClass }
+                    .any { it.findType() == Type.UNKNOWN_TYPE }
+            }
+        }
         .distinctBy { "${it.className}::${it.name}" }
-        .filter { it.isOk() }
-        .filter { println("方法${it}通过Method过滤"); true }
+        .filter { println("Method::${it.name}通过Method过滤"); true }
         .toList()
 }
 
@@ -39,7 +61,7 @@ fun List<Field>.filterGetters(): List<Field> {
         .filter { it.variable.must("公开类型") { isPublicType() } }
         .filter { it.variable.must("具体类型") { isConcret() } }
         .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
-        .filter { println("字段${it.variable.name}通过Getter过滤"); true }
+        .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
         .toList()
 }
 
@@ -48,13 +70,13 @@ fun List<Field>.filterGetters(): List<Field> {
  */
 fun List<Field>.filterSetters(): List<Field> {
     return asSequence()
-        .filter { (it.isFinal == false).apply { if (!this) println("filterSetters: $it 由于是final字段 被过滤") } }
-        .filter { (it.isPublic == true).apply { if (!this) println("filterSetters: $it 由于不是公开field 被过滤") } }
-        .filter { (it.isStatic == false).apply { if (!this) println("filterSetters: $it 由于是静态字段 被过滤") } }
-        .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterSetters: $it 由于是未知类型 被过滤") } }
-        .filter { (it.variable.typeName.findType().isPublic).apply { if (!this) println("filterSetters: $it 由于字段类型不是公开类型 被过滤") } }
-        .filter { (!it.variable.typeName.isObfuscated()).apply { if (!this) println("filterSetters: $it 由于是混淆类 被过滤") } }
-        .filter { println("字段${it}通过Setter过滤"); true }
+        .filter { it.must("公开field") { isPublic } }
+        .filter { it.mustNot("不可改field") { isFinal } }
+        .filter { it.mustNot("静态field") { isStatic } }
+        .filter { it.variable.must("已知类型") { isKnownType() } }
+        .filter { it.variable.must("公开类型") { typeName.findType().isPublic } }
+        .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
+        .filter { println("Field::${it.variable.name}通过Setter过滤"); true }
         .toList()
 }
 
@@ -63,20 +85,19 @@ fun List<Field>.filterSetters(): List<Field> {
  */
 fun List<Type>.filterType(): List<Type> {
     return asSequence()
-        .filter { (it != Type.UNKNOWN_TYPE).apply { if (!this) println("filterType: $it 由于是未知类 被过滤") } }
-        .filter { it.isPublic.apply { if (!this) println("filterType: $it 由于不是公开类 被过滤") } }
-        // 有泛型的类暂不支持处理
-        .filter { it.genericTypes.isEmpty().apply { if (!this) println("filterType: $it 由于含有泛型 被过滤") } }
+        .filter { it.must("已知类型") { this != Type.UNKNOWN_TYPE } }
+        .filter { it.must("公开类型") { isPublic } }
+        .filter { it.must("父类是已知类型") { superClass.findType() != Type.UNKNOWN_TYPE } }
+        .filter { it.mustNot("含有泛型") { genericTypes.isNotEmpty() } }
+        .filter { it.mustNot("混淆类型") { isObfuscated() } }
+        .filter { it.mustNot("父类是忽略类型") { superClass in IGNORE_TYPE } }
+        .filter { it.mustNot("父类是混淆类型") { superClass.isObfuscated() } }
         .filter {
-            (it.isEnum() || !it.isInnerClass || (it.constructors.any { it.isPublic == true } || it.constructors.isEmpty())).apply {
-                if (!this) println("filterType: $it 由于构造器不是全公开且是内部类 被过滤")
+            (it.isEnum() or !it.isInnerClass or (it.constructors.any { it.isPublic } or it.constructors.isEmpty())).apply {
+                if (!this) println("filterType: ${it.name} 由于构造器不是全公开且是内部类 被过滤")
             }
         }
-        .filter { (!it.isObfuscated()).apply { if (!this) println("filterType: $it 由于是混淆类 被过滤") } }
-        .filter { (it.superClass !in IGNORE_TYPE).apply { if (!this) println("filterType: $it 由于父类是忽略类 被过滤") } }
-        .filter { (!it.superClass.isObfuscated()).apply { if (!this) println("filterType: $it 由于父类是混淆类 被过滤") } }
-        .filter { (it.superClass.run { isEmpty() || findType() != Type.UNKNOWN_TYPE }).apply { if (!this) println("filterType: $it 由于父类是未知类 被过滤") } }
-        .filter { println("类${it}通过过滤"); true }
+        .filter { println("Type::${it.name}通过过滤"); true }
         .toList()
 }
 
@@ -97,9 +118,8 @@ fun List<Constructor>.filterConstructor(): List<Constructor> {
     return asSequence()
         // 构造器参数为空或者递归检查构造器参数的构造器是否符合相同条件
         .filter {
-            ((it.formalParams.isEmpty() || it.formalParams.all { it.variable.typeName.findType().constructable() || it.variable.isList })
-                    && it.isPublic == true)
-                .apply { if (!this) println("filterConstructor: $it 由于构造器含有未知类 被过滤") }
+            ((it.formalParams.isEmpty() || it.formalParams.all { it.variable.typeName.findType().constructable() || it.variable.isList }) && it.isPublic)
+                .apply { if (!this) println("Constructor::${it.name} 由于构造器含有未知类 被过滤") }
         }
         .toList()
 }
@@ -109,9 +129,10 @@ fun List<Constructor>.filterConstructor(): List<Constructor> {
  */
 fun List<Parameter>.filterFormalParams(): List<Parameter> {
     return asSequence()
-        .filter { (it.variable.typeName.findType().run { !isLambda() && !isCallback() }).apply { if (!this) println("filterFormalParams: $it 由于是接口, 却不是回调类 被过滤") } }
-        .filter { (it.variable.typeName.findType() != Type.UNKNOWN_TYPE).apply { if (!this) println("filterFormalParams: $it 由于是未知类型 被过滤") } }
-        .filter { println("参数${it}通过过滤"); true }
+        .filter { it.variable.mustNot("Lambda") { isLambda() } } // lambda不参与传递
+        .filter { it.variable.mustNot("Callback") { isCallback() } } // 回调类不参与传递(但是接口类型参与传递)
+        .filter { it.variable.mustNot("未知类型") { typeName.findType() == Type.UNKNOWN_TYPE } }
+        .filter { println("Parameter::${it.variable.name}通过过滤"); true }
         .toList()
 }
 

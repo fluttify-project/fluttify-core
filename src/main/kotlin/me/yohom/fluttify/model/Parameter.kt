@@ -9,4 +9,4 @@ data class Parameter(
     val named: String = "",
     val variable: Variable,
     override var platform: Platform
-) : PlatformAware
+) : IPlatform

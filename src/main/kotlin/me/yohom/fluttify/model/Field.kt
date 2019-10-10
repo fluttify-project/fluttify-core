@@ -7,7 +7,7 @@ data class Field(
     /**
      * 是否公开
      */
-    val isPublic: Boolean?,
+    override val isPublic: Boolean,
     /**
      * 是否只读
      */
@@ -40,7 +40,7 @@ data class Field(
      * 是否过时
      */
     var isDeprecated: Boolean = false
-) : PlatformAware {
+) : IPlatform, IScope {
     @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("getterMethodName"))
     fun nativeHandleGetterMethodName(): String {
         return "handle${className.toUnderscore()}_get_${getterName.depointer()}"

@@ -12,7 +12,7 @@ data class Variable(
     val isList: Boolean = false,
     val genericLevel: Int = 0,
     override var platform: Platform
-) : PlatformAware {
+) : IPlatform {
     fun isStructPointer(): Boolean {
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
     }
@@ -67,6 +67,10 @@ data class Variable(
 
     fun isPublicType(): Boolean {
         return typeName.findType().isPublic
+    }
+
+    fun isGenericType(): Boolean {
+        return typeName.findType().genericTypes.isNotEmpty()
     }
 
     fun toDartString(): String {

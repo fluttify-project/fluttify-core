@@ -4,7 +4,7 @@ import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.jsonable
 
-class SDK : PlatformAware {
+class SDK : IPlatform {
 
     /**
      * 每构造一个sdk, 都记录到静态变量中去, 以供程序的其他地方调用
@@ -44,6 +44,8 @@ class SDK : PlatformAware {
         fun findType(fullName: String): Type {
             val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
             return when {
+                // 如果是空字符串那么返回NO_TYPE
+                fullName.isEmpty() -> Type.NO_TYPE
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
                 allTypes.map { it.name.depointer() }.contains(fullName) -> allTypes.first { it.name.depointer() == fullName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type

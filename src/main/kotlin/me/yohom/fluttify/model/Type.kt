@@ -3,7 +3,7 @@ package me.yohom.fluttify.model
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
-open class Type : PlatformAware {
+open class Type : IPlatform, IScope {
     override var platform: Platform = Platform.Unknown
 
     /**
@@ -24,7 +24,7 @@ open class Type : PlatformAware {
     /**
      * 是否公开
      */
-    var isPublic: Boolean = true
+    override var isPublic: Boolean = true
 
     /**
      * 是否抽象
@@ -122,7 +122,7 @@ open class Type : PlatformAware {
                 && !isObfuscated()
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
                 && ((isInnerClass && isStaticType) || !isInnerClass)
-                && (constructors.any { it.isPublic == true } || constructors.isEmpty())
+                && (constructors.any { it.isPublic } || constructors.isEmpty())
                 && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
                 && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
                 // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
@@ -179,7 +179,15 @@ open class Type : PlatformAware {
     }
 
     companion object {
+        /**
+         * 未知的类
+         */
         val UNKNOWN_TYPE: Type = Type().apply { name = "unknown" }
+
+        /**
+         * 没有类
+         */
+        val NO_TYPE: Type = Type().apply { name = "" }
     }
 }
 
