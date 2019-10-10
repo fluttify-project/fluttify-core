@@ -2,19 +2,16 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
  * 修改默认的项目模板
  */
-open class TweakDefaultProject : DefaultTask() {
+open class TweakDefaultProject : FluttifyTask() {
 
     private val buildGradleTmpl = this::class.java.getResource("/tmpl/project/build.gradle.tmpl").readText()
     private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
     private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
-
-    override fun getGroup() = "fluttify"
 
     @TaskAction
     fun process() {

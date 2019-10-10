@@ -1,7 +1,6 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -9,10 +8,7 @@ import java.io.InputStreamReader
 /**
  * 生成初始的输出项目
  */
-open class OutputProject : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class OutputProject : FluttifyTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)

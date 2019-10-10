@@ -6,7 +6,6 @@ import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.tmpl.dart.object_factory.ObjectFactoryTmpl
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -15,9 +14,7 @@ import org.gradle.api.tasks.TaskAction
  * 输入: 要生成ObjectCreator的文件夹
  * 输出: 生成后的ObjectCreator Dart文件
  */
-open class DartObjectFactory : DefaultTask() {
-    override fun getGroup() = "fluttify"
-
+open class DartObjectFactory : FluttifyTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)

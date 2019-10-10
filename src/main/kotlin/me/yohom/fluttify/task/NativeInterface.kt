@@ -21,10 +21,7 @@ import me.yohom.fluttify.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
  * 输入: java文件
  * 输出: 对应的method channel文件
  */
-open class AndroidKotlinInterface : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class AndroidKotlinInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
@@ -75,10 +72,7 @@ open class AndroidKotlinInterface : DefaultTask() {
  * 输入: framework文件夹
  * 输出: 对应的method channel文件
  */
-open class IOSObjcInterface : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class IOSObjcInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)

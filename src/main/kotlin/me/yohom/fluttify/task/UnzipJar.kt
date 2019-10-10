@@ -2,7 +2,6 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.File
@@ -15,10 +14,7 @@ import java.io.InputStreamReader
  * 输出: class文件列表
  * 依赖: []
  */
-open class UnzipJar : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class UnzipJar : FluttifyTask() {
     @TaskAction
     fun unzip() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)

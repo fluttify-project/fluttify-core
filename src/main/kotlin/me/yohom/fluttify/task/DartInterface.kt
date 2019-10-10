@@ -19,9 +19,7 @@ import org.gradle.api.tasks.TaskAction
 /**
  * 生成Java文件的Dart接口文件
  */
-open class AndroidDartInterface : DefaultTask() {
-    override fun getGroup() = "fluttify"
-
+open class AndroidDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)

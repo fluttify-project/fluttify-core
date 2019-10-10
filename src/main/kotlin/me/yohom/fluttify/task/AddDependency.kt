@@ -3,17 +3,13 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import org.apache.commons.io.FileUtils
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
  * 为生成android工程加入目标jar到libs文件夹
  * todo 避免拷贝unzip文件夹
  */
-open class AndroidAddDependency : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class AndroidAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)
@@ -28,10 +24,7 @@ open class AndroidAddDependency : DefaultTask() {
 /**
  * 为生成ios工程加入目标framework到文件夹
  */
-open class IOSAddDependency : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class IOSAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
         val ext = project.extensions.getByType(FluttifyExtension::class.java)

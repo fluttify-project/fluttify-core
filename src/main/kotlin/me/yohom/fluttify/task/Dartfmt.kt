@@ -1,7 +1,6 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.iterate
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -12,9 +11,7 @@ import java.io.InputStreamReader
  * 输入: 未格式化的dart文件
  * 输出: 格式化后的dart文件
  */
-open class Dartfmt : DefaultTask() {
-    override fun getGroup() = "fluttify"
-
+open class Dartfmt : FluttifyTask() {
     @TaskAction
     fun process() {
         project.projectDir.iterate("dart") {

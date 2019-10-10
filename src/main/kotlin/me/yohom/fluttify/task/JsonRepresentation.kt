@@ -4,13 +4,10 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-open class AndroidJsonRepresentation : DefaultTask() {
+open class AndroidJsonRepresentation : FluttifyTask() {
     private val sdk = SDK()
-
-    override fun getGroup() = "fluttify"
 
     @TaskAction
     fun process() {
@@ -32,10 +29,8 @@ open class AndroidJsonRepresentation : DefaultTask() {
     }
 }
 
-open class IOSJsonRepresentation : DefaultTask() {
+open class IOSJsonRepresentation : FluttifyTask() {
     private val sdk = SDK()
-
-    override fun getGroup() = "fluttify"
 
     @TaskAction
     fun process() {

@@ -4,6 +4,7 @@ import me.yohom.fluttify.task.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+// todo 实现输入输出的指定
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.extensions.create("fluttify", FluttifyExtension::class.java)

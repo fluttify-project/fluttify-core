@@ -1,7 +1,6 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.iterate
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -11,9 +10,7 @@ import org.gradle.api.tasks.TaskAction
  * 输出: 删除空文件后的文件夹
  * 依赖: []
  */
-open class CleanEmpty : DefaultTask() {
-    override fun getGroup() = "fluttify"
-
+open class CleanEmpty : FluttifyTask() {
     @TaskAction
     fun process() {
         project.projectDir.iterate(null) {
