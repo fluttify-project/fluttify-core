@@ -21,6 +21,7 @@ fun <T> T.must(message: String = "", mapper: T.() -> Boolean?): Boolean {
             is Field -> println("Field::${variable.name}由于不是`$message`, 被过滤")
             is Type -> println("Type::${name}由于不是`$message`, 被过滤")
             is Method -> println("Method::${name}(${formalParams.joinToString { it.variable.typeName }})由于不是`$message`, 被过滤")
+            else -> println("不支持的过滤类型")
         }
         false
     } else {
@@ -35,6 +36,7 @@ fun <T> T.mustNot(message: String = "", mapper: T.() -> Boolean?): Boolean {
             is Field -> println("Field::${variable.name}由于是`$message`, 被过滤")
             is Type -> println("Type::${name}由于是`$message`, 被过滤")
             is Method -> println("Method::${name}(${formalParams.joinToString { it.variable.typeName }})由于是`$message`, 被过滤")
+            else -> println("不支持的过滤类型")
         }
         false
     } else {
