@@ -2,19 +2,25 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.file
 import org.apache.commons.io.FileUtils
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 /**
  * 为生成android工程加入目标jar到libs文件夹
  * todo 避免拷贝unzip文件夹 已完成 待测试
  */
 open class AndroidAddDependency : FluttifyTask() {
+    @InputFile
+    val jarDir: File = ext.jarDir.file()
+
+    @OutputFile
+    val libDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
+
     @TaskAction
     fun process() {
-        FileUtils.copyDirectory(
-            ext.jarDir.file(),
-            "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
-        ) { it.name != "unzip" }
+        FileUtils.copyDirectory(jarDir, libDir) { it.name != "unzip" }
     }
 }
 
@@ -22,6 +28,12 @@ open class AndroidAddDependency : FluttifyTask() {
  * 为生成ios工程加入目标framework到文件夹
  */
 open class IOSAddDependency : FluttifyTask() {
+    @InputFile
+    val frameworkFile : File = ext.frameworkDir.file()
+
+    @OutputFile
+    val targetDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
+
     @TaskAction
     fun process() {
         // 添加间接依赖到podspec中
@@ -33,9 +45,6 @@ open class IOSAddDependency : FluttifyTask() {
             .run { podspecFile.writeText(this) }
 
         // 添加framework到工程中
-        FileUtils.copyDirectory(
-            ext.frameworkDir.file(),
-            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
-        )
+        FileUtils.copyDirectory(frameworkFile, targetDir)
     }
 }
