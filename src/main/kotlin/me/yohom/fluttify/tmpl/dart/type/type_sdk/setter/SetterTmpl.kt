@@ -18,9 +18,14 @@ class SetterTmpl(private val field: Field) {
         return field.variable.run {
             val typeName = field.variable.run {
                 var result = typeName.toDartType()
-                for (i in 0 until genericLevel) {
+                if (isStructPointer()) {
                     result = "List<$result>"
+                } else {
+                    for (i in 0 until genericLevel) {
+                        result = "List<$result>"
+                    }
                 }
+
                 result
             }
             val name = name.toDartType()
