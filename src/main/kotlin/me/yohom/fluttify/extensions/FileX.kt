@@ -283,7 +283,7 @@ fun OBJC_FILE.objcType(): List<Type> {
         override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
             if (result.map { it.name }.contains(ctx.ancestorOf(ObjectiveCParser.EnumDeclarationContext::class)?.identifier()?.text)) return
 
-            enumConstants.add(ctx.text)
+            enumConstants.add(ctx.identifier().text)
         }
 
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
