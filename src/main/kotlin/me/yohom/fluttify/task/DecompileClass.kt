@@ -1,6 +1,8 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.file
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
 
@@ -11,11 +13,14 @@ import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
  * 输出: 反编译后的单个java文件
  */
 open class DecompileClass : FluttifyTask() {
+    @InputDirectory
+    val classFilesDir = "${ext.jarDir}unzip/".file()
+
+    @OutputDirectory
+    val javaFilesDir = "${project.buildDir}/decompiled/".file()
+
     @TaskAction
     fun decompile() {
-        val classFilesDir = "${ext.jarDir}unzip/".file()
-        val javaFilesDir = "${project.buildDir}/decompiled/".file()
-
         ConsoleDecompiler.main(arrayOf(
             "-dgs=1", "-din=0", "-rsy=1", "-hdc=0",
             classFilesDir.toString(),
