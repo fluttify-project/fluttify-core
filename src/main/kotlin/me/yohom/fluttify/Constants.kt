@@ -49,7 +49,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.widget.TextView"; typeType = TypeType.Class },
     Type().apply { name = "android.widget.LinearLayout"; typeType = TypeType.Class },
     Type().apply { name = "android.widget.RelativeLayout"; typeType = TypeType.Class },
-    Type().apply { name = "android.os.Parcelable"; typeType = TypeType.Class },
+    Type().apply { name = "android.os.Parcelable"; typeType = TypeType.Interface },
 
     Type().apply { name = "CLLocationManager"; typeType = TypeType.Class },
     Type().apply { name = "CLLocationCoordinate2D"; typeType = TypeType.Struct },

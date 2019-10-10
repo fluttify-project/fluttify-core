@@ -74,6 +74,16 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //
 //class android_graphics_drawable_Drawable extends java_lang_Object {}
 //
+//class android_widget_ImageView extends android_view_View {}
+//
+//class android_widget_TextView extends android_view_View {}
+//
+//class android_widget_LinearLayout extends android_view_ViewGroup {}
+//
+//class android_widget_RelativeLayout extends android_view_ViewGroup {}
+//
+//mixin android_os_Parcelable on java_lang_Object {}
+//
 //
 //
 //import 'package:flutter/services.dart';

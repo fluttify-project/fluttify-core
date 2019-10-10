@@ -33,13 +33,13 @@ fun List<Method>.filterMethod(): List<Method> {
  */
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
-        .filter { (it.isPublic == true).apply { if (!this) println("filterGetters: $it 由于不是公开field 被过滤") } }
-        .filter { (it.isStatic == false).apply { if (!this) println("filterGetters: $it 由于是静态field 被过滤") } }
-        .filter { it.variable.isKnownType().apply { if (!this) println("filterGetters: $it 由于是未知类型 被过滤") } }
-        .filter { it.variable.isPublicType().apply { if (!this) println("filterGetters: $it 由于是非公开类型 被过滤") } }
-        .filter { it.variable.isConcret().apply { if (!this) println("filterGetters: $it 由于是抽象类型 被过滤") } }
-        .filter { (!it.variable.typeName.isObfuscated()).apply { if (!this) println("filterGetters: $it 由于是混淆类 被过滤") } }
-        .filter { println("字段${it}通过Getter过滤"); true }
+        .filter { it.must("公开field") { isPublic } }
+        .filter { it.mustNot("静态field") { isStatic } }
+        .filter { it.variable.must("已知类型") { isKnownType() } }
+        .filter { it.variable.must("公开类型") { isPublicType() } }
+        .filter { it.variable.must("具体类型") { isConcret() } }
+        .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
+        .filter { println("字段${it.variable.name}通过Getter过滤"); true }
         .toList()
 }
 
