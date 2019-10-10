@@ -21,12 +21,9 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.must("公开方法") { isPublic } }
         .filter { it.must("所在类是公开类") { className.findType().isPublic } }
         .filter { it.must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } }
-        .filter {
-            it.must("所在类是非公开内部类") {
-                className.findType().run { (isInnerClass && constructors.all { !it.isPublic }) || !isInnerClass }
-            }
-        }
+        .filter { it.must("所在类是静态类型") { className.findType().isStaticType } }
         .filter { it.must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } }
+        .filter { it.must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } }
         .filter { it.mustNot("忽略方法") { name in IGNORE_METHOD } }
         .filter { it.mustNot("废弃方法") { isDeprecated } }
         // 类似float*返回这样的类型的方法都暂时不处理

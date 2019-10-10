@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result
 
 import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.extensions.toDartType
 
 //#__type_name__#.values[result]
 class ResultEnumTmpl(private val returnType: TYPE_NAME) {
@@ -8,6 +9,6 @@ class ResultEnumTmpl(private val returnType: TYPE_NAME) {
 
     fun dartResultEnum(): String {
         return tmpl
-            .replace("#__type_name__#", returnType)
+            .replace("#__type_name__#", returnType.toDartType())
     }
 }

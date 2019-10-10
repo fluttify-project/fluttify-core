@@ -41,7 +41,6 @@ fun JAVA_FILE.javaType(): Type {
             isPublic = ctx.isPublic()
             simpleName = ctx.IDENTIFIER()?.text ?: ""
             isInnerClass = simpleName.contains("$")
-            isStaticType = ctx.isStatic()
             typeType = TypeType.Class
             genericTypes = ctx.genericTypes()
             isAbstract = ctx.isAbstract()
@@ -65,7 +64,6 @@ fun JAVA_FILE.javaType(): Type {
             isPublic = ctx.isPublic()
             simpleName = ctx.IDENTIFIER().text
             isInnerClass = simpleName.contains("$")
-            isStaticType = ctx.isStatic()
             typeType = TypeType.Interface
             genericTypes = ctx.genericTypes()
             interfaces.addAll(ctx.superInterfaces())
@@ -82,6 +80,8 @@ fun JAVA_FILE.javaType(): Type {
 
         override fun enterConstructorDeclaration(ctx: ConstructorDeclarationContext) {
             if (ctx.IDENTIFIER().text.isObfuscated()) return
+
+            isStaticType = ctx.isStaticType()
 
             constructors.add(
                 Constructor(
