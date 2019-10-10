@@ -132,7 +132,7 @@ fun List<Parameter>.filterFormalParams(): List<Parameter> {
         .filter { it.variable.mustNot("Lambda") { isLambda() } } // lambda不参与传递
         .filter { it.variable.mustNot("Callback") { isCallback() } } // 回调类不参与传递(但是接口类型参与传递)
         .filter { it.variable.mustNot("未知类型") { typeName.findType() == Type.UNKNOWN_TYPE } }
-        .filter { println("Parameter::${it.variable.name}通过过滤"); true }
+        .filter { println("Parameter::${it.variable.typeName}通过过滤"); true }
         .toList()
 }
 

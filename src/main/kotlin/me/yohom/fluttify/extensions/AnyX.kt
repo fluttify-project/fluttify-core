@@ -17,10 +17,10 @@ fun Any.toJson(): String {
 fun <T> T.must(message: String = "", mapper: T.() -> Boolean?): Boolean {
     return if (mapper() != true) {
         when (this) {
-            is Variable -> println("Variable::${name}由于不是$message, 被过滤")
-            is Field -> println("Field::${variable.name}由于不是$message, 被过滤")
-            is Type -> println("Type::${name}由于不是$message, 被过滤")
-            is Method -> println("Method::${name}由于不是$message, 被过滤")
+            is Variable -> println("Variable::${name}由于不是`$message`, 被过滤")
+            is Field -> println("Field::${variable.name}由于不是`$message`, 被过滤")
+            is Type -> println("Type::${name}由于不是`$message`, 被过滤")
+            is Method -> println("Method::${name}(${formalParams.joinToString { it.variable.typeName }})由于不是`$message`, 被过滤")
         }
         false
     } else {
@@ -31,10 +31,10 @@ fun <T> T.must(message: String = "", mapper: T.() -> Boolean?): Boolean {
 fun <T> T.mustNot(message: String = "", mapper: T.() -> Boolean?): Boolean {
     return if (mapper() != false) {
         when (this) {
-            is Variable -> println("Variable::${name}由于是$message, 被过滤")
-            is Field -> println("Field::${variable.name}由于是$message, 被过滤")
-            is Type -> println("Type::${name}由于是$message, 被过滤")
-            is Method -> println("Method::${name}由于是$message, 被过滤")
+            is Variable -> println("Variable::${name}由于是`$message`, 被过滤")
+            is Field -> println("Field::${variable.name}由于是`$message`, 被过滤")
+            is Type -> println("Type::${name}由于是`$message`, 被过滤")
+            is Method -> println("Method::${name}(${formalParams.joinToString { it.variable.typeName }})由于是`$message`, 被过滤")
         }
         false
     } else {
