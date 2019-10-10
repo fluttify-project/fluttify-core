@@ -4,18 +4,24 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 open class AndroidJsonRepresentation : FluttifyTask() {
+    @InputDirectory
+    val decompiledDir = "${project.buildDir}/decompiled/".file()
+
+    @OutputFile
+    val irFile = "${project.projectDir}/ir/android/json_representation.json".file()
+
     private val sdk = SDK()
 
     @TaskAction
     fun process() {
-        val jsonFile = "${project.projectDir}/ir/android/json_representation.json".file()
-
         sdk.platform = Platform.Android
 
-        "${project.buildDir}/decompiled/".file()
+        decompiledDir
             .listFiles()
             ?.forEach {
                 val lib = Lib().apply { name = it.nameWithoutExtension }
@@ -25,20 +31,24 @@ open class AndroidJsonRepresentation : FluttifyTask() {
                 sdk.libs.add(lib)
             }
 
-        jsonFile.writeText(sdk.toJson())
+        irFile.writeText(sdk.toJson())
     }
 }
 
 open class IOSJsonRepresentation : FluttifyTask() {
+    @InputDirectory
+    val frameworkDir = "${project.projectDir}/sdk/ios/".file()
+
+    @OutputFile
+    val irFile = "${project.projectDir}/ir/ios/json_representation.json".file()
+
     private val sdk = SDK()
 
     @TaskAction
     fun process() {
-        val jsonFile = "${project.projectDir}/ir/ios/json_representation.json".file()
-
         sdk.platform = Platform.iOS
 
-        "${project.projectDir}/sdk/ios/".file()
+        frameworkDir
             .listFiles()
             ?.forEach {
                 val lib = Lib().apply { name = it.nameWithoutExtension }
@@ -47,7 +57,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
                 }
                 sdk.libs.add(lib)
             }
-        jsonFile.writeText(sdk.toJson())
+        irFile.writeText(sdk.toJson())
     }
 
 }
