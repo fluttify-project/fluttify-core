@@ -1,7 +1,7 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.iterate
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.File
@@ -14,7 +14,7 @@ import java.io.InputStreamReader
  * 输出: 格式化后的dart文件
  */
 open class Dartfmt : FluttifyTask() {
-    @OutputFile
+    @OutputDirectory
     val projectDir: File = project.projectDir
 
     @TaskAction

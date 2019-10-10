@@ -3,7 +3,7 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.extensions.file
 import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
@@ -15,7 +15,7 @@ open class AndroidAddDependency : FluttifyTask() {
     @InputFile
     val jarDir: File = ext.jarDir.file()
 
-    @OutputFile
+    @OutputDirectory
     val libDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
 
     @TaskAction
@@ -31,7 +31,7 @@ open class IOSAddDependency : FluttifyTask() {
     @InputFile
     val frameworkFile : File = ext.frameworkDir.file()
 
-    @OutputFile
+    @OutputDirectory
     val targetDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
 
     @TaskAction

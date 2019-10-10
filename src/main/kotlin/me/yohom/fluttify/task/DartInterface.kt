@@ -13,7 +13,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -23,7 +23,7 @@ open class AndroidDartInterface : FluttifyTask() {
     @InputFile
     val androidIrFile = "${project.projectDir}/ir/android/json_representation.json".file()
 
-    @OutputFile
+    @OutputDirectory
     val outputDartDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file()
 
     @TaskAction
@@ -82,7 +82,7 @@ open class IOSDartInterface : FluttifyTask() {
     @InputFile
     val iosIrFile = "${project.projectDir}/ir/ios/json_representation.json".file()
 
-    @OutputFile
+    @OutputDirectory
     val outputDartDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file()
 
     @TaskAction

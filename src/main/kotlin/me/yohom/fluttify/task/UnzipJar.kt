@@ -2,7 +2,7 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.file
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.File
@@ -16,7 +16,7 @@ open class UnzipJar : FluttifyTask() {
     @InputFile
     var jarFile: File? = null
 
-    @OutputFile
+    @OutputDirectory
     var unzippedJar: File? = null
 
     @TaskAction
