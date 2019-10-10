@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.model.Platform
@@ -17,8 +16,6 @@ import org.gradle.api.tasks.TaskAction
 open class DartObjectFactory : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
-
         val androidSdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
         val iosSdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
 

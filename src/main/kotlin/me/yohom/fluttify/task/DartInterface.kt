@@ -22,7 +22,6 @@ import org.gradle.api.tasks.TaskAction
 open class AndroidDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
         val sdk = "${project.projectDir}/ir/android/json_representation.json".file().readText().fromJson<SDK>()
 
         // 处理View, 生成AndroidView

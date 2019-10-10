@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import org.gradle.api.tasks.TaskAction
 
@@ -15,7 +14,6 @@ open class TweakDefaultProject : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
         val outputProjectPath = "${project.projectDir}/output-project/${ext.outputProjectName}"
 
         "${outputProjectPath}/android/build.gradle"

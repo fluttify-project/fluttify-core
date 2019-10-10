@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.iterate
 import org.gradle.api.tasks.TaskAction
@@ -11,8 +10,6 @@ import org.gradle.api.tasks.TaskAction
 open class Export : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
-
         val androidDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file()
         val iosDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file()
 

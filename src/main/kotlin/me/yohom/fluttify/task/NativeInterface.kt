@@ -75,7 +75,6 @@ open class AndroidKotlinInterface : FluttifyTask() {
 open class IOSObjcInterface : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
         val pluginHFile =
             "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel(
                 true

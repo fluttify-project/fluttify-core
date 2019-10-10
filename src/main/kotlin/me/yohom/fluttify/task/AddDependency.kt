@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.TaskAction
@@ -12,8 +11,6 @@ import org.gradle.api.tasks.TaskAction
 open class AndroidAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
-
         FileUtils.copyDirectory(
             ext.jarDir.file(),
             "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
@@ -27,8 +24,6 @@ open class AndroidAddDependency : FluttifyTask() {
 open class IOSAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
-
         // 添加间接依赖到podspec中
         val podspecFile = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/${ext.outputProjectName}.podspec".file()
         podspecFile.readText()

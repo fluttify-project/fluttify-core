@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
@@ -14,8 +13,6 @@ import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
 open class DecompileClass : FluttifyTask() {
     @TaskAction
     fun decompile() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
-
         val classFilesDir = "${ext.jarDir}unzip/".file()
         val javaFilesDir = "${project.buildDir}/decompiled/".file()
 

@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -11,7 +10,6 @@ import java.io.InputStreamReader
 open class OutputProject : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
         val outputProjectPath = "${project.projectDir}/output-project/${ext.outputProjectName}"
 
         val process = Runtime
