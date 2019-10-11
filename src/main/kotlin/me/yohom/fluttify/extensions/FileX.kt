@@ -30,7 +30,7 @@ fun JAVA_FILE.javaType(): Type {
     var isPublic = false
     var isAbstract = false
     var isInnerClass = false
-    var isStaticType = false
+    var isStaticType = true
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext) {
@@ -74,6 +74,7 @@ fun JAVA_FILE.javaType(): Type {
             isPublic = ctx.isPublic() == true
             simpleName = ctx.IDENTIFIER().text
             isInnerClass = simpleName.contains("$")
+            isStaticType = true
             typeType = TypeType.Enum
             isAbstract = false
         }
@@ -208,6 +209,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isPublic = true
                         it.isAbstract = isAbstract
                         it.name = name
+                        it.isStaticType = true
                         it.superClass = superClass
                         it.interfaces = interfaces
                         it.fields.addAll(fields)
@@ -242,6 +244,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isAbstract = isAbstract
                         it.name = name
                         it.superClass = superClass
+                        it.isStaticType = true
                         it.interfaces = interfaces
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
@@ -296,6 +299,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     it.isAbstract = isAbstract
                     it.name = name
                     it.superClass = superClass
+                    it.isStaticType = true
                     it.fields.addAll(fields)
                     it.methods.addAll(methods)
                     it.constants.addAll(enumConstants)
@@ -345,6 +349,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isAbstract = isAbstract
                         it.name = name
                         it.superClass = superClass
+                        it.isStaticType = true
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
                         it.constants.addAll(enumConstants)

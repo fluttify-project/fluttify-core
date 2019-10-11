@@ -39,6 +39,7 @@ fun JavaParser.ConstructorDeclarationContext.isStaticType(): Boolean {
         return formalParams()
             .firstOrNull()
             ?.run { outerClass != variable.typeName.simpleName() } == true
+                || formalParams().firstOrNull() == null
     }
 }
 

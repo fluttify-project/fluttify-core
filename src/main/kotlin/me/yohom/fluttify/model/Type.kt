@@ -39,7 +39,7 @@ open class Type : IPlatform, IScope {
     /**
      * 是否是静态(内部)类
      */
-    var isStaticType: Boolean = false
+    var isStaticType: Boolean = true
 
     /**
      * 是否jsonable
