@@ -8,51 +8,60 @@ import me.yohom.fluttify.model.Type
 //import 'dart:convert';
 //import 'dart:typed_data';
 //
+//import 'package:#__current_package__#/src/android/android.export.dart';
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/gestures.dart';
 //import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 //import 'package:flutter/services.dart';
-//import 'package:#__current_package__#/#__current_package__#.dart';
 //
 //typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
 //
-//class #__view__#_Android extends StatelessWidget {
-//    const #__view__#_Android({
-//        Key key,
-//        this.onViewCreated,
-//    }) : super(key: key);
+//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
+//class #__view__#_Android extends StatefulWidget {
+//  const #__view__#_Android({
+//    Key key,
+//    this.onViewCreated,
+//  }) : super(key: key);
 //
-//    final #__view_simple_name__#CreatedCallback onViewCreated;
+//  final #__view_simple_name__#CreatedCallback onViewCreated;
 //
-//    @override
-//    Widget build(BuildContext context) {
-//        final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
-//                Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-//        ].toSet();
-//
-//        final messageCodec = StandardMessageCodec();
-//        return AndroidView(
-//            viewType: '#__org__#/#__view_type__#',
-//        gestureRecognizers: gestureRecognizers,
-//        onPlatformViewCreated: _onViewCreated,
-//        creationParamsCodec: messageCodec,
-//        );
-//    }
-//
-//    void _onViewCreated(int id) {
-//        final controller = #__view__#.withRefId(id);
-//        if (onViewCreated != null) {
-//            onViewCreated(controller);
-//        }
-//    }
+//  @override
+//  _#__view__#_AndroidState createState() =>
+//      _#__view__#_AndroidState();
 //}
-/**
- * 一个Android的View类, 需要生成两个类
- *
- * 1: 控制器类, 即这个View类的dart接口
- * 2: AndroidView类
- */
+//
+//class _#__view__#_AndroidState extends State<#__view__#_Android> {
+//  #__view__# _controller;
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
+//      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+//    ].toSet();
+//
+//    final messageCodec = StandardMessageCodec();
+//    return AndroidView(
+//      viewType: '#__org__#/#__view_type__#',
+//      gestureRecognizers: gestureRecognizers,
+//      onPlatformViewCreated: _onViewCreated,
+//      creationParamsCodec: messageCodec,
+//    );
+//  }
+//
+//  void _onViewCreated(int id) {
+//    _controller = #__view__#()..refId = id;
+//    if (widget.onViewCreated != null) {
+//      widget.onViewCreated(_controller);
+//    }
+//  }
+//
+//  @override
+//  void dispose() {
+//    ObjectFactory_Android.release(_controller);
+//    super.dispose();
+//  }
+//}
 class AndroidViewTmpl(
     private val viewClass: Type,
     private val ext: FluttifyExtension
