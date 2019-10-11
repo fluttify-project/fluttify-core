@@ -30,10 +30,7 @@ class #__factory_name__#Factory(private val registrar: Registrar) : PlatformView
             // 构造完成后马上加入HEAP
             override fun getView(): View = view.apply { HEAP[id] = this }
 
-            // dispose后从HEAP中删除
-            override fun dispose() {
-
-            }
+            override fun dispose() {}
         }
     }
 }
