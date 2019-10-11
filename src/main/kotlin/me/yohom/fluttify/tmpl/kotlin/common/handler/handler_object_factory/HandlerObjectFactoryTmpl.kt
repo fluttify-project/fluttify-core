@@ -8,12 +8,17 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
 
 //"ObjectFactory::create#__creator_name__#" to { registrar, args, methodResult ->
+//    Log.d("ObjectFactory", "创建对象: #__creator_name__#")
+//
 //    // 参数
 //    #__args__#
 //
 //    // 创建对象
 //    val obj = #__class_name__#(#__args_value__#)
 //    HEAP[obj.hashCode()] = obj
+//
+//    // 打印当前HEAP
+//    Log.d("ObjectFactory", "HEAP: $HEAP")
 //
 //    methodResult.success(obj.hashCode())
 //}

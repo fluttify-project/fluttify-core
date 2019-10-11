@@ -42,13 +42,24 @@ class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.M
             }
             // 释放一个对象
             "ObjectFactory::release" -> {
+                Log.d("ObjectFactory", "释放对象: ${args["refId"]}")
+
                 HEAP.remove(args["refId"] as Int)
+
                 methodResult.success("success")
+
+                // 打印当前HEAP
+                Log.d("ObjectFactory", "HEAP: $HEAP")
             }
             // 清空HEAP中所有对象
             "ObjectFactory::clearRefMap" -> {
+                Log.d("ObjectFactory", "清空堆")
+
                 HEAP.clear()
                 methodResult.success("success")
+
+                // 打印当前HEAP
+                Log.d("ObjectFactory", "HEAP: $HEAP")
             }
             else -> {
                 handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()

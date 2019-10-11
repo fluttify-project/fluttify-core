@@ -41,11 +41,19 @@ NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 - (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
   NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
   if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
+    NSLog(@"ObjectFactory::释放对象: %@", (NSNumber *) args[@"refId"]);
+
     [HEAP removeObjectForKey:(NSNumber *) args[@"refId"]];
     methodResult(@"success");
+
+    NSLog(@"HEAP: %@", HEAP);
   } else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
+    NSLog(@"ObjectFactory::清空堆");
+
     [HEAP removeAllObjects];
     methodResult(@"success");
+
+    NSLog(@"HEAP: %@", HEAP);
   } else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
     CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
     CLLocationDegrees longitude = [args[@"longitude"] doubleValue];
