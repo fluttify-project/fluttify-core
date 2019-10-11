@@ -4,7 +4,6 @@ import me.yohom.fluttify.task.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-// todo 实现输入输出的指定
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.extensions.create("fluttify", FluttifyExtension::class.java)
@@ -30,36 +29,20 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
-//        export.dependsOn(dartObjectFactory)
-//        dartObjectFactory.dependsOn(iOSObjcInterface)
-//        iOSObjcInterface.dependsOn(androidKotlinInterface)
-//        androidKotlinInterface.dependsOn(iOSDartInterface)
-//        iOSDartInterface.dependsOn(androidDartInterface)
-//        androidDartInterface.dependsOn(iOSJsonRepresentation)
-//        iOSJsonRepresentation.dependsOn(androidJsonRepresentation)
-//        androidJsonRepresentation.dependsOn(iOSAddDependency)
-//        iOSAddDependency.dependsOn(androidAddDependency)
-//        androidAddDependency.dependsOn(tweakDefaultProject)
-//        tweakDefaultProject.dependsOn(outputProject)
-//        outputProject.dependsOn(decompileClass)
-//        decompileClass.dependsOn(unzip)
-//
-//        project.task("fluttify").dependsOn(export)
+        export.dependsOn(dartObjectFactory)
+        dartObjectFactory.dependsOn(iOSObjcInterface)
+        iOSObjcInterface.dependsOn(androidKotlinInterface)
+        androidKotlinInterface.dependsOn(iOSDartInterface)
+        iOSDartInterface.dependsOn(androidDartInterface)
+        androidDartInterface.dependsOn(iOSJsonRepresentation)
+        iOSJsonRepresentation.dependsOn(androidJsonRepresentation)
+        androidJsonRepresentation.dependsOn(iOSAddDependency)
+        iOSAddDependency.dependsOn(androidAddDependency)
+        androidAddDependency.dependsOn(tweakDefaultProject)
+        tweakDefaultProject.dependsOn(outputProject)
+        outputProject.dependsOn(decompileClass)
+        decompileClass.dependsOn(unzip)
 
-//        decompileClass.dependsOn(unzip)
-
-//        addDependency.dependsOn(decompileClass)
-//        addDependency.dependsOn(outputProject)
-//
-//        androidJsonRepresentation.dependsOn(decompileClass)
-
-//        androidDartInterface.dependsOn(androidAddDependency)
-//        androidDartInterface.dependsOn(androidJsonRepresentation)
-
-//        androidKotlinInterface.dependsOn(decompileClass)
-
-//        dartfmt.dependsOn(androidDartInterface)
-
-//        export.dependsOn(androidDartInterface)
+        project.task("fluttify").dependsOn(export)
     }
 }

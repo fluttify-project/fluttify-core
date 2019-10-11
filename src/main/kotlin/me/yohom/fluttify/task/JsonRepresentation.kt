@@ -5,20 +5,18 @@ import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 open class AndroidJsonRepresentation : FluttifyTask() {
     @InputDirectory
     val decompiledDir = "${project.buildDir}/decompiled/".file()
 
-    @OutputFile
-    val irFile = "${project.projectDir}/ir/android/json_representation.json".file()
-
     private val sdk = SDK()
 
     @TaskAction
     fun process() {
+        val irFile = "${project.projectDir}/ir/android/json_representation.json".file()
+
         sdk.platform = Platform.Android
 
         decompiledDir
@@ -39,13 +37,12 @@ open class IOSJsonRepresentation : FluttifyTask() {
     @InputDirectory
     val frameworkDir = "${project.projectDir}/sdk/ios/".file()
 
-    @OutputFile
-    val irFile = "${project.projectDir}/ir/ios/json_representation.json".file()
-
     private val sdk = SDK()
 
     @TaskAction
     fun process() {
+        val irFile = "${project.projectDir}/ir/ios/json_representation.json".file()
+
         sdk.platform = Platform.iOS
 
         frameworkDir

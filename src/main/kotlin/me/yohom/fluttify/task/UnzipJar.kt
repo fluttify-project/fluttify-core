@@ -14,17 +14,14 @@ import java.io.InputStreamReader
 open class UnzipJar : FluttifyTask() {
 
     @InputFile
-    var jarFile: File? = null
+    var jarFile: File? = ext.jarDir.file().listFiles()?.first { it.name.endsWith("jar") }
 
     @OutputDirectory
-    var unzippedJar: File? = null
+    var unzippedJar: File = "${ext.jarDir}unzip/".file()
 
     @TaskAction
     fun unzip() {
-        jarFile = ext.jarDir.file().listFiles()?.first { it.name.endsWith("jar") }
-        unzippedJar = "${ext.jarDir}unzip/".file()
-
-        if (jarFile == null || unzippedJar == null) return
+        if (jarFile == null) return
 
         val process = Runtime.getRuntime().exec("unzip -o ${jarFile?.absolutePath} -d $unzippedJar")
         val br = BufferedReader(InputStreamReader(process.inputStream))

@@ -6,7 +6,6 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.tmpl.dart.object_factory.ObjectFactoryTmpl
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -22,18 +21,20 @@ open class DartObjectFactory : FluttifyTask() {
         "${project.projectDir}/ir/ios/json_representation.json".file()
     )
 
-    @OutputFiles
-    val objectFactoryFiles = listOf(
-        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.dart".file(),
-        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.dart".file()
-    )
+//    @OutputFiles
+//    val objectFactoryFiles = listOf(
+//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.dart".file(),
+//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.dart".file()
+//    )
 
     @TaskAction
     fun process() {
         val androidSdk = irFiles[0].readText().fromJson<SDK>()
         val iosSdk = irFiles[1].readText().fromJson<SDK>()
 
-        objectFactoryFiles[0].writeText(ObjectFactoryTmpl(androidSdk.libs, ext, Platform.Android).dartObjectFactory())
-        objectFactoryFiles[1].writeText(ObjectFactoryTmpl(iosSdk.libs, ext, Platform.iOS).dartObjectFactory())
+        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.dart".file()
+            .writeText(ObjectFactoryTmpl(androidSdk.libs, ext, Platform.Android).dartObjectFactory())
+        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.dart".file()
+            .writeText(ObjectFactoryTmpl(iosSdk.libs, ext, Platform.iOS).dartObjectFactory())
     }
 }
