@@ -15,7 +15,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val tweakDefaultProject = project.tasks.create("tweakDefaultProject", TweakDefaultProject::class.java)
         val androidAddDependency = project.tasks.create("androidAddDependency", AndroidAddDependency::class.java)
         val iOSAddDependency = project.tasks.create("iOSAddDependency", IOSAddDependency::class.java)
-        val androidJsonRepresentation = project.tasks.create("androidJsonRepresentation", AndroidJsonRepresentation::class.java)
+        val androidJsonRepresentation =
+            project.tasks.create("androidJsonRepresentation", AndroidJsonRepresentation::class.java)
         val iOSJsonRepresentation = project.tasks.create("iOSJsonRepresentation", IOSJsonRepresentation::class.java)
         val androidDartInterface = project.tasks.create("androidDartInterface", AndroidDartInterface::class.java)
         val iOSDartInterface = project.tasks.create("iOSDartInterface", IOSDartInterface::class.java)
@@ -43,6 +44,6 @@ open class FluttifyCorePlugin : Plugin<Project> {
         outputProject.dependsOn(decompileClass)
         decompileClass.dependsOn(unzip)
 
-        project.task("fluttify").dependsOn(export)
+        project.task("fluttify").apply { group = "fluttify" }.dependsOn(export)
     }
 }
