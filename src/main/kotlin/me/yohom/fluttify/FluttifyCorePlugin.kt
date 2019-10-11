@@ -30,20 +30,38 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
+        // 导出
         export.dependsOn(dartObjectFactory)
-        dartObjectFactory.dependsOn(iOSObjcInterface)
-        iOSObjcInterface.dependsOn(androidKotlinInterface)
-        androidKotlinInterface.dependsOn(iOSDartInterface)
-        iOSDartInterface.dependsOn(androidDartInterface)
-        androidDartInterface.dependsOn(iOSJsonRepresentation)
-        iOSJsonRepresentation.dependsOn(androidJsonRepresentation)
-        androidJsonRepresentation.dependsOn(iOSAddDependency)
-        iOSAddDependency.dependsOn(androidAddDependency)
+
+        // 对象工厂
+        dartObjectFactory.dependsOn(iOSObjcInterface, androidKotlinInterface)
+
+        // 原生接口
+        iOSObjcInterface.dependsOn(iOSDartInterface)
+        androidKotlinInterface.dependsOn(androidDartInterface)
+
+        // dart接口
+        iOSDartInterface.dependsOn(iOSJsonRepresentation)
+        androidDartInterface.dependsOn(androidJsonRepresentation)
+
+        // json表示
+        iOSJsonRepresentation.dependsOn(iOSAddDependency)
+        androidJsonRepresentation.dependsOn(androidAddDependency)
+
+        // 添加依赖
+        iOSAddDependency.dependsOn(tweakDefaultProject)
         androidAddDependency.dependsOn(tweakDefaultProject)
+
+        // 调整默认项目
         tweakDefaultProject.dependsOn(outputProject)
+
+        // 创建插件工程
         outputProject.dependsOn(decompileClass)
+
+        // 反编译jar
         decompileClass.dependsOn(unzip)
 
+        // assembly
         project.task("fluttify").apply { group = "fluttify" }.dependsOn(export)
     }
 }
