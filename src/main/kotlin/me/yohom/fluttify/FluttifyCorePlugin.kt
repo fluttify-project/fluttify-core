@@ -6,7 +6,9 @@ import org.gradle.api.Project
 
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.extensions.create("fluttify", FluttifyExtension::class.java)
+        val ext = project.extensions.create("fluttify", FluttifyExtension::class.java)
+        ext.jarDir = "${project.projectDir}/sdk/android/"
+        ext.frameworkDir = "${project.projectDir}/sdk/ios/"
 
         // 必需任务 顺序已经排列好
         val unzip = project.tasks.create("unzipJar", UnzipJar::class.java)

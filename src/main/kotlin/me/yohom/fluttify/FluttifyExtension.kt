@@ -2,14 +2,14 @@ package me.yohom.fluttify
 
 open class FluttifyExtension {
     /**
-     * jar路径
+     * jar路径 会在FluttifyCorePlugin创建的时候赋值
      */
-    var jarDir: String = "${System.getProperty("user.dir")}/sdk/android/"
+    var jarDir: String = ""
 
     /**
-     * framework路径
+     * framework路径 会在FluttifyCorePlugin创建的时候赋值
      */
-    var frameworkDir: String = "${System.getProperty("user.dir")}/sdk/ios/"
+    var frameworkDir: String = ""
 
     /**
      * iOS间接依赖 包括前缀和后缀名 形如 xx.framework libxx.a libxx.tbd(tbd是代替dylib的动态库)
