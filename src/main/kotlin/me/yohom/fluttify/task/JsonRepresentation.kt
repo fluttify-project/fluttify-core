@@ -21,6 +21,7 @@ open class AndroidJsonRepresentation : FluttifyTask() {
 
         decompiledDir
             .listFiles()
+            ?.filter { it.isDirectory }
             ?.forEach {
                 val lib = Lib().apply { name = it.nameWithoutExtension }
                 it.iterate("java") { javaFile ->
@@ -47,6 +48,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
 
         frameworkDir
             .listFiles()
+            ?.filter { it.isDirectory }
             ?.forEach {
                 val lib = Lib().apply { name = it.nameWithoutExtension }
                 it.iterate("h") { objcFile ->
