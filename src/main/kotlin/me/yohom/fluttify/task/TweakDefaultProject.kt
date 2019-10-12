@@ -11,6 +11,7 @@ open class TweakDefaultProject : FluttifyTask() {
     private val buildGradleTmpl = this::class.java.getResource("/tmpl/project/build.gradle.tmpl").readText()
     private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
     private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
+    private val utilsDartTmpl = this::class.java.getResource("/tmpl/dart/utils.dart.tmpl").readText()
 
     @TaskAction
     fun process() {
@@ -27,5 +28,9 @@ open class TweakDefaultProject : FluttifyTask() {
         "${outputProjectPath}/ios/${ext.outputProjectName}.podspec"
             .file()
             .writeText(podSpecTmpl.replace("#__project_name__#", ext.outputProjectName))
+
+        "${outputProjectPath}/lib/src/utils.dart"
+            .file()
+            .writeText(utilsDartTmpl.replace("#__current_package__#", ext.outputProjectName))
     }
 }

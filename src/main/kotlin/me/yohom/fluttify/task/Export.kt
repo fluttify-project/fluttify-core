@@ -34,6 +34,9 @@ open class Export : FluttifyTask() {
             if (relativePath.isNotBlank()) iosResult.appendln("export '${relativePath}';")
         }
 
+        androidResult.appendln("export '../utils.dart';")
+        iosResult.appendln("export '../utils.dart';")
+
         androidExportFile.writeText(androidResult.toString())
         iosExportFile.writeText(iosResult.toString())
     }
