@@ -74,7 +74,7 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //    NSLog(@"HEAP: %@", HEAP);
 //  }
 //  // 清空堆
-//  else if ([@"ObjectFactory::clearRefMap" isEqualToString:methodCall.method]) {
+//  else if ([@"ObjectFactory::clearHeap" isEqualToString:methodCall.method]) {
 //    NSLog(@"ObjectFactory::清空堆");
 //
 //    [HEAP removeAllObjects];

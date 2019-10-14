@@ -42,7 +42,7 @@ import me.yohom.fluttify.tmpl.swift.plugin.handler.SetterMethodTmpl
 //            HEAP.removeValue(forKey: args["refId"] as! Int)
 //            methodResult("success")
 //        // 清空HEAP中所有对象
-//        case "SystemRef::clearRefMap":
+//        case "SystemRef::clearHeap":
 //            HEAP.removeAll()
 //            methodResult("success")
 //        default:

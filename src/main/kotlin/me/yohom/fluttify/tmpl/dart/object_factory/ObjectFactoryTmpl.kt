@@ -39,8 +39,8 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
 //  }
 //
-//  static Future<void> clearRefMap() async {
-//    await _channel.invokeMethod('ObjectFactory::clearRefMap');
+//  static Future<void> clearHeap() async {
+//    await _channel.invokeMethod('ObjectFactory::clearHeap');
 //  }
 //
 //  #__create_objects__#
@@ -103,8 +103,8 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
 //  }
 //
-//  static Future<void> clearRefMap() async {
-//    await _channel.invokeMethod('ObjectFactory::clearRefMap');
+//  static Future<void> clearHeap() async {
+//    await _channel.invokeMethod('ObjectFactory::clearHeap');
 //  }
 //
 //  #__create_objects__#

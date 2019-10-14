@@ -36,8 +36,16 @@ class ObjectFactory_Android {
     await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
   }
 
-  static Future<void> clearRefMap() async {
-    await _channel.invokeMethod('ObjectFactory::clearRefMap');
+  static Future<void> clearHeap() async {
+    await _channel.invokeMethod('ObjectFactory::clearHeap');
+  }
+
+  static Future<void> pushStack(String name, Ref_Android ref) async {
+    await _channel.invokeMethod('ObjectFactory::pushStack', {'name': name, 'refId': ref.refId});
+  }
+
+  static Future<void> clearStack() async {
+    await _channel.invokeMethod('ObjectFactory::clearStack');
   }
 
   #__create_objects__#

@@ -80,7 +80,7 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //                Log.d("ObjectFactory", "HEAP: $HEAP")
 //            }
 //            // 清空HEAP中所有对象
-//            "ObjectFactory::clearRefMap" -> {
+//            "ObjectFactory::clearHeap" -> {
 //                Log.d("ObjectFactory", "清空堆")
 //
 //                HEAP.clear()
