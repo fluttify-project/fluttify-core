@@ -6,6 +6,9 @@
 
 typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 
+// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
+NSMutableDictionary<NSNumber *, NSObject *> *STACK;
+// Dart端随机存取对象的容器
 NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 
 @implementation #__plugin_name__#Plugin {
@@ -27,7 +30,9 @@ NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 }
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-  // 引用Map
+  // 栈容器
+  STACK = @{}.mutableCopy;
+  // 堆容器
   HEAP = @{}.mutableCopy;
 
   FlutterMethodChannel *channel = [FlutterMethodChannel
