@@ -46,7 +46,7 @@ class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.M
                 methodResult.success(Bundle().apply { HEAP[hashCode()] = this }.hashCode())
             }
             // 创建bitmap对象
-            "ObjectFactory::createBitmap" -> {
+            "ObjectFactory::createandroid_graphics_Bitmap" -> {
                 val bitmapBytes = args["bitmapBytes"] as ByteArray
                 val bitmap = android.graphics.BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.size)
 

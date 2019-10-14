@@ -13,9 +13,9 @@ class ObjectFactory_iOS {
     return CLLocationCoordinate2D()..refId = refId;
   }
 
-  static Future<UIImage> createBitmap(Uint8List bitmapBytes) async {
+  static Future<UIImage> createUIImage(Uint8List bitmapBytes) async {
     final refId =
-        await _channel.invokeMethod('ObjectFactory::createBitmap', {'bitmapBytes': bitmapBytes});
+        await _channel.invokeMethod('ObjectFactory::createUIImage', {'bitmapBytes': bitmapBytes});
     return UIImage()..refId = refId;
   }
 

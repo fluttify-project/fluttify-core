@@ -75,7 +75,7 @@ NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
     methodResult(@(dataValue.hash));
   }
   // 创建UIImage
-  else if ([@"ObjectFactory::createBitmap" isEqualToString:methodCall.method]) {
+  else if ([@"ObjectFactory::createUIImage" isEqualToString:methodCall.method]) {
     FlutterStandardTypedData* bitmapBytes = (FlutterStandardTypedData*) args[@"bitmapBytes"];
 
     UIImage* bitmap = [UIImage imageWithData:bitmapBytes.data];
