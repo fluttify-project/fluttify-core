@@ -4,19 +4,18 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.getter.GetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.setter.SetterTmpl
 
 //import 'dart:typed_data';
 //
-//import 'package:#__current_package__#/#__current_package__#.dart';
+//import 'package:#__current_package__#/src/ios/ios.export.dart';
+//import 'package:#__current_package__#/src/android/android.export.dart';
 //import 'package:flutter/services.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types
+//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //class #__class_name__# extends #__super_class__# #__mixins__# {
-//  static final _channel = MethodChannel('#__method_channel__#');
-//
 //  // 生成getters
 //  #__getters__#
 //
@@ -26,9 +25,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.setter.SetterTmpl
 //  // 生成方法们
 //  #__methods__#
 //}
-/**
- * 生成普通类的dart接口
- */
 class TypeSdkTmpl(
     private val type: Type,
     private val ext: FluttifyExtension
@@ -63,15 +59,15 @@ class TypeSdkTmpl(
 
         val getters = type.fields
             .filterGetters()
-            .map { GetterTmpl(it).dartGetter() }
+            .map { GetterTmpl(it, ext).dartGetter() }
 
         val setters = type.fields
             .filterSetters()
-            .map { SetterTmpl(it).dartSetter() }
+            .map { SetterTmpl(it, ext).dartSetter() }
 
         val methods = type.methods
             .filterMethod()
-            .map { MethodTmpl(it).dartMethod() }
+            .map { MethodTmpl(it, ext).dartMethod() }
 
         return tmpl
             .replace("#__current_package__#", currentPackage)

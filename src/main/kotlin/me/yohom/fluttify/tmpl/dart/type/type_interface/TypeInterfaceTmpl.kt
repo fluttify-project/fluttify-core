@@ -1,20 +1,24 @@
 package me.yohom.fluttify.tmpl.dart.type.type_interface
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isObfuscated
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
+import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
 
 //import 'dart:typed_data';
 //
-//import 'package:#__current_package__#/#__current_package__#.dart';
+//import 'package:#__current_package__#/src/ios/ios.export.dart';
+//import 'package:#__current_package__#/src/android/android.export.dart';
 //import 'package:flutter/services.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types
+//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //mixin #__interface_type__# on #__super_mixins__# {
+//  #__getters__#
+//
+//  #__setters__#
+//
 //  #__interface_methods__#
 //}
 class TypeInterfaceTmpl(
@@ -37,10 +41,20 @@ class TypeInterfaceTmpl(
             .distinctBy { "${it.name}${it.formalParams}" }
             .map { InterfaceMethodTmpl(it).dartMethod() }
 
+        val getters = type.fields
+            .filterGetters()
+            .map { GetterTmpl(it, ext).dartGetter() }
+
+        val setters = type.fields
+            .filterSetters()
+            .map { SetterTmpl(it, ext).dartSetter() }
+
         return tmpl
             .replace("#__current_package__#", currentPackage)
             .replace("#__interface_type__#", className)
             .replace("#__super_mixins__#", superClass.toDartType())
             .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
+            .replaceParagraph("#__getters__#", getters.joinToString("\n"))
+            .replaceParagraph("#__setters__#", setters.joinToString("\n"))
     }
 }

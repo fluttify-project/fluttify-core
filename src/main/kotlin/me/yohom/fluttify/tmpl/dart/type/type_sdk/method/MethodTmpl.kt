@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.method
 
+import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
@@ -24,7 +25,10 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //    return #__return_statement__#;
 //  }
 //}
-class MethodTmpl(private val method: Method) {
+class MethodTmpl(
+    private val method: Method,
+    private val ext: FluttifyExtension
+) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
 
     fun dartMethod(): String {
@@ -88,7 +92,7 @@ class MethodTmpl(private val method: Method) {
             }
 
         resultBuilder.append(
-            "final result = await _channel.invokeMethod('$channelName', $actualParams);\n"
+            "final result = await MethodChannel('${ext.outputOrg}/${ext.outputProjectName}').invokeMethod('$channelName', $actualParams);\n"
         )
         return resultBuilder.toString()
     }
