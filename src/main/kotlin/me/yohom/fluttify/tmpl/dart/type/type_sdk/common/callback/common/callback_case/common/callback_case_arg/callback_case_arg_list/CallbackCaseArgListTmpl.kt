@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callbac
 
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Parameter
+import me.yohom.fluttify.model.Platform
 
 //(args['#__arg_name__#'] as List).cast<int>().map((it) => #__arg_type_name__#()..refId = it).toList()
 class CallbackCaseArgListTmpl(private val param: Parameter) {
@@ -10,6 +11,19 @@ class CallbackCaseArgListTmpl(private val param: Parameter) {
     fun dartCallbackCaseArgList(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
-            .replace("#__arg_type_name__#", param.variable.typeName.toDartType())
+            .replace("#__arg_type_name__#", param
+                .variable
+                .typeName
+                .run { if (param.variable.genericLevel == 0) {
+                    when(param.platform) {
+                        Platform.General -> "Object"
+                        Platform.iOS -> "java_lang_Object"
+                        Platform.Android -> "NSObject"
+                        Platform.Unknown -> "Object"
+                    }
+                } else {
+                    this
+                } }
+                .toDartType())
     }
 }

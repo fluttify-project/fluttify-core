@@ -3,6 +3,7 @@ package me.yohom.fluttify.common.extensions
 import me.yohom.fluttify.androidSearchSDK
 import me.yohom.fluttify.extensions.filterGetters
 import me.yohom.fluttify.extensions.filterMethod
+import me.yohom.fluttify.extensions.isList
 import me.yohom.fluttify.iosSearchSDK
 import org.junit.Test
 
@@ -36,5 +37,17 @@ class ListXKtTest {
 
     @Test
     fun filterSetters() {
+    }
+
+    @Test
+    fun isList() {
+        val result0 = "List".isList()
+        println("List is: $result0")
+        val result1 = "List<Object>".isList()
+        println("List<Object> is: $result1")
+        val result2 = "NSArray".isList()
+        println("NSArray is: $result2")
+        val result3 = "NSArray*".isList()
+        println("NSArray* is: $result3")
     }
 }

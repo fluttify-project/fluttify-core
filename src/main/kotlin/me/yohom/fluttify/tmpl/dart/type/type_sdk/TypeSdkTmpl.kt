@@ -52,11 +52,6 @@ class TypeSdkTmpl(
             ""
         }
 
-        val methodChannel = if (type.isView())
-            "${ext.outputOrg}/${ext.outputProjectName}/${type.name.toUnderscore()}"
-        else
-            "${ext.outputOrg}/${ext.outputProjectName}"
-
         val getters = type.fields
             .filterGetters()
             .map { GetterTmpl(it, ext).dartGetter() }
@@ -74,7 +69,6 @@ class TypeSdkTmpl(
             .replace("#__class_name__#", className)
             .replace("#__super_class__#", superClass)
             .replace("#__mixins__#", mixins)
-            .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__getters__#", getters.joinToString("\n"))
             .replaceParagraph("#__setters__#", setters.joinToString("\n"))
             .replaceParagraph("#__methods__#", methods.joinToString("\n"))

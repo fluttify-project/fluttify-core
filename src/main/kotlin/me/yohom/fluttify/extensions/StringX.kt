@@ -46,7 +46,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
  * 是否是集合类型
  */
 fun TYPE_NAME.isList(): Boolean {
-    return Regex("\\w*List<(\\w*|.*)>").matches(this)
+    return Regex("\\w*List(\\w*|.*)").matches(this)
             || Regex("Iterable<(\\w*|.*)>").matches(this)
             || Regex("Collection<(\\w*|.*)>").matches(this)
             || Regex("NSArray.*\\*?").matches(this)
@@ -194,6 +194,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
         "Map" -> "Map"
         null -> "null"
+        "" -> "Object" // 空字符串认为是Object类型, 当碰到List/NSArray没有指定泛型时
         // 开始objc
         "NSString", "NSString*" -> "String"
         "NSArray<NSString*>", "NSArray<NSString *>", "NSArray<NSString*>*", "NSArray<NSString *> *" -> "List<String>"

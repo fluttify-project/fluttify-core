@@ -1,6 +1,5 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 
-import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
@@ -46,17 +45,13 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
                     .typeName
                     .findType()
                     .methods
-                    .filterMethod()
                     .distinctBy { it.nameWithClass() }
                     .joinToString("\n") {
                         CallbackCaseDelegateTmpl(it, param.variable.name).dartCallbackDelegateCase()
                     }
             }
         val callbackLambdaCases = callbackLambdas
-            .map { CallbackCaseLambdaTmpl(
-                callerMethod,
-                it
-            ).callbackCase() }
+            .map { CallbackCaseLambdaTmpl(callerMethod, it).callbackCase() }
 
         return tmpl
             .replace("#__callback_channel__#", callbackChannel)

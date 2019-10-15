@@ -85,9 +85,14 @@ data class Variable(
             // 结构体指针认为是列表类型
             var type = typeName.toDartType()
             if (isList) {
-                // 根据List嵌套层次生成类型
-                for (i in 0 until genericLevel) {
-                    type = "List<$type>"
+                // 如果是列表, 却没有指定泛型, 那么就认为泛型是Object
+                if (genericLevel == 0) {
+                    type = "List<Object>"
+                } else {
+                    // 根据List嵌套层次生成类型
+                    for (i in 0 until genericLevel) {
+                        type = "List<$type>"
+                    }
                 }
             } else if (isStructPointer()) {
                 type = "List<$type>"

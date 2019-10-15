@@ -62,4 +62,7 @@ open class FluttifyExtension {
                 ?.filter { it.endsWith(".bundle") }
                 ?: listOf()
         }
+
+    val methodChannelName: String
+        get() = "${outputOrg}/${outputProjectName}"
 }

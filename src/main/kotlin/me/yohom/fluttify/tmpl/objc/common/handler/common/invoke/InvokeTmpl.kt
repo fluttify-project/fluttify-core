@@ -21,10 +21,10 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                     typeName.enpointer()
                 } else if (typeName.isObjcPrimitive() || isStruct()) {
                     typeName
+                } else if (isList && genericLevel > 0) {
+                    if (isInterface()) "NSArray<${typeName.enprotocol()}>*" else "NSArray<${typeName}>*"
                 } else if (isInterface()) {
                     typeName.enprotocol()
-                } else if (isList && genericLevel > 0) {
-                    "NSArray<${typeName}>*"
                 } else {
                     "$typeName*"
                 }
