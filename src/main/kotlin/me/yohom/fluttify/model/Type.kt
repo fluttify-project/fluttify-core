@@ -112,7 +112,24 @@ open class Type : IPlatform, IScope {
     fun isLambda(): Boolean = typeType == TypeType.Lambda
 
     fun subtypes(): List<Type> {
-        return SDK.sdks.flatMap { it.libs }.flatMap { it.types }.filter { it.superClass == this.name }
+        return SDK
+            .sdks
+            .flatMap { it.libs }
+            .flatMap { it.types }
+            .filter { it.superClass == name || name in it.interfaces }
+    }
+
+    fun firstConcretSubtype(): Type? {
+        return if (isConcret()){
+            this
+        } else {
+            SDK
+                .sdks
+                .flatMap { it.libs }
+                .flatMap { it.types }
+                .firstOrNull { it.superClass == name || name in it.interfaces }
+                ?.firstConcretSubtype()
+        }
     }
 
     fun constructable(): Boolean {
@@ -139,6 +156,14 @@ open class Type : IPlatform, IScope {
 
     fun isInterface(): Boolean {
         return typeType == TypeType.Interface
+    }
+
+    fun isConcret(): Boolean {
+        return !isAbstract
+    }
+
+    fun hasSubtype(): Boolean {
+        return subtypes().isNotEmpty()
     }
 
     fun isList(): Boolean {

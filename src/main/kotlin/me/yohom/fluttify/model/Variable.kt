@@ -53,6 +53,10 @@ data class Variable(
         return !isAbstract()
     }
 
+    fun hasSubtype(): Boolean {
+        return typeName.findType().hasSubtype()
+    }
+
     fun isRefType(): Boolean {
         return typeName.findType().isRefType()
     }

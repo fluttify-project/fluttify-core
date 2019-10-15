@@ -21,8 +21,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //    });
 /**
  * 回调代码
- *
- * todo 如果回调参数中有抽象类型, 那么sdk中必定有它的子类, 不然native端如何实例化? 所以之类可以直接选一个子类进行refId的保存
  */
 class CallbackMethodTmpl(private val callerMethod: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText()
@@ -50,12 +48,8 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
                     .methods
                     .filterMethod()
                     .distinctBy { it.nameWithClass() }
-                    .filter { it.formalParams.none { it.variable.typeName.findType().isAbstract } }
                     .joinToString("\n") {
-                        CallbackCaseDelegateTmpl(
-                            it,
-                            param.variable.name
-                        ).dartCallbackDelegateCase()
+                        CallbackCaseDelegateTmpl(it, param.variable.name).dartCallbackDelegateCase()
                     }
             }
         val callbackLambdaCases = callbackLambdas

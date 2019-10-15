@@ -7,7 +7,6 @@ import java.io.File
 
 /**
  * 为生成android工程加入目标jar到libs文件夹
- * todo 避免拷贝unzip文件夹 已完成 待测试
  */
 open class AndroidAddDependency : FluttifyTask() {
     @TaskAction

@@ -107,7 +107,7 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isPublic(),
                     "$packageName.${simpleName.replace("$", ".")}",
                     Platform.Android,
-                    ctx.isDeprecated() // todo 测试是否能用, 目前只测试了objc
+                    ctx.isDeprecated()
                 )
             )
         }

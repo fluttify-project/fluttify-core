@@ -28,8 +28,7 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.mustNot("废弃方法") { isDeprecated } }
         // 类似float*返回这样的类型的方法都暂时不处理
         .filter { it.mustNot("返回类型是C类型指针") { returnType.run { contains("*") && depointer().isCType() } } }
-        // 返回值是接口类型的都不处理
-        .filter { it.mustNot("返回类型是接口类型") { returnType.findType().isInterface() } }
+        .filter { it.must("返回类型是具体类型或者含有子类的抽象类") { returnType.findType().run { isConcret() || hasSubtype() } } }
         .filter { it.mustNot("返回类型是混淆类") { returnType.isObfuscated() } }
         .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
@@ -56,7 +55,7 @@ fun List<Field>.filterGetters(): List<Field> {
         .filter { it.mustNot("静态field") { isStatic } }
         .filter { it.variable.must("已知类型") { isKnownType() } }
         .filter { it.variable.must("公开类型") { isPublicType() } }
-        .filter { it.variable.must("具体类型") { isConcret() } }
+        .filter { it.variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasSubtype() } }
         .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
         .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
         .toList()
