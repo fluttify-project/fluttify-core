@@ -146,7 +146,7 @@ class PlatformViewFactoryTmpl(
             .types
             .filter { it.isCallback() }
             .flatMap { it.methods }
-            .distinctBy { "${it.name}${it.formalParams.joinToString()}" }
+            .distinctBy { "${it.name}${it.formalParams}" }
             .joinToString("\n") { CallbackMethodTmpl(it).objcDelegateMethod() }
 
         return listOf(

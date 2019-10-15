@@ -1,7 +1,10 @@
 package me.yohom.fluttify.tmpl.dart.type.type_interface
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.isObfuscated
+import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
 
@@ -31,9 +34,7 @@ class TypeInterfaceTmpl(
         val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
 
         val methods = type.methods
-            .filterMethod()
-            .filter { it.returnType.findType() != Type.UNKNOWN_TYPE }
-            .distinctBy { it.name }
+            .distinctBy { "${it.name}${it.formalParams}" }
             .map { InterfaceMethodTmpl(it).dartMethod() }
 
         return tmpl
