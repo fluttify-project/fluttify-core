@@ -41,7 +41,7 @@ fun List<Method>.filterMethod(): List<Method> {
                     .any { it.findType() == Type.UNKNOWN_TYPE }
             }
         }
-        .distinctBy { it.exactName.replace(":", "") } // 加冒号的只拿来看, 这里判断的时候把冒号们去掉
+        .distinctBy { "${it.className}${it.exactName.replace(":", "")}" } // 加冒号的只拿来看, 这里判断的时候把冒号们去掉
         .filter { println("Method::${it.name}通过Method过滤"); true }
         .toList()
 }

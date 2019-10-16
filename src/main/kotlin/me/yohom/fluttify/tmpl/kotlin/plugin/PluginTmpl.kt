@@ -117,10 +117,6 @@ class PluginTmpl(
             .filter { it.isView() && !it.isObfuscated() }
             .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).kotlinRegisterPlatformView() }
 
-        // 处理方法们 分三种
-        // 1. getter handler
-        // 2. setter handler
-        // 3. 普通方法 handler
         val getterHandlers = lib.types
             .filterType()
             .flatMap { it.fields }
