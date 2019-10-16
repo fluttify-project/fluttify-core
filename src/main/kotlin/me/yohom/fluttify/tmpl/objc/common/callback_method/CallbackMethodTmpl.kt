@@ -1,7 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.callback_method
 
 import me.yohom.fluttify.extensions.enprotocol
-import me.yohom.fluttify.extensions.isList
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Variable
@@ -50,7 +49,6 @@ internal class CallbackMethodTmpl(private val method: Method) {
                 }
             }
         val callback = when {
-            method.formalParams.any { it.variable.typeName.isList() } -> "// 暂不支持含有数组的方法"
             method.returnType == "void" -> CallbackVoidTmpl(method).objcCallbackVoid()
             else -> CallbackReturnTmpl(method).objcCallbackReturn()
         }
