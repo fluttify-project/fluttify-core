@@ -1,0 +1,48 @@
+package me.yohom.fluttify.tmpl.dart.type.type_sdk.method.`return`
+
+import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Method
+
+class ReturnTmpl(
+    private val method: Method,
+    private val ext: FluttifyExtension
+) {
+    private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
+
+    fun dartMethodReturn(): String {
+        return returnString(method.returnType)
+    }
+
+    private fun returnString(returnType: String): String {
+        val resultBuilder = StringBuilder("")
+
+        // 如果返回类型是抽象类, 那么先转换成它的子类
+        var concretType = returnType
+        if (returnType.findType().isAbstract) {
+            concretType = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
+        }
+
+        if (concretType.jsonable() || concretType == "void") {
+            if (concretType.isList()) {
+                resultBuilder.append(
+                    "(result as List).cast<${concretType.genericType().toDartType()}>()"
+                )
+            } else {
+                resultBuilder.append("result")
+            }
+        } else if (concretType.findType().isEnum()) {
+            resultBuilder.append("${concretType.toDartType()}.values[result]")
+        } else {
+            if (concretType.isList()) {
+                resultBuilder.append(
+                    "(result as List).cast<int>().map((it) => ${concretType.genericType().toDartType()}()..refId = it).toList()"
+                )
+            } else {
+                resultBuilder.append("${concretType.toDartType()}()..refId = result")
+            }
+        }
+
+        return resultBuilder.toString()
+    }
+}

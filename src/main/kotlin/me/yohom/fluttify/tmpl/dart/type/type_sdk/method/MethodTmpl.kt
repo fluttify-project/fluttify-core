@@ -1,12 +1,14 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.method
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.model.Parameter
-import me.yohom.fluttify.model.Platform
-import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.`return`.ReturnTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.invoke.InvokeTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.log.LogTmpl
 
 //#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  // 日志打印
@@ -39,14 +41,18 @@ class MethodTmpl(
         val formalParams = method
             .formalParams
             .joinToString { it.variable.toDartString() }
-        val log = if (method.isStatic) {
-            "print('fluttify-dart: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
-        } else {
-            "print('fluttify-dart: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\'${it.variable.name}\\':$${it.variable.name}" }})');"
-        }
-        val invoke = invokeString(method.isStatic, method.nameWithClass(), method.formalParams)
+            .run {
+                // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
+                if (method.className.findType().isView()) {
+                    if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
+                } else {
+                    this
+                }
+            }
+        val log = LogTmpl(method).dartMethodLog()
+        val invoke = InvokeTmpl(method, ext).dartMethodInvoke()
         val callback = CallbackMethodTmpl(method).callback()
-        val returnStatement = returnString(method.returnType)
+        val returnStatement = ReturnTmpl(method, ext).dartMethodReturn()
 
         return tmpl
             .replace("#__static__#", static)
@@ -57,83 +63,5 @@ class MethodTmpl(
             .replaceParagraph("#__invoke__#", invoke)
             .replaceParagraph("#__callback__#", callback)
             .replace("#__return_statement__#", returnStatement)
-    }
-
-    /**
-     * 方法体拼接字符串
-     */
-    private fun invokeString(
-        isStatic: Boolean,
-        channelName: String,
-        params: List<Parameter>
-    ): String {
-        val resultBuilder = StringBuilder("")
-
-        val actualParams = params
-            .filterFormalParams()
-            .toMutableList()
-            .apply {
-                if (!isStatic) add(
-                    Parameter(
-                        variable = Variable("int", "refId", platform = Platform.General),
-                        platform = Platform.General
-                    )
-                )
-            }
-            .map { it.variable }
-            .toDartMap {
-                when {
-                    it.typeName.findType().isEnum() -> "${it.name}.index"
-                    it.typeName.jsonable() -> it.name
-                    (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name}.map((it) => it.refId).toList()"
-                    it.genericLevel > 1 -> "[]" // 多维数组暂不处理
-                    else -> "${it.name}.refId"
-                }
-            }
-
-        val methodChannel = if (method.className.findType().isView()) {
-            "${ext.methodChannelName}/${method.className.toUnderscore()}"
-        } else {
-            ext.methodChannelName
-        }
-        resultBuilder.append(
-            "final result = await MethodChannel('$methodChannel').invokeMethod('$channelName', $actualParams);\n"
-        )
-        return resultBuilder.toString()
-    }
-
-    /**
-     * 返回值拼接字符串
-     */
-    private fun returnString(returnType: String): String {
-        val resultBuilder = StringBuilder("")
-
-        // 如果返回类型是抽象类, 那么先转换成它的子类
-        var concretType = returnType
-        if (returnType.findType().isAbstract) {
-            concretType = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
-        }
-
-        if (concretType.jsonable() || concretType == "void") {
-            if (concretType.isList()) {
-                resultBuilder.append(
-                    "(result as List).cast<${concretType.genericType().toDartType()}>()"
-                )
-            } else {
-                resultBuilder.append("result")
-            }
-        } else if (concretType.findType().isEnum()) {
-            resultBuilder.append("${concretType.toDartType()}.values[result]")
-        } else {
-            if (concretType.isList()) {
-                resultBuilder.append(
-                    "(result as List).cast<int>().map((it) => ${concretType.genericType().toDartType()}()..refId = it).toList()"
-                )
-            } else {
-                resultBuilder.append("${concretType.toDartType()}()..refId = result")
-            }
-        }
-
-        return resultBuilder.toString()
     }
 }
