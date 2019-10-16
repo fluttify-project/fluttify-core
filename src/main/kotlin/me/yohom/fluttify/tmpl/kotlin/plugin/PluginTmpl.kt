@@ -112,12 +112,10 @@ class PluginTmpl(
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
 
         // 注册PlatformView
-        val registerPlatformViews = lib.types
+        val registerPlatformViews = lib
+            .types
             .filter { it.isView() && !it.isObfuscated() }
-            .joinToString("\n") { RegisterPlatformViewTmpl(
-                it,
-                ext
-            ).kotlinRegisterPlatformView() }
+            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).kotlinRegisterPlatformView() }
 
         // 处理方法们 分三种
         // 1. getter handler
