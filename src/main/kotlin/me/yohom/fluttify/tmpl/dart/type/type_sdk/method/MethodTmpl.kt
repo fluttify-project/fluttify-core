@@ -91,8 +91,13 @@ class MethodTmpl(
                 }
             }
 
+        val methodChannel = if (method.className.findType().isView()) {
+            "${ext.methodChannelName}/${method.className.toUnderscore()}"
+        } else {
+            ext.methodChannelName
+        }
         resultBuilder.append(
-            "final result = await MethodChannel('${ext.methodChannelName}').invokeMethod('$channelName', $actualParams);\n"
+            "final result = await MethodChannel('$methodChannel').invokeMethod('$channelName', $actualParams);\n"
         )
         return resultBuilder.toString()
     }

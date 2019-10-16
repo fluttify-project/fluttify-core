@@ -4,6 +4,7 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.simpleName
+import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethodTmpl
 
@@ -57,7 +58,7 @@ class PlatformViewFactoryTmpl(
         val factoryName= viewType.name.simpleName()
         val handlers = viewType.methods.filterMethod().joinToString("\n,") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
         val nativeView = viewType.name
-        val methodChannel = ext.methodChannelName
+        val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
         return tmpl
             .replace("#__package_name__#", packageName)

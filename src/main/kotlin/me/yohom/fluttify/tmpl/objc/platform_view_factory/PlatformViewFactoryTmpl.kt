@@ -121,10 +121,6 @@ class PlatformViewFactoryTmpl(
             .joinToString(", ")
 
         val plugin = ext.outputProjectName.underscore2Camel()
-        // 处理方法们 分三种
-        // 1. getter handler
-        // 2. setter handler
-        // 3. 普通方法 handler
         val getterHandlers = viewType
             .fields
             .filterGetters()
@@ -140,7 +136,7 @@ class PlatformViewFactoryTmpl(
             .filterMethod()
             .map { HandlerMethodTmpl(it).objcHandlerMethod() }
 
-        val methodChannel = ext.methodChannelName
+        val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
         val delegateMethods = lib
             .types

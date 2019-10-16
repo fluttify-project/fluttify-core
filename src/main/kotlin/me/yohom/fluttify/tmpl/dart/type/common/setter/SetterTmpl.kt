@@ -1,9 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.common.setter
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.jsonable
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
 
@@ -33,7 +31,11 @@ class SetterTmpl(
                 result
             }
             val name = name.toDartType()
-            val methodChannel = ext.methodChannelName
+            val methodChannel = if (field.className.findType().isView()) {
+                "${ext.methodChannelName}/${field.className.toUnderscore()}"
+            } else {
+                ext.methodChannelName
+            }
             val argValue = name.depointer().run {
                 when {
                     isEnum() -> "${name}.index"
