@@ -15,6 +15,7 @@ class CallbackCaseArgListTmpl(private val param: Parameter) {
                 .variable
                 .typeName
                 .run { if (param.variable.genericLevel == 0) {
+                    // 是列表, 却没有指定泛型, 那么指定泛型为各自平台的Object类
                     when(param.platform) {
                         Platform.General -> "Object"
                         Platform.iOS -> "java_lang_Object"

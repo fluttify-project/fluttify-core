@@ -33,7 +33,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
                 val androidViewFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/platformview/${it.name.simpleName()}.dart"
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/platformview/${it.name.simpleName()}.g.dart"
 
                 androidViewFile.file().writeText(dartAndroidView)
             }
@@ -56,7 +56,7 @@ open class AndroidDartInterface : FluttifyTask() {
                         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.replace(
                             ".",
                             "/"
-                        )}.dart"
+                        )}.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }
@@ -64,7 +64,7 @@ open class AndroidDartInterface : FluttifyTask() {
 
         // 在Ref类中为每个类生成类型检查和转型方法
         TypeRefTmpl(sdk, ext).dartRefClass().run {
-            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/ref.dart".file()
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/ref.g.dart".file()
                 .writeText(this)
         }
     }
@@ -89,7 +89,7 @@ open class IOSDartInterface : FluttifyTask() {
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it, ext).dartUiKitView()
                 val uiKitViewFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/platformview/${it.name.simpleName()}.dart"
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/platformview/${it.name.simpleName()}.g.dart"
 
                 uiKitViewFile.file().writeText(dartUiKitView)
             }
@@ -101,15 +101,9 @@ open class IOSDartInterface : FluttifyTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(
-                        it,
-                        ext
-                    ).dartClass()
+                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it, ext).dartClass()
                     TypeType.Enum -> EnumerationTmpl(it).dartEnum()
-                    TypeType.Interface -> TypeInterfaceTmpl(
-                        it,
-                        ext
-                    ).dartInterface()
+                    TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
                     null -> ""
                 }
@@ -119,7 +113,7 @@ open class IOSDartInterface : FluttifyTask() {
                         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/${it.name.replace(
                             ".",
                             "/"
-                        )}.dart"
+                        )}.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }
@@ -127,7 +121,7 @@ open class IOSDartInterface : FluttifyTask() {
 
         // 在Ref类中为每个类生成类型检查和转型方法
         TypeRefTmpl(sdk, ext).dartRefClass().run {
-            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ref.dart".file()
+            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ref.g.dart".file()
                 .writeText(this)
         }
     }

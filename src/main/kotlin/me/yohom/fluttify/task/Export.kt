@@ -10,8 +10,8 @@ import org.gradle.api.tasks.TaskAction
 open class Export : FluttifyTask() {
 //    @OutputFiles
 //    val exportFiles = listOf(
-//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/android.export.dart".file(),
-//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ios.export.dart".file()
+//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/android.export.g.dart".file(),
+//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ios.export.g.dart".file()
 //    )
 
     @TaskAction
@@ -19,8 +19,8 @@ open class Export : FluttifyTask() {
         val androidDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file()
         val iosDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file()
 
-        val androidExportFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/android.export.dart".file()
-        val iosExportFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ios.export.dart".file()
+        val androidExportFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/android.export.g.dart".file()
+        val iosExportFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ios.export.g.dart".file()
 
         val androidResult = StringBuilder()
         val iosResult = StringBuilder()
@@ -34,8 +34,8 @@ open class Export : FluttifyTask() {
             if (relativePath.isNotBlank()) iosResult.appendln("export '${relativePath}';")
         }
 
-        androidResult.appendln("export '../utils.dart';")
-        iosResult.appendln("export '../utils.dart';")
+        androidResult.appendln("export '../utils.g.dart';")
+        iosResult.appendln("export '../utils.g.dart';")
 
         androidExportFile.writeText(androidResult.toString())
         iosExportFile.writeText(iosResult.toString())

@@ -29,7 +29,7 @@ open class TweakDefaultProject : FluttifyTask() {
             .file()
             .writeText(podSpecTmpl.replace("#__project_name__#", ext.outputProjectName))
 
-        "${outputProjectPath}/lib/src/utils.dart"
+        "${outputProjectPath}/lib/src/utils.g.dart"
             .file()
             .writeText(utilsDartTmpl.replace("#__current_package__#", ext.outputProjectName))
     }

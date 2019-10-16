@@ -11,7 +11,7 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 
 //import 'package:flutter/services.dart';
 //
-//import 'package:#__current_package__#/src/android/android.export.dart';
+//import 'package:#__current_package__#/src/android/android.export.g.dart';
 //
 //// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //class ObjectFactory_Android {
@@ -88,7 +88,7 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //
 //import 'package:flutter/services.dart';
 //
-//import 'package:#__current_package__#/src/ios/ios.export.dart';
+//import 'package:#__current_package__#/src/ios/ios.export.g.dart';
 //
 //// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //class ObjectFactory_iOS {

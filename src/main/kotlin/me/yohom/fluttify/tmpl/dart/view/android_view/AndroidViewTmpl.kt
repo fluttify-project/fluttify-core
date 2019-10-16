@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Type
 //import 'dart:convert';
 //import 'dart:typed_data';
 //
-//import 'package:#__current_package__#/src/android/android.export.dart';
+//import 'package:#__current_package__#/src/android/android.export.g.dart';
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/gestures.dart';
 //import 'package:flutter/material.dart';
