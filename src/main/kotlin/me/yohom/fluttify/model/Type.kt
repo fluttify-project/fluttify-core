@@ -116,7 +116,7 @@ open class Type : IPlatform, IScope {
             .sdks
             .flatMap { it.libs }
             .flatMap { it.types }
-            .filter { it.superClass == name || name in it.interfaces }
+            .filter { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated()}
     }
 
     fun firstConcretSubtype(): Type? {
@@ -127,7 +127,7 @@ open class Type : IPlatform, IScope {
                 .sdks
                 .flatMap { it.libs }
                 .flatMap { it.types }
-                .firstOrNull { it.superClass == name || name in it.interfaces }
+                .firstOrNull { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
                 ?.firstConcretSubtype()
         }
     }

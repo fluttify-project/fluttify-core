@@ -3,7 +3,6 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callbac
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_enum.CallbackCaseArgEnumTmpl
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_interface.CallbackCaseArgInterfaceTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_jsonable.CallbackCaseArgJsonableTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_list.CallbackCaseArgListTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_ref.CallbackCaseArgRefTmpl
@@ -37,7 +36,6 @@ class CallbackCaseDelegateTmpl(
                 when {
                     it.variable.jsonable() -> CallbackCaseArgJsonableTmpl(it).dartCallbackCaseArgJsonable()
                     it.variable.isList -> CallbackCaseArgListTmpl(it).dartCallbackCaseArgList()
-                    it.variable.isInterface() -> CallbackCaseArgInterfaceTmpl(it).dartCallbackCaseArgInterface()
                     it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it).dartCallbackCaseArgEnum()
                     else -> CallbackCaseArgRefTmpl(it).dartCallbackCaseArgRef()
                 }

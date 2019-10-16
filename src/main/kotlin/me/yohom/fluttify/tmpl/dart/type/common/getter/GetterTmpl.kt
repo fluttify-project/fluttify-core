@@ -1,7 +1,9 @@
 package me.yohom.fluttify.tmpl.dart.type.common.getter
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.isVoid
+import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
@@ -24,11 +26,7 @@ class GetterTmpl(
             result
         }
         val name = field.variable.name.depointer()
-        val methodChannel = if (field.className.findType().isView()) {
-            "${ext.methodChannelName}/${field.className.toUnderscore()}"
-        } else {
-            ext.methodChannelName
-        }
+        val methodChannel = ext.methodChannelName
         val getter = field.getterMethodName()
         val result = when {
             field.variable.jsonable() -> ResultJsonableTmpl().dartResultJsonable()

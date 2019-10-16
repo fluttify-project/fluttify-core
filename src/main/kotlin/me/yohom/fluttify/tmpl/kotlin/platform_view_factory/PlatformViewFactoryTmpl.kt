@@ -4,7 +4,6 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.simpleName
-import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethodTmpl
 
@@ -54,19 +53,17 @@ class PlatformViewFactoryTmpl(
         this::class.java.getResource("/tmpl/kotlin/platform_view_factory.kt.tmpl").readText()
 
     fun kotlinPlatformViewFactory(): String {
+        val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
+        val factoryName= viewType.name.simpleName()
+        val handlers = viewType.methods.filterMethod().joinToString("\n,") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
+        val nativeView = viewType.name
+        val methodChannel = ext.methodChannelName
+
         return tmpl
-            .replace("#__package_name__#", "${ext.outputOrg}.${ext.outputProjectName}")
-            .replace("#__factory_name__#", viewType.name.simpleName())
-            .replaceParagraph(
-                "#__handlers__#",
-                viewType.methods.filterMethod().joinToString("\n,") { HandlerMethodTmpl(
-                    it
-                ).kotlinHandlerMethod() }
-            )
-            .replace("#__native_view__#", viewType.name)
-            .replace(
-                "#__method_channel__#",
-                "${ext.outputOrg}/${ext.outputProjectName}/${viewType.name.toUnderscore()}"
-            )
+            .replace("#__package_name__#", packageName)
+            .replace("#__factory_name__#", factoryName)
+            .replaceParagraph("#__handlers__#", handlers)
+            .replace("#__native_view__#", nativeView)
+            .replace("#__method_channel__#", methodChannel)
     }
 }

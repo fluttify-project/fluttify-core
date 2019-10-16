@@ -38,7 +38,7 @@ class TypeInterfaceTmpl(
         val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
 
         val methods = type.methods
-            .distinctBy { "${it.name}${it.formalParams}" }
+            .filterMethod()
             .map { InterfaceMethodTmpl(it).dartMethod() }
 
         val getters = type.fields

@@ -140,7 +140,7 @@ class PlatformViewFactoryTmpl(
             .filterMethod()
             .map { HandlerMethodTmpl(it).objcHandlerMethod() }
 
-        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}/${viewType.name}"
+        val methodChannel = ext.methodChannelName
 
         val delegateMethods = lib
             .types

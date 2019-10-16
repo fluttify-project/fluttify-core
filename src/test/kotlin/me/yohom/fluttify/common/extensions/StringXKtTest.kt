@@ -1,9 +1,6 @@
 package me.yohom.fluttify.common.extensions
 
-import me.yohom.fluttify.extensions.camel2Underscore
-import me.yohom.fluttify.extensions.genericLevel
-import me.yohom.fluttify.extensions.genericType
-import me.yohom.fluttify.extensions.replaceBatch
+import me.yohom.fluttify.extensions.*
 import org.junit.Assert
 import org.junit.Test
 
@@ -58,6 +55,11 @@ class StringXKtTest {
     @Test
     fun interfaces() {
         println("List<Abc>".genericType())
+    }
+
+    @Test
+    fun isObfuscated() {
+        println("com.amap.api.mapcore.util.el".isObfuscated())
     }
 
 }

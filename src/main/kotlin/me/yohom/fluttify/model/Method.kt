@@ -39,6 +39,9 @@ data class Method(
      */
     var isDeprecated: Boolean = false
 ) : IPlatform, IScope {
+
+    val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
+
     @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("methodName"))
     fun handleMethodName(): String {
         return "handle${className.toDartType()}_$name"
@@ -49,6 +52,6 @@ data class Method(
     }
 
     override fun toString(): String {
-        return "Method(returnType='$returnType', name='$name', formalParams=$formalParams, isStatic=$isStatic, isAbstract=$isAbstract, isPublic=$isPublic, className='$className')"
+        return "Method(returnType='$returnType', name='$name', formalParams=$formalParams, isStatic=$isStatic, isAbstract=$isAbstract, isPublic=$isPublic, className='$className', platform=$platform, isDeprecated=$isDeprecated)"
     }
 }

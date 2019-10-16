@@ -34,7 +34,7 @@ class MethodTmpl(
     fun dartMethod(): String {
         val static = if (method.isStatic) "static " else ""
         val returnType = method.returnType.toDartType()
-        val name = method.name
+        val name = method.name + method.formalParams.joinToString("") { it.named }.capitalize()
         // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
         val formalParams = method
             .formalParams
@@ -91,13 +91,8 @@ class MethodTmpl(
                 }
             }
 
-        val methodChannel = if (method.className.findType().isView()) {
-            "${ext.methodChannelName}/${method.className.toUnderscore()}"
-        } else {
-            ext.methodChannelName
-        }
         resultBuilder.append(
-            "final result = await MethodChannel('$methodChannel').invokeMethod('$channelName', $actualParams);\n"
+            "final result = await MethodChannel('${ext.methodChannelName}').invokeMethod('$channelName', $actualParams);\n"
         )
         return resultBuilder.toString()
     }
@@ -108,23 +103,29 @@ class MethodTmpl(
     private fun returnString(returnType: String): String {
         val resultBuilder = StringBuilder("")
 
-        if (returnType.jsonable() || returnType == "void") {
-            if (returnType.isList()) {
+        // 如果返回类型是抽象类, 那么先转换成它的子类
+        var concretType = returnType
+        if (returnType.findType().isAbstract) {
+            concretType = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
+        }
+
+        if (concretType.jsonable() || concretType == "void") {
+            if (concretType.isList()) {
                 resultBuilder.append(
-                    "(result as List).cast<${returnType.genericType().toDartType()}>()"
+                    "(result as List).cast<${concretType.genericType().toDartType()}>()"
                 )
             } else {
                 resultBuilder.append("result")
             }
-        } else if (returnType.findType().isEnum()) {
-            resultBuilder.append("${returnType.toDartType()}.values[result]")
+        } else if (concretType.findType().isEnum()) {
+            resultBuilder.append("${concretType.toDartType()}.values[result]")
         } else {
-            if (returnType.isList()) {
+            if (concretType.isList()) {
                 resultBuilder.append(
-                    "(result as List).cast<int>().map((it) => ${returnType.genericType().toDartType()}()..refId = it).toList()"
+                    "(result as List).cast<int>().map((it) => ${concretType.genericType().toDartType()}()..refId = it).toList()"
                 )
             } else {
-                resultBuilder.append("${returnType.toDartType()}()..refId = result")
+                resultBuilder.append("${concretType.toDartType()}()..refId = result")
             }
         }
 

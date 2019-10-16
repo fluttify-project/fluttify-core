@@ -46,7 +46,7 @@ fun TYPE_NAME?.jsonable(): Boolean {
  * 是否是集合类型
  */
 fun TYPE_NAME.isList(): Boolean {
-    return Regex("\\w*List(\\w*|.*)").matches(this)
+    return Regex("\\w*List<(\\w*|.*)>").matches(this)
             || Regex("Iterable<(\\w*|.*)>").matches(this)
             || Regex("Collection<(\\w*|.*)>").matches(this)
             || Regex("NSArray.*\\*?").matches(this)

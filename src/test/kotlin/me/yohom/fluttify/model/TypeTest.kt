@@ -1,7 +1,7 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.androidMapSDK
 import me.yohom.fluttify.androidSearchSDK
-import me.yohom.fluttify.iosMapSDK
 import org.junit.Test
 
 class TypeTest {
@@ -29,10 +29,19 @@ class TypeTest {
 
     @Test
     fun firstConcretSubtype() {
-        iosMapSDK
-            .libs[1]
+//        iosMapSDK
+//            .libs[1]
+//            .types
+//            .find { it.name == "MAAnnotation" }
+//            ?.firstConcretSubtype()
+//            ?.run {
+//                println("结果: $this")
+//            }
+        androidMapSDK
+            .libs[2]
             .types
-            .find { it.name == "MAAnnotation" }
+//            .find { it.name == "com.amap.api.maps.model.TileProvider" }
+            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
             ?.firstConcretSubtype()
             ?.run {
                 println("结果: $this")
