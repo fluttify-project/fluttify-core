@@ -2,13 +2,13 @@ package me.yohom.fluttify.tmpl.dart.object_factory
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.filterConstructable
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 
+//import 'dart:typed_data';
+//
 //import 'package:flutter/services.dart';
 //
 //import 'package:#__current_package__#/src/android/android.export.g.dart';
@@ -35,12 +35,26 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //    return android_os_Bundle()..refId = refId;
 //  }
 //
+//  static Future<android_graphics_Bitmap> createandroid_graphics_Bitmap(Uint8List bitmapBytes) async {
+//    final refId =
+//        await _channel.invokeMethod('ObjectFactory::createandroid_graphics_Bitmap', {'bitmapBytes': bitmapBytes});
+//    return android_graphics_Bitmap()..refId = refId;
+//  }
+//
 //  static Future<void> release(Ref_Android ref) async {
 //    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
 //  }
 //
 //  static Future<void> clearHeap() async {
 //    await _channel.invokeMethod('ObjectFactory::clearHeap');
+//  }
+//
+//  static Future<void> pushStack(String name, Ref_Android ref) async {
+//    await _channel.invokeMethod('ObjectFactory::pushStack', {'name': name, 'refId': ref.refId});
+//  }
+//
+//  static Future<void> clearStack() async {
+//    await _channel.invokeMethod('ObjectFactory::clearStack');
 //  }
 //
 //  #__create_objects__#
@@ -86,6 +100,8 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //
 //
 //
+//import 'dart:typed_data';
+//
 //import 'package:flutter/services.dart';
 //
 //import 'package:#__current_package__#/src/ios/ios.export.g.dart';
@@ -99,12 +115,26 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //    return CLLocationCoordinate2D()..refId = refId;
 //  }
 //
+//  static Future<UIImage> createUIImage(Uint8List bitmapBytes) async {
+//    final refId =
+//        await _channel.invokeMethod('ObjectFactory::createUIImage', {'bitmapBytes': bitmapBytes});
+//    return UIImage()..refId = refId;
+//  }
+//
 //  static Future<void> release(Ref_iOS ref) async {
 //    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
 //  }
 //
 //  static Future<void> clearHeap() async {
 //    await _channel.invokeMethod('ObjectFactory::clearHeap');
+//  }
+//
+//  static Future<void> pushStack(String name, Ref_iOS ref) async {
+//    await _channel.invokeMethod('ObjectFactory::pushStack', {'name': name, 'refId': ref.refId});
+//  }
+//
+//  static Future<void> clearStack() async {
+//    await _channel.invokeMethod('ObjectFactory::clearStack');
 //  }
 //
 //  #__create_objects__#
@@ -121,20 +151,22 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //
 //class CGPoint extends Ref_iOS {}
 //
+//class UIEdgeInsets extends Ref_iOS {}
+//
 //// 类
-//class CLLocationManager extends Ref_iOS {}
+//class CLLocationManager extends NSObject {}
 //
-//class NSError extends Ref_iOS {}
+//class NSError extends NSObject {}
 //
-//mixin NSCoding on Ref_iOS {}
+//mixin NSCoding on NSObject {}
 //
-//mixin NSCopying on Ref_iOS {}
+//mixin NSCopying on NSObject {}
 //
-//class UIView extends Ref_iOS {}
+//class UIView extends NSObject {}
 //
-//class UIControl extends UIView {}
+//class UIControl extends NSObject {}
 //
-////#__interface_refs__#
+//class UIImage extends NSObject {}
 class ObjectFactoryTmpl(
     val libs: List<Lib>,
     val ext: FluttifyExtension,
@@ -158,24 +190,5 @@ class ObjectFactoryTmpl(
                 .filterConstructable()
                 .distinctBy { it.name }
                 .joinToString("\n") { CreateObjectTmpl(it).dartCreateObject().joinToString("\n") })
-            .replaceParagraph("#__interface_refs__#", libs
-                .flatMap { it.types }
-                .filter { it.isInterface() }
-                .joinToString("\n") {
-                    // todo 目前只展开了两层, 之后用递归实现
-                    val interfaces = it
-                        .interfaces
-                        .union(it.interfaces.flatMap { it.findType().interfaces })
-                        .reversed()
-                        .union(listOf(it.name))
-                        .filter { it != "NSObject" }
-                    val rootClass = when (it.platform) {
-                        Platform.General -> "Object"
-                        Platform.iOS -> "NSObject"
-                        Platform.Android -> "java_lang_Object"
-                        Platform.Unknown -> "Object"
-                    }
-                    "class ${it.name.toUnderscore()}_Ref = $rootClass with ${interfaces.joinToString { it.toUnderscore() }};"
-                })
     }
 }
