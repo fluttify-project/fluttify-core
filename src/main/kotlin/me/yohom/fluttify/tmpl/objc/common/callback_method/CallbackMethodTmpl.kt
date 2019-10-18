@@ -40,13 +40,14 @@ internal class CallbackMethodTmpl(private val method: Method) {
             // 只有没有返回值的方法需要设置, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
             method
                 .formalParams
+                .map { it.variable }
                 .joinToString("\n") {
                     when {
-                        it.variable.isCType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
-                        it.variable.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
-                        it.variable.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
-                        it.variable.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
-                        it.variable.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()
+                        it.isCType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
+                        it.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
+                        it.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
+                        it.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
+                        it.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()
                         else -> CallbackArgRefTmpl(it).objcCallbackArgRef()
                     }
                 }
