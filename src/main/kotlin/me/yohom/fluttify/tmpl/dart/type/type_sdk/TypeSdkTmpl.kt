@@ -2,7 +2,6 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
@@ -35,11 +34,7 @@ class TypeSdkTmpl(
         val currentPackage = ext.outputProjectName
         val className = type.name.toDartType()
         val superClass = if (type.superClass.isEmpty())
-            when (type.platform) {
-                Platform.Android -> "java_lang_Object"
-                Platform.iOS -> "NSObject"
-                else -> "Object"
-            }
+            type.platform.objectType()
         else
             type.superClass.toDartType()
 

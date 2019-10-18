@@ -36,18 +36,23 @@ internal class CallbackMethodTmpl(private val method: Method) {
         val methodChannel = "${method.className}::Callback"
         val formalParams =
             " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.paramType()})${it.variable.name}" }}"
-        val localArgs = method
-            .formalParams
-            .joinToString("\n") {
-                when {
-                    it.variable.isCType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
-                    it.variable.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
-                    it.variable.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
-                    it.variable.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
-                    it.variable.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()
-                    else -> CallbackArgRefTmpl(it).objcCallbackArgRef()
+        val localArgs = if (method.returnType == "void") {
+            // 只有没有返回值的方法需要设置, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
+            method
+                .formalParams
+                .joinToString("\n") {
+                    when {
+                        it.variable.isCType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
+                        it.variable.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
+                        it.variable.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
+                        it.variable.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
+                        it.variable.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()
+                        else -> CallbackArgRefTmpl(it).objcCallbackArgRef()
+                    }
                 }
-            }
+        } else {
+            ""
+        }
         val callback = when {
             method.returnType == "void" -> CallbackVoidTmpl(method).objcCallbackVoid()
             else -> CallbackReturnTmpl(method).objcCallbackReturn()

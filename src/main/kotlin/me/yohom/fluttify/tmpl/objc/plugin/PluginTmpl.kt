@@ -140,10 +140,6 @@ class PluginTmpl(
                 RegisterPlatformViewTmpl(it, ext).objcRegisterPlatformView()
             }
 
-        // 处理方法们 分三种
-        // 1. getter handler
-        // 2. setter handler
-        // 3. 普通方法 handler
         val getterHandlers = libs
             .flatMap { it.types }
             .filterType()

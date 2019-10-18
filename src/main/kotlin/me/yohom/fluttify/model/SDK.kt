@@ -102,5 +102,14 @@ class Lib {
 }
 
 enum class Platform {
-    General, iOS, Android, Unknown
+    General, iOS, Android, Unknown;
+
+    fun objectType(): String {
+        return when (this) {
+            General -> "Object"
+            iOS -> "NSObject"
+            Android -> "java_lang_Object"
+            Unknown -> "Object"
+        }
+    }
 }

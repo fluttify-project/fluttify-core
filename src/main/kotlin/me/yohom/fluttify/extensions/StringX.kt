@@ -77,7 +77,16 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    return SDK.findType((depointer().deprotocol().let { if (it.isList()) it.genericType() else it })/* .apply { println("查找:$this") } */)
+    val type = depointer()
+        .deprotocol()
+        .let {
+            if (it.isList()) {
+                if (it.genericLevel() != 0) it.genericType() else ""
+            } else {
+                it
+            }
+        }
+    return SDK.findType(type)
 }
 
 /**
@@ -194,7 +203,6 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
         "Map" -> "Map"
         null -> "null"
-        "" -> "Object" // 空字符串认为是Object类型, 当碰到List/NSArray没有指定泛型时
         // 开始objc
         "NSString", "NSString*" -> "String"
         "NSArray<NSString*>", "NSArray<NSString *>", "NSArray<NSString*>*", "NSArray<NSString *> *" -> "List<String>"

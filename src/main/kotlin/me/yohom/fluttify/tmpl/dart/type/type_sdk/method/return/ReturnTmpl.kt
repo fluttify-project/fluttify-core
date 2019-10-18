@@ -25,9 +25,12 @@ class ReturnTmpl(
 
         if (concretType.jsonable() || concretType == "void") {
             if (concretType.isList()) {
-                resultBuilder.append(
-                    "(result as List).cast<${concretType.genericType().toDartType()}>()"
-                )
+                val type = if (concretType.genericLevel() != 0) {
+                    concretType.genericType().toDartType()
+                } else {
+                    method.platform.objectType()
+                }
+                resultBuilder.append("(result as List).cast<${type}>()")
             } else {
                 resultBuilder.append("result")
             }
@@ -35,9 +38,13 @@ class ReturnTmpl(
             resultBuilder.append("${concretType.toDartType()}.values[result]")
         } else {
             if (concretType.isList()) {
-                resultBuilder.append(
-                    "(result as List).cast<int>().map((it) => ${concretType.genericType().toDartType()}()..refId = it).toList()"
-                )
+                val type = if (concretType.genericLevel() != 0) {
+                    concretType.genericType().toDartType()
+                } else {
+                    method.platform.objectType()
+                }
+
+                resultBuilder.append("(result as List).cast<int>().map((it) => $type()..refId = it).toList()")
             } else {
                 resultBuilder.append("${concretType.toDartType()}()..refId = result")
             }
