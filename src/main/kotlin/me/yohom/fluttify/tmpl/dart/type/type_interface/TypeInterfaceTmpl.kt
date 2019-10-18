@@ -39,7 +39,7 @@ class TypeInterfaceTmpl(
 
         val methods = type.methods
             .filterMethod()
-            .map { InterfaceMethodTmpl(it).dartMethod() }
+            .map { InterfaceMethodTmpl(it).dartInterfaceMethod() }
 
         val getters = type.fields
             .filterGetters()
