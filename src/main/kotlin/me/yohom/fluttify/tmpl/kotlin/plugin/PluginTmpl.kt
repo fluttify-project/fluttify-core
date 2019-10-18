@@ -22,7 +22,7 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //import io.flutter.plugin.common.PluginRegistry.Registrar
 //
 //// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
-//val STACK = mutableMapOf<Int, Any>()
+//val STACK = mutableMapOf<String, Int>()
 //// Dart端随机存取对象的容器
 //val HEAP = mutableMapOf<Int, Any>()
 //
@@ -70,7 +70,7 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //            }
 //            // 释放一个对象
 //            "ObjectFactory::release" -> {
-//                Log.d("ObjectFactory", "释放对象: ${args["refId"]}")
+//                Log.d("ObjectFactory", "释放对象: ${HEAP[args["refId"] as Int]?.javaClass}@${args["refId"]}")
 //
 //                HEAP.remove(args["refId"] as Int)
 //
@@ -88,6 +88,29 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //
 //                // 打印当前HEAP
 //                Log.d("ObjectFactory", "HEAP: $HEAP")
+//            }
+//            // 压入栈
+//            "ObjectFactory::pushStack" -> {
+//                val name = args["name"] as String
+//                val refId = args["refId"] as Int
+//
+//                Log.d("ObjectFactory", "压入对象: ${HEAP[refId]?.javaClass}@${refId}")
+//
+//                STACK[name] = refId
+//
+//                methodResult.success("success")
+//
+//                // 打印当前STACK
+//                Log.d("ObjectFactory", "STACK: $STACK")
+//            }
+//            // 清空栈
+//            "ObjectFactory::clearStack" -> {
+//                STACK.clear()
+//
+//                methodResult.success("success")
+//
+//                // 打印当前STACK
+//                Log.d("ObjectFactory", "STACK: $STACK")
 //            }
 //            else -> {
 //                handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()

@@ -7,7 +7,7 @@
 typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 
 // Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
-NSMutableDictionary<NSString*, NSNumber*>* STACK;
+NSMutableDictionary<NSString*, NSObject*>* STACK;
 // Dart端随机存取对象的容器
 NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
 
@@ -75,9 +75,23 @@ NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
     NSNumber* refId = (NSNumber*) args[@"refId"];
 
     // todo release去掉日志
-    NSLog(@"ObjectFactory::压入栈 %@@%@", HEAP[refId], refId);
+    NSLog(@"ObjectFactory::压入栈 %@@%@", NSStringFromClass([HEAP[refId] class]), refId);
 
-    STACK[name] = refId;
+    STACK[name] = HEAP[refId];
+
+    methodResult(@"success");
+
+    NSLog(@"STACK: %@", STACK);
+  }
+  // 压入栈 jsonable
+  else if ([@"ObjectFactory::pushStackJsonable" isEqualToString:methodCall.method]) {
+    NSString* name = (NSString*) args[@"name"];
+    NSObject* data = (NSObject*) args[@"data"];
+
+    // todo release去掉日志
+    NSLog(@"ObjectFactory::压入栈 %@", data);
+
+    STACK[name] = data;
 
     methodResult(@"success");
 
