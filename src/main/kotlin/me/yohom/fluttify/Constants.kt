@@ -22,6 +22,7 @@ val IGNORE_METHOD = listOf(
 
 val SYSTEM_TYPEDEF = mapOf(
     "CLLocationDirection" to "double",
+    "CLLocationDistance" to "double",
     "CFTimeInterval" to "double"
 )
 
