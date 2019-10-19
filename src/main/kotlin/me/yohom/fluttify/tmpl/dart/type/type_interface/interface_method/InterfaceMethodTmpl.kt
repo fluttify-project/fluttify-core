@@ -24,9 +24,9 @@ class InterfaceMethodTmpl(private val method: Method) {
                 .filter { it.variable.run { !jsonable() && !isEnum() } }
                 .joinToString("\n") {
                     if (it.variable.isList)
-                        "kCallbackPool.addAll(Map.fromIterable(${it.variable.name}, key: (it) => it.refId, value: (it) => it));"
+                        "kNativeObjectPool.addAll(Map.fromIterable(${it.variable.name}, key: (it) => it.refId, value: (it) => it));"
                     else
-                        "kCallbackPool[${it.variable.name}.refId] = ${it.variable.name};"
+                        "kNativeObjectPool[${it.variable.name}.refId] = ${it.variable.name};"
                 }
         } else {
             ""
