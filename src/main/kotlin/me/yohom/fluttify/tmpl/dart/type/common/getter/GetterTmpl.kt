@@ -7,6 +7,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //Future<#__type__#> get_#__name__#(#__view_channel__#) async {
 //  final result = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#", {'refId': refId});
+//  #__native_object_pool__#
 //  return #__result__#;
 //}
 class GetterTmpl(
@@ -43,6 +44,13 @@ class GetterTmpl(
             field.variable.typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
             else -> ResultRefTmpl(field.variable.typeName).dartResultRef()
         }
+        val nativeObjectPool = field.variable.run {
+            when {
+                jsonable() or isEnum() -> ""
+                isList -> "kNativeObjectPool.addAll($result);"
+                else -> "kNativeObjectPool.add($result);"
+            }
+        }
 
         return field.variable.run {
             tmpl
@@ -51,6 +59,7 @@ class GetterTmpl(
                 .replace("#__view_channel__#", viewChannel)
                 .replace("#__method_channel__#", methodChannel)
                 .replace("#__getter_method__#", getter)
+                .replace("#__native_object_pool__#", nativeObjectPool)
                 .replace("#__result__#", result)
         }
     }

@@ -1,9 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.method
 
 import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.`return`.ReturnTmpl
@@ -24,6 +22,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.log.LogTmpl
 //  if (result == null) {
 //    return null;
 //  } else {
+//    #__native_object_pool__#
 //    return #__return_statement__#;
 //  }
 //}
@@ -53,6 +52,13 @@ class MethodTmpl(
         val invoke = InvokeTmpl(method, ext).dartMethodInvoke()
         val callback = CallbackMethodTmpl(method).callback()
         val returnStatement = ReturnTmpl(method, ext).dartMethodReturn()
+        val nativeObjectPool = method.returnType.run {
+            when {
+                jsonable() or findType().isEnum() or isVoid() -> ""
+                isList() -> "kNativeObjectPool.addAll($returnStatement);"
+                else -> "kNativeObjectPool.add($returnStatement);"
+            }
+        }
 
         return tmpl
             .replace("#__static__#", static)
@@ -62,6 +68,7 @@ class MethodTmpl(
             .replaceParagraph("#__log__#", log)
             .replaceParagraph("#__invoke__#", invoke)
             .replaceParagraph("#__callback__#", callback)
+            .replace("#__native_object_pool__#", nativeObjectPool)
             .replace("#__return_statement__#", returnStatement)
     }
 }
