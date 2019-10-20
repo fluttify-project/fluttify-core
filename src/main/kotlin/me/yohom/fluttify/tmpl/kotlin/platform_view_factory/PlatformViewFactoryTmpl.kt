@@ -1,10 +1,7 @@
 package me.yohom.fluttify.tmpl.kotlin.platform_view_factory
 
-import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.filterMethod
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.simpleName
-import me.yohom.fluttify.extensions.toUnderscore
+import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethodTmpl
 
@@ -36,20 +33,17 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethod
 //        return object : PlatformView {
 //            private val view = #__native_view__#(registrar.activity())
 //
-//            // 构造完成后马上加入HEAP
-//            override fun getView(): View = view.apply { HEAP[id] = this }
+//            // 构造完成后马上加入HEAP_#__plugin_name__#
+//            override fun getView(): View = view.apply { HEAP_#__plugin_name__#[id] = this }
 //
-//            // dispose后从HEAP中删除
+//            // dispose后从HEAP_#__plugin_name__#中删除
 //            override fun dispose() {
-//                HEAP.remove(id)
+//                HEAP_#__plugin_name__#.remove(id)
 //            }
 //        }
 //    }
 //}
-class PlatformViewFactoryTmpl(
-    private val viewType: Type,
-    private val ext: FluttifyExtension
-) {
+class PlatformViewFactoryTmpl(private val viewType: Type) {
     private val tmpl =
         this::class.java.getResource("/tmpl/kotlin/platform_view_factory.kt.tmpl").readText()
 
@@ -66,5 +60,6 @@ class PlatformViewFactoryTmpl(
             .replaceParagraph("#__handlers__#", handlers)
             .replace("#__native_view__#", nativeView)
             .replace("#__method_channel__#", methodChannel)
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

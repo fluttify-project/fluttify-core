@@ -4,9 +4,11 @@ import me.yohom.fluttify.task.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+lateinit var ext: FluttifyExtension
+
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val ext = project.extensions.create("fluttify", FluttifyExtension::class.java)
+        ext = project.extensions.create("fluttify", FluttifyExtension::class.java)
         ext.jarDir = "${project.projectDir}/sdk/android/"
         ext.frameworkDir = "${project.projectDir}/sdk/ios/"
 

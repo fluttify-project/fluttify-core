@@ -11,7 +11,7 @@ import me.yohom.fluttify.tmpl.swift.plugin.handler.SetterMethodTmpl
 //import UIKit
 //#__imports__#
 //
-//var HEAP = [Int : Any]()
+//var HEAP_#__plugin_name__# = [Int : Any]()
 //
 //public class Swift#__plugin_name__#Plugin: NSObject, FlutterPlugin {
 //
@@ -39,11 +39,11 @@ import me.yohom.fluttify.tmpl.swift.plugin.handler.SetterMethodTmpl
 //        switch methodCall.method {
 //        // 释放一个对象
 //        case "SystemRef::release":
-//            HEAP.removeValue(forKey: args["refId"] as! Int)
+//            HEAP_#__plugin_name__#.removeValue(forKey: args["refId"] as! Int)
 //            methodResult("success")
-//        // 清空HEAP中所有对象
+//        // 清空HEAP_#__plugin_name__#中所有对象
 //        case "SystemRef::clearHeap":
-//            HEAP.removeAll()
+//            HEAP_#__plugin_name__#.removeAll()
 //            methodResult("success")
 //        default:
 //            handlerMap[methodCall.method]?.self(registrar, args, methodResult) ?? methodResult(FlutterMethodNotImplemented)
@@ -140,5 +140,6 @@ class PluginTmpl(
                 "#__handlers__#",
                 methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
             )
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

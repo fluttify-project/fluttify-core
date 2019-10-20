@@ -42,7 +42,7 @@ internal class LambdaCallbackTmpl(private val callerMethod: Method, private val 
             .replaceParagraph(
                 "#__callback_params__#",
                 callbackLambda.formalParams.joinToString("") {
-                    "\"${it.variable.name}\": ${if (it.variable.typeName.jsonable()) it.variable.name else "${it.variable.name}.hashCode().apply { HEAP[this] = ${it.variable.name} }"},\n"
+                    "\"${it.variable.name}\": ${if (it.variable.typeName.jsonable()) it.variable.name else "${it.variable.name}.hashCode().apply { HEAP_#__plugin_name__#[this] = ${it.variable.name} }"},\n"
                 }
             )
             .replaceParagraph(

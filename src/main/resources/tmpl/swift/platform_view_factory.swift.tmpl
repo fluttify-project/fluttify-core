@@ -17,11 +17,11 @@ class #__native_view__#PlatformView: NSObject, FlutterPlatformView {
 
    func view() -> UIView {
        let nativeView = #__native_view__#()
-       HEAP[Int(viewId)] = nativeView
+       HEAP_#__plugin_name__#[Int(viewId)] = nativeView
        return nativeView
    }
 
    deinit {
-       HEAP.removeValue(forKey: Int(viewId))
+       HEAP_#__plugin_name__#.removeValue(forKey: Int(viewId))
    }
 }

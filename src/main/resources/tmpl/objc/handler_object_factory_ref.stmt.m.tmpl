@@ -2,9 +2,9 @@
     NSLog(@"#__method_name__#");
 
     #__type_name__#* ref = [[#__type_name__# alloc] init];
-    HEAP[@(ref.hash)] = ref;
+    HEAP_#__plugin_name__#[@(ref.hash)] = ref;
 
     methodResult(@(ref.hash));
 
-    NSLog(@"HEAP: %@", HEAP);
+    NSLog(@"HEAP_#__plugin_name__#: %@", HEAP_#__plugin_name__#);
 },

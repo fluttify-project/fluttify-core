@@ -6,10 +6,10 @@
 
     // 创建对象
     val obj = #__class_name__#(#__args_value__#)
-    HEAP[obj.hashCode()] = obj
+    HEAP_#__plugin_name__#[obj.hashCode()] = obj
 
-    // 打印当前HEAP
-    Log.d("ObjectFactory", "HEAP: $HEAP")
+    // 打印当前HEAP_#__plugin_name__#
+    Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
 
     methodResult.success(obj.hashCode())
 }

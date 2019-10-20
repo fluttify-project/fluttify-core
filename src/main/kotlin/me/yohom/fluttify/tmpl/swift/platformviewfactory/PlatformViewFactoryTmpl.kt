@@ -1,5 +1,7 @@
 package me.yohom.fluttify.tmpl.swift.platformviewfactory
 
+import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Type
 
@@ -22,12 +24,12 @@ import me.yohom.fluttify.model.Type
 //
 //   func view() -> UIView {
 //       let nativeView = #__native_view__#()
-//       HEAP[viewId] = nativeView
+//       HEAP_#__plugin_name__#[viewId] = nativeView
 //       return nativeView
 //   }
 //
 //   deinit {
-//       HEAP.removeValue(forKey: Int(viewId))
+//       HEAP_#__plugin_name__#.removeValue(forKey: Int(viewId))
 //   }
 //}
 class PlatformViewFactoryTmpl(
@@ -40,5 +42,6 @@ class PlatformViewFactoryTmpl(
         return tmpl
             .replace("#__import__#", lib.name)
             .replace("#__native_view__#", viewType.name)
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

@@ -1,9 +1,11 @@
 package me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_ref
 
+import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
 
 //NSNumber* arg#__arg_name__# = @(#__arg__#.hash);
-//HEAP[arg#__arg_name__#] = #__arg_name__#;
+//HEAP_#__plugin_name__#[arg#__arg_name__#] = #__arg_name__#;
 internal class CallbackArgRefTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_ref.stmt.m.tmpl").readText()
 
@@ -17,5 +19,6 @@ internal class CallbackArgRefTmpl(private val variable: Variable) {
                 else
                     name
             })
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

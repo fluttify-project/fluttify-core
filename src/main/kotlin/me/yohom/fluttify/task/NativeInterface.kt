@@ -37,7 +37,7 @@ open class AndroidKotlinInterface : FluttifyTask() {
 
         // 生成主plugin文件
         sdk.libs.forEach {
-            KotlinPluginTmpl(it, ext)
+            KotlinPluginTmpl(it)
                 .kotlinPlugin()
                 .run {
                     pluginOutputFile.file().writeText(this)
@@ -56,7 +56,7 @@ open class AndroidKotlinInterface : FluttifyTask() {
                                 "/"
                             )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
 
-                        KotlinPlatformViewFactory(it, ext)
+                        KotlinPlatformViewFactory(it)
                             .kotlinPlatformViewFactory()
                             .run {
                                 factoryOutputFile.writeText(this)

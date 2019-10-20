@@ -1,6 +1,8 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
 
 //// 列表参数
@@ -8,7 +10,7 @@ import me.yohom.fluttify.model.Variable
 //#__type_name__# #__arg_name__#[#__arg_name__#RefIdArray.count];
 //
 //for (int i = 0; i < #__arg_name__#RefIdArray.count; i++) {
-//    NSValue* #__arg_name__#Value = (NSValue*) HEAP[[#__arg_name__#RefIdArray objectAtIndex:i]];
+//    NSValue* #__arg_name__#Value = (NSValue*) HEAP_#__plugin_name__#[[#__arg_name__#RefIdArray objectAtIndex:i]];
 //    #__type_name__# #__arg_name__#Item;
 //    [#__arg_name__#Value getValue:&#__arg_name__#Item];
 //    #__arg_name__#[i] = #__arg_name__#Item;
@@ -22,5 +24,6 @@ internal class ArgListStructTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__type_name__#", typeName)
             .replace("#__arg_name__#", argName)
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

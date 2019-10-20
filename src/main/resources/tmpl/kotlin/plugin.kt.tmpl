@@ -11,9 +11,9 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 // Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
-val STACK = mutableMapOf<String, Any>()
+val STACK_#__plugin_name__# = mutableMapOf<String, Any>()
 // Dart端随机存取对象的容器
-val HEAP = mutableMapOf<Int, Any>()
+val HEAP_#__plugin_name__# = mutableMapOf<Int, Any>()
 
 @Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.MethodCallHandler {
@@ -38,59 +38,59 @@ class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.M
         when (methodCall.method) {
             // 获取Application对象
             "ObjectFactory::getandroid_app_Application" -> {
-                methodResult.success(registrar.activity().application.apply { HEAP[hashCode()] = this }.hashCode())
+                methodResult.success(registrar.activity().application.apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
             }
             // 获取FlutterActivity对象
             "ObjectFactory::getandroid_app_Activity" -> {
-                methodResult.success(registrar.activity().apply { HEAP[hashCode()] = this }.hashCode())
+                methodResult.success(registrar.activity().apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
             }
             // 创建android.os.Bundle对象
             "ObjectFactory::createandroid_os_Bundle" -> {
-                methodResult.success(Bundle().apply { HEAP[hashCode()] = this }.hashCode())
+                methodResult.success(Bundle().apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
             }
             // 创建bitmap对象
             "ObjectFactory::createandroid_graphics_Bitmap" -> {
                 val bitmapBytes = args["bitmapBytes"] as ByteArray
                 val bitmap = android.graphics.BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.size)
 
-                HEAP[bitmap.hashCode()] = bitmap
+                HEAP_#__plugin_name__#[bitmap.hashCode()] = bitmap
 
                 methodResult.success(bitmap.hashCode())
             }
             // 释放一个对象
             "ObjectFactory::release" -> {
-                Log.d("ObjectFactory", "释放对象: ${HEAP[args["refId"] as Int]?.javaClass}@${args["refId"]}")
+                Log.d("ObjectFactory", "释放对象: ${HEAP_#__plugin_name__#[args["refId"] as Int]?.javaClass}@${args["refId"]}")
 
-                HEAP.remove(args["refId"] as Int)
+                HEAP_#__plugin_name__#.remove(args["refId"] as Int)
 
                 methodResult.success("success")
 
-                // 打印当前HEAP
-                Log.d("ObjectFactory", "HEAP: $HEAP")
+                // 打印当前HEAP_#__plugin_name__#
+                Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
             }
-            // 清空HEAP中所有对象
+            // 清空HEAP_#__plugin_name__#中所有对象
             "ObjectFactory::clearHeap" -> {
                 Log.d("ObjectFactory", "清空堆")
 
-                HEAP.clear()
+                HEAP_#__plugin_name__#.clear()
                 methodResult.success("success")
 
-                // 打印当前HEAP
-                Log.d("ObjectFactory", "HEAP: $HEAP")
+                // 打印当前HEAP_#__plugin_name__#
+                Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
             }
             // 压入栈
             "ObjectFactory::pushStack" -> {
                 val name = args["name"] as String
                 val refId = args["refId"] as Int
 
-                Log.d("ObjectFactory", "压入对象: ${HEAP[refId]?.javaClass}@${refId}")
+                Log.d("ObjectFactory", "压入对象: ${HEAP_#__plugin_name__#[refId]?.javaClass}@${refId}")
 
-                HEAP[refId]?.run { STACK[name] = this }
+                HEAP_#__plugin_name__#[refId]?.run { STACK_#__plugin_name__#[name] = this }
 
                 methodResult.success("success")
 
-                // 打印当前STACK
-                Log.d("ObjectFactory", "STACK: $STACK")
+                // 打印当前STACK_#__plugin_name__#
+                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
             }
             // 压入栈 jsonable
             "ObjectFactory::pushStackJsonable" -> {
@@ -99,21 +99,21 @@ class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.M
 
                 Log.d("ObjectFactory", "压入jsonable: ${data?.javaClass}@${data}")
 
-                STACK[name] = data!!
+                STACK_#__plugin_name__#[name] = data!!
 
                 methodResult.success("success")
 
-                // 打印当前STACK
-                Log.d("ObjectFactory", "STACK: $STACK")
+                // 打印当前STACK_#__plugin_name__#
+                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
             }
             // 清空栈
             "ObjectFactory::clearStack" -> {
-                STACK.clear()
+                STACK_#__plugin_name__#.clear()
 
                 methodResult.success("success")
 
-                // 打印当前STACK
-                Log.d("ObjectFactory", "STACK: $STACK")
+                // 打印当前STACK_#__plugin_name__#
+                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
             }
             else -> {
                 handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()

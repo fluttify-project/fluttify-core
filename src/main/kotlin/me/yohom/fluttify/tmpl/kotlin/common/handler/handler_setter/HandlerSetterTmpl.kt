@@ -1,13 +1,15 @@
 package me.yohom.fluttify.tmpl.kotlin.common.handler.handler_setter
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.toKotlinType
+import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Field
 
 //"#__setter_name__#" to { registrar, args, methodResult ->
 //    val #__field_name__# = args["#__field_name__#"] as #__field_type__#
 //
 //    val refId = args["refId"] as Int
-//    val ref = HEAP[refId] as #__class_name__#
+//    val ref = HEAP_#__plugin_name__#[refId] as #__class_name__#
 //
 //    ref.#__field_name__# = #__field_value__#
 //    methodResult.success("success")
@@ -44,5 +46,6 @@ internal class HandlerSetterTmpl(private val field: Field) {
                     this
                 }
             })
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

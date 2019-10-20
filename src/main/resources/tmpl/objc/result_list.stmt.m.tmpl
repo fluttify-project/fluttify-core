@@ -3,7 +3,7 @@ NSMutableArray* refIdList = [NSMutableArray array];
 for (int i = 0; i < result.count; i++) {
     NSObject* object = [result objectAtIndex:i];
     [refIdList addObject: @(object.hash)];
-    HEAP[@([object hash])] = object;
+    HEAP_#__plugin_name__#[@([object hash])] = object;
 }
 
 methodResult(refIdList);

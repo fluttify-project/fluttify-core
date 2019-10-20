@@ -1,9 +1,7 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_setter
 
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.enpointer
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
@@ -17,7 +15,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStruc
 //    #__args__#
 //
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
+//    #__class_name__# ref = (#__class_name__#) HEAP_#__plugin_name__#[@(refId)];
 //
 //    ref.#__setter__# = #__field_value__#;
 //    methodResult(@"success");
@@ -51,5 +49,6 @@ internal class HandlerSetterTmpl(private val field: Field) {
             .replace("#__setter__#", setter)
             .replace("#__field_value__#", fieldValue)
             .replace("#__class_name__#", className)
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

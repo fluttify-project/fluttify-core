@@ -1,8 +1,10 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.invoke
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.isObjcPrimitive
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
 
@@ -40,7 +42,7 @@ internal class LambdaCallbackTmpl(private val callerMethod: Method, private val 
             "@\"${it.variable.name}\": ${when {
                 it.variable.typeName.isObjcPrimitive() -> "@(${it.variable.name})"
                 it.variable.typeName.jsonable() -> it.variable.typeName
-                else -> "${it.variable.name}.hashCode().apply { HEAP[this] = ${it.variable.name} }"
+                else -> "${it.variable.name}.hashCode().apply { HEAP_${ext.outputProjectName.underscore2Camel(true)}[this] = ${it.variable.name} }"
             }},\n"
         }
         val log = "NSLog(@\"fluttify-objc-callback: ${callerMethod.className}@%@::${callerMethod.name}_${callbackLambda.name}(参数打印暂未实现)\", @(refId));"

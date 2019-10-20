@@ -1,6 +1,6 @@
 if (result != null) {
     for (item in result) {
-        HEAP[item.hashCode()] = item
+        HEAP_#__plugin_name__#[item.hashCode()] = item
     }
     methodResult.success(result.map { it.hashCode() })
 } else {

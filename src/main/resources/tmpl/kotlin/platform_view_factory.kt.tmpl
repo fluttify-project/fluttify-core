@@ -31,8 +31,8 @@ class #__factory_name__#Factory(private val registrar: Registrar) : PlatformView
         return object : PlatformView {
             private val view = #__native_view__#(registrar.activity())
 
-            // 构造完成后马上加入HEAP
-            override fun getView(): View = view.apply { HEAP[id] = this }
+            // 构造完成后马上加入HEAP_#__plugin_name__#
+            override fun getView(): View = view.apply { HEAP_#__plugin_name__#[id] = this }
 
             override fun dispose() {}
         }

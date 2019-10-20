@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_getter
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
@@ -10,7 +11,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //
 //    // 引用对象
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
+//    #__class_name__# ref = (#__class_name__#) HEAP_#__plugin_name__#[@(refId)];
 //
 //    // 开始调用
 //    #__invoke__#
@@ -45,5 +46,6 @@ internal class HandlerGetterTmpl(private val field: Field) {
             .replace("#__invoke__#", invoke)
             .replace("#__note__#", note)
             .replaceParagraph("#__result__#", result)
+            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }
