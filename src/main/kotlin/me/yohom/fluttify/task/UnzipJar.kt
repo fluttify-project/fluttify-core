@@ -14,7 +14,7 @@ import java.io.InputStreamReader
 open class UnzipJar : FluttifyTask() {
 
     @InputFile
-    var jarFile: File? = ext.jarDir.file().listFiles()?.first { it.name.endsWith("jar") }
+    var jarFile: File? = ext.jarDir.file().listFiles()?.firstOrNull { it.name.endsWith("jar") }
 
     @OutputDirectory
     var unzippedJar: File = "${ext.jarDir}unzip/".file()
