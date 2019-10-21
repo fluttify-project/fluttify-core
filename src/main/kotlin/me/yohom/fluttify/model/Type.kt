@@ -106,7 +106,7 @@ open class Type : IPlatform, IScope {
                 && superClass == ""
                 && (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 // 必须没有子类
-                && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) || it.superClass == this.name }
+                && !hasSubtype()
     }
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda
