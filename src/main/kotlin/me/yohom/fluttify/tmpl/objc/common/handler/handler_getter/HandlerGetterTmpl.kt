@@ -39,12 +39,10 @@ internal class HandlerGetterTmpl(private val field: Field) {
             field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName).objcResultStruct()
             else -> ResultRefTmpl().objcResultRef()
         }
-        val note = if (field.variable.isStruct()) "NSLog(@\"${methodName}:结构体getter暂时不支持\");" else ""
         return tmpl
             .replace("#__method_name__#", methodName)
             .replace("#__class_name__#", className)
             .replace("#__invoke__#", invoke)
-            .replace("#__note__#", note)
             .replaceParagraph("#__result__#", result)
             .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }

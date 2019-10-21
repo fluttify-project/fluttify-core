@@ -4,6 +4,7 @@ import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.underscore2Camel
 
+//// 返回值: 结构体
 //NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
 //HEAP_#__plugin_name__#[@(resultValue.hash)] = resultValue;
 //
