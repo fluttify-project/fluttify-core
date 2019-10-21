@@ -1,12 +1,10 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.invoke
 
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.enpointer
-import me.yohom.fluttify.extensions.enprotocol
-import me.yohom.fluttify.extensions.isObjcPrimitive
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
+import me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda.CallbackLambdaTmpl
 
 internal class InvokeTmpl private constructor(private val field: Field?, private val method: Method?) {
 
@@ -61,8 +59,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
 
     private fun var2formalParam(it: Parameter): String {
         return if (it.variable.isLambda()) {
-            "${it.named}: nil /* lambda回调暂时不支持 */"
-//            LambdaCallbackTmpl(method, it.variable.typeName.findType()).objcCallback()
+            "${it.named}: ${CallbackLambdaTmpl(it.variable.typeName.findType()).objcCallback()}"
         } else {
             "${it.named}: ${if (it.variable.isCallback()) "self" else it.variable.name}"
         }
