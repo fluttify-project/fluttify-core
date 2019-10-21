@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda
 
 import me.yohom.fluttify.extensions.enprotocol
 import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgCTypeTmpl
@@ -11,6 +12,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_struct.CallbackArgStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_return.CallbackReturnTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_void.CallbackVoidTmpl
 
 //^(#__formal_params__#) {
 //    FlutterMethodChannel *channel = [FlutterMethodChannel
@@ -24,13 +26,13 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //
 //    #__callback__#
 //}
-internal class CallbackLambdaTmpl(private val callbackLambda: Type) {
+internal class CallbackLambdaTmpl(private val callerMethod: Method, private val callbackLambda: Type) {
     private val tmpl =
         this::class.java.getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText()
 
     fun objcCallback(): String {
 //        val log = callbackLambda.nameWithClass()
-        val methodChannel = "${callbackLambda.name}::Callback"
+        val methodChannel = "${callerMethod.nameWithClass()}::Callback"
         val formalParams = callbackLambda.formalParams.joinToString { "${it.variable.paramType()} ${it.variable.name}" }
         val localArgs = if (callbackLambda.returnType == "void") {
             // 只有没有返回值的方法需要设置, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
@@ -50,9 +52,10 @@ internal class CallbackLambdaTmpl(private val callbackLambda: Type) {
         } else {
             ""
         }
-        val callback = CallbackReturnTmpl(
-            callbackLambda
-        ).objcCallbackReturn()
+        val callback = when {
+            callbackLambda.returnType == "void" -> CallbackVoidTmpl(callbackLambda).objcCallbackVoid()
+            else -> CallbackReturnTmpl(callbackLambda).objcCallbackReturn()
+        }
 
         return tmpl
             .replace("#__log__#", "")

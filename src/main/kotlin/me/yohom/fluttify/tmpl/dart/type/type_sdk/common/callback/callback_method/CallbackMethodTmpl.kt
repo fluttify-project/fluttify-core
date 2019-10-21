@@ -55,7 +55,7 @@ class CallbackMethodTmpl(private val callerMethod: Method) {
                     }
             }
         val callbackLambdaCases = callbackLambdas
-            .map { CallbackCaseLambdaTmpl(callerMethod, it).callbackCase() }
+            .map { CallbackCaseLambdaTmpl(it).callbackCase() }
 
         return tmpl
             .replace("#__callback_channel__#", callbackChannel)

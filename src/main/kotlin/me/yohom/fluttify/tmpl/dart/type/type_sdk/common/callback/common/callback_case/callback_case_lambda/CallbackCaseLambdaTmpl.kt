@@ -4,7 +4,6 @@ import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.toDartType
-import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
 //case '#__callback_case__#':
@@ -19,14 +18,11 @@ import me.yohom.fluttify.model.Parameter
 /**
  * 回调case
  */
-class CallbackCaseLambdaTmpl(
-    private val callerMethod: Method,
-    private val lambdaParam: Parameter
-) {
+class CallbackCaseLambdaTmpl(private val lambdaParam: Parameter) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText()
 
     fun callbackCase(): String {
-        val callbackCase = "${callerMethod.className}::${callerMethod.name}_Callback::${lambdaParam.variable.name}"
+        val callbackCase = "Callback::${lambdaParam.variable.typeName}::${lambdaParam.variable.typeName}"
         val log = ""
         val callbackHandler = lambdaParam.variable.name
         val callbackArgs = lambdaParam.variable.typeName.findType().formalParams
