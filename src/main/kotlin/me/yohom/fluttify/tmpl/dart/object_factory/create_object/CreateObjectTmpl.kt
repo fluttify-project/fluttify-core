@@ -9,7 +9,10 @@ import me.yohom.fluttify.model.Type
 
 //static Future<#__class_name__#> create#__creator_name__#(#__formal_params__#) async {
 //  final int refId = await _channel.invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
-//  return #__class_name__#()..refId = refId;
+//  final object = #__class_name__#()..refId = refId;
+//
+//  kNativeObjectPool.add(object);
+//  return object;
 //}
 class CreateObjectTmpl(val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/create_object.mtd.dart.tmpl").readText()
