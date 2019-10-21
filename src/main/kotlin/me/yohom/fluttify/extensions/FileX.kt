@@ -363,6 +363,53 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
         //endregion
 
+        override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
+            val returnType = ctx
+                .declarationSpecifiers()
+                .typeSpecifier()[0]
+                ?.text
+            val typeName = ctx
+                .typeDeclaratorList()
+                .typeDeclarator()[0]
+                ?.directDeclarator()
+                ?.identifier()
+                ?.text
+            val formalParams = ctx
+                .typeDeclaratorList()
+                .typeDeclarator()[0]
+                ?.directDeclarator()
+                ?.blockParameters()
+                ?.typeVariableDeclaratorOrName()
+                ?.map {
+                    it.typeVariableDeclarator()
+                        .run {
+                            Parameter(
+                                variable = Variable(
+                                    typeName = declarationSpecifiers().text,
+                                    platform = Platform.iOS,
+                                    name = declarator().text
+                                ),
+                                platform = Platform.iOS
+                            )
+                        }
+                }
+
+            if (returnType != null && typeName != null && formalParams != null) {
+                result.add(
+                    Type().also {
+                        it.typeType = TypeType.Lambda
+                        it.isPublic = true
+                        it.isAbstract = false
+                        it.name = typeName
+                        it.isStaticType = true
+                        it.returnType = returnType
+                        it.formalParams = formalParams
+                        it.platform = Platform.iOS
+                    }
+                )
+            }
+        }
+
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
             // 只接收property
             ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
