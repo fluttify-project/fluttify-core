@@ -21,6 +21,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.Interfac
 //
 //  #__interface_methods__#
 //}
+// todo const变量直接生成对应的值, 不需要去native端获取
 class TypeInterfaceTmpl(
     private val type: Type,
     private val ext: FluttifyExtension

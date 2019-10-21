@@ -118,6 +118,28 @@ NSMutableDictionary<NSNumber*, NSObject*>* HEAP_#__plugin_name__#;
 
     methodResult(@(dataValue.hash));
   }
+  // CLLocationCoordinate2D获取latitude
+  else if ([@"CLLocationCoordinate2D::get_latitude" isEqualToString:methodCall.method]) {
+    NSNumber* refId = (NSNumber*) args[@"refId"];
+
+    NSValue* dataValue = (NSValue*) HEAP_#__plugin_name__#[refId];
+
+    CLLocationCoordinate2D _structValue;
+    [dataValue getValue:&_structValue];
+
+    methodResult(@(_structValue.latitude));
+  }
+  // CLLocationCoordinate2D获取longitude
+  else if ([@"CLLocationCoordinate2D::get_longitude" isEqualToString:methodCall.method]) {
+    NSNumber* refId = (NSNumber*) args[@"refId"];
+
+    NSValue* dataValue = (NSValue*) HEAP_#__plugin_name__#[refId];
+
+    CLLocationCoordinate2D _structValue;
+    [dataValue getValue:&_structValue];
+
+    methodResult(@(_structValue.longitude));
+  }
   // 创建UIImage
   else if ([@"ObjectFactory::createUIImage" isEqualToString:methodCall.method]) {
     FlutterStandardTypedData* bitmapBytes = (FlutterStandardTypedData*) args[@"bitmapBytes"];
