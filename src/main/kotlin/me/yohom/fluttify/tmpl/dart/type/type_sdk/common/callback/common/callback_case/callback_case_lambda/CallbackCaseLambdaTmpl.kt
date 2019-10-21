@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda
 
+import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.toDartType
@@ -31,9 +32,9 @@ class CallbackCaseLambdaTmpl(
         val callbackArgs = lambdaParam.variable.typeName.findType().formalParams
             .joinToString {
                 if (it.variable.typeName.jsonable()) {
-                    "args['${it.variable.name}']"
+                    "args['${it.variable.name.depointer()}']"
                 } else {
-                    "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name}'])"
+                    "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name.depointer()}'])"
                 }
             }
 
