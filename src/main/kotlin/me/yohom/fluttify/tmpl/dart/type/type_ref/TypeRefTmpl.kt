@@ -38,6 +38,7 @@ class TypeRefTmpl(
                 sdk.libs
                     .flatMap { it.types }
                     .filterType()
+                    .filterNot { it.isLambda() }
                     .distinctBy { it.name }
                     .filter { !it.isInterface() && !it.isEnum() }
                     .joinToString("\n") { TypeCheckTmpl(it, ext).dartTypeCheck() }
@@ -47,6 +48,7 @@ class TypeRefTmpl(
                 sdk.libs
                     .flatMap { it.types }
                     .filterType()
+                    .filterNot { it.isLambda() }
                     .distinctBy { it.name }
                     .filter { !it.isInterface() && !it.isEnum() }
                     .joinToString("\n") { TypeCastTmpl(it, ext).dartTypeCast() }
