@@ -1,9 +1,11 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_return
 
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.isCType
+import me.yohom.fluttify.extensions.isVoid
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Type
 
 //// __block #__callback_result_type__# _callbackResult = nil;
 //// [channel invokeMethod:@"#__callback_method__#"
@@ -25,7 +27,12 @@ import me.yohom.fluttify.model.Method
 //NSLog(@"暂不支持有返回值的回调方法");
 //
 //#__stub_return__#;
-internal class CallbackReturnTmpl(private val method: Method) {
+internal class CallbackReturnTmpl private constructor(private val method: Method?, private val lambda: Type?) {
+
+    constructor(method: Method) : this(method, null)
+
+    constructor(lambda: Type) : this(null, lambda)
+
     private val tmpl =
         this::class.java.getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText()
 
@@ -62,13 +69,21 @@ internal class CallbackReturnTmpl(private val method: Method) {
 //            .replace("#__struct_value__#", structValue)
 //            .replace("#__callback_result__#", callbackResult)
 
-        val stubReturn = method.returnType.run {
+        val stubReturn = method?.returnType?.run {
             when {
+                isVoid() -> ""
                 isCType() -> "return 0;"
                 findType().isStruct() -> "${this} value; return value;"
                 else -> "return nil;"
             }
-        }
+        } ?: lambda?.returnType?.run {
+            when {
+                isVoid() -> ""
+                isCType() -> "return 0;"
+                findType().isStruct() -> "${this} value; return value;"
+                else -> "return nil;"
+            }
+        }!!
 
         return tmpl
             .replaceParagraph("__stub_return__", stubReturn)

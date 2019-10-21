@@ -1,5 +1,6 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_jsonable
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_jsonable
 
+import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.model.Variable
 
 //// jsonable回调参数
@@ -10,6 +11,6 @@ internal class CallbackArgJsonableTmpl(private val variable: Variable) {
     fun objcCallbackArgJsonable(): String {
         return tmpl
             .replace("#__type_name__#", variable.typeName)
-            .replace("#__arg_name__#", variable.name)
+            .replace("#__arg_name__#", variable.name.depointer())
     }
 }

@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.objc.plugin
 import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
-import me.yohom.fluttify.tmpl.objc.common.callback_method.CallbackMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.handler_object_factory_ref.HandlerObjectFactoryRefTmpl
@@ -164,6 +164,7 @@ class PluginTmpl(
         val typeCastHandlers = libs
             .flatMap { it.types }
             .filterType()
+            .filterNot { it.isLambda() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCastTmpl(it).objcTypeCast() }
@@ -171,6 +172,7 @@ class PluginTmpl(
         val typeCheckHandlers = libs
             .flatMap { it.types }
             .filterType()
+            .filterNot { it.isLambda() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCheckTmpl(it).objcTypeCheck() }

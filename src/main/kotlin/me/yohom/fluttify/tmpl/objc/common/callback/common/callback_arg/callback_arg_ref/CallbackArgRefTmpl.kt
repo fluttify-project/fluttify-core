@@ -1,6 +1,7 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_ref
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ref
 
 import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
 
@@ -11,14 +12,14 @@ internal class CallbackArgRefTmpl(private val variable: Variable) {
 
     fun objcCallbackArgRef(): String {
         return tmpl
-            .replace("#__arg_name__#", variable.name)
+            .replace("#__arg_name__#", variable.name.depointer())
             .replace("#__arg__#", variable.run {
                 // 如果碰到id类型就转型成NSObject
                 if (typeName == "id")
                     "((NSObject*) ${name})"
                 else
                     name
-            })
+            }.depointer())
             .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

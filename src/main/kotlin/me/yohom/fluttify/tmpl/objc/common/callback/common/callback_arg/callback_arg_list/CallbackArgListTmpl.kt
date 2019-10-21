@@ -1,6 +1,7 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_list
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_list
 
 import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.enpointer
 import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
@@ -20,7 +21,7 @@ internal class CallbackArgListTmpl(private val variable: Variable) {
     fun objcCallbackArgList(): String {
         return tmpl
             .replace("#__type_name__#", variable.typeName.enpointer())
-            .replace("#__arg_name__#", variable.name)
+            .replace("#__arg_name__#", variable.name.depointer())
             .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
     }
 }

@@ -4,7 +4,7 @@ import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.objc.common.callback_method.CallbackMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl

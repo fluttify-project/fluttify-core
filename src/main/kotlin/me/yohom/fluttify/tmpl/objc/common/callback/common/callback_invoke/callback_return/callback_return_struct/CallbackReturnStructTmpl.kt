@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return.callback_return_struct
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_return.callback_return_struct
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.underscore2Camel

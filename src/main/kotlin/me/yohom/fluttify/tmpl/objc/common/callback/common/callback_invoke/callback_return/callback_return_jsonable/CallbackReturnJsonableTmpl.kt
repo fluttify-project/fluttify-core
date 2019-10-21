@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_return.callback_return_jsonable
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_return.callback_return_jsonable
 
 import me.yohom.fluttify.model.Method
 

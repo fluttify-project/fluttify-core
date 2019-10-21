@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback.callback_void
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_void
 
 import me.yohom.fluttify.model.Method
 

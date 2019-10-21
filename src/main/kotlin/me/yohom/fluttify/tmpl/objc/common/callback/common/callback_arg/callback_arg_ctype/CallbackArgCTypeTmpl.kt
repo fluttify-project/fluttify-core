@@ -1,5 +1,6 @@
-package me.yohom.fluttify.tmpl.objc.common.callback_method.callback_arg.callback_arg_ctype
+package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype
 
+import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.model.Variable
 
 //// primitive回调参数
@@ -9,6 +10,6 @@ internal class CallbackArgCTypeTmpl(private val variable: Variable) {
 
     fun objcCallbackArgCType(): String {
         return tmpl
-            .replace("#__arg_name__#", variable.name)
+            .replace("#__arg_name__#", variable.name.depointer())
     }
 }
