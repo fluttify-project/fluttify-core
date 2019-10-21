@@ -31,6 +31,7 @@ val SYSTEM_TYPEDEF = mapOf(
  * 保留的类
  */
 val SYSTEM_TYPE = listOf(
+    /////////////////////////////////////////Android系统类/////////////////////////////////////////////
     Type().apply { name = "void" },
     Type().apply { name = "android.content.Context"; typeType = TypeType.Class },
     Type().apply { name = "android.app.Application"; typeType = TypeType.Class },
@@ -53,17 +54,24 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.widget.RelativeLayout"; typeType = TypeType.Class },
     Type().apply { name = "android.os.Parcelable"; typeType = TypeType.Interface },
 
-    Type().apply { name = "CLLocationManager"; typeType = TypeType.Class },
-    Type().apply { name = "CLLocationCoordinate2D"; typeType = TypeType.Struct },
-    Type().apply { name = "UIEdgeInsets"; typeType = TypeType.Struct },
+    /////////////////////////////////////////iOS系统类/////////////////////////////////////////////
+    Type().apply { name = "CLLocation"; typeType = TypeType.Class },
+    Type().apply { name = "CLHeading"; typeType = TypeType.Class },
     Type().apply { name = "CGRect"; typeType = TypeType.Struct },
     Type().apply { name = "CGPoint"; typeType = TypeType.Struct },
+    Type().apply { name = "CGSize"; typeType = TypeType.Struct },
+    Type().apply { name = "UIEdgeInsets"; typeType = TypeType.Struct },
+    Type().apply { name = "CLLocationCoordinate2D"; typeType = TypeType.Struct },
+
+    Type().apply { name = "CLLocationManager"; typeType = TypeType.Class },
     Type().apply { name = "NSError"; typeType = TypeType.Class },
-    Type().apply { name = "NSObject"; typeType = TypeType.Class },
-    Type().apply { name = "UIControl"; typeType = TypeType.Class },
-    Type().apply { name = "NSCopying"; typeType = TypeType.Interface },
     Type().apply { name = "NSCoding"; typeType = TypeType.Interface },
+    Type().apply { name = "NSCopying"; typeType = TypeType.Interface },
     Type().apply { name = "UIView"; typeType = TypeType.Class },
+    Type().apply { name = "UIControl"; typeType = TypeType.Class },
+    Type().apply { name = "UIImage"; typeType = TypeType.Class },
+    Type().apply { name = "NSObject"; typeType = TypeType.Class },
+
     Type().apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum }
 )
 
