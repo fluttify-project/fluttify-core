@@ -136,6 +136,7 @@ open class Type : IPlatform, IScope {
         return !isAbstract
                 && (this != UNKNOWN_TYPE || isList())
                 && !isEnum()
+                && !isLambda()
                 && !isObfuscated()
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
                 && ((isInnerClass && isStaticType) || !isInnerClass)
