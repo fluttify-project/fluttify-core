@@ -67,7 +67,7 @@ open class AndroidDartInterface : FluttifyTask() {
         // 处理所有的函数 但是java其实没有顶层函数, 所以这里的结果一定是空字符串
         sdk.libs
             .flatMap { it.types }
-            .filter { it.typeType == TypeType.Function }
+            .filter { it.isKnownFunction() }
             .run {
                 val functionsFile =
                     "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/functions.g.dart"
@@ -135,7 +135,7 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理所有的函数
         sdk.libs
             .flatMap { it.types }
-            .filter { it.typeType == TypeType.Function }
+            .filter { it.isKnownFunction() }
             .run {
                 val functionsFile =
                     "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/functions.g.dart"

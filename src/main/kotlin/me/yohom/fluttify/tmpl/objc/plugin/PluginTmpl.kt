@@ -164,18 +164,24 @@ class PluginTmpl(
         val typeCastHandlers = libs
             .flatMap { it.types }
             .filterType()
+            .asSequence()
             .filterNot { it.isLambda() }
+            .filterNot { it.isFunction() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCastTmpl(it).objcTypeCast() }
+            .toList()
 
         val typeCheckHandlers = libs
             .flatMap { it.types }
             .filterType()
+            .asSequence()
             .filterNot { it.isLambda() }
+            .filterNot { it.isFunction() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCheckTmpl(it).objcTypeCheck() }
+            .toList()
 
         val createObjectHandlers = libs
             .flatMap { it.types }

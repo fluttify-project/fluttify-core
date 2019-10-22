@@ -113,6 +113,12 @@ open class Type : IPlatform, IScope {
 
     fun isFunction(): Boolean = typeType == TypeType.Function
 
+    fun isKnownFunction(): Boolean {
+        return isFunction()
+                && returnType.findType() != UNKNOWN_TYPE
+                && formalParams.all { it.variable.isKnownType() }
+    }
+
     fun subtypes(): List<Type> {
         return SDK
             .sdks
