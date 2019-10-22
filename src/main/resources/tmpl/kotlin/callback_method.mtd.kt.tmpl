@@ -1,11 +1,11 @@
 override fun #__callback_method__#(#__formal_params__#): #__return_type__# {
-    // 日志打印
+    // print log
     #__log__#
 
-    // 处理成可以传输的参数
+    // convert to jsonable data
     #__local_args__#
 
-    // 开始回调
+    // call dart method
     callbackChannel.invokeMethod(
         "Callback::#__callback_method_name__#",
         mapOf<String, Any?>(
@@ -13,6 +13,6 @@ override fun #__callback_method__#(#__formal_params__#): #__return_type__# {
         )
     )
 
-    // 方法返回值
+    // method result
     #__return_stmt__#
 }

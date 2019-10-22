@@ -1,11 +1,11 @@
 @"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
     NSLog(@"#__method_name__#");
 
-    // 引用对象
+    // ref object
     NSInteger refId = [args[@"refId"] integerValue];
     #__class_name__# ref = (#__class_name__#) HEAP_#__plugin_name__#[@(refId)];
 
-    // 开始调用
+    // invoke native method
     #__invoke__#
 
     #__result__#

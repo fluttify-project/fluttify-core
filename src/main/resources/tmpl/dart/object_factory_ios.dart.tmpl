@@ -48,7 +48,7 @@ class ObjectFactory_iOS {
 
 class NSObject extends Ref_iOS {}
 
-// 结构体
+// STRUCT
 class CLLocationCoordinate2D extends Ref_iOS {
   Future<double> get latitude {
     return MethodChannel('#__method_chanel__#').invokeMethod('CLLocationCoordinate2D::get_latitude', {'refId': refId});
@@ -69,7 +69,7 @@ class CGSize extends Ref_iOS {}
 
 class UIEdgeInsets extends Ref_iOS {}
 
-// 类
+// CLASS
 class CLLocationManager extends NSObject {}
 
 class CLLocation extends NSObject {
@@ -122,7 +122,7 @@ class UIControl extends NSObject {}
 
 class UIImage extends NSObject {}
 
-// 枚举
+// ENUM
 enum CLAuthorizationStatus {
   kCLAuthorizationStatusNotDetermined,
   kCLAuthorizationStatusRestricted,

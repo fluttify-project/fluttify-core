@@ -1,14 +1,14 @@
 "ObjectFactory::create#__creator_name__#" to { registrar, args, methodResult ->
     Log.d("ObjectFactory", "创建对象: #__creator_name__#")
 
-    // 参数
+    // args
     #__args__#
 
-    // 创建对象
+    // create target object
     val obj = #__class_name__#(#__args_value__#)
     HEAP_#__plugin_name__#[obj.hashCode()] = obj
 
-    // 打印当前HEAP_#__plugin_name__#
+    // print current HEAP_#__plugin_name__#
     Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
 
     methodResult.success(obj.hashCode())

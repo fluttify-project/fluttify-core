@@ -1,9 +1,9 @@
-// 列表回调参数
+// list callback arg
 NSMutableArray<NSNumber*>* arg#__arg_name__# = [NSMutableArray arrayWithCapacity:#__arg_name__#.count];
 for (int i = 0; i < #__arg_name__#.count; i++) {
     NSObject* item = ((NSObject*) [#__arg_name__# objectAtIndex:i]);
-    // 返回给dart端的数据
+    // return to dart side data
     arg#__arg_name__#[i] = @(item.hash);
-    // 放到HEAP_#__plugin_name__#中的数据
+    // add to HEAP_#__plugin_name__#
     HEAP_#__plugin_name__#[@(item.hash)] = item;
 }
