@@ -53,6 +53,10 @@ data class Variable(
         return !isAbstract()
     }
 
+    fun hasConcretSubtype(): Boolean {
+        return typeName.findType().firstConcretSubtype() != null
+    }
+
     fun hasSubtype(): Boolean {
         return typeName.findType().hasSubtype()
     }
@@ -75,6 +79,17 @@ data class Variable(
 
     fun isGenericType(): Boolean {
         return typeName.findType().genericTypes.isNotEmpty()
+    }
+
+    fun paramType(): String {
+        return when {
+            typeName == "id" -> "id"
+            isEnum() -> typeName
+            jsonable() -> typeName
+            isInterface() -> typeName.enprotocol()
+            isList && genericLevel > 0 -> "NSArray<$typeName>*"
+            else -> typeName.enpointer()
+        }
     }
 
     fun toDartString(): String {

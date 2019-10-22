@@ -1,10 +1,9 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda
 
-import me.yohom.fluttify.extensions.enprotocol
+import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgCTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
@@ -31,9 +30,8 @@ internal class CallbackLambdaTmpl(private val callerMethod: Method, private val 
         this::class.java.getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText()
 
     fun objcCallback(): String {
-//        val log = callbackLambda.nameWithClass()
         val methodChannel = "${callerMethod.nameWithClass()}::Callback"
-        val formalParams = callbackLambda.formalParams.joinToString { "${it.variable.paramType()} ${it.variable.name}" }
+        val formalParams = callbackLambda.formalParams.joinToString { "${it.variable.paramType()} ${it.variable.name.depointer()}" }
         val localArgs = if (callbackLambda.returnType == "void") {
             // 只有没有返回值的方法需要设置, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
             callbackLambda
@@ -63,13 +61,5 @@ internal class CallbackLambdaTmpl(private val callerMethod: Method, private val 
             .replace("#__formal_params__#", formalParams)
             .replaceParagraph("#__local_args__#", localArgs)
             .replaceParagraph("#__callback__#", callback)
-    }
-
-    private fun Variable.paramType(): String {
-        return when {
-            isInterface() -> typeName.enprotocol()
-            isList && genericLevel > 0 -> "NSArray<$typeName>*"
-            else -> typeName
-        }
     }
 }

@@ -14,9 +14,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //    // 调用回调方法
 //  #__callback_handler__#(#__callback_args__#);
 //  break;
-/**
- * 回调Delegate的一个case
- */
 class CallbackCaseDelegateTmpl(
     private val callbackMethod: Method,
     private val callbackObject: String

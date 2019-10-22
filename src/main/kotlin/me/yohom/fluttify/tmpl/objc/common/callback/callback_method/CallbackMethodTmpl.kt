@@ -1,9 +1,7 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_method
 
-import me.yohom.fluttify.extensions.enprotocol
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgCTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
@@ -67,13 +65,5 @@ internal class CallbackMethodTmpl(private val method: Method) {
             .replace("#__formal_params__#", formalParams)
             .replaceParagraph("#__local_args__#", localArgs)
             .replaceParagraph("#__callback__#", callback)
-    }
-
-    private fun Variable.paramType(): String {
-        return when {
-            isInterface() -> typeName.enprotocol()
-            isList && genericLevel > 0 -> "NSArray<$typeName>*"
-            else -> typeName
-        }
     }
 }

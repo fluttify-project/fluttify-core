@@ -207,7 +207,7 @@ fun TYPE_NAME?.toDartType(): TYPE_NAME {
         "NSString", "NSString*" -> "String"
         "NSArray<NSString*>", "NSArray<NSString *>", "NSArray<NSString*>*", "NSArray<NSString *> *" -> "List<String>"
         "nil" -> "null"
-        "id" -> "Object"
+        "id" -> "NSObject"
         "NSArray", "NSArray*" -> "List"
         "NSInteger", "NSUInteger" -> "int"
         "BOOL" -> "bool"

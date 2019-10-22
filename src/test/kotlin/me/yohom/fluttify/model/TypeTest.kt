@@ -1,6 +1,5 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.androidLocationSDK
 import me.yohom.fluttify.androidMapSDK
 import me.yohom.fluttify.androidSearchSDK
 import org.junit.Test
@@ -42,7 +41,8 @@ class TypeTest {
             .libs[2]
             .types
 //            .find { it.name == "com.amap.api.maps.model.TileProvider" }
-            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
+//            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
+            .find { it.name == "com.amap.api.maps.AMap.InfoWindowAdapter" }
             ?.firstConcretSubtype()
             ?.run {
                 println("结果: $this")
@@ -59,10 +59,10 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        androidLocationSDK
-            .libs[1]
+        androidMapSDK
+            .libs[2]
             .types
-            .find { it.name == "com.amap.api.location.AMapLocationListener" }
+            .find { it.name.contains("com.amap.api.maps.AMap.InfoWindowAdapter") }
             ?.hasSubtype()
             ?.run {
                 println("结果: $this")
