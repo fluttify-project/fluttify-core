@@ -10,6 +10,10 @@ import 'package:flutter/services.dart';
 
 // ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 class Ref_#__platform__# extends Ref {
+  Future<void> performSelectorWithObject(String selector, Object object) {
+    return MethodChannel('#__method_channel__#').invokeMethod('Ref_#__platform__#::performSelectorWithObject', {'refId': refId, 'selector': selector, 'object': object});
+  }
+
   #__type_checks__#
 
   #__type_casts__#
