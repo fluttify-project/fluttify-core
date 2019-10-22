@@ -52,6 +52,8 @@ class SDK : IPlatform {
                 fullName.jsonable() -> Type().apply { name = fullName; isJsonable = true }
                 // 已支持的系统类
                 fullName in SYSTEM_TYPE.map { it.name } -> SYSTEM_TYPE.first { it.name == fullName }
+                // 是objc的id指针, 转为NSObject
+                fullName == "id" -> Type().apply { name = "NSObject"; typeType == TypeType.Class }
                 // lambda
                 fullName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda

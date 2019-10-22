@@ -1,10 +1,11 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda
 
-import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.jsonable
-import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Parameter
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_enum.CallbackCaseArgEnumTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_jsonable.CallbackCaseArgJsonableTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_list.CallbackCaseArgListTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_ref.CallbackCaseArgRefTmpl
 
 //case '#__callback_case__#':
 //  if (#__callback_handler__# != null) {
@@ -25,12 +26,17 @@ class CallbackCaseLambdaTmpl(private val lambdaParam: Parameter) {
         val callbackCase = "Callback::${lambdaParam.variable.typeName}::${lambdaParam.variable.typeName}"
         val log = ""
         val callbackHandler = lambdaParam.variable.name
-        val callbackArgs = lambdaParam.variable.typeName.findType().formalParams
+        val callbackArgs = lambdaParam
+            .variable
+            .typeName
+            .findType()
+            .formalParams
             .joinToString {
-                if (it.variable.typeName.jsonable()) {
-                    "args['${it.variable.name.depointer()}']"
-                } else {
-                    "${it.variable.typeName.toDartType()}()..refId = (args['${it.variable.name.depointer()}'])"
+                when {
+                    it.variable.jsonable() -> CallbackCaseArgJsonableTmpl(it).dartCallbackCaseArgJsonable()
+                    it.variable.isList -> CallbackCaseArgListTmpl(it).dartCallbackCaseArgList()
+                    it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it).dartCallbackCaseArgEnum()
+                    else -> CallbackCaseArgRefTmpl(it).dartCallbackCaseArgRef()
                 }
             }
 
