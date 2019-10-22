@@ -10,7 +10,7 @@ import me.yohom.fluttify.model.Type
 /**
  * 生成普通类的dart接口
  */
-class EnumerationTmpl(private val type: Type) {
+class TypeEnumTmpl(private val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/enum.dart.tmpl").readText()
 
     fun dartEnum(): String {

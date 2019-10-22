@@ -453,6 +453,45 @@ fun OBJC_FILE.objcType(): List<Type> {
                 )
             )
         }
+
+        override fun enterFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext) {
+            val returnType = ctx
+                .declarationSpecifiers()
+                .typeSpecifier()[0]
+                ?.text
+            val typeName = ctx
+                .identifier()
+                ?.text
+            val formalParams = ctx
+                .parameterList()
+                .parameterDeclarationList()
+                .parameterDeclaration()
+                ?.map {
+                    Parameter(
+                        variable = Variable(
+                            typeName = it.declarationSpecifiers().text,
+                            platform = Platform.iOS,
+                            name = it.declarator().text
+                        ),
+                        platform = Platform.iOS
+                    )
+                }
+
+            if (returnType != null && typeName != null && formalParams != null) {
+                result.add(
+                    Type().also {
+                        it.typeType = TypeType.Function
+                        it.isPublic = true
+                        it.isAbstract = false
+                        it.name = typeName
+                        it.isStaticType = true
+                        it.returnType = returnType
+                        it.formalParams = formalParams
+                        it.platform = Platform.iOS
+                    }
+                )
+            }
+        }
     })
 
     return result

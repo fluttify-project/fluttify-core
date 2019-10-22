@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
@@ -24,10 +24,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  // 生成方法们
 //  #__methods__#
 //}
-class TypeSdkTmpl(
-    private val type: Type,
-    private val ext: FluttifyExtension
-) {
+class TypeSdkTmpl(private val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
     fun dartClass(): String {

@@ -1,13 +1,9 @@
-package me.yohom.fluttify.tmpl.dart.type.type_sdk.method.`return`
+package me.yohom.fluttify.tmpl.dart.type.common.`return`
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
-class ReturnTmpl(
-    private val method: Method,
-    private val ext: FluttifyExtension
-) {
+class ReturnTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
 
     fun dartMethodReturn(): String {

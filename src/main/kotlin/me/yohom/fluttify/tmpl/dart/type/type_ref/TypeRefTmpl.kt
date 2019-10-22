@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_ref
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.filterType
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.SDK
@@ -23,10 +23,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
 //
 //  #__type_casts__#
 //}
-class TypeRefTmpl(
-    private val sdk: SDK,
-    private val ext: FluttifyExtension
-) {
+class TypeRefTmpl(private val sdk: SDK) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/ref_type.dart.tmpl").readText()
 
     fun dartRefClass(): String {
@@ -40,7 +37,9 @@ class TypeRefTmpl(
                 sdk.libs
                     .flatMap { it.types }
                     .filterType()
+                    .asSequence()
                     .filterNot { it.isLambda() }
+                    .filterNot { it.isFunction() }
                     .distinctBy { it.name }
                     .filter { !it.isInterface() && !it.isEnum() }
                     .joinToString("\n") { TypeCheckTmpl(it, ext).dartTypeCheck() }
@@ -50,7 +49,9 @@ class TypeRefTmpl(
                 sdk.libs
                     .flatMap { it.types }
                     .filterType()
+                    .asSequence()
                     .filterNot { it.isLambda() }
+                    .filterNot { it.isFunction() }
                     .distinctBy { it.name }
                     .filter { !it.isInterface() && !it.isEnum() }
                     .joinToString("\n") { TypeCastTmpl(it, ext).dartTypeCast() }

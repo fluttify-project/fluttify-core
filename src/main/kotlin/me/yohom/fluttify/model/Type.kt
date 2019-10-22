@@ -77,12 +77,12 @@ open class Type : IPlatform, IScope {
     var constants: MutableList<String> = mutableListOf()
 
     /**
-     * 返回值类型 Lambda专用
+     * 返回值类型 Lambda/Function专用
      */
     var returnType: String = ""
 
     /**
-     * 形参 Lambda专用
+     * 形参 Lambda/Function专用
      */
     var formalParams: List<Parameter> = listOf()
 
@@ -111,16 +111,18 @@ open class Type : IPlatform, IScope {
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda
 
+    fun isFunction(): Boolean = typeType == TypeType.Function
+
     fun subtypes(): List<Type> {
         return SDK
             .sdks
             .flatMap { it.libs }
             .flatMap { it.types }
-            .filter { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated()}
+            .filter { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
     }
 
     fun firstConcretSubtype(): Type? {
-        return if (isConcret()){
+        return if (isConcret()) {
             this
         } else {
             SDK
@@ -137,6 +139,7 @@ open class Type : IPlatform, IScope {
                 && (this != UNKNOWN_TYPE || isList())
                 && !isEnum()
                 && !isLambda()
+                && !isFunction()
                 && !isObfuscated()
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
                 && ((isInnerClass && isStaticType) || !isInnerClass)
@@ -200,6 +203,23 @@ open class Type : IPlatform, IScope {
         return if (genericTypes.isEmpty()) name else "$name<${genericTypes.joinToString()}>"
     }
 
+    /**
+     * 如果是lambda或者function类型, 提供一个转为method的方法
+     */
+    fun asMethod(): Method {
+        return Method(
+            returnType,
+            name,
+            formalParams,
+            isStatic = true,
+            isAbstract = false,
+            isPublic = true,
+            className = name,
+            platform = platform,
+            isDeprecated = false
+        )
+    }
+
     override fun toString(): String {
         return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
@@ -218,5 +238,5 @@ open class Type : IPlatform, IScope {
 }
 
 enum class TypeType {
-    Class, Enum, Interface, Lambda, Struct
+    Class, Enum, Interface, Lambda, Struct, Function
 }

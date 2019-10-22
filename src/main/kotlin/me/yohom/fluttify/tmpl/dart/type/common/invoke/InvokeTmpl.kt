@@ -1,16 +1,13 @@
-package me.yohom.fluttify.tmpl.dart.type.type_sdk.method.invoke
+package me.yohom.fluttify.tmpl.dart.type.common.invoke
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable
 
-class InvokeTmpl(
-    private val method: Method,
-    private val ext: FluttifyExtension
-) {
+class InvokeTmpl(private val method: Method) {
     fun dartMethodInvoke(): String {
         return invokeString(method.isStatic, method.nameWithClass(), method.formalParams)
     }
@@ -36,11 +33,11 @@ class InvokeTmpl(
             .map { it.variable }
             .toDartMap {
                 when {
-                    it.typeName.findType().isEnum() -> "${it.name}.index"
-                    it.typeName.jsonable() -> it.name
-                    (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name}.map((it) => it.refId).toList()"
+                    it.typeName.findType().isEnum() -> "${it.name.depointer()}.index"
+                    it.typeName.jsonable() -> it.name.depointer()
+                    (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}.map((it) => it.refId).toList()"
                     it.genericLevel > 1 -> "[]" // 多维数组暂不处理
-                    else -> "${it.name}.refId"
+                    else -> "${it.name.depointer()}.refId"
                 }
             }
 

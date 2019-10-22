@@ -10,7 +10,7 @@ import me.yohom.fluttify.model.*
  */
 fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name }): String {
     if (isEmpty()) return ""
-    return joinToString(prefix = "{", postfix = "}") { "\"${it.name}\": ${valueBuilder(it)}" }
+    return joinToString(prefix = "{", postfix = "}") { "\"${it.name.depointer()}\": ${valueBuilder(it)}" }
 }
 
 /**

@@ -6,7 +6,8 @@ import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
-import me.yohom.fluttify.tmpl.dart.enumeration.EnumerationTmpl
+import me.yohom.fluttify.tmpl.dart.enumeration.TypeEnumTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_functions.TypeFunctionsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.TypeRefTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
@@ -44,10 +45,11 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it, ext).dartClass()
-                    TypeType.Enum -> EnumerationTmpl(it).dartEnum()
+                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it).dartClass()
+                    TypeType.Enum -> TypeEnumTmpl(it).dartEnum()
                     TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
+                    TypeType.Function -> ""
                     null -> ""
                 }
 
@@ -62,8 +64,19 @@ open class AndroidDartInterface : FluttifyTask() {
                 }
             }
 
+        // 处理所有的函数 但是java其实没有顶层函数, 所以这里的结果一定是空字符串
+        sdk.libs
+            .flatMap { it.types }
+            .filter { it.typeType == TypeType.Function }
+            .run {
+                val functionsFile =
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/functions.g.dart"
+
+                functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
+            }
+
         // 在Ref类中为每个类生成类型检查和转型方法
-        TypeRefTmpl(sdk, ext).dartRefClass().run {
+        TypeRefTmpl(sdk).dartRefClass().run {
             "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/ref.g.dart".file()
                 .writeText(this)
         }
@@ -97,14 +110,14 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理普通类
         sdk.libs
             .flatMap { it.types }
-            .onEach { if (it.isEnum()) println("类${it.name}是枚举") }
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it, ext).dartClass()
-                    TypeType.Enum -> EnumerationTmpl(it).dartEnum()
+                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it).dartClass()
+                    TypeType.Enum -> TypeEnumTmpl(it).dartEnum()
                     TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
+                    TypeType.Function -> "" // 函数要单独处理, 全部放到一个文件里去
                     null -> ""
                 }
 
@@ -119,8 +132,19 @@ open class IOSDartInterface : FluttifyTask() {
                 }
             }
 
+        // 处理所有的函数
+        sdk.libs
+            .flatMap { it.types }
+            .filter { it.typeType == TypeType.Function }
+            .run {
+                val functionsFile =
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/functions.g.dart"
+
+                functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
+            }
+
         // 在Ref类中为每个类生成类型检查和转型方法
-        TypeRefTmpl(sdk, ext).dartRefClass().run {
+        TypeRefTmpl(sdk).dartRefClass().run {
             "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ref.g.dart".file()
                 .writeText(this)
         }

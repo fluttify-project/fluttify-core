@@ -1,24 +1,23 @@
-package me.yohom.fluttify.tmpl.dart.type.type_sdk.method
+package me.yohom.fluttify.tmpl.dart.type.type_functions.function
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
 
-//#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
-//  // 日志打印
+//Future<#__return_type__#> #__function_name__#(#__formal_params__#) async {
+//  // print log
 //  #__log__#
 //
-//  // 调用原生方法
+//  // invoke native method
 //  #__invoke__#
 //
-//  // 接受原生回调
+//  // handle native call
 //  #__callback__#
 //
-//  // 返回值
+//  // convert native result to dart side object
 //  if (result == null) {
 //    return null;
 //  } else {
@@ -26,33 +25,29 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //    return #__return_statement__#;
 //  }
 //}
-class MethodTmpl(
-    private val method: Method,
-    private val ext: FluttifyExtension
-) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
+class TypeFunctionTmpl(private val functionType: Type) {
+    private val tmpl = this::class.java.getResource("/tmpl/dart/function.mtd.dart.tmpl").readText()
 
-    fun dartMethod(): String {
-        val static = if (method.isStatic) "static " else ""
-        val returnType = method.returnType.toDartType()
-        val name = method.name + method.formalParams.joinToString("") { it.named }.capitalize()
+    fun dartFunction(): String {
+        val returnType = functionType.returnType.toDartType()
+        val name = functionType.name
         // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
-        val formalParams = method
+        val formalParams = functionType
             .formalParams
             .joinToString { it.variable.toDartString() }
             .run {
                 // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
-                if (method.className.findType().isView()) {
+                if (functionType.isView()) {
                     if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
                 } else {
                     this
                 }
             }
-        val log = LogTmpl(method).dartMethodLog()
-        val invoke = InvokeTmpl(method).dartMethodInvoke()
-        val callback = CallbackMethodTmpl(method).callback()
-        val returnStatement = ReturnTmpl(method).dartMethodReturn()
-        val nativeObjectPool = method.returnType.run {
+        val log = LogTmpl(functionType.asMethod()).dartMethodLog()
+        val invoke = InvokeTmpl(functionType.asMethod()).dartMethodInvoke()
+        val callback = CallbackMethodTmpl(functionType.asMethod()).callback()
+        val returnStatement = ReturnTmpl(functionType.asMethod()).dartMethodReturn()
+        val nativeObjectPool = functionType.returnType.run {
             when {
                 jsonable() or findType().isEnum() or isVoid() -> ""
                 isList() -> "kNativeObjectPool.addAll($returnStatement);"
@@ -61,9 +56,8 @@ class MethodTmpl(
         }
 
         return tmpl
-            .replace("#__static__#", static)
             .replace("#__return_type__#", returnType)
-            .replace("#__method_name__#", name)
+            .replace("#__function_name__#", name)
             .replace("#__formal_params__#", formalParams)
             .replaceParagraph("#__log__#", log)
             .replaceParagraph("#__invoke__#", invoke)

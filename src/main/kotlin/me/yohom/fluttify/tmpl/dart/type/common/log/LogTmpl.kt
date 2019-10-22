@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.dart.type.type_sdk.method.log
+package me.yohom.fluttify.tmpl.dart.type.common.log
 
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.model.Method

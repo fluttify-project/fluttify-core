@@ -51,8 +51,8 @@ internal class CallbackLambdaTmpl(private val callerMethod: Method, private val 
             ""
         }
         val callback = when {
-            callbackLambda.returnType == "void" -> CallbackVoidTmpl(callbackLambda).objcCallbackVoid()
-            else -> CallbackReturnTmpl(callbackLambda).objcCallbackReturn()
+            callbackLambda.returnType == "void" -> CallbackVoidTmpl(callbackLambda.asMethod()).objcCallbackVoid()
+            else -> CallbackReturnTmpl(callbackLambda.asMethod()).objcCallbackReturn()
         }
 
         return tmpl
