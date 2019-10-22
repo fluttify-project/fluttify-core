@@ -8,12 +8,6 @@ import org.gradle.api.tasks.TaskAction
  * 需要引入的内容为android端的主类和模型类以及ios端的主类和模型类
  */
 open class Export : FluttifyTask() {
-//    @OutputFiles
-//    val exportFiles = listOf(
-//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/android.export.g.dart".file(),
-//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ios.export.g.dart".file()
-//    )
-
     @TaskAction
     fun process() {
         val androidDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file()
@@ -34,8 +28,12 @@ open class Export : FluttifyTask() {
             if (relativePath.isNotBlank()) iosResult.appendln("export '${relativePath}';")
         }
 
-        androidResult.appendln("export '../utils.g.dart';")
-        iosResult.appendln("export '../utils.g.dart';")
+        androidResult
+            .appendln("export '../utils.g.dart';")
+            .appendln("export 'package:foundation_fluttify/foundation_fluttify.dart';")
+        iosResult
+            .appendln("export '../utils.g.dart';")
+            .appendln("export 'package:foundation_fluttify/foundation_fluttify.dart';")
 
         androidExportFile.writeText(androidResult.toString())
         iosExportFile.writeText(iosResult.toString())

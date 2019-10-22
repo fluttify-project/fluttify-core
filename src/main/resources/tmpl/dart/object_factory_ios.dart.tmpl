@@ -12,18 +12,7 @@ import 'package:#__current_package__#/src/ios/ios.export.g.dart';
 class ObjectFactory_iOS {
   static final _channel = MethodChannel('#__method_chanel__#');
 
-  static Future<CLLocationCoordinate2D> createCLLocationCoordinate2D(double latitude, double longitude) async {
-    final int refId = await _channel.invokeMethod('ObjectFactory::createCLLocationCoordinate2D', {'latitude': latitude, 'longitude': longitude});
-    return CLLocationCoordinate2D()..refId = refId;
-  }
-
-  static Future<UIImage> createUIImage(Uint8List bitmapBytes) async {
-    final refId =
-        await _channel.invokeMethod('ObjectFactory::createUIImage', {'bitmapBytes': bitmapBytes});
-    return UIImage()..refId = refId;
-  }
-
-  static Future<void> release(Ref_iOS ref) async {
+  static Future<void> release(Ref ref) async {
     await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
   }
 
@@ -31,7 +20,7 @@ class ObjectFactory_iOS {
     await _channel.invokeMethod('ObjectFactory::clearHeap');
   }
 
-  static Future<void> pushStack(String name, Ref_iOS ref) async {
+  static Future<void> pushStack(String name, Ref ref) async {
     await _channel.invokeMethod('ObjectFactory::pushStack', {'name': name, 'refId': ref.refId});
   }
 
@@ -44,90 +33,4 @@ class ObjectFactory_iOS {
   }
 
   #__create_objects__#
-}
-
-class NSObject extends Ref_iOS {}
-
-// STRUCT
-class CLLocationCoordinate2D extends Ref_iOS {
-  Future<double> get latitude {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLLocationCoordinate2D::get_latitude', {'refId': refId});
-  }
-
-  Future<double> get longitude {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLLocationCoordinate2D::get_longitude', {'refId': refId});
-  }
-}
-
-class CLHeading extends Ref_iOS {}
-
-class CGRect extends Ref_iOS {}
-
-class CGPoint extends Ref_iOS {}
-
-class CGSize extends Ref_iOS {}
-
-class UIEdgeInsets extends Ref_iOS {}
-
-// CLASS
-class CLLocationManager extends NSObject {}
-
-class CLLocation extends NSObject {
-  Future<CLLocationCoordinate2D> get coordinate async {
-    final result = await MethodChannel('#__method_chanel__#').invokeMethod('CLLocation::get_coordinate', {'refId': refId});
-    return CLLocationCoordinate2D()..refId = result;
-  }
-
-  Future<double> get altitude {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLLocation::get_altitude', {'refId': refId});
-  }
-
-  Future<double> get horizontalAccuracy {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLLocation::get_horizontalAccuracy', {'refId': refId});
-  }
-
-  Future<double> get verticalAccuracy {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLLocation::get_verticalAccuracy', {'refId': refId});
-  }
-
-  Future<double> get course {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLLocation::get_course', {'refId': refId});
-  }
-
-  Future<double> get speed {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLLocation::get_speed', {'refId': refId});
-  }
-
-  Future<CLFloor> get floor async {
-    final result = await MethodChannel('#__method_chanel__#').invokeMethod('CLLocation::get_floor', {'refId': refId});
-    return CLFloor()..refId = result;
-  }
-}
-
-class CLFloor extends NSObject {
-  Future<String> get level {
-    return MethodChannel('#__method_chanel__#').invokeMethod('CLFloor::get_level', {'refId': refId});
-  }
-}
-
-class NSError extends NSObject {}
-
-mixin NSCoding on NSObject {}
-
-mixin NSCopying on NSObject {}
-
-class UIView extends NSObject {}
-
-class UIControl extends NSObject {}
-
-class UIImage extends NSObject {}
-
-// ENUM
-enum CLAuthorizationStatus {
-  kCLAuthorizationStatusNotDetermined,
-  kCLAuthorizationStatusRestricted,
-  kCLAuthorizationStatusDenied,
-  kCLAuthorizationStatusAuthorizedAlways,
-  kCLAuthorizationStatusAuthorizedWhenInUse,
-  kCLAuthorizationStatusAuthorized,
 }
