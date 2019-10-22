@@ -4,6 +4,6 @@ for (int i = 0; i < #__arg_name__#.count; i++) {
     NSObject* item = ((NSObject*) [#__arg_name__# objectAtIndex:i]);
     // return to dart side data
     arg#__arg_name__#[i] = @(item.hash);
-    // add to HEAP_#__plugin_name__#
-    HEAP_#__plugin_name__#[@(item.hash)] = item;
+    // add to HEAP
+    HEAP[@(item.hash)] = item;
 }

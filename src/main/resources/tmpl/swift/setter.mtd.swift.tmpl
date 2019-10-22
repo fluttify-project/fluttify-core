@@ -2,7 +2,7 @@ private func #__setter_method_name__#(registrar: FlutterPluginRegistrar, args: D
     let #__field_name__# = args["#__field_name__#"] as! #__field_type__#
 
     let refId = args["refId"] as! Int
-    let ref = HEAP_#__plugin_name__#[refId] as! #__class_name__#
+    let ref = HEAP[refId] as! #__class_name__#
 
     ref.#__setter__# = #__field_name__#
     methodResult("success")

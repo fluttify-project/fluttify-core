@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Variable
 
 //// 引用参数
-//#__type_name__# #__arg_name__# = (#__type_name__#) HEAP_#__plugin_name__#[@([args[@"#__arg_name__#"] integerValue])];
+//#__type_name__# #__arg_name__# = (#__type_name__#) HEAP[@([args[@"#__arg_name__#"] integerValue])];
 internal class ArgRefTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/arg_ref.stmt.m.tmpl").readText()
 
@@ -18,6 +18,9 @@ internal class ArgRefTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__type_name__#", typeName)
             .replace("#__arg_name__#", argName)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+            .replace(
+                "#__plugin_name__#",
+                if (variable.isPlatformType()) "Platform" else ext.outputProjectName.underscore2Camel()
+            )
     }
 }

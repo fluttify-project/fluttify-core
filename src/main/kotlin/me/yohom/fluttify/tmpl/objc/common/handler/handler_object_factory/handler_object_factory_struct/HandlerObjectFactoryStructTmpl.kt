@@ -10,7 +10,7 @@ import me.yohom.fluttify.model.Type
 //    #__type_name__# data;
 //
 //    NSValue* dataValue = [NSValue value:&data withObjCType:@encode(#__type_name__#)];
-//    HEAP_#__plugin_name__#[@(dataValue.hash)] = dataValue;
+//    HEAP[@(dataValue.hash)] = dataValue;
 //
 //    methodResult(@(dataValue.hash));
 //},
@@ -21,6 +21,6 @@ internal class HandlerObjectFactoryStructTmpl(private val type: Type) {
         return tmpl
             .replace("#__method_name__#", "ObjectFactory::create${type.name}")
             .replace("#__type_name__#", type.name)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

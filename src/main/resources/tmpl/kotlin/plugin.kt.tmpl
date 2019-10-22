@@ -9,11 +9,7 @@ import android.util.Log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
-
-// The stack that exists on the Dart side for a method call is enabled only when the MethodChannel passing parameters are limited
-val STACK_#__plugin_name__# = mutableMapOf<String, Any>()
-// Container for Dart side random access objects
-val HEAP_#__plugin_name__# = mutableMapOf<Int, Any>()
+import me.yohom.foundation_fluttify
 
 @Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.MethodCallHandler {
@@ -35,89 +31,6 @@ class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.M
 
     override fun onMethodCall(methodCall: MethodCall, methodResult: MethodChannel.Result) {
         val args = methodCall.arguments as? Map<String, Any> ?: mapOf()
-        when (methodCall.method) {
-            // get Application obejct
-            "ObjectFactory::getandroid_app_Application" -> {
-                methodResult.success(registrar.activity().application.apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
-            }
-            // get FlutterActivity object
-            "ObjectFactory::getandroid_app_Activity" -> {
-                methodResult.success(registrar.activity().apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
-            }
-            // create android.os.Bundle
-            "ObjectFactory::createandroid_os_Bundle" -> {
-                methodResult.success(Bundle().apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
-            }
-            // create bitmap object
-            "ObjectFactory::createandroid_graphics_Bitmap" -> {
-                val bitmapBytes = args["bitmapBytes"] as ByteArray
-                val bitmap = android.graphics.BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.size)
-
-                HEAP_#__plugin_name__#[bitmap.hashCode()] = bitmap
-
-                methodResult.success(bitmap.hashCode())
-            }
-            // release an object
-            "ObjectFactory::release" -> {
-                Log.d("ObjectFactory", "释放对象: ${HEAP_#__plugin_name__#[args["refId"] as Int]?.javaClass}@${args["refId"]}")
-
-                HEAP_#__plugin_name__#.remove(args["refId"] as Int)
-
-                methodResult.success("success")
-
-                // print current HEAP_#__plugin_name__#
-                Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
-            }
-            // clear objects in HEAP_#__plugin_name__#
-            "ObjectFactory::clearHeap" -> {
-                Log.d("ObjectFactory", "CLEAR HEAP")
-
-                HEAP_#__plugin_name__#.clear()
-                methodResult.success("success")
-
-                // print current HEAP_#__plugin_name__#
-                Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
-            }
-            // push an object to stack
-            "ObjectFactory::pushStack" -> {
-                val name = args["name"] as String
-                val refId = args["refId"] as Int
-
-                Log.d("ObjectFactory", "PUSH OBJECT: ${HEAP_#__plugin_name__#[refId]?.javaClass}@${refId}")
-
-                HEAP_#__plugin_name__#[refId]?.run { STACK_#__plugin_name__#[name] = this }
-
-                methodResult.success("success")
-
-                // print current STACK_#__plugin_name__#
-                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
-            }
-            // push a jsonable to stack
-            "ObjectFactory::pushStackJsonable" -> {
-                val name = args["name"] as String
-                val data = args["data"]
-
-                Log.d("ObjectFactory", "压入jsonable: ${data?.javaClass}@${data}")
-
-                STACK_#__plugin_name__#[name] = data!!
-
-                methodResult.success("success")
-
-                // 打印当前STACK_#__plugin_name__#
-                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
-            }
-            // clear STACK
-            "ObjectFactory::clearStack" -> {
-                STACK_#__plugin_name__#.clear()
-
-                methodResult.success("success")
-
-                // print current STACK_#__plugin_name__#
-                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
-            }
-            else -> {
-                handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()
-            }
-        }
+        handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()
     }
 }

@@ -6,7 +6,7 @@ import me.yohom.fluttify.extensions.underscore2Camel
 
 //// 返回值: 结构体
 //NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
-//HEAP_#__plugin_name__#[@(resultValue.hash)] = resultValue;
+//HEAP[@(resultValue.hash)] = resultValue;
 //
 //methodResult(@(resultValue.hash));
 internal class ResultStructTmpl(val returnType: TYPE_NAME) {
@@ -16,7 +16,7 @@ internal class ResultStructTmpl(val returnType: TYPE_NAME) {
     fun objcResultStruct(): String {
         return tmpl
             .replace("#__result_type__#", returnType)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
 
     }
 

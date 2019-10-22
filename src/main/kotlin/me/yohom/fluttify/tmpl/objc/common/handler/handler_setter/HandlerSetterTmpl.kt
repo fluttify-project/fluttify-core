@@ -15,7 +15,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStruc
 //    #__args__#
 //
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__# ref = (#__class_name__#) HEAP_#__plugin_name__#[@(refId)];
+//    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
 //
 //    ref.#__setter__# = #__field_value__#;
 //    methodResult(@"success");
@@ -49,6 +49,6 @@ internal class HandlerSetterTmpl(private val field: Field) {
             .replace("#__setter__#", setter)
             .replace("#__field_value__#", fieldValue)
             .replace("#__class_name__#", className)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

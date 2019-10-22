@@ -22,9 +22,9 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 //
 //// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
-//NSMutableDictionary<NSNumber *, NSObject *> *STACK_#__plugin_name__#;
+//NSMutableDictionary<NSNumber *, NSObject *> *STACK;
 //// Dart端随机存取对象的容器
-//NSMutableDictionary<NSNumber *, NSObject *> *HEAP_#__plugin_name__#;
+//NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 //
 //@implementation #__plugin_name__#Plugin {
 //  NSObject <FlutterPluginRegistrar> * _registrar;
@@ -46,9 +46,9 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //
 //+ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
 //  // 栈容器
-//  STACK_#__plugin_name__# = @{}.mutableCopy;
+//  STACK = @{}.mutableCopy;
 //  // 堆容器
-//  HEAP_#__plugin_name__# = @{}.mutableCopy;
+//  HEAP = @{}.mutableCopy;
 //
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
 //      methodChannelWithName:@"#__method_channel__#"
@@ -68,19 +68,19 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //  if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
 //    NSLog(@"ObjectFactory::释放对象: %@", (NSNumber *) args[@"refId"]);
 //
-//    [HEAP_#__plugin_name__# removeObjectForKey:(NSNumber *) args[@"refId"]];
+//    [HEAP removeObjectForKey:(NSNumber *) args[@"refId"]];
 //    methodResult(@"success");
 //
-//    NSLog(@"HEAP_#__plugin_name__#: %@", HEAP_#__plugin_name__#);
+//    NSLog(@"HEAP: %@", HEAP);
 //  }
 //  // 清空堆
 //  else if ([@"ObjectFactory::clearHeap" isEqualToString:methodCall.method]) {
 //    NSLog(@"ObjectFactory::清空堆");
 //
-//    [HEAP_#__plugin_name__# removeAllObjects];
+//    [HEAP removeAllObjects];
 //    methodResult(@"success");
 //
-//    NSLog(@"HEAP_#__plugin_name__#: %@", HEAP_#__plugin_name__#);
+//    NSLog(@"HEAP: %@", HEAP);
 //  }
 //  // 创建CLLocationCoordinate2D
 //  else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
@@ -90,7 +90,7 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //    CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
 //
 //    NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
-//    HEAP_#__plugin_name__#[@(dataValue.hash)] = dataValue;
+//    HEAP[@(dataValue.hash)] = dataValue;
 //
 //    methodResult(@(dataValue.hash));
 //  }
@@ -100,7 +100,7 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //
 //    UIImage* bitmap = [UIImage imageWithData:bitmapBytes.data];
 //
-//    HEAP_#__plugin_name__#[@(bitmap.hash)] = bitmap;
+//    HEAP[@(bitmap.hash)] = bitmap;
 //
 //    methodResult(@(bitmap.hash));
 //  } else {
@@ -235,7 +235,7 @@ class PluginTmpl(
                     "#__delegate_methods__#",
                     callbackMethods.joinToString("\n")
                 )
-                .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
         )
     }
 }

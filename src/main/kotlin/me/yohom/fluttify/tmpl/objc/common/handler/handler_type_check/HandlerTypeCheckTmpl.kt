@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Type
 //@"RefClass::isKindOf#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 引用对象
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    id ref = HEAP_#__plugin_name__#[@(refId)];
+//    id ref = HEAP[@(refId)];
 //
 //    BOOL isTargetType = [ref isKindOfClass:[#__type_name__# class]];
 //    methodResult(@(isTargetType));
@@ -19,6 +19,6 @@ internal class HandlerTypeCheckTmpl(private val type: Type) {
     fun objcTypeCheck(): String {
         return tmpl
             .replace("#__type_name__#", type.name.toUnderscore())
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

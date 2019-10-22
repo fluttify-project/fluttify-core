@@ -4,13 +4,13 @@ import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Parameter
 
-//val arg#__arg_name__# = #__arg_name__#.apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode()
+//val arg#__arg_name__# = #__arg_name__#.apply { HEAP[hashCode()] = this }.hashCode()
 internal class CallbackArgRefTmpl(private val param: Parameter) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback_arg_ref.stmt.kt.tmpl").readText()
 
     fun kotlinCallbackArgRef(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

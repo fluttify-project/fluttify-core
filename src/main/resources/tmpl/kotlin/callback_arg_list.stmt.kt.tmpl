@@ -1,1 +1,1 @@
-val arg#__arg_name__# = #__arg_name__#.map { it.apply { HEAP_#__plugin_name__#[it.hashCode()] = it }.hashCode() }
+val arg#__arg_name__# = #__arg_name__#.map { it.apply { HEAP[it.hashCode()] = it }.hashCode() }

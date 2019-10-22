@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
@@ -13,6 +14,9 @@ data class Variable(
     val genericLevel: Int = 0,
     override var platform: Platform
 ) : IPlatform {
+    fun isPlatformType(): Boolean {
+        return typeName in SYSTEM_TYPE.map { it.name }
+    }
     fun isStructPointer(): Boolean {
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
     }

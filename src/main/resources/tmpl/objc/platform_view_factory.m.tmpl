@@ -44,7 +44,7 @@ typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSStri
 
 - (UIView *)view {
   #__native_view__# *view = [[#__native_view__# alloc] init];
-  HEAP_#__plugin_name__#[@(_viewId)] = view;
+  HEAP[@(_viewId)] = view;
 
   //region handlers
   _handlerMap = @{

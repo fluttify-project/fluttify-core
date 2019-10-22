@@ -33,12 +33,12 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method.HandlerMethod
 //        return object : PlatformView {
 //            private val view = #__native_view__#(registrar.activity())
 //
-//            // 构造完成后马上加入HEAP_#__plugin_name__#
-//            override fun getView(): View = view.apply { HEAP_#__plugin_name__#[id] = this }
+//            // 构造完成后马上加入HEAP
+//            override fun getView(): View = view.apply { HEAP[id] = this }
 //
-//            // dispose后从HEAP_#__plugin_name__#中删除
+//            // dispose后从HEAP中删除
 //            override fun dispose() {
-//                HEAP_#__plugin_name__#.remove(id)
+//                HEAP.remove(id)
 //            }
 //        }
 //    }
@@ -60,6 +60,6 @@ class PlatformViewFactoryTmpl(private val viewType: Type) {
             .replaceParagraph("#__handlers__#", handlers)
             .replace("#__native_view__#", nativeView)
             .replace("#__method_channel__#", methodChannel)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

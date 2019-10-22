@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Method
 
 //let refId = args["refId"] as Int
-//let ref = HEAP_#__plugin_name__#[refId] as #__class_name__#
+//let ref = HEAP[refId] as #__class_name__#
 internal class RefTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/swift/ref.stmt.swift.tmpl").readText()
 
@@ -15,7 +15,7 @@ internal class RefTmpl(private val method: Method) {
         else
             tmpl
                 .replace("#__class_name__#", method.className)
-                .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
 
     }
 }

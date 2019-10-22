@@ -24,12 +24,12 @@ import me.yohom.fluttify.model.Type
 //
 //   func view() -> UIView {
 //       let nativeView = #__native_view__#()
-//       HEAP_#__plugin_name__#[viewId] = nativeView
+//       HEAP[viewId] = nativeView
 //       return nativeView
 //   }
 //
 //   deinit {
-//       HEAP_#__plugin_name__#.removeValue(forKey: Int(viewId))
+//       HEAP.removeValue(forKey: Int(viewId))
 //   }
 //}
 class PlatformViewFactoryTmpl(
@@ -42,6 +42,6 @@ class PlatformViewFactoryTmpl(
         return tmpl
             .replace("#__import__#", lib.name)
             .replace("#__native_view__#", viewType.name)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

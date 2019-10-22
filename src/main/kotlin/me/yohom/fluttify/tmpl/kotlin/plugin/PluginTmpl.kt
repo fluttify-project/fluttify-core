@@ -22,9 +22,9 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //import io.flutter.plugin.common.PluginRegistry.Registrar
 //
 //// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
-//val STACK_#__plugin_name__# = mutableMapOf<String, Int>()
+//val STACK = mutableMapOf<String, Int>()
 //// Dart端随机存取对象的容器
-//val HEAP_#__plugin_name__# = mutableMapOf<Int, Any>()
+//val HEAP = mutableMapOf<Int, Any>()
 //
 //@Suppress("FunctionName", "UsePropertyAccessSyntax", "RedundantUnitReturnType", "UNUSED_PARAMETER", "SpellCheckingInspection", "ConvertToStringTemplate", "DEPRECATION", "UNUSED_VARIABLE")
 //class #__plugin_name__#Plugin(private val registrar: Registrar): MethodChannel.MethodCallHandler {
@@ -49,68 +49,68 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //        when (methodCall.method) {
 //            // 获取Application对象
 //            "ObjectFactory::getandroid_app_Application" -> {
-//                methodResult.success(registrar.activity().application.apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
+//                methodResult.success(registrar.activity().application.apply { HEAP[hashCode()] = this }.hashCode())
 //            }
 //            // 获取FlutterActivity对象
 //            "ObjectFactory::getandroid_app_Activity" -> {
-//                methodResult.success(registrar.activity().apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
+//                methodResult.success(registrar.activity().apply { HEAP[hashCode()] = this }.hashCode())
 //            }
 //            // 创建android.os.Bundle对象
 //            "ObjectFactory::createandroid_os_Bundle" -> {
-//                methodResult.success(Bundle().apply { HEAP_#__plugin_name__#[hashCode()] = this }.hashCode())
+//                methodResult.success(Bundle().apply { HEAP[hashCode()] = this }.hashCode())
 //            }
 //            // 创建bitmap对象
 //            "ObjectFactory::createandroid_graphics_Bitmap" -> {
 //                val bitmapBytes = args["bitmapBytes"] as ByteArray
 //                val bitmap = android.graphics.BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.size)
 //
-//                HEAP_#__plugin_name__#[bitmap.hashCode()] = bitmap
+//                HEAP[bitmap.hashCode()] = bitmap
 //
 //                methodResult.success(bitmap.hashCode())
 //            }
 //            // 释放一个对象
 //            "ObjectFactory::release" -> {
-//                Log.d("ObjectFactory", "释放对象: ${HEAP_#__plugin_name__#[args["refId"] as Int]?.javaClass}@${args["refId"]}")
+//                Log.d("ObjectFactory", "释放对象: ${HEAP[args["refId"] as Int]?.javaClass}@${args["refId"]}")
 //
-//                HEAP_#__plugin_name__#.remove(args["refId"] as Int)
+//                HEAP.remove(args["refId"] as Int)
 //
 //                methodResult.success("success")
 //
-//                // 打印当前HEAP_#__plugin_name__#
-//                Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
+//                // 打印当前HEAP
+//                Log.d("ObjectFactory", "HEAP: $HEAP")
 //            }
-//            // 清空HEAP_#__plugin_name__#中所有对象
+//            // 清空HEAP中所有对象
 //            "ObjectFactory::clearHeap" -> {
 //                Log.d("ObjectFactory", "清空堆")
 //
-//                HEAP_#__plugin_name__#.clear()
+//                HEAP.clear()
 //                methodResult.success("success")
 //
-//                // 打印当前HEAP_#__plugin_name__#
-//                Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
+//                // 打印当前HEAP
+//                Log.d("ObjectFactory", "HEAP: $HEAP")
 //            }
 //            // 压入栈
 //            "ObjectFactory::pushStack" -> {
 //                val name = args["name"] as String
 //                val refId = args["refId"] as Int
 //
-//                Log.d("ObjectFactory", "压入对象: ${HEAP_#__plugin_name__#[refId]?.javaClass}@${refId}")
+//                Log.d("ObjectFactory", "压入对象: ${HEAP[refId]?.javaClass}@${refId}")
 //
-//                STACK_#__plugin_name__#[name] = refId
+//                STACK[name] = refId
 //
 //                methodResult.success("success")
 //
-//                // 打印当前STACK_#__plugin_name__#
-//                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
+//                // 打印当前STACK
+//                Log.d("ObjectFactory", "STACK: $STACK")
 //            }
 //            // 清空栈
 //            "ObjectFactory::clearStack" -> {
-//                STACK_#__plugin_name__#.clear()
+//                STACK.clear()
 //
 //                methodResult.success("success")
 //
-//                // 打印当前STACK_#__plugin_name__#
-//                Log.d("ObjectFactory", "STACK_#__plugin_name__#: $STACK_#__plugin_name__#")
+//                // 打印当前STACK
+//                Log.d("ObjectFactory", "STACK: $STACK")
 //            }
 //            else -> {
 //                handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()
@@ -170,6 +170,6 @@ class PluginTmpl(private val lib: Lib) {
                 "#__handlers__#",
                 getterHandlers.union(setterHandlers).union(methodHandlers).union(objectFactoryHandlers).joinToString(",\n")
             )
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

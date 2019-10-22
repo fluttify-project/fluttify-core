@@ -10,7 +10,7 @@ import me.yohom.fluttify.model.Field
 //    let #__field_name__# = args["#__field_name__#"] as #__field_type__#
 //
 //    let refId = args["refId"] as Int
-//    let ref = HEAP_#__plugin_name__#[refId] as #__class_name__#
+//    let ref = HEAP[refId] as #__class_name__#
 //
 //    ref.#__setter__# = #__field_name__#
 //    methodResult("success")
@@ -31,6 +31,6 @@ internal class SetterMethodTmpl(private val field: Field) {
             .replace("#__field_name__#", fieldName.depointer())
             .replace("#__field_type__#", fieldType)
             .replace("#__class_name__#", className)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

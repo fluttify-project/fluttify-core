@@ -6,8 +6,8 @@
 #import <Flutter/Flutter.h>
 #import #__import__#
 
-extern NSMutableDictionary<NSString*, NSObject*> *STACK_#__plugin_name__#;
-extern NSMutableDictionary<NSNumber*, NSObject*> *HEAP_#__plugin_name__#;
+extern NSMutableDictionary<NSString*, NSObject*> *STACK;
+extern NSMutableDictionary<NSNumber*, NSObject*> *HEAP;
 
 @interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
 - (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar;

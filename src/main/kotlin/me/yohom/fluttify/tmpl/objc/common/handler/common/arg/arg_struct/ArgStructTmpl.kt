@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
 
 //// 结构体参数
-//NSValue* #__arg_name__#Value = (NSValue*) HEAP_#__plugin_name__#[@([args[@"#__arg_name__#"] integerValue])];
+//NSValue* #__arg_name__#Value = (NSValue*) HEAP[@([args[@"#__arg_name__#"] integerValue])];
 //#__type_name__# #__arg_name__#;
 //[#__arg_name__#Value getValue:&#__arg_name__#];
 internal class ArgStructTmpl(private val variable: Variable) {
@@ -17,6 +17,9 @@ internal class ArgStructTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__type_name__#", typeName)
             .replace("#__arg_name__#", argName)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+            .replace(
+                "#__plugin_name__#",
+                if (variable.isPlatformType()) "Platform" else ext.outputProjectName.underscore2Camel()
+            )
     }
 }

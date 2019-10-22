@@ -42,6 +42,9 @@ open class TweakDefaultProject : FluttifyTask() {
 
         "${outputProjectPath}/lib/src/utils.g.dart"
             .file()
-            .writeText(utilsDartTmpl.replace("#__current_package__#", ext.outputProjectName))
+            .writeText(utilsDartTmpl
+                .replace("#__current_package__#", ext.outputProjectName)
+                .replace("#__method_channel__#", ext.methodChannelName)
+            )
     }
 }

@@ -12,8 +12,8 @@ import me.yohom.fluttify.model.Variable
 //    NSObject* item = ((NSObject*) [#__arg_name__# objectAtIndex:i]);
 //    // 返回给dart端的数据
 //    arg#__arg_name__#[i] = @(item.hash);
-//    // 放到HEAP_#__plugin_name__#中的数据
-//    HEAP_#__plugin_name__#[@(item.hash)] = item;
+//    // 放到HEAP中的数据
+//    HEAP[@(item.hash)] = item;
 //}
 internal class CallbackArgListTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readText()
@@ -22,6 +22,6 @@ internal class CallbackArgListTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__type_name__#", variable.typeName.enpointer())
             .replace("#__arg_name__#", variable.name.depointer())
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

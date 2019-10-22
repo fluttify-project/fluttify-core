@@ -13,7 +13,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //#import <Flutter/Flutter.h>
 //#import #__import__#
 //
-//extern NSMutableDictionary<NSNumber *, NSObject *> *HEAP_#__plugin_name__#;
+//extern NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
 //
 //@interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
 //- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar;
@@ -65,7 +65,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //
 //- (UIView *)view {
 //  #__native_view__# *view = [[#__native_view__# alloc] init];
-//  HEAP_#__plugin_name__#[@(_viewId)] = view;
+//  HEAP[@(_viewId)] = view;
 //
 //  //region handlers
 //  _handlerMap = @{
@@ -91,7 +91,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //}
 //
 //- (void)dealloc {
-//  [HEAP_#__plugin_name__# removeObjectForKey:@(_viewId)];
+//  [HEAP removeObjectForKey:@(_viewId)];
 //}
 //
 //
@@ -150,7 +150,7 @@ class PlatformViewFactoryTmpl(
                 .replace("#__import__#", imports)
                 .replace("#__native_view__#", nativeView)
                 .replace("#__protocols__#", protocols)
-                .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true)),
+                ,
             mTmpl
                 .replace("#__native_view__#", nativeView)
                 .replace("#__plugin__#", plugin)
@@ -160,7 +160,7 @@ class PlatformViewFactoryTmpl(
                 )
                 .replace("#__method_channel__#", methodChannel)
                 .replaceParagraph("#__delegate_methods__#", delegateMethods)
-                .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
         )
     }
 }

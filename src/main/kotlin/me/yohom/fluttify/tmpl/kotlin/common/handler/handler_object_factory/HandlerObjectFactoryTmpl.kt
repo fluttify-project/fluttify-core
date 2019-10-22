@@ -16,10 +16,10 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
 //
 //    // 创建对象
 //    val obj = #__class_name__#(#__args_value__#)
-//    HEAP_#__plugin_name__#[obj.hashCode()] = obj
+//    HEAP[obj.hashCode()] = obj
 //
-//    // 打印当前HEAP_#__plugin_name__#
-//    Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
+//    // 打印当前HEAP
+//    Log.d("ObjectFactory", "HEAP: $HEAP")
 //
 //    methodResult.success(obj.hashCode())
 //}
@@ -60,7 +60,7 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                     .replaceParagraph("#__args__#", args)
                     .replace("#__args_value__#", argsValue)
                     .replace("#__class_name__#", type.name)
-                    .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
             }
     }
 }

@@ -5,7 +5,7 @@
     #__args__#
 
     NSInteger refId = [args[@"refId"] integerValue];
-    #__class_name__# ref = (#__class_name__#) HEAP_#__plugin_name__#[@(refId)];
+    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
 
     ref.#__setter__# = #__field_value__#;
     methodResult(@"success");

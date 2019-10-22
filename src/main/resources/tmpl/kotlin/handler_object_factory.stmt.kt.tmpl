@@ -6,10 +6,10 @@
 
     // create target object
     val obj = #__class_name__#(#__args_value__#)
-    HEAP_#__plugin_name__#[obj.hashCode()] = obj
+    HEAP[obj.hashCode()] = obj
 
-    // print current HEAP_#__plugin_name__#
-    Log.d("ObjectFactory", "HEAP_#__plugin_name__#: $HEAP_#__plugin_name__#")
+    // print current HEAP
+    Log.d("ObjectFactory", "HEAP: $HEAP")
 
     methodResult.success(obj.hashCode())
 }

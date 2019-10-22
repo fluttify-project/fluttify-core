@@ -12,25 +12,5 @@ import 'package:#__current_package__#/src/ios/ios.export.g.dart';
 class ObjectFactory_iOS {
   static final _channel = MethodChannel('#__method_chanel__#');
 
-  static Future<void> release(Ref ref) async {
-    await _channel.invokeMethod('ObjectFactory::release', {'refId': ref.refId});
-  }
-
-  static Future<void> clearHeap() async {
-    await _channel.invokeMethod('ObjectFactory::clearHeap');
-  }
-
-  static Future<void> pushStack(String name, Ref ref) async {
-    await _channel.invokeMethod('ObjectFactory::pushStack', {'name': name, 'refId': ref.refId});
-  }
-
-  static Future<void> pushStackJsonable(String name, dynamic jsonable) async {
-    await _channel.invokeMethod('ObjectFactory::pushStackJsonable', {'name': name, 'data': jsonable});
-  }
-
-  static Future<void> clearStack() async {
-    await _channel.invokeMethod('ObjectFactory::clearStack');
-  }
-
   #__create_objects__#
 }

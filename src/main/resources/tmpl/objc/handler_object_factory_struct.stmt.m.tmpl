@@ -4,9 +4,9 @@
     #__type_name__# data;
 
     NSValue* dataValue = [NSValue value:&data withObjCType:@encode(#__type_name__#)];
-    HEAP_#__plugin_name__#[@(dataValue.hash)] = dataValue;
+    HEAP[@(dataValue.hash)] = dataValue;
 
     methodResult(@(dataValue.hash));
 
-    NSLog(@"HEAP_#__plugin_name__#: %@", HEAP_#__plugin_name__#);
+    NSLog(@"HEAP: %@", HEAP);
 },

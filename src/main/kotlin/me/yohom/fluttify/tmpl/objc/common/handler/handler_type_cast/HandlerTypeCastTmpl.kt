@@ -8,12 +8,12 @@ import me.yohom.fluttify.model.Type
 //@"RefClass::cast#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
 //    // 引用对象
 //    NSInteger refId = [args[@"refId"] integerValue];
-//    id ref = HEAP_#__plugin_name__#[@(refId)];
+//    id ref = HEAP[@(refId)];
 //
 //    // 转型
 //    ref = (#__type_name__#) ref;
-//    // 放回HEAP_#__plugin_name__#
-//    HEAP_#__plugin_name__#[@(refId)] = ref;
+//    // 放回HEAP
+//    HEAP[@(refId)] = ref;
 //
 //    methodResult(@(refId));
 //},
@@ -23,6 +23,6 @@ internal class HandlerTypeCastTmpl(private val type: Type) {
     fun objcTypeCast(): String {
         return tmpl
             .replace("#__type_name__#", type.name.toUnderscore())
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }

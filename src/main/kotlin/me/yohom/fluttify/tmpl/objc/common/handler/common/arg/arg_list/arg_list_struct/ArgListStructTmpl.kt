@@ -10,7 +10,7 @@ import me.yohom.fluttify.model.Variable
 //#__type_name__# #__arg_name__#[#__arg_name__#RefIdArray.count];
 //
 //for (int i = 0; i < #__arg_name__#RefIdArray.count; i++) {
-//    NSValue* #__arg_name__#Value = (NSValue*) HEAP_#__plugin_name__#[[#__arg_name__#RefIdArray objectAtIndex:i]];
+//    NSValue* #__arg_name__#Value = (NSValue*) HEAP[[#__arg_name__#RefIdArray objectAtIndex:i]];
 //    #__type_name__# #__arg_name__#Item;
 //    [#__arg_name__#Value getValue:&#__arg_name__#Item];
 //    #__arg_name__#[i] = #__arg_name__#Item;
@@ -24,6 +24,9 @@ internal class ArgListStructTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__type_name__#", typeName)
             .replace("#__arg_name__#", argName)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+            .replace(
+                "#__plugin_name__#",
+                if (variable.isPlatformType()) "Platform" else ext.outputProjectName.underscore2Camel()
+            )
     }
 }

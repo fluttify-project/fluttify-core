@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Variable
 //// 结构体回调参数
 //NSValue* #__arg_name__#Value = [NSValue value:&#__arg_name__# withObjCType:@encode(#__type_name__#)];
 //NSNumber* arg#__arg_name__# = @(#__arg_name__#Value.hash);
-//HEAP_#__plugin_name__#[arg#__arg_name__#] = #__arg_name__#Value;
+//HEAP[arg#__arg_name__#] = #__arg_name__#Value;
 internal class CallbackArgStructTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_struct.stmt.m.tmpl").readText()
 
@@ -16,6 +16,6 @@ internal class CallbackArgStructTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__arg_name__#", variable.name.depointer())
             .replace("#__type_name__#", variable.typeName)
-            .replace("#__plugin_name__#", ext.outputProjectName.underscore2Camel(true))
+
     }
 }
