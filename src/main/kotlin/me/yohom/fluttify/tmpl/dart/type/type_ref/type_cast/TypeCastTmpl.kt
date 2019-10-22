@@ -9,7 +9,7 @@ import me.yohom.fluttify.model.Type
 //  return #__type_name__#.withRefId(result);
 //}
 class TypeCastTmpl(private val type: Type, private val ext: FluttifyExtension) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/type_cast.dart.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/dart/type_cast.mtd.dart.tmpl").readText()
 
     fun dartTypeCast(): String {
         val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
