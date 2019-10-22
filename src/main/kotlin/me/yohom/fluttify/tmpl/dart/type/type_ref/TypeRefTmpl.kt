@@ -23,6 +23,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
 //
 //  #__type_casts__#
 //}
+@Deprecated("全部转移到type_op.g.dart中去")
 class TypeRefTmpl(private val sdk: SDK) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/ref_type.dart.tmpl").readText()
 

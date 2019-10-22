@@ -9,7 +9,8 @@ import me.yohom.fluttify.model.TypeType
 import me.yohom.fluttify.tmpl.dart.enumeration.TypeEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_functions.TypeFunctionsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
-import me.yohom.fluttify.tmpl.dart.type.type_ref.TypeRefTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_ref.type_cast.TypeCastTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
@@ -75,11 +76,24 @@ open class AndroidDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
             }
 
-        // 在Ref类中为每个类生成类型检查和转型方法
-        TypeRefTmpl(sdk).dartRefClass().run {
-            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/ref.g.dart".file()
-                .writeText(this)
-        }
+        val utilTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
+        val targetTypes = sdk.libs
+            .flatMap { it.types }
+            .filterType()
+            .asSequence()
+            .filterNot { it.isLambda() }
+            .filterNot { it.isFunction() }
+            .distinctBy { it.name }
+            .filter { !it.isInterface() && !it.isEnum() }
+        // 类型检查
+        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it, me.yohom.fluttify.ext).dartTypeCheck() }
+        // 类型造型
+        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it, me.yohom.fluttify.ext).dartTypeCast() }
+        utilTmpl
+            .replace("#__current_package__#", ext.outputProjectName)
+            .replace("#__type_check__#", typeChecks)
+            .replace("#__type_cast__#", typeCasts)
+            .run { "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/type_op.g.dart".file().writeText(this) }
     }
 
 }
@@ -143,10 +157,23 @@ open class IOSDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
             }
 
-        // 在Ref类中为每个类生成类型检查和转型方法
-        TypeRefTmpl(sdk).dartRefClass().run {
-            "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ref.g.dart".file()
-                .writeText(this)
-        }
+        val utilTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
+        val targetTypes = sdk.libs
+            .flatMap { it.types }
+            .filterType()
+            .asSequence()
+            .filterNot { it.isLambda() }
+            .filterNot { it.isFunction() }
+            .distinctBy { it.name }
+            .filter { !it.isInterface() && !it.isEnum() }
+        // 类型检查
+        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it, me.yohom.fluttify.ext).dartTypeCheck() }
+        // 类型造型
+        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it, me.yohom.fluttify.ext).dartTypeCast() }
+        utilTmpl
+            .replace("#__current_package__#", ext.outputProjectName)
+            .replace("#__type_check__#", typeChecks)
+            .replace("#__type_cast__#", typeCasts)
+            .run { "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/type_op.g.dart".file().writeText(this) }
     }
 }
