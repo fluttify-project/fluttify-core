@@ -1,11 +1,12 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.genericType
 import me.yohom.fluttify.model.Field
 
-//(result as List).cast<int>().map((it) => #__type_name__#()..refId = it).toList()
+//(result as List).cast<int>().map((it) => #__type_name__#()..refId = it..tag = '#__tag__#').toList()
 class ResultListTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/result_list.stmt.dart.tmpl").readText()
 
@@ -21,5 +22,6 @@ class ResultListTmpl(private val field: Field) {
                 .run {
                     if (isEmpty()) { field.platform.objectType() } else { this }
                 })
+            .replace("#__tag__#", ext.outputProjectName)
     }
 }

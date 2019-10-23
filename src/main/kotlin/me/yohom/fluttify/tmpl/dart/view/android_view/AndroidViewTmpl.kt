@@ -27,8 +27,7 @@ import me.yohom.fluttify.model.Type
 //  final #__view_simple_name__#CreatedCallback onViewCreated;
 //
 //  @override
-//  _#__view__#_AndroidState createState() =>
-//      _#__view__#_AndroidState();
+//  _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
 //}
 //
 //class _#__view__#_AndroidState extends State<#__view__#_Android> {
@@ -58,7 +57,7 @@ import me.yohom.fluttify.model.Type
 //
 //  @override
 //  void dispose() {
-//    ObjectFactory_Android.release(_controller);
+//    PlatformFactory_Android.release(_controller);
 //    super.dispose();
 //  }
 //}

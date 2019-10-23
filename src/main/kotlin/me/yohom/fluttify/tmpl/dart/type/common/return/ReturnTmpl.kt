@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.common.`return`
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
@@ -40,9 +41,9 @@ class ReturnTmpl(private val method: Method) {
                     method.platform.objectType()
                 }
 
-                resultBuilder.append("(result as List).cast<int>().map((it) => $type()..refId = it).toList()")
+                resultBuilder.append("(result as List).cast<int>().map((it) => $type()..refId = it..tag = '${ext.outputProjectName}').toList()")
             } else {
-                resultBuilder.append("${concretType.toDartType()}()..refId = result")
+                resultBuilder.append("${concretType.toDartType()}()..refId = result..tag = '${ext.outputProjectName}'")
             }
         }
 

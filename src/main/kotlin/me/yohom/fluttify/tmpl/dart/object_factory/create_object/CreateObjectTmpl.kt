@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.object_factory.create_object
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.filterConstructor
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.toDartMap
@@ -9,7 +10,7 @@ import me.yohom.fluttify.model.Type
 
 //static Future<#__class_name__#> create#__creator_name__#(#__formal_params__#) async {
 //  final int refId = await _channel.invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
-//  final object = #__class_name__#()..refId = refId;
+//  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
 //
 //  kNativeObjectPool.add(object);
 //  return object;
@@ -40,6 +41,7 @@ class CreateObjectTmpl(val type: Type) {
                                 else -> "${it.name}.refId"
                             }
                         })
+                        .replace("#__tag__#", ext.outputProjectName)
                 }
             Platform.iOS -> listOf(
                 tmpl
@@ -48,6 +50,7 @@ class CreateObjectTmpl(val type: Type) {
                     .replace("#__formal_params__#", "")
                     .replace("#__separator__#", "")
                     .replace("#__args__#", "")
+                    .replace("#__tag__#", ext.outputProjectName)
             )
             else -> listOf()
         }
