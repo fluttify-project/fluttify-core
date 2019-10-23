@@ -4,14 +4,68 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-// todo ios端权限
+// 由于权限比较细, 还是让用户自己去申请权限吧
 val PERMISSION_IOS = mapOf(
-    "Location" to ""
+    "calendar" to listOf("NSCalendarsUsageDescription"),
+    "camera" to listOf("NSCameraUsageDescription"),
+    "contacts" to listOf("NSContactsUsageDescription"),
+    "location" to listOf(
+        "NSLocationUsageDescription",
+        "NSLocationWhenInUseUsageDescription",
+        "NSLocationAlwaysAndWhenInUseUsageDescription",
+        "NSLocationAlwaysUsageDescription"
+    ),
+    "microphone" to listOf("NSMicrophoneUsageDescription"),
+    "phone" to listOf(),
+    "photos" to listOf("NSPhotoLibraryUsageDescription"),
+    "reminders" to listOf("NSRemindersUsageDescription"),
+    "sensors" to listOf("NSMotionUsageDescription"),
+    "sms" to listOf(),
+    "storage" to listOf(),
+    "speech" to listOf("NSSpeechRecognitionUsageDescription"),
+    "locationAlways" to listOf("NSLocationAlwaysAndWhenInUseUsageDescription"),
+    "locationWhenInUse" to listOf("NSLocationWhenInUseUsageDescription"),
+    "mediaLibrary" to listOf("NSAppleMusicUsageDescription", "kTCCServiceMediaLibrary")
 )
 
-// todo android端权限
 val PERMISSION_ANDROID = mapOf(
-    "Location" to ""
+    "calendar" to listOf("android.permission.READ_CALENDAR", "android.permission.WRITE_CALENDAR"),
+    "camera" to listOf("android.permission.CAMERA"),
+    "contacts" to listOf(
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS",
+        "android.permission.GET_ACCOUNTS"
+    ),
+    "location" to listOf(
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION"
+    ),
+    "microphone" to listOf("android.permission.RECORD_AUDIO"),
+    "phone" to listOf(
+        "android.permission.READ_PHONE_STATE",
+        "android.permission.CALL_PHONE",
+        "android.permission.ADD_VOICEMAIL",
+        "android.permission.USE_SIP",
+        "android.permission.READ_CALL_LOG",
+        "android.permission.WRITE_CALL_LOG",
+        "android.permission.PROCESS_OUTGOING_CALLS"
+    ),
+    "photos" to listOf(),
+    "reminders" to listOf(),
+    "sensors" to listOf("android.permission.BODY_SENSORS"),
+    "sms" to listOf(
+        "android.permission.SEND_SMS",
+        "android.permission.RECEIVE_SMS",
+        "android.permission.READ_SMS",
+        "android.permission.RECEIVE_WAP_PUSH",
+        "android.permission.RECEIVE_MMS"
+    ),
+    "storage" to listOf("android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"),
+    "speech" to listOf("android.permission.RECORD_AUDIO"),
+    "locationAlways" to listOf(),
+    "locationWhenInUse" to listOf(),
+    "mediaLibrary" to listOf()
 )
 
 /**
