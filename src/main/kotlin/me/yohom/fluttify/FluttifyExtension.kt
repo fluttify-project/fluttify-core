@@ -38,6 +38,36 @@ open class FluttifyExtension {
      */
     var iOSLanguage: String = "objc"
 
+    /**
+     * 插件描述
+     */
+    var desc: String = "A new fluttify plugin."
+
+    /**
+     * 作者
+     */
+    var author: String = ""
+
+    /**
+     * 作者邮箱
+     */
+    var email: String = ""
+
+    /**
+     * 项目主页
+     */
+    var homepage: String = ""
+
+    /**
+     * Fluttify基础库版本
+     */
+    var foundationVersion: String = ""
+
+    /**
+     * 插件依赖
+     */
+    var pluginDependency: String = ""
+
     val androidTransitiveDependencies get() = transitiveDependencies["android"] ?: listOf()
 
     val iOSTransitiveFramework: List<String>

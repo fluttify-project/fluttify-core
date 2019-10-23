@@ -21,7 +21,14 @@ open class TweakDefaultProject : FluttifyTask() {
 
         "${outputProjectPath}/android/build.gradle"
             .file()
-            .writeText(buildGradleTmpl.replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}"))
+            .writeText(
+                buildGradleTmpl
+                    .replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}")
+                    .replace(
+                        "#__plugin_dependency__#",
+                        if (ext.pluginDependency.isNotEmpty()) "provided rootProject.findProject(\"${ext.pluginDependency}\")" else ""
+                    )
+            )
 
         "${outputProjectPath}/example/ios/Runner/Info.plist"
             .file()
@@ -29,22 +36,36 @@ open class TweakDefaultProject : FluttifyTask() {
 
         "${outputProjectPath}/ios/${ext.outputProjectName}.podspec"
             .file()
-            .writeText(podSpecTmpl.replace("#__project_name__#", ext.outputProjectName))
+            .writeText(
+                podSpecTmpl
+                    .replace("#__project_name__#", ext.outputProjectName)
+                    .replace(
+                        "#__plugin_dependency__#",
+                        if (ext.pluginDependency.isNotEmpty()) "s.dependency '${ext.pluginDependency}'" else ""
+                    )
+            )
 
         "${outputProjectPath}/pubspec.yaml"
             .file()
-            .writeText(pubSpecTmpl
-                .replace("#__project_name__#", ext.outputProjectName)
-                .replace("#__description__#", "")
-                .replace("#__android_identifier__#", "${ext.outputOrg}.${ext.outputProjectName}")
-                .replace("#__plugin_class__#", "${ext.outputProjectName.underscore2Camel()}Plugin")
+            .writeText(
+                pubSpecTmpl
+                    .replace("#__project_name__#", ext.outputProjectName)
+                    .replace("#__description__#", ext.desc)
+                    .replace("#__author__#", ext.author)
+                    .replace("#__email__#", ext.email)
+                    .replace("#__homepage__#", ext.homepage)
+                    .replace("#__foundation_version__#", ext.foundationVersion)
+                    .replace("#__plugin_dependency__#", ext.pluginDependency)
+                    .replace("#__android_identifier__#", "${ext.outputOrg}.${ext.outputProjectName}")
+                    .replace("#__plugin_class__#", "${ext.outputProjectName.underscore2Camel()}Plugin")
             )
 
         "${outputProjectPath}/lib/src/utils.g.dart"
             .file()
-            .writeText(utilsDartTmpl
-                .replace("#__current_package__#", ext.outputProjectName)
-                .replace("#__method_channel__#", ext.methodChannelName)
+            .writeText(
+                utilsDartTmpl
+                    .replace("#__current_package__#", ext.outputProjectName)
+                    .replace("#__method_channel__#", ext.methodChannelName)
             )
     }
 }
