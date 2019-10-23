@@ -4,18 +4,20 @@
 Pod::Spec.new do |s|
   s.name             = '#__project_name__#'
   s.version          = '0.0.1'
-  s.summary          = '{{description}}'
+  s.summary          = '#__desc__#'
   s.description      = <<-DESC
 A new flutter plugin project.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = '#__homepage__#'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { '#__author__#' => '#__email__#' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'foundation_fluttify'
+  # flutter插件依赖
+  #__plugin_dependency__#
 
   s.ios.deployment_target = '8.0'
   # 包含工程下的framework

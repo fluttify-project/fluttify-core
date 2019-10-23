@@ -1,6 +1,7 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.underscore2Camel
 import org.gradle.api.tasks.TaskAction
 
@@ -21,7 +22,14 @@ open class TweakDefaultProject : FluttifyTask() {
 
         "${outputProjectPath}/android/build.gradle"
             .file()
-            .writeText(buildGradleTmpl.replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}"))
+            .writeText(
+                buildGradleTmpl
+                    .replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}")
+                    .replaceParagraph(
+                        "#__plugin_dependency__#",
+                        ext.pluginDependency.map { "provided rootProject.findProject(\"${it.key}\")" }.joinToString("\n")
+                    )
+            )
 
         "${outputProjectPath}/example/ios/Runner/Info.plist"
             .file()
@@ -29,22 +37,43 @@ open class TweakDefaultProject : FluttifyTask() {
 
         "${outputProjectPath}/ios/${ext.outputProjectName}.podspec"
             .file()
-            .writeText(podSpecTmpl.replace("#__project_name__#", ext.outputProjectName))
+            .writeText(
+                podSpecTmpl
+                    .replace("#__project_name__#", ext.outputProjectName)
+                    .replace("#__desc__#", ext.desc)
+                    .replace("#__author__#", ext.author)
+                    .replace("#__email__#", ext.email)
+                    .replace("#__homepage__#", ext.homepage)
+                    .replaceParagraph(
+                        "#__plugin_dependency__#",
+                        ext.pluginDependency.map { "s.dependency '${it.key}'" }.joinToString("\n")
+                    )
+            )
 
         "${outputProjectPath}/pubspec.yaml"
             .file()
-            .writeText(pubSpecTmpl
-                .replace("#__project_name__#", ext.outputProjectName)
-                .replace("#__description__#", "")
-                .replace("#__android_identifier__#", "${ext.outputOrg}.${ext.outputProjectName}")
-                .replace("#__plugin_class__#", "${ext.outputProjectName.underscore2Camel()}Plugin")
+            .writeText(
+                pubSpecTmpl
+                    .replace("#__project_name__#", ext.outputProjectName)
+                    .replace("#__desc__#", ext.desc)
+                    .replace("#__author__#", ext.author)
+                    .replace("#__email__#", ext.email)
+                    .replace("#__homepage__#", ext.homepage)
+                    .replace("#__foundation_version__#", ext.foundationVersion)
+                    .replaceParagraph(
+                        "#__plugin_dependency__#",
+                        ext.pluginDependency.map { "${it.key}: ${it.value}" }.joinToString("\n")
+                    )
+                    .replace("#__android_identifier__#", "${ext.outputOrg}.${ext.outputProjectName}")
+                    .replace("#__plugin_class__#", "${ext.outputProjectName.underscore2Camel()}Plugin")
             )
 
         "${outputProjectPath}/lib/src/utils.g.dart"
             .file()
-            .writeText(utilsDartTmpl
-                .replace("#__current_package__#", ext.outputProjectName)
-                .replace("#__method_channel__#", ext.methodChannelName)
+            .writeText(
+                utilsDartTmpl
+                    .replace("#__current_package__#", ext.outputProjectName)
+                    .replace("#__method_channel__#", ext.methodChannelName)
             )
     }
 }
