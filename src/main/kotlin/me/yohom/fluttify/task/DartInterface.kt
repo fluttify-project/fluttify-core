@@ -28,6 +28,9 @@ open class AndroidDartInterface : FluttifyTask() {
     fun process() {
         val sdk = androidIrFile.readText().fromJson<SDK>()
 
+        // 生成前先删除之前的文件
+        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file().deleteRecursively()
+
         // 处理View, 生成AndroidView
         sdk.libs
             .flatMap { it.types }
@@ -108,6 +111,9 @@ open class IOSDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         val sdk = iosIrFile.readText().fromJson<SDK>()
+
+        // 生成前先删除之前的文件
+        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file().deleteRecursively()
 
         // 处理View, 生成UiKitView
         sdk.libs
