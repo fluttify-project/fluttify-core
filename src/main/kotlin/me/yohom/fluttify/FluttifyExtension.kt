@@ -68,6 +68,11 @@ open class FluttifyExtension {
      */
     var pluginDependency: Map<String, String> = mapOf()
 
+    /**
+     * todo 声明权限 <权限名称, 申请理由>
+     */
+    var permissions: Map<String, String> = mapOf()
+
     val androidTransitiveDependencies get() = transitiveDependencies["android"] ?: listOf()
 
     val iOSTransitiveFramework: List<String>

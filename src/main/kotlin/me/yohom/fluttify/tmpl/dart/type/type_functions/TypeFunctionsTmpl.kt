@@ -12,6 +12,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_functions.function.TypeFunctionTmpl
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
+//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //#__functions__#
 class TypeFunctionsTmpl(private val functions: List<Type>) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/functions.dart.tmpl").readText()

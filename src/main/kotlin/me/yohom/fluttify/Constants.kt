@@ -4,6 +4,16 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
+// todo ios端权限
+val PERMISSION_IOS = mapOf(
+    "Location" to ""
+)
+
+// todo android端权限
+val PERMISSION_ANDROID = mapOf(
+    "Location" to ""
+)
+
 /**
  * 忽略的方法
  */
