@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.view.android_view
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Type
@@ -61,10 +61,7 @@ import me.yohom.fluttify.model.Type
 //    super.dispose();
 //  }
 //}
-class AndroidViewTmpl(
-    private val viewClass: Type,
-    private val ext: FluttifyExtension
-) {
+class AndroidViewTmpl(private val viewClass: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/android_view.dart.tmpl").readText()
 
     fun dartAndroidView(): String {

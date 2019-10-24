@@ -36,7 +36,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .flatMap { it.types }
             .filter { it.isView() && !it.isObfuscated() }
             .forEach {
-                val dartAndroidView = AndroidViewTmpl(it, ext).dartAndroidView()
+                val dartAndroidView = AndroidViewTmpl(it).dartAndroidView()
                 val androidViewFile =
                     "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/platformview/${it.name.simpleName()}.g.dart"
 
@@ -120,7 +120,7 @@ open class IOSDartInterface : FluttifyTask() {
             .flatMap { it.types }
             .filter { it.isView() && !it.isObfuscated() }
             .forEach {
-                val dartUiKitView = UiKitViewTmpl(it, ext).dartUiKitView()
+                val dartUiKitView = UiKitViewTmpl(it).dartUiKitView()
                 val uiKitViewFile =
                     "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/platformview/${it.name.simpleName()}.g.dart"
 
