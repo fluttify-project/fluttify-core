@@ -1,8 +1,6 @@
 package me.yohom.fluttify.tmpl.kotlin.common.handler.handler_getter
 
-import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.toKotlinType
-import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Field
 
 //"#__getter_name__#" to { registrar, args, methodResult ->
@@ -19,7 +17,8 @@ internal class HandlerGetterTmpl(private val field: Field) {
         return tmpl
             .replace("#__getter_name__#", field.getterMethodName())
             .replace("#__class_name__#", field.className.toKotlinType())
-            .replace("#__field_name__#", field.variable.name)
-
+            .replace("#__field_name__#", field
+                .variable
+                .run { if (jsonable()) name else "${name}.run { HEAP[hashCode()] = this; hashCode() }" })
     }
 }
