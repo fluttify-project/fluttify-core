@@ -59,9 +59,9 @@ open class FluttifyExtension {
     var homepage: String = ""
 
     /**
-     * Fluttify基础库版本
+     * Fluttify基础库版本 默认值最好跟随foundation_fluttify的更新而更新
      */
-    var foundationVersion: String = ""
+    var foundationVersion: String = "^0.0.5"
 
     /**
      * 插件依赖 <名称, 版本>
@@ -69,7 +69,7 @@ open class FluttifyExtension {
     var pluginDependency: Map<String, String> = mapOf()
 
     /**
-     * todo 声明权限 <权限名称, 申请理由>
+     * 声明权限 <权限名称, 申请理由> 暂时不做
      */
     var permissions: Map<String, String> = mapOf()
 
