@@ -21,6 +21,9 @@ open class DecompileClass : FluttifyTask() {
 
     @TaskAction
     fun decompile() {
+        // 生成前先删除之前的文件
+        javaFilesDir.listFiles()?.forEach { it.deleteRecursively() }
+
         ConsoleDecompiler.main(arrayOf(
             "-dgs=1", "-din=0", "-rsy=1", "-hdc=0",
             classFilesDir.toString(),

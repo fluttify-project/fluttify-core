@@ -17,13 +17,13 @@ open class UnzipJar : FluttifyTask() {
     var jarFile: File? = ext.jarDir.file().listFiles()?.firstOrNull { it.name.endsWith("jar") }
 
     @OutputDirectory
-    var unzippedJar: File = "${ext.jarDir}unzip/".file()
+    var unzippedJarDir: File = "${ext.jarDir}unzip/".file()
 
     @TaskAction
     fun unzip() {
         if (jarFile == null) return
 
-        val process = Runtime.getRuntime().exec("unzip -o ${jarFile?.absolutePath} -d $unzippedJar")
+        val process = Runtime.getRuntime().exec("unzip -o ${jarFile?.absolutePath} -d $unzippedJarDir")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
     }
