@@ -1,17 +1,16 @@
 package me.yohom.fluttify.common.extensions
 
-import me.yohom.fluttify.androidSearchSDK
+import me.yohom.fluttify.Amap
 import me.yohom.fluttify.extensions.filterGetters
 import me.yohom.fluttify.extensions.filterMethod
 import me.yohom.fluttify.extensions.isList
-import me.yohom.fluttify.iosSearchSDK
 import org.junit.Test
 
 class ListXKtTest {
 
     @Test
     fun filterMethod() {
-        androidSearchSDK.libs[1]
+        Amap.androidSearchSDK.libs[1]
             .types.apply { println("types:$this") }
             .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
             ?.methods
@@ -22,7 +21,7 @@ class ListXKtTest {
 
     @Test
     fun filterGetters() {
-        iosSearchSDK.libs[1]
+        Amap.iosSearchSDK.libs[1]
             .types.apply { println("types:$this") }
             .find { it.name == "AMapPOISearchResponse" }
             ?.fields

@@ -14,6 +14,10 @@ data class Variable(
     val genericLevel: Int = 0,
     override var platform: Platform
 ) : IPlatform {
+    fun constructable(): Boolean {
+        return typeName.findType().constructable() || isList
+    }
+
     fun isPlatformType(): Boolean {
         return typeName in SYSTEM_TYPE.map { it.name }
     }

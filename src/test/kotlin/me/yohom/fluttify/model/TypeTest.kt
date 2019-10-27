@@ -1,20 +1,26 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.androidMapSDK
-import me.yohom.fluttify.androidSearchSDK
+import me.yohom.fluttify.Amap
+import me.yohom.fluttify.Bmap
 import org.junit.Test
 
 class TypeTest {
 
     @Test
     fun constructable() {
-        androidSearchSDK
-            .libs[1]
+//        Amap.androidSearchSDK
+//            .libs[1]
+//            .types
+//            .find { it.name == "com.amap.api.services.route.RouteSearch.DriveRouteQuery" }
+//            ?.constructable()
+//            ?.run {
+//                println("结果: $this")
+//            }
+        Bmap.androidMapSDK
+            .libs[3]
             .types
-            .find { it.name == "com.amap.api.services.route.RouteSearch.DriveRouteQuery" }
-            ?.constructable()
-            ?.run {
-                println("结果: $this")
+            .forEach {
+                println("${it.name} constructable: ${it.constructable()}")
             }
 //
 //        iosSDK
@@ -37,7 +43,7 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        androidMapSDK
+        Amap.androidMapSDK
             .libs[2]
             .types
 //            .find { it.name == "com.amap.api.maps.model.TileProvider" }
@@ -59,7 +65,7 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        androidMapSDK
+        Amap.androidMapSDK
             .libs[2]
             .types
             .find { it.name.contains("com.amap.api.maps.AMap.InfoWindowAdapter") }

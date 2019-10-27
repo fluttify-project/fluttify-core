@@ -1,6 +1,6 @@
 package me.yohom.fluttify.extensions
 
-import me.yohom.fluttify.androidNaviSDK
+import me.yohom.fluttify.Amap
 import org.junit.Test
 
 class ConstructorContextXKtTest {
@@ -15,7 +15,7 @@ class ConstructorContextXKtTest {
 
     @Test
     fun isStaticType() {
-        androidNaviSDK.libs[1]
+        Amap.androidNaviSDK.libs[1]
             .types.apply { println("types:$this") }
             .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
             ?.methods
