@@ -205,10 +205,17 @@ class PluginTmpl(
 
         return listOf(
             hTmpl
-                .replace("#__imports__#", libs
-                    .map { "#import <${it.name}/${it.name}.h>" }
-                    .union(platformViewHeader)
-                    .joinToString("\n"))
+                .replace("#__imports__#", ext.frameworkDir
+                    .file()
+                    .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+                    ?.flatMap { framework ->
+                        "${framework}/Headers/"
+                            .file()
+                            .listFiles { _, name -> name.endsWith(".h") }
+                            ?.map { framework to it }
+                            ?: listOf()
+                    }
+                    ?.joinToString("\n") { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" } ?: "")
                 .replace("#__plugin_name__#", pluginClassName)
                 .replace("#__protocols__#", libs
                     .flatMap { it.types }
