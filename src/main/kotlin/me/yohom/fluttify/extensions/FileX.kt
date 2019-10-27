@@ -337,7 +337,7 @@ fun OBJC_FILE.objcType(): List<Type> {
         //region 结构体
         override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
             typeType = TypeType.Struct
-            name = ctx.identifier().text
+            name = ctx.identifier()?.text ?: ""
         }
 
         override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext?) {
@@ -466,12 +466,13 @@ fun OBJC_FILE.objcType(): List<Type> {
                 .parameterList()
                 .parameterDeclarationList()
                 .parameterDeclaration()
+                ?.takeIf { it.all { it.declarationSpecifiers() != null && it.declarator() != null } }
                 ?.map {
                     Parameter(
                         variable = Variable(
-                            typeName = it.declarationSpecifiers().text,
+                            typeName = it.declarationSpecifiers()?.text ?: it.VOID().text,
                             platform = Platform.iOS,
-                            name = it.declarator().text
+                            name = it.declarator()?.text ?: it.VOID().text
                         ),
                         platform = Platform.iOS
                     )
