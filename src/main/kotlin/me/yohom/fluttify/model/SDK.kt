@@ -62,7 +62,7 @@ class SDK : IPlatform {
                     formalParams = fullName
                         .substringAfter("|")
                         .split(",")
-                        .map { it.split(" ") }
+                        .map { it.trim().split(" ") }
                         .map {
                             Parameter(
                                 variable = Variable(

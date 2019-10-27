@@ -54,7 +54,7 @@ class TypeSdkTmpl(private val type: Type) {
 
         val methods = type.methods
             .filterMethod()
-            .map { MethodTmpl(it, ext).dartMethod() }
+            .map { MethodTmpl(it).dartMethod() }
 
         return tmpl
             .replace("#__current_package__#", currentPackage)
