@@ -27,7 +27,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}")
                     .replaceParagraph(
                         "#__plugin_dependency__#",
-                        ext.pluginDependency.map { "provided rootProject.findProject(\":${it.key}\")" }.joinToString("\n")
+                        ext.pluginDependencies.map { "provided rootProject.findProject(\":${it.key}\")" }.joinToString("\n")
                     )
             )
 
@@ -46,7 +46,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__homepage__#", ext.homepage)
                     .replaceParagraph(
                         "#__plugin_dependency__#",
-                        ext.pluginDependency.map { "s.dependency '${it.key}'" }.joinToString("\n")
+                        ext.pluginDependencies.map { "s.dependency '${it.key}'" }.joinToString("\n")
                     )
             )
 
@@ -62,7 +62,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__foundation_version__#", ext.foundationVersion)
                     .replaceParagraph(
                         "#__plugin_dependency__#",
-                        ext.pluginDependency.map { "${it.key}: ${it.value}" }.joinToString("\n")
+                        ext.pluginDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")
                     )
                     .replace("#__android_identifier__#", "${ext.outputOrg}.${ext.outputProjectName}")
                     .replace("#__plugin_class__#", "${ext.outputProjectName.underscore2Camel()}Plugin")

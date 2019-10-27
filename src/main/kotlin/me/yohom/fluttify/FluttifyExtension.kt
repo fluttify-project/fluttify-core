@@ -66,7 +66,7 @@ open class FluttifyExtension {
     /**
      * 插件依赖 <名称, 版本>
      */
-    var pluginDependency: Map<String, String> = mapOf()
+    var pluginDependencies: Map<String, String> = mapOf()
 
     /**
      * 声明权限 <权限名称, 申请理由> 暂时不做
