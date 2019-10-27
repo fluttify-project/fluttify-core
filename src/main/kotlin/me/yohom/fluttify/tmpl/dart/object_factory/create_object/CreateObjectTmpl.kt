@@ -35,9 +35,9 @@ class CreateObjectTmpl(val type: Type) {
                         .replace("#__separator__#", if (it.formalParams.isEmpty()) "" else ", ")
                         .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap {
                             when {
+                                it.typeName.jsonable() -> it.name
                                 it.isEnum() -> "${it.name}.index"
                                 it.isList -> if (it.genericLevel <= 1) "${it.name}.map((it) => it.refId).toList()" else "[] /* 暂不支持嵌套列表 */"
-                                it.typeName.jsonable() -> it.name
                                 else -> "${it.name}.refId"
                             }
                         })
