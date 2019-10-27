@@ -87,6 +87,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda() }
             .filterNot { it.isFunction() }
+            .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() }
         // 类型检查
@@ -172,6 +173,7 @@ open class IOSDartInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda() }
             .filterNot { it.isFunction() }
+            .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() }
         // 类型检查

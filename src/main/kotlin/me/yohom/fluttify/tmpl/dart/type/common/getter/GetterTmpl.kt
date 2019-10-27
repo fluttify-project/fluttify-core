@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.common.getter
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
@@ -10,15 +10,12 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 //  #__native_object_pool__#
 //  return #__result__#;
 //}
-class GetterTmpl(
-    private val field: Field,
-    private val ext: FluttifyExtension
-) {
+class GetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
 
     fun dartGetter(): String {
         val typeName = field.variable.run {
-            var result = typeName.toDartType()
+            var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
             for (i in 0 until genericLevel) {
                 result = "List<$result>"
             }
@@ -38,7 +35,7 @@ class GetterTmpl(
 
         val getter = field.getterMethodName()
         val result = when {
-            field.variable.jsonable() -> ResultJsonableTmpl().dartResultJsonable()
+            field.variable.run { jsonable() or isAliasType() } -> ResultJsonableTmpl().dartResultJsonable()
             field.variable.isList -> ResultListTmpl(field).dartResultList()
             field.variable.isEnum() -> ResultEnumTmpl(field.variable.typeName).dartResultEnum()
             field.variable.typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
@@ -46,7 +43,7 @@ class GetterTmpl(
         }
         val nativeObjectPool = field.variable.run {
             when {
-                jsonable() or isEnum() -> ""
+                jsonable() or isEnum() or isAliasType() -> ""
                 isList -> "kNativeObjectPool.addAll($result);"
                 else -> "kNativeObjectPool.add($result);"
             }

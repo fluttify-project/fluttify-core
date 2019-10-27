@@ -44,11 +44,11 @@ class TypeInterfaceTmpl(
 
         val getters = type.fields
             .filterGetters()
-            .map { GetterTmpl(it, ext).dartGetter() }
+            .map { GetterTmpl(it).dartGetter() }
 
         val setters = type.fields
             .filterSetters()
-            .map { SetterTmpl(it, ext).dartSetter() }
+            .map { SetterTmpl(it).dartSetter() }
 
         return tmpl
             .replace("#__current_package__#", currentPackage)

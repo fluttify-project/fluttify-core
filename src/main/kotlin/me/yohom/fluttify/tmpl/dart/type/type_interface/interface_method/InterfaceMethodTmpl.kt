@@ -21,7 +21,7 @@ class InterfaceMethodTmpl(private val method: Method) {
             // 只有回调类的参数需要加入释放池
             method
                 .formalParams
-                .filter { it.variable.run { !jsonable() && !isEnum() } }
+                .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() } }
                 .joinToString("\n") {
                     if (it.variable.isList)
                         "kNativeObjectPool.addAll(${it.variable.name});"

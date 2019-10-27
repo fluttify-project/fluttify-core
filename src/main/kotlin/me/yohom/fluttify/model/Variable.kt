@@ -21,6 +21,7 @@ data class Variable(
     fun isPlatformType(): Boolean {
         return typeName in SYSTEM_TYPE.map { it.name }
     }
+
     fun isStructPointer(): Boolean {
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
     }
@@ -35,6 +36,10 @@ data class Variable(
 
     fun jsonable(): Boolean {
         return typeName.jsonable()
+    }
+
+    fun isAliasType(): Boolean {
+        return typeName.findType().isAlias()
     }
 
     fun isCType(): Boolean {
@@ -92,8 +97,7 @@ data class Variable(
     fun paramType(): String {
         return when {
             typeName == "id" -> "id"
-            isEnum() -> typeName
-            jsonable() -> typeName
+            isEnum() or isCType() or isAliasType() -> typeName
             isInterface() -> typeName.enprotocol()
             isList && genericLevel > 0 -> "NSArray<$typeName>*"
             else -> typeName.enpointer()
@@ -106,7 +110,7 @@ data class Variable(
             "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
             // 结构体指针认为是列表类型
-            var type = typeName.toDartType()
+            var type = (if (isAliasType()) typeName.findType().aliasOf!! else typeName).toDartType()
             if (isList) {
                 // 如果是列表, 却没有指定泛型, 那么就认为泛型是Object
                 if (genericLevel == 0) {

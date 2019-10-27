@@ -31,7 +31,7 @@ class CallbackCaseDelegateTmpl(
         val callbackArgs = callbackMethod.formalParams
             .joinToString {
                 when {
-                    it.variable.jsonable() -> CallbackCaseArgJsonableTmpl(it).dartCallbackCaseArgJsonable()
+                    it.variable.run { jsonable() || isAliasType() } -> CallbackCaseArgJsonableTmpl(it).dartCallbackCaseArgJsonable()
                     it.variable.isList -> CallbackCaseArgListTmpl(it).dartCallbackCaseArgList()
                     it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it).dartCallbackCaseArgEnum()
                     else -> CallbackCaseArgRefTmpl(it).dartCallbackCaseArgRef()

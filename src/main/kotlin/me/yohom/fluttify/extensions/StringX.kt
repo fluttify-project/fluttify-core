@@ -24,8 +24,8 @@ inline fun <reified T> String.fromJson(): T {
 /**
  * 是否可序列化
  */
-fun TYPE_NAME?.jsonable(): Boolean {
-    return this?.toDartType() in listOf(
+fun TYPE_NAME.jsonable(): Boolean {
+    return toDartType() in listOf(
         "bool",
         "int",
         "double",
@@ -131,7 +131,7 @@ fun TYPE_NAME.isObjcPrimitive(): Boolean {
         "NSInteger",
         "NSUInteger",
         "CGFloat"
-    )) or findType().isEnum() or isCType() or (this in SYSTEM_TYPEDEF)
+    )) or findType().isEnum() or isCType() or (this in SYSTEM_TYPEDEF) or findType().isAlias()
 }
 
 /**
@@ -190,37 +190,37 @@ fun TYPE_NAME.isObfuscated(): Boolean {
 /**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
-fun TYPE_NAME?.toDartType(): TYPE_NAME {
-    return SYSTEM_TYPEDEF[this?.depointer()] ?: when (this?.depointer()) {
-        "String" -> "String"
-        "boolean", "Boolean" -> "bool"
-        "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
-        "double", "Double", "float", "Float" -> "double"
-        "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
-        "ArrayList<String>" -> "List<String>"
-        "List<String>" -> "List<String>"
-        "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
-        "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
-        "Map" -> "Map"
-        null -> "null"
-        // 开始objc
-        "NSString", "NSString*" -> "String"
-        "NSArray<NSString*>", "NSArray<NSString *>", "NSArray<NSString*>*", "NSArray<NSString *> *" -> "List<String>"
-        "nil" -> "null"
-        "id" -> "NSObject"
-        "NSArray", "NSArray*" -> "List"
-        "NSInteger", "NSUInteger" -> "int"
-        "BOOL" -> "bool"
-        "CGFloat" -> "double"
-        else -> {
-            when {
-                Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
-                startsWith("NSArray") -> "List<${genericType().depointer()}>"
-                Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
-                else -> this
+fun TYPE_NAME.toDartType(): TYPE_NAME {
+    return SYSTEM_TYPEDEF[this.depointer()]
+        ?: when (this.depointer()) {
+            "String" -> "String"
+            "boolean", "Boolean" -> "bool"
+            "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
+            "double", "Double", "float", "Float" -> "double"
+            "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
+            "ArrayList<String>" -> "List<String>"
+            "List<String>" -> "List<String>"
+            "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
+            "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
+            "Map" -> "Map"
+            // 开始objc
+            "NSString", "NSString*" -> "String"
+            "NSArray<NSString*>", "NSArray<NSString *>", "NSArray<NSString*>*", "NSArray<NSString *> *" -> "List<String>"
+            "nil" -> "null"
+            "id" -> "NSObject"
+            "NSArray", "NSArray*" -> "List"
+            "NSInteger", "NSUInteger" -> "int"
+            "BOOL" -> "bool"
+            "CGFloat" -> "double"
+            else -> {
+                when {
+                    Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
+                    startsWith("NSArray") -> "List<${genericType().depointer()}>"
+                    Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
+                    else -> this
+                }
             }
-        }
-    }.replace("$", ".").replace(".", "_").depointer()
+        }.replace("$", ".").replace(".", "_").depointer()
 }
 
 fun TYPE_NAME.toUnderscore(): String {

@@ -46,11 +46,11 @@ class TypeSdkTmpl(private val type: Type) {
 
         val getters = type.fields
             .filterGetters()
-            .map { GetterTmpl(it, ext).dartGetter() }
+            .map { GetterTmpl(it).dartGetter() }
 
         val setters = type.fields
             .filterSetters()
-            .map { SetterTmpl(it, ext).dartSetter() }
+            .map { SetterTmpl(it).dartSetter() }
 
         val methods = type.methods
             .filterMethod()

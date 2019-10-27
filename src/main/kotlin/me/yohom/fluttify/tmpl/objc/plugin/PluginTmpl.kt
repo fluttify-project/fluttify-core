@@ -137,7 +137,7 @@ class PluginTmpl(
             .filter { it.isView() }
             .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
             .joinToString("\n") {
-                RegisterPlatformViewTmpl(it, ext).objcRegisterPlatformView()
+                RegisterPlatformViewTmpl(it).objcRegisterPlatformView()
             }
 
         val getterHandlers = libs
@@ -167,6 +167,7 @@ class PluginTmpl(
             .asSequence()
             .filterNot { it.isLambda() }
             .filterNot { it.isFunction() }
+            .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCastTmpl(it).objcTypeCast() }
@@ -178,6 +179,7 @@ class PluginTmpl(
             .asSequence()
             .filterNot { it.isLambda() }
             .filterNot { it.isFunction() }
+            .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
             .map { HandlerTypeCheckTmpl(it).objcTypeCheck() }
@@ -215,7 +217,10 @@ class PluginTmpl(
                             ?.map { framework to it }
                             ?: listOf()
                     }
-                    ?.joinToString("\n") { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" } ?: "")
+                    ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
+                    ?.union(platformViewHeader)
+                    ?.joinToString("\n")
+                    ?: "")
                 .replace("#__plugin_name__#", pluginClassName)
                 .replace("#__protocols__#", libs
                     .flatMap { it.types }

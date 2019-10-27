@@ -4,7 +4,6 @@ import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgCTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
-import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_list.CallbackArgListTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_struct.CallbackArgStructTmpl
@@ -41,8 +40,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
                 .map { it.variable }
                 .joinToString("\n") {
                     when {
-                        it.isCType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
-                        it.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
+                        it.isCType() or it.isAliasType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
                         it.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
                         it.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
                         it.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()

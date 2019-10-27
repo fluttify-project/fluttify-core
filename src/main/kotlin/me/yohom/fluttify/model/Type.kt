@@ -14,7 +14,7 @@ open class Type : IPlatform, IScope {
     /**
      * 是谁的别名
      */
-    var aliasOf: String = ""
+    var aliasOf: String? = null
 
     /**
      * 泛型类型
@@ -149,12 +149,17 @@ open class Type : IPlatform, IScope {
         return superClass.findType()
     }
 
+    fun isAlias(): Boolean {
+        return typeType == TypeType.Alias
+    }
+
     fun constructable(): Boolean {
         return !isAbstract
                 && (this != UNKNOWN_TYPE || isList())
                 && !isEnum()
                 && !isLambda()
                 && !isFunction()
+                && !isAlias()
                 && !isObfuscated()
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
                 && ((isInnerClass && isStaticType) || !isInnerClass)

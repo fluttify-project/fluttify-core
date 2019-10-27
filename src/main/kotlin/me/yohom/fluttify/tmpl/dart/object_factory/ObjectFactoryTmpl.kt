@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.object_factory
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.filterConstructable
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Lib
@@ -73,11 +73,7 @@ import me.yohom.fluttify.tmpl.dart.object_factory.create_object.CreateObjectTmpl
 //
 //  #__create_objects__#
 //}
-class ObjectFactoryTmpl(
-    val libs: List<Lib>,
-    val ext: FluttifyExtension,
-    val platform: Platform
-) {
+class ObjectFactoryTmpl(val libs: List<Lib>, val platform: Platform) {
     private val androidTmpl =
         this::class.java.getResource("/tmpl/dart/object_factory_android.dart.tmpl").readText()
     private val iosTmpl =

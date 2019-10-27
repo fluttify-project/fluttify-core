@@ -1,7 +1,9 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_setter
 
-import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.enpointer
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
@@ -26,7 +28,7 @@ internal class HandlerSetterTmpl(private val field: Field) {
     fun objcSetter(): String {
         val setter = field.setterName.depointer()
         val args = when {
-            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).objcArgJsonable()
+            field.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(field.variable).objcArgJsonable()
             field.variable.isList -> ArgListRefTmpl(field.variable).objcArgListRef()
             field.variable.isEnum() -> ArgEnumTmpl(field.variable).objcArgEnum()
             field.variable.isStructPointer() -> ArgListStructTmpl(field.variable).objcArgListStruct()

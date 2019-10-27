@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.common.setter
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
@@ -10,16 +10,13 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter
 //
 //  #__callback__#
 //}
-class SetterTmpl(
-    private val field: Field,
-    private val ext: FluttifyExtension
-) {
+class SetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/setter.mtd.dart.tmpl").readText()
 
     fun dartSetter(): String {
         return field.variable.run {
             val typeName = field.variable.run {
-                var result = typeName.toDartType()
+                var result = typeName.findType().run { if (isAlias()) aliasOf!! else name }.toDartType()
                 if (isStructPointer()) {
                     result = "List<$result>"
                 } else {

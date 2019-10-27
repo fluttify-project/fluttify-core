@@ -1,14 +1,11 @@
 package me.yohom.fluttify.tmpl.objc.plugin.register_platform_view
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.model.Type
 
 //[registrar registerViewFactory: [[#__factory_name__#Factory alloc] init] withId: @"#__view_type__#"];
-internal class RegisterPlatformViewTmpl(
-    private val viewType: Type,
-    private val ext: FluttifyExtension
-) {
+internal class RegisterPlatformViewTmpl(private val viewType: Type) {
     private val tmpl =
         this::class.java.getResource("/tmpl/objc/register_platform_view.stmt.m.tmpl")
             .readText()

@@ -1,10 +1,7 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable
 
 import me.yohom.fluttify.SYSTEM_TYPEDEF
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.enpointer
-import me.yohom.fluttify.extensions.isObjcPrimitive
-import me.yohom.fluttify.extensions.toObjcType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Variable
 
 //// jsonable参数
@@ -17,14 +14,15 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
             variable.typeName.isObjcPrimitive() -> variable.typeName.depointer().toObjcType()
             else -> variable.typeName.enpointer()
         }
-        val rightValue = if (variable.typeName.isObjcPrimitive()) {
-            var methodPrefix = SYSTEM_TYPEDEF[variable.typeName] ?: variable
-                .typeName
+        val rightValue = if (variable.typeName.isObjcPrimitive() || variable.isAliasType()) {
+            var methodPrefix = (SYSTEM_TYPEDEF[variable.typeName]
+                ?: variable.typeName.findType().aliasOf
+                ?: variable.typeName)
                 .depointer()
                 .toLowerCase()
                 .removePrefix("ns")
                 .removePrefix("cg")
-            if (variable.typeName == "NSUInteger") {
+            if (variable.typeName == "NSUInteger" || variable.typeName.findType().aliasOf == "NSUInteger") {
                 methodPrefix = "unsignedInteger"
             }
             "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value]"
