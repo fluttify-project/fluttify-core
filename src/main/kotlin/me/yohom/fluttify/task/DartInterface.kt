@@ -54,6 +54,7 @@ open class AndroidDartInterface : FluttifyTask() {
                     TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
                     TypeType.Function -> ""
+                    TypeType.Alias -> ""
                     null -> ""
                 }
 
@@ -138,6 +139,7 @@ open class IOSDartInterface : FluttifyTask() {
                     TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
                     TypeType.Lambda -> ""
                     TypeType.Function -> "" // 函数要单独处理, 全部放到一个文件里去
+                    TypeType.Alias -> ""
                     null -> ""
                 }
 

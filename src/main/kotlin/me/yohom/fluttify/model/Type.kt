@@ -12,6 +12,11 @@ open class Type : IPlatform, IScope {
     var name: String = ""
 
     /**
+     * 是谁的别名
+     */
+    var aliasOf: String = ""
+
+    /**
      * 泛型类型
      */
     var genericTypes: MutableList<TYPE_NAME> = mutableListOf()
@@ -248,5 +253,5 @@ open class Type : IPlatform, IScope {
 }
 
 enum class TypeType {
-    Class, Enum, Interface, Lambda, Struct, Function
+    Class, Enum, Interface, Lambda, Struct, Function, Alias
 }

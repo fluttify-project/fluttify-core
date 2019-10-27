@@ -410,19 +410,35 @@ fun OBJC_FILE.objcType(): List<Type> {
                         }
                 }
 
-            if (returnType != null && typeName != null && formalParams != null) {
-                result.add(
-                    Type().also {
-                        it.typeType = TypeType.Lambda
-                        it.isPublic = true
-                        it.isAbstract = false
-                        it.name = typeName
-                        it.isStaticType = true
-                        it.returnType = returnType
-                        it.formalParams = formalParams
-                        it.platform = Platform.iOS
-                    }
-                )
+            if (returnType != null && typeName != null) {
+                if (formalParams != null) {
+                    result.add(
+                        Type().also {
+                            it.typeType = TypeType.Lambda
+                            it.isPublic = true
+                            it.isAbstract = false
+                            it.name = typeName
+                            it.isStaticType = true
+                            it.returnType = returnType
+                            it.formalParams = formalParams
+                            it.platform = Platform.iOS
+                        }
+                    )
+                }
+                // 别名不包含^, 说明不是函数别名
+                else if (!typeName.contains("^")) {
+                    result.add(
+                        Type().also {
+                            it.typeType = TypeType.Alias
+                            it.isPublic = true
+                            it.isAbstract = false
+                            it.name = typeName
+                            it.isStaticType = true
+                            it.aliasOf = returnType
+                            it.platform = Platform.iOS
+                        }
+                    )
+                }
             }
         }
 
