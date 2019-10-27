@@ -140,6 +140,10 @@ open class Type : IPlatform, IScope {
         }
     }
 
+    fun superType() : Type {
+        return superClass.findType()
+    }
+
     fun constructable(): Boolean {
         return !isAbstract
                 && (this != UNKNOWN_TYPE || isList())

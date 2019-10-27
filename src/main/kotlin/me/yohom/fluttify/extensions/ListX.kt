@@ -32,6 +32,7 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.mustNot("返回类型是混淆类") { returnType.isObfuscated() } }
         .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
+        .filter { it.must("返回类型的父类是已知类") { returnType.findType().superType() != Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } } }
         .filter { it.mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } } }
         .filter {
@@ -56,6 +57,7 @@ fun List<Field>.filterGetters(): List<Field> {
         .filter { it.variable.must("已知类型") { isKnownType() } }
         .filter { it.variable.must("公开类型") { isPublicType() } }
         .filter { it.variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasSubtype() } }
+        .filter { it.variable.must("返回类型的父类是已知类") { typeName.findType().superType() != Type.UNKNOWN_TYPE } }
         .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
         .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
         .toList()
@@ -71,6 +73,7 @@ fun List<Field>.filterSetters(): List<Field> {
         .filter { it.mustNot("静态field") { isStatic } }
         .filter { it.variable.must("已知类型") { isKnownType() } }
         .filter { it.variable.must("公开类型") { typeName.findType().isPublic } }
+        .filter { it.variable.must("返回类型的父类是已知类") { typeName.findType().superType() != Type.UNKNOWN_TYPE } }
         .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
         .filter { println("Field::${it.variable.name}通过Setter过滤"); true }
         .toList()
