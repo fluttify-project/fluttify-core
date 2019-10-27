@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.dart.enumeration
+package me.yohom.fluttify.tmpl.dart.type.type_enum
 
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.toDartType

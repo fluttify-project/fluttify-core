@@ -6,7 +6,7 @@ import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
-import me.yohom.fluttify.tmpl.dart.enumeration.TypeEnumTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_functions.TypeFunctionsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_cast.TypeCastTmpl
