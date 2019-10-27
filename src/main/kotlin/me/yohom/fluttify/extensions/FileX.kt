@@ -336,12 +336,28 @@ fun OBJC_FILE.objcType(): List<Type> {
 
         //region 结构体
         override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-            typeType = TypeType.Struct
-            name = ctx.identifier()?.text ?: ""
+            // 只有结构体不是在类里面才处理
+            // 因为碰到了这种情况
+            // @interface BMKOverlayView : UIView
+            //{
+            // // 其他代码
+            //    struct {
+            //        unsigned int keepAlive:1;
+            //        unsigned int levelCrossFade:1;
+            //        unsigned int drawingDisabled:1;
+            //        unsigned int usesTiledLayer:1;
+            //    } _flags;
+            //}
+            // // 其他代码
+            // @end
+            if (!ctx.isChildOf(ObjectiveCParser.ClassInterfaceContext::class)) {
+                typeType = TypeType.Struct
+                name = ctx.identifier()?.text ?: ""
+            }
         }
 
-        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext?) {
-            if (name.isNotEmpty()) {
+        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+            if (typeType == TypeType.Struct && name.isNotEmpty()) {
                 result.add(
                     Type().also {
                         it.typeType = typeType
