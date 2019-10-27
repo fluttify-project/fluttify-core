@@ -11,9 +11,10 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 
 //#import <Foundation/Foundation.h>
 //#import <Flutter/Flutter.h>
-//#import #__import__#
+//#__import__#
 //
-//extern NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
+//extern NSMutableDictionary<NSString*, NSObject*> *STACK;
+//extern NSMutableDictionary<NSNumber*, NSObject*> *HEAP;
 //
 //@interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
 //- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar;
@@ -21,30 +22,6 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //
 //@interface #__native_view__#PlatformView : NSObject <#__protocols__#>
 //- (instancetype)initWithViewId:(NSInteger)viewId registrar:(NSObject <FlutterPluginRegistrar> *)registrar;
-//@end
-
-//#import "#__native_view__#Factory.h"
-//#import "#__plugin__#Plugin.h"
-//
-//typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
-//
-//@implementation #__native_view__#Factory {
-//  NSObject <FlutterPluginRegistrar> *_registrar;
-//}
-//
-//- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-//  self = [super init];
-//  if (self) {
-//    _registrar = registrar;
-//  }
-//
-//  return self;
-//}
-//
-//- (NSObject <FlutterPlatformView> *)createWithFrame:(CGRect)frame viewIdentifier:(int64_t)viewId arguments:(id _Nullable)args {
-//  return [[#__native_view__#PlatformView alloc] initWithViewId:viewId registrar:_registrar];
-//}
-//
 //@end
 //
 //@implementation #__native_view__#PlatformView {
@@ -111,7 +88,18 @@ class PlatformViewFactoryTmpl(
         this::class.java.getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
 
     fun objcPlatformViewFactory(): List<String> {
-        val imports = "<${lib.name}/${lib.name}.h>"
+        val imports = ext.frameworkDir
+            .file()
+            .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+            ?.flatMap { framework ->
+                "${framework}/Headers/"
+                    .file()
+                    .listFiles { _, name -> name.endsWith(".h") }
+                    ?.map { framework to it }
+                    ?: listOf()
+            }
+            ?.joinToString("\n") { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
+            ?: ""
         val nativeView = viewType.name
         val protocols = lib
             .types
@@ -150,7 +138,7 @@ class PlatformViewFactoryTmpl(
                 .replace("#__import__#", imports)
                 .replace("#__native_view__#", nativeView)
                 .replace("#__protocols__#", protocols)
-                ,
+            ,
             mTmpl
                 .replace("#__native_view__#", nativeView)
                 .replace("#__plugin__#", plugin)
