@@ -5,7 +5,6 @@ import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.tmpl.dart.object_factory.ObjectFactoryTmpl
-import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -15,20 +14,13 @@ import org.gradle.api.tasks.TaskAction
  * 输出: 生成后的ObjectCreator Dart文件
  */
 open class DartObjectFactory : FluttifyTask() {
-    @InputFiles
-    val irFiles = listOf(
-        "${project.projectDir}/ir/android/json_representation.json".file(),
-        "${project.projectDir}/ir/ios/json_representation.json".file()
-    )
-
-//    @OutputFiles
-//    val objectFactoryFiles = listOf(
-//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.dart".file(),
-//        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.dart".file()
-//    )
 
     @TaskAction
     fun process() {
+        val irFiles = listOf(
+            "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file(),
+            "${project.projectDir}/jr/${ext.outputProjectName}.ios.json".file()
+        )
         val androidSdk = irFiles[0].readText().fromJson<SDK>()
         val iosSdk = irFiles[1].readText().fromJson<SDK>()
 

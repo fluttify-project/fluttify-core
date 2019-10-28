@@ -14,19 +14,16 @@ import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 
 /**
  * 生成Java文件的Dart接口文件
  */
 open class AndroidDartInterface : FluttifyTask() {
-    @InputFile
-    val androidIrFile = "${project.projectDir}/ir/android/json_representation.json".file()
-
     @TaskAction
     fun process() {
-        val sdk = androidIrFile.readText().fromJson<SDK>()
+        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file()
+        val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file().deleteRecursively()
@@ -107,12 +104,10 @@ open class AndroidDartInterface : FluttifyTask() {
  * 生成Objc文件的Dart接口文件
  */
 open class IOSDartInterface : FluttifyTask() {
-    @InputFile
-    val iosIrFile = "${project.projectDir}/ir/ios/json_representation.json".file()
-
     @TaskAction
     fun process() {
-        val sdk = iosIrFile.readText().fromJson<SDK>()
+        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.ios.json".file()
+        val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file().deleteRecursively()
