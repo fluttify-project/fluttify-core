@@ -48,7 +48,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
         val log = if (method.isStatic) {
             "NSLog(@\"fluttify-objc: ${method.className}::${method.name}(暂未实现参数打印)\");"
         } else {
-            "NSLog(@\"fluttify-objc: ${method.className}@%@::${method.name}(暂未实现参数打印)\", @(refId));"
+            "NSLog(@\"fluttify-objc: ${method.className}@%@::${method.name}(暂未实现参数打印)\", args[@\"refId\"]);"
         }
 
         // 获取当前调用方法的对象引用
