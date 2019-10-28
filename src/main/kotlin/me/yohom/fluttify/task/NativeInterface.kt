@@ -10,8 +10,6 @@ import me.yohom.fluttify.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTm
 import me.yohom.fluttify.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
 import me.yohom.fluttify.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
 import me.yohom.fluttify.tmpl.objc.plugin.PluginTmpl as ObjcPluginTmpl
-import me.yohom.fluttify.tmpl.swift.platformviewfactory.PlatformViewFactoryTmpl as SwiftPlatformViewFactoryTmpl
-import me.yohom.fluttify.tmpl.swift.plugin.PluginTmpl as SwiftPluginTmpl
 
 /**
  * Android端接口生成
@@ -33,7 +31,7 @@ open class AndroidKotlinInterface : FluttifyTask() {
         val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成主plugin文件
-        sdk.libs.forEach {
+        sdk.directLibs.forEach {
             KotlinPluginTmpl(it)
                 .kotlinPlugin()
                 .run {
@@ -42,7 +40,7 @@ open class AndroidKotlinInterface : FluttifyTask() {
         }
 
         // 生成PlatformViewFactory文件
-        sdk.libs
+        sdk.directLibs
             .forEach { lib ->
                 lib.types
                     .filter { it.isView() && !it.isObfuscated() }
@@ -82,7 +80,7 @@ open class IOSObjcInterface : FluttifyTask() {
         val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成主plugin文件
-        ObjcPluginTmpl(sdk.libs, ext)
+        ObjcPluginTmpl(sdk.directLibs, ext)
             .objcPlugin()
             .run {
                 pluginHFile.file().writeText(this[0])
@@ -90,7 +88,7 @@ open class IOSObjcInterface : FluttifyTask() {
             }
 
         // 生成PlatformViewFactory文件
-        sdk.libs
+        sdk.directLibs
             .forEach { lib ->
                 lib.types
                     .filter { it.isView() && !it.isObfuscated() }
@@ -121,33 +119,33 @@ open class IOSSwiftInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val pluginOutputFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/Swift${ext.outputProjectName.underscore2Camel()}Plugin.swift"
-
-        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
-
-        // 生成主plugin文件
-        SwiftPluginTmpl(sdk.libs, ext)
-            .swiftPlugin()
-            .run {
-                pluginOutputFile.file().writeText(this)
-            }
-
-        // 生成PlatformViewFactory文件
-        sdk.libs
-            .forEach { lib ->
-                lib.types
-                    .filter { it.isView() }
-                    .forEach {
-                        val factoryOutputFile =
-                            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.swift".file()
-
-                        SwiftPlatformViewFactoryTmpl(it, lib)
-                            .swiftPlatformViewFactory()
-                            .run {
-                                factoryOutputFile.writeText(this)
-                            }
-                    }
-            }
+//        val pluginOutputFile =
+//            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/Swift${ext.outputProjectName.underscore2Camel()}Plugin.swift"
+//
+//        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
+//
+//        // 生成主plugin文件
+//        SwiftPluginTmpl(sdk.libs, ext)
+//            .swiftPlugin()
+//            .run {
+//                pluginOutputFile.file().writeText(this)
+//            }
+//
+//        // 生成PlatformViewFactory文件
+//        sdk.libs
+//            .forEach { lib ->
+//                lib.types
+//                    .filter { it.isView() }
+//                    .forEach {
+//                        val factoryOutputFile =
+//                            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.swift".file()
+//
+//                        SwiftPlatformViewFactoryTmpl(it, lib)
+//                            .swiftPlatformViewFactory()
+//                            .run {
+//                                factoryOutputFile.writeText(this)
+//                            }
+//                    }
+//            }
     }
 }

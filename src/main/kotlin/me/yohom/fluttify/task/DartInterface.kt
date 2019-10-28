@@ -29,7 +29,7 @@ open class AndroidDartInterface : FluttifyTask() {
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file().deleteRecursively()
 
         // 处理View, 生成AndroidView
-        sdk.libs
+        sdk.directLibs
             .flatMap { it.types }
             .filter { it.isView() && !it.isObfuscated() }
             .forEach {
@@ -41,7 +41,7 @@ open class AndroidDartInterface : FluttifyTask() {
             }
 
         // 处理普通类
-        sdk.libs
+        sdk.directLibs
             .flatMap { it.types }
             .filterType()
             .forEach {
@@ -67,7 +67,7 @@ open class AndroidDartInterface : FluttifyTask() {
             }
 
         // 处理所有的函数 但是java其实没有顶层函数, 所以这里的结果一定是空字符串
-        sdk.libs
+        sdk.directLibs
             .flatMap { it.types }
             .filter { it.isKnownFunction() }
             .run {
@@ -78,7 +78,8 @@ open class AndroidDartInterface : FluttifyTask() {
             }
 
         val utilTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
-        val targetTypes = sdk.libs
+        val targetTypes = sdk.directLibs
+            .filterNot { it.isDependency }
             .flatMap { it.types }
             .filterType()
             .asSequence()
@@ -113,7 +114,7 @@ open class IOSDartInterface : FluttifyTask() {
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file().deleteRecursively()
 
         // 处理View, 生成UiKitView
-        sdk.libs
+        sdk.directLibs
             .flatMap { it.types }
             .filter { it.isView() && !it.isObfuscated() }
             .forEach {
@@ -125,7 +126,7 @@ open class IOSDartInterface : FluttifyTask() {
             }
 
         // 处理普通类
-        sdk.libs
+        sdk.directLibs
             .flatMap { it.types }
             .filterType()
             .forEach {
@@ -151,7 +152,7 @@ open class IOSDartInterface : FluttifyTask() {
             }
 
         // 处理所有的函数
-        sdk.libs
+        sdk.directLibs
             .flatMap { it.types }
             .filter { it.isKnownFunction() }
             .run {
@@ -162,7 +163,8 @@ open class IOSDartInterface : FluttifyTask() {
             }
 
         val utilTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
-        val targetTypes = sdk.libs
+        val targetTypes = sdk.directLibs
+            .filterNot { it.isDependency }
             .flatMap { it.types }
             .filterType()
             .asSequence()

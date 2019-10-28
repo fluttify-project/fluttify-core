@@ -25,8 +25,8 @@ open class DartObjectFactory : FluttifyTask() {
         val iosSdk = irFiles[1].readText().fromJson<SDK>()
 
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/object_factory.g.dart".file()
-            .writeText(ObjectFactoryTmpl(androidSdk.libs, Platform.Android).dartObjectFactory())
+            .writeText(ObjectFactoryTmpl(androidSdk.directLibs, Platform.Android).dartObjectFactory())
         "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/object_factory.g.dart".file()
-            .writeText(ObjectFactoryTmpl(iosSdk.libs, Platform.iOS).dartObjectFactory())
+            .writeText(ObjectFactoryTmpl(iosSdk.directLibs, Platform.iOS).dartObjectFactory())
     }
 }

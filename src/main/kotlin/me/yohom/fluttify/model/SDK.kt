@@ -28,6 +28,12 @@ class SDK : IPlatform {
      */
     var libs: MutableList<Lib> = mutableListOf()
 
+    /**
+     * 非间接依赖的库
+     */
+    val directLibs: List<Lib>
+        get() = libs.filterNot { it.isDependency }
+
     override fun toString(): String {
         return "SDK(version='$version', platform=$platform, libs=$libs)"
     }
@@ -93,13 +99,12 @@ class Lib {
     var types: MutableList<Type> = mutableListOf()
 
     /**
-     * 回调类们
+     * 是否是依赖
      */
-    val callbacks: List<Type>
-        get() = types.filter { it.isCallback() }
+    var isDependency: Boolean = false
 
     override fun toString(): String {
-        return "Lib(name='$name', types=$types)"
+        return "Lib(name='$name', types=$types, isDependency=$isDependency)"
     }
 }
 

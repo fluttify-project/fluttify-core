@@ -17,6 +17,11 @@ open class AndroidJsonRepresentation : FluttifyTask() {
     fun process() {
         val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file()
 
+        // 依赖插件的jr文件们, 过滤掉没有对应fluttify工程的插件
+        val dependenciesJrFiles = ext.pluginDependencies
+            .filterKeys { key -> project.projectDir.parentFile.listFiles()?.map { it.name }?.contains(key) == true }
+            .map { "${project.projectDir.parent}/${it.key}/jr/${it.key}.android.json".file() }
+
         sdk.platform = Platform.Android
 
         decompiledDir
@@ -29,6 +34,14 @@ open class AndroidJsonRepresentation : FluttifyTask() {
                 }
                 sdk.libs.add(lib)
             }
+
+        // 把依赖插件的libs都添加到当前插件的jr文件中去, 并标注为依赖
+        sdk.libs.addAll(
+            dependenciesJrFiles
+                .map { it.readText().fromJson<SDK>() }
+                .flatMap { it.libs }
+                .map { it.apply { isDependency = true } }
+        )
 
         jrFile.writeText(sdk.toJson())
     }
@@ -44,6 +57,11 @@ open class IOSJsonRepresentation : FluttifyTask() {
     fun process() {
         val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.ios.json".file()
 
+        // 依赖插件的jr文件们, 过滤掉没有对应fluttify工程的插件
+        val dependenciesJrFiles = ext.pluginDependencies
+            .filterKeys { project.projectDir.parentFile.listFiles()?.map { it.name }?.contains(it) == true }
+            .map { "${project.projectDir.parent}/${it.key}/jr/${it.key}.ios.json".file() }
+
         sdk.platform = Platform.iOS
 
         frameworkDir
@@ -56,6 +74,15 @@ open class IOSJsonRepresentation : FluttifyTask() {
                 }
                 sdk.libs.add(lib)
             }
+
+        // 把依赖插件的libs都添加到当前插件的jr文件中去, 并标注为依赖
+        sdk.libs.addAll(
+            dependenciesJrFiles
+                .map { it.readText().fromJson<SDK>() }
+                .flatMap { it.libs }
+                .map { it.apply { isDependency = true } }
+        )
+
         jrFile.writeText(sdk.toJson())
     }
 
