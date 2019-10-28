@@ -42,8 +42,8 @@ data class Variable(
         return typeName.findType().isAlias()
     }
 
-    fun isCType(): Boolean {
-        return typeName.isCType()
+    fun isValueType(): Boolean {
+        return typeName.isValueType()
     }
 
     fun isLambda(): Boolean {
@@ -97,7 +97,7 @@ data class Variable(
     fun paramType(): String {
         return when {
             typeName == "id" -> "id"
-            isEnum() or isCType() or isAliasType() -> typeName
+            isEnum() or isValueType() or isAliasType() -> typeName
             isInterface() -> typeName.enprotocol()
             isList && genericLevel > 0 -> "NSArray<$typeName>*"
             else -> typeName.enpointer()

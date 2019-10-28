@@ -17,7 +17,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
             val typeName = variable.run {
                 if (isStructPointer()) {
                     typeName.enpointer()
-                } else if (typeName.isObjcPrimitive() || isStruct()) {
+                } else if (typeName.isValueType() || isStruct()) {
                     typeName
                 } else if (isList && genericLevel > 0) {
                     if (isInterface()) "NSArray<${typeName.enprotocol()}>*" else "NSArray<${typeName}>*"

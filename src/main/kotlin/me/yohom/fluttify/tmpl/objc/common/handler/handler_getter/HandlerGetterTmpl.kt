@@ -1,6 +1,5 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_getter
 
-import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
@@ -33,7 +32,7 @@ internal class HandlerGetterTmpl(private val field: Field) {
         // 调用objc端对应的方法
         val invoke = InvokeTmpl(field).objcInvoke()
         val result = when {
-            field.variable.typeName.isObjcPrimitive() -> ResultValueTmpl().objcResultValue()
+            field.variable.typeName.isValueType() -> ResultValueTmpl().objcResultValue()
             field.variable.jsonable() -> ResultJsonableTmpl().objcResultJsonable()
             field.variable.isList -> ResultListTmpl().objcResultList()
             field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName).objcResultStruct()

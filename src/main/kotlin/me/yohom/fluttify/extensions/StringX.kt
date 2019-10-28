@@ -8,15 +8,6 @@ import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
 
-fun String?.isLiteral(): Boolean {
-    return when {
-        this == null -> false
-        Regex("(\\d)+").matches(this) -> true
-        this in listOf("null", "nil") -> true
-        else -> false
-    }
-}
-
 inline fun <reified T> String.fromJson(): T {
     return Gson().fromJson(this, T::class.java)
 }
@@ -125,19 +116,7 @@ fun TYPE_NAME.toSwiftType(): String {
 /**
  * 是否是值类型(相对指针类型)
  */
-fun TYPE_NAME.isObjcPrimitive(): Boolean {
-    return (this in listOf(
-        "BOOL",
-        "NSInteger",
-        "NSUInteger",
-        "CGFloat"
-    )) or findType().isEnum() or isCType() or (this in SYSTEM_TYPEDEF) or findType().isAlias()
-}
-
-/**
- * 是否是C类型
- */
-fun TYPE_NAME.isCType(): Boolean {
+fun TYPE_NAME.isValueType(): Boolean {
     return (this in listOf(
         "int",
         "float",
@@ -146,19 +125,7 @@ fun TYPE_NAME.isCType(): Boolean {
         "NSUInteger",
         "NSInteger",
         "CGFloat"
-    ))
-}
-
-/**
- * 是否是c类型
- */
-fun TYPE_NAME.toObjcType(): String {
-    return when (this) {
-//        "double" -> "NSNumber*"
-//        "float" -> "NSNumber*"
-//        "int" -> "NSNumber*"
-        else -> this
-    }
+    )) or findType().isEnum() or (this in SYSTEM_TYPEDEF) or findType().isAlias()
 }
 
 /**

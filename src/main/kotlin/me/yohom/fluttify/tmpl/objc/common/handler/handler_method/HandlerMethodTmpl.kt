@@ -58,7 +58,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
         val invoke = InvokeTmpl(method).objcInvoke()
 
         val result = when {
-            method.returnType.isObjcPrimitive() -> ResultValueTmpl().objcResultValue()
+            method.returnType.isValueType() -> ResultValueTmpl().objcResultValue()
             method.returnType.jsonable() -> ResultJsonableTmpl().objcResultJsonable()
             method.returnType.isList() -> ResultListTmpl().objcResultList()
             method.returnType.findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()

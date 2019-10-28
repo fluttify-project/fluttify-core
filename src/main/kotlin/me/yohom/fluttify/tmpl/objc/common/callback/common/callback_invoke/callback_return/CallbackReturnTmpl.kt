@@ -1,7 +1,7 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_return
 
 import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isCType
+import me.yohom.fluttify.extensions.isValueType
 import me.yohom.fluttify.extensions.isVoid
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
@@ -69,7 +69,7 @@ internal class CallbackReturnTmpl(private val method: Method) {
             .run {
                 when {
                     isVoid() -> ""
-                    isCType() -> "return 0;"
+                    isValueType() -> "return 0;"
                     findType().isStruct() -> "${this} value; return value;"
                     else -> "return nil;"
                 }

@@ -40,7 +40,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
                 .map { it.variable }
                 .joinToString("\n") {
                     when {
-                        it.isCType() or it.isAliasType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
+                        it.isValueType() or it.isAliasType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
                         it.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
                         it.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
                         it.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()
