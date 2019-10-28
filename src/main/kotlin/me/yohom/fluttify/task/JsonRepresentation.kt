@@ -15,7 +15,7 @@ open class AndroidJsonRepresentation : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val irFile = "${project.projectDir}/ir/android/json_representation.json".file()
+        val jrFile = "${project.projectDir}/jr/android/${ext.outputProjectName}.android.json".file()
 
         sdk.platform = Platform.Android
 
@@ -30,7 +30,7 @@ open class AndroidJsonRepresentation : FluttifyTask() {
                 sdk.libs.add(lib)
             }
 
-        irFile.writeText(sdk.toJson())
+        jrFile.writeText(sdk.toJson())
     }
 }
 
@@ -42,7 +42,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val irFile = "${project.projectDir}/ir/ios/json_representation.json".file()
+        val jrFile = "${project.projectDir}/jr/ios/${ext.outputProjectName}.ios.json".file()
 
         sdk.platform = Platform.iOS
 
@@ -56,7 +56,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
                 }
                 sdk.libs.add(lib)
             }
-        irFile.writeText(sdk.toJson())
+        jrFile.writeText(sdk.toJson())
     }
 
 }
