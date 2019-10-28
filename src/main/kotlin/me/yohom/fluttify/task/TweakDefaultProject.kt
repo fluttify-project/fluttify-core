@@ -14,7 +14,6 @@ open class TweakDefaultProject : FluttifyTask() {
     private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
     private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
     private val pubSpecTmpl = this::class.java.getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
-    private val utilsDartTmpl = this::class.java.getResource("/tmpl/dart/utils.dart.tmpl").readText()
 
     @TaskAction
     fun process() {
@@ -66,14 +65,6 @@ open class TweakDefaultProject : FluttifyTask() {
                     )
                     .replace("#__android_identifier__#", "${ext.outputOrg}.${ext.outputProjectName}")
                     .replace("#__plugin_class__#", "${ext.outputProjectName.underscore2Camel()}Plugin")
-            )
-
-        "${outputProjectPath}/lib/src/utils.g.dart"
-            .file()
-            .writeText(
-                utilsDartTmpl
-                    .replace("#__current_package__#", ext.outputProjectName)
-                    .replace("#__method_channel__#", ext.methodChannelName)
             )
     }
 }
