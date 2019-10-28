@@ -425,6 +425,11 @@ fun OBJC_FILE.objcType(): List<Type> {
                         }
                     )
                 }
+                // 结构体
+                else if (returnType.contains("struct")) {
+                    typeType == TypeType.Struct
+                    name = typeName
+                }
                 // 别名不包含^, 说明不是函数别名
                 else if (!typeName.contains("^")) {
                     result.add(
