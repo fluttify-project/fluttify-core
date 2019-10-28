@@ -5,10 +5,10 @@ import me.yohom.fluttify.model.Variable
 
 //// primitive回调参数
 //NSNumber* arg#__arg_name__# = @(#__arg_name__#);
-internal class CallbackArgCTypeTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_ctype.stmt.m.tmpl").readText()
+internal class CallbackArgValueTypeTmpl(private val variable: Variable) {
+    private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_value_type.stmt.m.tmpl").readText()
 
-    fun objcCallbackArgCType(): String {
+    fun objcCallbackArgValueType(): String {
         return tmpl
             .replace("#__arg_name__#", variable.name.depointer())
     }

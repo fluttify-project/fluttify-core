@@ -4,8 +4,9 @@ import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgCTypeTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgValueTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_list.CallbackArgListTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_struct.CallbackArgStructTmpl
@@ -38,8 +39,10 @@ internal class CallbackLambdaTmpl(private val callerMethod: Method, private val 
                 .map { it.variable }
                 .joinToString("\n") {
                     when {
-                        it.isValueType() or it.isAliasType() -> CallbackArgCTypeTmpl(it).objcCallbackArgCType()
+                        // !顺序很重要
                         it.isEnum() -> CallbackArgEnumTmpl(it).objcCallbackArgEnum()
+                        it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it).objcCallbackArgValueType()
+                        it.jsonable() -> CallbackArgJsonableTmpl(it).objcCallbackArgJsonable()
                         it.isList -> CallbackArgListTmpl(it).objcCallbackArgList()
                         it.isStruct() -> CallbackArgStructTmpl(it).objcCallbackArgStruct()
                         else -> CallbackArgRefTmpl(it).objcCallbackArgRef()
