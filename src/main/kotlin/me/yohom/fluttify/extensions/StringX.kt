@@ -125,7 +125,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "NSUInteger",
         "NSInteger",
         "CGFloat"
-    )) or findType().isEnum() or (this in SYSTEM_TYPEDEF) or findType().isAlias()
+    )) or (this in SYSTEM_TYPEDEF) or findType().run { isEnum()  or isAlias() }
 }
 
 /**

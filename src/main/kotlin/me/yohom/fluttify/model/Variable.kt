@@ -97,7 +97,7 @@ data class Variable(
     fun paramType(): String {
         return when {
             typeName == "id" -> "id"
-            isEnum() or isValueType() or isAliasType() -> typeName
+            isValueType() or isStruct()-> typeName
             isInterface() -> typeName.enprotocol()
             isList && genericLevel > 0 -> "NSArray<$typeName>*"
             else -> typeName.enpointer()
