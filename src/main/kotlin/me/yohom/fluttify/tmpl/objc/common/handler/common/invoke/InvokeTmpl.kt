@@ -34,30 +34,34 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
         val invokeMethod = method?.run {
             // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
             if (method.isStatic) {
+                // 函数
+                val call = if (method.isFunction) {
+                    "${method.name}(${method.formalParams.joinToString { it.variable.name.depointer() }})"
+                }
+                // 方法
+                else {
+                    "[${method.className} ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
+                }
+
                 if (method.returnType == "void") {
-                    "[${method.className} ${method.name} ${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
+                    "$call;"
                 } else {
-                    "${method.returnType} result = [${method.className} ${method.name}${method.formalParams.joinToString(
-                        " "
-                    ) {
-                        var2formalParam(it)
-                    }}];"
+                    "${method.returnType} result = $call;"
                 }
             } else {
                 if (method.returnType == "void") {
-                    "[ref ${method.name} ${method.formalParams.joinToString(" ") { var2formalParam(it) }}];"
+                    "[ref ${method.name} ${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 } else {
                     "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") {
-                        var2formalParam(it)
+                        param2arg(it)
                     }}];"
                 }
             }
         }
-
         return (invokeGetter ?: invokeMethod)!!
     }
 
-    private fun var2formalParam(it: Parameter): String {
+    private fun param2arg(it: Parameter): String {
         return if (it.variable.isLambda() && method != null) {
             "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType()).objcCallback()}"
         } else {

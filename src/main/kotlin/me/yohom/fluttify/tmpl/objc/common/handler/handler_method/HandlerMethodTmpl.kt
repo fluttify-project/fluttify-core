@@ -36,10 +36,10 @@ internal class HandlerMethodTmpl(private val method: Method) {
         val args = method.formalParams
             .joinToString("\n") {
                 when {
+                    it.variable.isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
                     it.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(it.variable).objcArgJsonable()
                     it.variable.isStructPointer() -> ArgListStructTmpl(it.variable).objcArgListStruct()
                     it.variable.isList -> ArgListRefTmpl(it.variable).objcArgListRef()
-                    it.variable.isEnum() -> ArgEnumTmpl(it.variable).objcArgEnum()
                     it.variable.isStruct() -> ArgStructTmpl(it.variable).objcArgStruct()
                     it.variable.isLambda() -> ""
                     else -> ArgRefTmpl(it.variable).objcArgRef()

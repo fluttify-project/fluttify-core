@@ -37,7 +37,11 @@ data class Method(
     /**
      * 是否过时
      */
-    var isDeprecated: Boolean = false
+    var isDeprecated: Boolean = false,
+    /**
+     * 是否是函数
+     */
+    var isFunction: Boolean = false
 ) : IPlatform, IScope {
 
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"

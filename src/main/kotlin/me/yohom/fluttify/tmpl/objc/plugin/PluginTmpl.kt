@@ -154,6 +154,13 @@ class PluginTmpl(
             .filterSetters()
             .map { HandlerSetterTmpl(it).objcSetter() }
 
+        val functionHandlers = libs
+            .flatMap { it.types }
+            // 暂时先不处理含有lambda的函数
+            .filter { it.isKnownFunction() && it.formalParams.all { !it.variable.isLambda() } }
+            .map { it.asMethod() }
+            .map { HandlerMethodTmpl(it).objcHandlerMethod() }
+
         val methodHandlers = libs
             .flatMap { it.types }
             .filterType()
@@ -241,6 +248,7 @@ class PluginTmpl(
                         .union(typeCheckHandlers)
                         .union(typeCastHandlers)
                         .union(createObjectHandlers)
+                        .union(functionHandlers)
                         .joinToString("\n")
                 )
                 .replaceParagraph(

@@ -231,6 +231,7 @@ open class Type : IPlatform, IScope {
             returnType,
             name,
             formalParams,
+            isFunction = true,
             isStatic = true,
             isAbstract = false,
             isPublic = true,
