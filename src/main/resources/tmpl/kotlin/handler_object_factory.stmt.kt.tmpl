@@ -9,7 +9,9 @@
     HEAP[obj.hashCode()] = obj
 
     // print current HEAP
-    Log.d("ObjectFactory", "HEAP: $HEAP")
+    if (BuildConfig.DEBUG) {
+        Log.d("ObjectFactory", "HEAP: $HEAP")
+    }
 
     methodResult.success(obj.hashCode())
 }

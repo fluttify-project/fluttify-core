@@ -22,9 +22,9 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
 //
 //// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
-//NSMutableDictionary<NSNumber *, NSObject *> *STACK;
+//extern NSMutableDictionary<NSString*, NSObject*>* STACK;
 //// Dart端随机存取对象的容器
-//NSMutableDictionary<NSNumber *, NSObject *> *HEAP;
+//extern NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
 //
 //@implementation #__plugin_name__#Plugin {
 //  NSObject <FlutterPluginRegistrar> * _registrar;
@@ -45,11 +45,6 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //}
 //
 //+ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-//  // 栈容器
-//  STACK = @{}.mutableCopy;
-//  // 堆容器
-//  HEAP = @{}.mutableCopy;
-//
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
 //      methodChannelWithName:@"#__method_channel__#"
 //            binaryMessenger:[registrar messenger]];
@@ -64,51 +59,11 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //// Method Handlers
 //- (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
 //  NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
-//  // 是否一个对象
-//  if ([@"ObjectFactory::release" isEqualToString:methodCall.method]) {
-//    NSLog(@"ObjectFactory::释放对象: %@", (NSNumber *) args[@"refId"]);
 //
-//    [HEAP removeObjectForKey:(NSNumber *) args[@"refId"]];
-//    methodResult(@"success");
-//
-//    NSLog(@"HEAP: %@", HEAP);
-//  }
-//  // 清空堆
-//  else if ([@"ObjectFactory::clearHeap" isEqualToString:methodCall.method]) {
-//    NSLog(@"ObjectFactory::清空堆");
-//
-//    [HEAP removeAllObjects];
-//    methodResult(@"success");
-//
-//    NSLog(@"HEAP: %@", HEAP);
-//  }
-//  // 创建CLLocationCoordinate2D
-//  else if ([@"ObjectFactory::createCLLocationCoordinate2D" isEqualToString:methodCall.method]) {
-//    CLLocationDegrees latitude = [args[@"latitude"] doubleValue];
-//    CLLocationDegrees longitude = [args[@"longitude"] doubleValue];
-//
-//    CLLocationCoordinate2D data = CLLocationCoordinate2DMake(latitude, longitude);
-//
-//    NSValue* dataValue = [NSValue value:&data withObjCType:@encode(CLLocationCoordinate2D)];
-//    HEAP[@(dataValue.hash)] = dataValue;
-//
-//    methodResult(@(dataValue.hash));
-//  }
-//  // 创建UIImage
-//  else if ([@"ObjectFactory::createUIImage" isEqualToString:methodCall.method]) {
-//    FlutterStandardTypedData* bitmapBytes = (FlutterStandardTypedData*) args[@"bitmapBytes"];
-//
-//    UIImage* bitmap = [UIImage imageWithData:bitmapBytes.data];
-//
-//    HEAP[@(bitmap.hash)] = bitmap;
-//
-//    methodResult(@(bitmap.hash));
+//  if (_handlerMap[methodCall.method] != nil) {
+//    _handlerMap[methodCall.method](_registrar, args, methodResult);
 //  } else {
-//    if (_handlerMap[methodCall.method] != nil) {
-//      _handlerMap[methodCall.method](_registrar, args, methodResult);
-//    } else {
-//      methodResult(FlutterMethodNotImplemented);
-//    }
+//    methodResult(FlutterMethodNotImplemented);
 //  }
 //}
 //
