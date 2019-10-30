@@ -38,14 +38,6 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
-    buildTypes {
-        debug {
-            buildConfigField "boolean", "DEBUG", "true"
-        }
-        release {
-            buildConfigField "boolean", "DEBUG", "false"
-        }
-    }
 }
 
 dependencies {
