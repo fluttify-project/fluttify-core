@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg
 import me.yohom.fluttify.extensions.toKotlinType
 import me.yohom.fluttify.model.Variable
 
-//// jsonable参数
+//// jsonable arg
 //val #__arg_name__# = args["#__arg_name__#"] as #__type_name__#
 internal class ArgJsonableTmpl(private val variable: Variable) {
     private val tmpl =

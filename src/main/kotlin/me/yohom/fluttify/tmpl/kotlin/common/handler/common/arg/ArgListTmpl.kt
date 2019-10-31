@@ -1,7 +1,5 @@
 package me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg
 
-import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
 
 //// 列表参数

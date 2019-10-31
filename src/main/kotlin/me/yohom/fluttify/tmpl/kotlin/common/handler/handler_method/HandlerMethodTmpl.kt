@@ -18,19 +18,21 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_ref.Res
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_void.ResultVoidTmpl
 
 //"#__method_name__#" to { registrar, args, methodResult ->
-//    // 参数
+//    // args
 //    #__args__#
 //
-//    // 调用对象引用
+//    // ref
 //    #__ref__#
 //
-//    // 日志打印
-//    #__log__#
+//    // print log
+//    if (BuildConfigs.DEBUG) {
+//        #__log__#
+//    }
 //
-//    // 开始调用
+//    // invoke native method
 //    #__invoke__#
 //
-//    // 调用结果
+//    // result
 //    #__result__#
 //}
 internal class HandlerMethodTmpl(private val method: Method) {
@@ -42,8 +44,8 @@ internal class HandlerMethodTmpl(private val method: Method) {
             .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
-                    it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
+                    it.variable.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
+                    it.variable.isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
                     it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
                     else -> ArgRefTmpl(it.variable).kotlinArgRef()
                 }
