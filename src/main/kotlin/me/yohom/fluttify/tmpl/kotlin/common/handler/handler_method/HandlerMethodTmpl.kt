@@ -11,6 +11,8 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.invoke_return.InvokeReturnTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.invoke.invoke_void.InvokeVoidTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.log.LogInstanceTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.log.LogStaticTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.ref.RefTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_jsonable.ResultJsonableTmpl
 import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_list.ResultListTmpl
@@ -51,9 +53,9 @@ internal class HandlerMethodTmpl(private val method: Method) {
                 }
             }
         val log = if (method.isStatic) {
-            "println(\"fluttify-kotlin: ${method.className}::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":$${it.variable.name}" }})\")"
+            LogStaticTmpl(method).kotlinLogStatic()
         } else {
-            "println(\"fluttify-kotlin: ${method.className}@\$refId::${method.name}(${method.formalParams.filter { it.variable.typeName.jsonable() }.map { "\\\"${it.variable.name}\\\":$${it.variable.name}" }})\")"
+            LogInstanceTmpl(method).kotlinLogInstance()
         }
 
         // 获取当前调用方法的对象引用
