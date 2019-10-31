@@ -27,7 +27,7 @@ import me.yohom.fluttify.tmpl.kotlin.common.handler.common.result.result_void.Re
 //    #__ref__#
 //
 //    // print log
-//    if (BuildConfigs.DEBUG) {
+//    if (BuildConfig.DEBUG) {
 //        #__log__#
 //    }
 //

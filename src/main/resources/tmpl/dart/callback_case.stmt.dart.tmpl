@@ -1,6 +1,8 @@
 case '#__callback_case__#':
   // print log
-  #__log__#
+  if (!kReleaseMode) {
+    #__log__#
+  }
 
   // handle the native call
   #__callback_handler__#(#__callback_args__#);

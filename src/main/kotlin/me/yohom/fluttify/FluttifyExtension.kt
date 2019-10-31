@@ -69,11 +69,6 @@ open class FluttifyExtension {
     var pluginDependencies: Map<String, String> = mapOf()
 
     /**
-     * todo 是否打印日志
-     */
-    var printLog: Boolean = true
-
-    /**
      * 声明权限 <权限名称, 申请理由> 暂时不做
      */
     var permissions: Map<String, String> = mapOf()
