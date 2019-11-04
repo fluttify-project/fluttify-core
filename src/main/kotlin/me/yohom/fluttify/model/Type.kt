@@ -155,6 +155,9 @@ open class Type : IPlatform, IScope {
 
     fun constructable(): Boolean {
         return !isAbstract
+                // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
+                // 这样的结构会造成死循环
+                && !(constructors.any { it.formalParams.any { it.variable.type().constructors.any { it.formalParams.any { it.variable.typeName == name } } } })
                 && (this != UNKNOWN_TYPE || isList())
                 && !isEnum()
                 && !isLambda()
