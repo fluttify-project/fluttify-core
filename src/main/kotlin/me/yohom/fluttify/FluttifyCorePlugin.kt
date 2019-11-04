@@ -10,11 +10,11 @@ lateinit var ext: FluttifyExtension
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         ext = project.extensions.create("fluttify", FluttifyExtension::class.java)
-        ext.jarDir = "${project.projectDir}/sdk/android/"
+        ext.archiveDir = "${project.projectDir}/sdk/android/"
         ext.frameworkDir = "${project.projectDir}/sdk/ios/"
 
         // 必需任务 顺序已经排列好
-        val unzip = project.tasks.create("unzipJar", UnzipJar::class.java)
+        val unzip = project.tasks.create("unzipArchive", UnzipArchive::class.java)
         val decompileClass = project.tasks.create("decompileClass", DecompileClass::class.java)
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
         val tweakDefaultProject = project.tasks.create("tweakDefaultProject", TweakDefaultProject::class.java)

@@ -3,9 +3,9 @@ package me.yohom.fluttify
 // todo 配置信息里再加一个元信息的配置 比如Android的manifest文件和ios的plist文件的配置
 open class FluttifyExtension {
     /**
-     * jar路径 会在FluttifyCorePlugin创建的时候赋值
+     * jar/aar路径 会在FluttifyCorePlugin创建的时候赋值
      */
-    var jarDir: String = ""
+    var archiveDir: String = ""
 
     /**
      * framework路径 会在FluttifyCorePlugin创建的时候赋值
