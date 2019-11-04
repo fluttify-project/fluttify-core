@@ -6,6 +6,7 @@ import org.gradle.api.Project
 
 lateinit var ext: FluttifyExtension
 
+// todo 可以提供一些启动Activity的方法, 就是以`迁移原生平台的代码`为场景的功能
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         ext = project.extensions.create("fluttify", FluttifyExtension::class.java)

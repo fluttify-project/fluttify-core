@@ -141,7 +141,7 @@ val SYSTEM_TYPE = listOf(
 )
 
 /**
- * 忽略的类
+ * 忽略的类 todo 增加Activity和其他有关的类
  */
 val IGNORE_TYPE = listOf(
     "android.support.v4.app.Fragment",
