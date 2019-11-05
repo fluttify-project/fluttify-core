@@ -24,6 +24,7 @@ class InvokeReturnTmpl(private val method: Method) {
         } else {
             when {
                 variable.isList -> "new ArrayList(${variable.name})"
+                variable.typeName.toLowerCase() == "float" -> "${variable.name}.floatValue()"
                 else -> variable.name
             }
         }

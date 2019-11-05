@@ -51,13 +51,13 @@ class #__factory_name__#Factory extends PlatformViewFactory {
 
     @Override
     public PlatformView create(Context context, int id, Object params) {
+        #__native_view__# view = new #__native_view__#(registrar.activity());
+        getHEAP().put(id, view);
         return new PlatformView() {
 
             // add to HEAP
             @Override
             public View getView() {
-                #__native_view__# view = new #__native_view__#(registrar.activity());
-                getHEAP().put(id, view);
                 return view;
             }
 

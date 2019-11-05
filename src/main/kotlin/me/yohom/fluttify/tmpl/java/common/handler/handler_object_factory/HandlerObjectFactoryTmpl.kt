@@ -1,6 +1,9 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_object_factory
 
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.filterConstructor
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
@@ -33,19 +36,20 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                     .filter { !it.variable.typeName.findType().isCallback() }
                     .joinToString("\n") {
                         when {
-                            it.variable.typeName.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
-                            it.variable.typeName.findType().isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
+                            it.variable.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
+                            it.variable.isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
                             it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
                             else -> ArgRefTmpl(it.variable).kotlinArgRef()
                         }
                     }
                 val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__")}"
                 val argsValue = it.formalParams.joinToString {
-                    it.variable.name.run {
+                    it.variable.run {
                         when {
                             // 如果是列表参数, 统一成ArrayList
-                            it.variable.isList -> "new ArrayList($this)"
-                            else -> this
+                            isList -> "new ArrayList($name)"
+                            typeName.toLowerCase() == "float" -> "${name}.floatValue()"
+                            else -> name
                         }
                     }
                 }
