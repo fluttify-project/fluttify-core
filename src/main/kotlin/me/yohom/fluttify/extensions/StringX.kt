@@ -132,7 +132,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "NSUInteger",
         "NSInteger",
         "CGFloat"
-    )) or (this in SYSTEM_TYPEDEF) or findType().run { isEnum()  or isAlias() }
+    )) or (this in SYSTEM_TYPEDEF) or findType().run { isEnum() or isAlias() }
 }
 
 /**
@@ -245,6 +245,13 @@ fun TYPE_NAME.genericType(): TYPE_NAME {
         result = result.substringAfter("<").substringBeforeLast(">")
     }
     return result
+}
+
+/**
+ * 获取泛型容器名称 比如List<Integer> -> List
+ */
+fun TYPE_NAME.containerType(): TYPE_NAME {
+    return if (contains("<") && contains(">")) substringBefore("<") else this
 }
 
 /**

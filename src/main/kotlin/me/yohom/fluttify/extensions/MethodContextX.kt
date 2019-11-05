@@ -8,10 +8,13 @@ import parser.objc.ObjectiveCParser
 
 //region Java Method
 fun JavaParser.MethodDeclarationContext.returnType(): String {
+    val containerType = typeTypeOrVoid().text.containerType()
     // 返回类型 简称
     val paramType = typeTypeOrVoid().text.genericType()
     // 返回类型 全称
     var fullGenericType = typeFullName(paramType)
+    // 返回类型 全称
+    var fullContainerType = typeFullName(containerType)
 
     // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
     if (paramType == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
@@ -22,11 +25,17 @@ fun JavaParser.MethodDeclarationContext.returnType(): String {
 
     return if (typeTypeOrVoid().text.isList()) {
         var result = fullGenericType
-        for(i in 0 until typeTypeOrVoid().text.genericLevel()) {
+        for (i in 0 until typeTypeOrVoid().text.genericLevel()) {
             result = result.enlist()
         }
         result
-    } else {
+    }
+    // 容器类型和泛型类型不一样, 说明是泛型类型
+    else if (fullContainerType != fullGenericType) {
+        "$fullContainerType<$fullGenericType>"
+    }
+    // 普通类型
+    else {
         fullGenericType
     }
 }
