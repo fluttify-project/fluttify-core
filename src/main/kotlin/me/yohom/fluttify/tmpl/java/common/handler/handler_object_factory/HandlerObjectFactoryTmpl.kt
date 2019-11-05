@@ -42,7 +42,9 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                             else -> ArgRefTmpl(it.variable).kotlinArgRef()
                         }
                     }
-                val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__")}"
+                val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__") {
+                    it.variable.typeName.toUnderscore().replace("[]", "Array")
+                }}"
                 val argsValue = it.formalParams.joinToString {
                     it.variable.run {
                         when {
