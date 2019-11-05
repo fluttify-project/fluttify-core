@@ -12,6 +12,11 @@ class ReturnTmpl(private val method: Method) {
     }
 
     private fun returnString(returnType: String): String {
+        // 如果是多维列表, 那么不处理, 直接返回空列表
+        if (returnType.isList() && returnType.genericLevel() > 1) {
+            return "[] /* 暂时不支持多维列表 */";
+        }
+
         val resultBuilder = StringBuilder("")
 
         // 如果返回类型是抽象类, 那么先转换成它的子类

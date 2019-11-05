@@ -21,7 +21,11 @@ fun JavaParser.MethodDeclarationContext.returnType(): String {
     }
 
     return if (typeTypeOrVoid().text.isList()) {
-        "List<$fullGenericType>"
+        var result = fullGenericType
+        for(i in 0 until typeTypeOrVoid().text.genericLevel()) {
+            result = result.enlist()
+        }
+        result
     } else {
         fullGenericType
     }
