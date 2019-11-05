@@ -30,7 +30,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}")
                     .replaceParagraph(
                         "#__plugin_dependency__#",
-                        ext.pluginDependencies.map { "provided rootProject.findProject(\":${it.key}\")" }.joinToString("\n")
+                        ext.pluginDependencies.map { "compileOnly rootProject.findProject(\":${it.key}\")" }.joinToString("\n")
                     )
             )
 

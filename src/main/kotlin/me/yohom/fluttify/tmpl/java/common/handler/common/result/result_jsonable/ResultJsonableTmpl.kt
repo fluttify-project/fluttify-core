@@ -5,7 +5,7 @@ internal class ResultJsonableTmpl() {
 
     private val tmpl = this::class.java.getResource("/tmpl/java/result_jsonable.stmt.java.tmpl").readText()
 
-    fun kotlinJsonableResult(): String {
+    fun javaJsonableResult(): String {
         return tmpl
     }
 

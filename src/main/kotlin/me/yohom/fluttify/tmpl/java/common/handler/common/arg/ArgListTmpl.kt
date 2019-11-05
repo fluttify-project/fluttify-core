@@ -1,9 +1,14 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.arg
 
+import me.yohom.fluttify.extensions.enlist
 import me.yohom.fluttify.model.Variable
 
-//// 列表参数
-//val #__arg_name__# = (args["#__arg_name__#"] as List<Int>).map { HEAP[it] as #__type_name__# }
+//// list arg
+//List<Integer> #__arg_name__#RefIdList = (List<Integer>) args.get("#__arg_name__#");
+//List<#__type_name__#> #__arg_name__# = new ArrayList<>();
+//for (int refId : refIdList) {
+//    #__arg_name__#.add((#__type_name__#) getHEAP().get(refIdList.get(refId)));
+//}
 internal class ArgListTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText()
 
@@ -16,9 +21,9 @@ internal class ArgListTmpl(private val variable: Variable) {
         } else {
             var typeName = variable.typeName
             for (i in 0 until (variable.genericLevel - 1)) {
-                typeName = "List<$typeName>"
+                typeName = typeName.enlist()
             }
-            "val ${variable.name} = listOf<$typeName>()"
+            "$typeName ${variable.name} = new ArrayList<>();"
         }
     }
 }

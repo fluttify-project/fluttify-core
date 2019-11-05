@@ -31,7 +31,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 internal class CallbackMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText()
 
-    fun kotlinCallbackMethod(): String {
+    fun javaCallbackMethod(): String {
         val callbackMethod = method.name
         val callbackMethodName = method.nameWithClass()
         val methodChannel = "${method.className}::Callback"

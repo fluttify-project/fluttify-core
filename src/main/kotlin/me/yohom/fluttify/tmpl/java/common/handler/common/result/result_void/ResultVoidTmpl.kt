@@ -5,7 +5,7 @@ internal class ResultVoidTmpl {
 
     private val tmpl = this::class.java.getResource("/tmpl/java/result_void.stmt.java.tmpl").readText()
 
-    fun kotlinVoidResult(): String {
+    fun javaVoidResult(): String {
         return tmpl
     }
 

@@ -66,9 +66,9 @@ internal class HandlerMethodTmpl(private val method: Method) {
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = when {
-            method.returnType.jsonable() -> ResultJsonableTmpl().kotlinJsonableResult()
-            method.returnType.isList() -> ResultListTmpl().kotlinListResult()
-            method.returnType == "void" -> ResultVoidTmpl().kotlinVoidResult()
+            method.returnType.jsonable() -> ResultJsonableTmpl().javaJsonableResult()
+            method.returnType.isList() -> ResultListTmpl(method.returnType).javaListResult()
+            method.returnType == "void" -> ResultVoidTmpl().javaVoidResult()
             else -> ResultRefTmpl().kotlinRefResult()
         }
         return tmpl

@@ -6,12 +6,12 @@ import me.yohom.fluttify.model.Method
 class CallbackReturnTmpl(private val method: Method) {
     fun kotlinCallbackReturn(): String {
         return when (method.returnType.toKotlinType()) {
-            "Boolean" -> "return true"
-            "Int" -> "return 0"
-            "Float" -> "return 0f"
-            "Double" -> "return 0.0"
+            "Boolean" -> "return true;"
+            "Int" -> "return 0;"
+            "Float" -> "return 0f;"
+            "Double" -> "return 0.0;"
             "Unit" -> ""
-            else -> "return null"
+            else -> "return null;"
         }
     }
 }

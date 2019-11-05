@@ -1,8 +1,10 @@
 if (result != null) {
-    for (item in result) {
-        HEAP[item.hashCode()] = item
+    List<Integer> resultRefIdList = new ArrayList<>();
+    for (#__type_name__# item : result) {
+        getHEAP().put(item.hashCode(), item);
+        resultRefIdList.add(item.hashCode());
     }
-    methodResult.success(result.map { it.hashCode() })
+    methodResult.success(resultRefIdList);
 } else {
-    methodResult.success(null)
+    methodResult.success(null);
 }

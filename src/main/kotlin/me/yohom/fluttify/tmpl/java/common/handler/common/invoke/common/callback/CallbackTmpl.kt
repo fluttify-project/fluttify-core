@@ -21,6 +21,6 @@ internal class CallbackTmpl(private val callerMethod: Method, private val callba
             .replace("#__callback_channel__#", callerMethod.nameWithClass())
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods
-                .joinToString("\n") { CallbackMethodTmpl(it).kotlinCallbackMethod() })
+                .joinToString("\n") { CallbackMethodTmpl(it).javaCallbackMethod() })
     }
 }

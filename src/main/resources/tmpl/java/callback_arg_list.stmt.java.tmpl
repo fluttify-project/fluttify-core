@@ -1,1 +1,5 @@
-val arg#__arg_name__# = #__arg_name__#.map { it.apply { getHEAP()[it.hashCode()] = it }.hashCode() }
+List<Integer> arg#__arg_name__# = new ArrayList<>();
+for (#__type_name__# item : #__arg_name__#) {
+    getHEAP().put(item.hashCode(), item);
+    arg#__arg_name__#.add(item.hashCode());
+}

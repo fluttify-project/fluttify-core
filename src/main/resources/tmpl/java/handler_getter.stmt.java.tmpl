@@ -3,5 +3,9 @@ put("#__getter_name__#", (args, methodResult) -> {
     int refId = (int) args.get("refId");
     #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
 
-    methodResult.success(ref.#__field_name__#);
+    #__field_type__# result = ref.#__field_name__#;
+
+    #__put_map__#
+
+    methodResult.success(result);
 });
