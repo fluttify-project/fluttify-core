@@ -4,7 +4,7 @@ import me.yohom.fluttify.model.Method
 
 //println("fluttify-kotlin: #__class_name__#@$refId::#__method_name__#(#__args__#)")
 internal class LogInstanceTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/log_instance.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/java/log_instance.stmt.java.tmpl").readText()
 
     fun kotlinLogInstance(): String {
         val className = method.className

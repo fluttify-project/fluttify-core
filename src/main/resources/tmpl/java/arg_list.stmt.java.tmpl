@@ -1,0 +1,6 @@
+// list arg
+List<Integer> refIdList = (List<Integer>) args.get("#__arg_name__#");
+List<#__type_name__#> #__arg_name__# = new ArrayList<>();
+for (int refId : refIdList) {
+    #__arg_name__#.add((#__type_name__#) getHEAP().get(refIdList.get(refId)));
+}

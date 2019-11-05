@@ -5,11 +5,63 @@ import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
+import me.yohom.fluttify.tmpl.kotlin.plugin.KotlinPluginTmpl
+import me.yohom.fluttify.tmpl.objc.plugin.ObjcPluginTmpl
 import org.gradle.api.tasks.TaskAction
+import me.yohom.fluttify.tmpl.java.platform_view_factory.PlatformViewFactoryTmpl as JavaPlatformViewFactory
 import me.yohom.fluttify.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactory
-import me.yohom.fluttify.tmpl.kotlin.plugin.PluginTmpl as KotlinPluginTmpl
 import me.yohom.fluttify.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
-import me.yohom.fluttify.tmpl.objc.plugin.PluginTmpl as ObjcPluginTmpl
+
+/**
+ * Android端接口生成
+ *
+ * 输入: java文件
+ * 输出: 对应的method channel文件
+ */
+open class AndroidJavaInterface : FluttifyTask() {
+
+    @TaskAction
+    fun process() {
+        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file()
+        val pluginOutputFile =
+            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/java/${ext.outputOrg.replace(
+                ".",
+                "/"
+            )}/${ext.outputProjectName}/${ext.outputProjectName.underscore2Camel()}Plugin.java"
+
+        val sdk = jrFile.readText().fromJson<SDK>()
+
+        // 生成主plugin文件
+        sdk.directLibs.forEach {
+            JavaPluginTmpl(it)
+                .javaPlugin()
+                .run {
+                    pluginOutputFile.file().writeText(this)
+                }
+        }
+
+        // 生成PlatformViewFactory文件
+        sdk.directLibs
+            .forEach { lib ->
+                lib.types
+                    .filter { it.isView() && !it.isObfuscated() }
+                    .forEach {
+                        val factoryOutputFile =
+                            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/java/${ext.outputOrg.replace(
+                                ".",
+                                "/"
+                            )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.java".file()
+
+                        JavaPlatformViewFactory(it)
+                            .javaPlatformViewFactory()
+                            .run {
+                                factoryOutputFile.writeText(this)
+                            }
+                    }
+            }
+    }
+}
 
 /**
  * Android端接口生成

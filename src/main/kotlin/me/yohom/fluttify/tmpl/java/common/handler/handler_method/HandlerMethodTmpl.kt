@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_method
 
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isList
-import me.yohom.fluttify.extensions.jsonable
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
@@ -38,7 +35,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //    #__result__#
 //}
 internal class HandlerMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_method.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText()
 
     fun kotlinHandlerMethod(): String {
         val methodName = method.nameWithClass()
@@ -62,10 +59,10 @@ internal class HandlerMethodTmpl(private val method: Method) {
         val ref = RefTmpl(method).kotlinRef()
 
         // 调用kotlin端对应的方法
-        val invoke = if (method.returnType == "void")
-            InvokeVoidTmpl(method).kotlinInvokeVoid()
+        val invoke = if (method.returnType.isVoid())
+            InvokeVoidTmpl(method).javaInvokeVoid()
         else
-            InvokeReturnTmpl(method).kotlinInvokeReturn()
+            InvokeReturnTmpl(method).javaInvokeReturn()
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = when {

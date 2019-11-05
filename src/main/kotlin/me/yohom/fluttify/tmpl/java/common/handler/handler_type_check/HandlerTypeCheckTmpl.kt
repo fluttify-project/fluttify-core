@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Method
 //val refId = args["refId"] as Int
 //val ref = HEAP[refId] as #__class_name__#
 internal class HandlerTypeCheckTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_type_check.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/java/handler_type_check.stmt.java.tmpl").readText()
 
     fun kotlinTypeCheck(): String {
         return if (method.isStatic)

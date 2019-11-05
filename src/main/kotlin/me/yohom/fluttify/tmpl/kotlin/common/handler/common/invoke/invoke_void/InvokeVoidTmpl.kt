@@ -21,12 +21,8 @@ class InvokeVoidTmpl(private val method: Method) {
             CallbackTmpl(method, variable.typeName.findType()).kotlinCallback()
         } else {
             when {
-                variable.isList -> "ArrayList(${variable.run {
-                    if (typeName.contains(
-                            "float",
-                            true
-                        )
-                    ) "$name.map { it.toFloat() }" else name
+                variable.isList -> "new ArrayList(${variable.run {
+                    if (typeName.contains("float", true)) "$name.map { it.toFloat() }" else name
                 }})"
                 // 由于dart端的double到kotlin这边都是double, 如果方法参数是float的话, 需要转一手
                 variable.typeName.toLowerCase() == "float" -> "${variable.name}.toFloat()"

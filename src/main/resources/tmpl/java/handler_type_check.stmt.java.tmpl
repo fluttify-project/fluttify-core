@@ -1,4 +1,4 @@
-"#__method_name__#" to { registrar, args, methodResult ->
+put("#__method_name__#", (args, methodResult) -> {
     // args
     #__args__#
 
@@ -11,6 +11,6 @@
     // invoke native method
     #__invoke__#
 
-    // invoke result
+    // result
     #__result__#
-}
+});

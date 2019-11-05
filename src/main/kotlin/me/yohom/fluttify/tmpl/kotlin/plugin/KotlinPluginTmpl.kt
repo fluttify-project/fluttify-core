@@ -41,7 +41,7 @@ import me.yohom.fluttify.tmpl.kotlin.plugin.register_platform_view.RegisterPlatf
 //        handlerMap[methodCall.method]?.invoke(registrar, args, methodResult) ?: methodResult.notImplemented()
 //    }
 //}
-class PluginTmpl(private val lib: Lib) {
+class KotlinPluginTmpl(private val lib: Lib) {
     private val tmpl = this::class.java.getResource("/tmpl/kotlin/plugin.kt.tmpl").readText()
 
     fun kotlinPlugin(): String {

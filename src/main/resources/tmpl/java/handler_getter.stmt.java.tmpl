@@ -1,0 +1,7 @@
+put("#__getter_name__#", (args, methodResult) -> {
+    // ref object
+    int refId = (int) args.get("refId");
+    #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
+
+    methodResult.success(ref.#__field_name__#);
+});

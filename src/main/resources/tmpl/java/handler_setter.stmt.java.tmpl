@@ -1,0 +1,9 @@
+put("#__setter_name__#", (args, methodResult) -> {
+    #__field_type__# #__field_name__# = (#__field_type__#) args.get("#__field_name__#");
+
+    int refId = (int) args.get("refId");
+    #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
+
+    ref.#__field_name__# = #__field_value__#;
+    methodResult.success("success");
+});

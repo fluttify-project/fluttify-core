@@ -58,6 +58,13 @@ fun TYPE_NAME.isVoid(): Boolean {
 }
 
 /**
+ * 套上List<>
+ */
+fun TYPE_NAME.enlist(): TYPE_NAME {
+    return "List<$this>"
+}
+
+/**
  * 简写类名
  */
 fun TYPE_NAME.simpleName(): String {

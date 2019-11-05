@@ -2,13 +2,13 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.model.Parameter
 
-//val arg#__arg_name__# = #__arg_name__#.apply { HEAP[hashCode()] = this }.hashCode()
+//int arg#__arg_name__# = #__arg_name__#.hashCode();
+//getHEAP().put(arg#__arg_name__#, #__arg_name__#);
 internal class CallbackArgRefTmpl(private val param: Parameter) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback_arg_ref.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/java/callback_arg_ref.stmt.java.tmpl").readText()
 
-    fun kotlinCallbackArgRef(): String {
+    fun javaCallbackArgRef(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
-
     }
 }

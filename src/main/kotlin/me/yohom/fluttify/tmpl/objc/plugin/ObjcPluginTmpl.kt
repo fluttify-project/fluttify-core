@@ -71,7 +71,7 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //#__delegate_methods__#
 //
 //@end
-class PluginTmpl(
+class ObjcPluginTmpl(
     private val libs: List<Lib>,
     private val ext: FluttifyExtension
 ) {

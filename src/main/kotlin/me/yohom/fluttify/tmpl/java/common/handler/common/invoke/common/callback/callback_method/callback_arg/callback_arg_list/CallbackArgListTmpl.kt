@@ -4,9 +4,9 @@ import me.yohom.fluttify.model.Parameter
 
 //val arg#__arg_name__# = #__arg_name__#.map { it.apply { HEAP[it.hashCode()] = it }.hashCode() }
 internal class CallbackArgListTmpl(private val param: Parameter) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback_arg_list.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/java/callback_arg_list.stmt.java.tmpl").readText()
 
-    fun kotlinCallbackArgList(): String {
+    fun javaCallbackArgList(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
 

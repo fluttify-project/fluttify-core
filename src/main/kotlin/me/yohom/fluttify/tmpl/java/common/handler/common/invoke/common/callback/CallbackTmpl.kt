@@ -5,17 +5,17 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.CallbackMethodTmpl
 
-//object : #__callback_class_name__# {
+//new #__callback_class_name__#() {
 //    // method channel
-//    val callbackChannel = MethodChannel(registrar.messenger(), "#__callback_channel__#::Callback" + refId)
+//    MethodChannel callbackChannel = new MethodChannel(registrar.messenger(), "#__callback_channel__#::Callback");
 //
-//    // 回调方法们
+//    // call dart method
 //    #__callback_methods__#
 //}
 internal class CallbackTmpl(private val callerMethod: Method, private val callbackType: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/callback.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/java/callback.stmt.java.tmpl").readText()
 
-    fun kotlinCallback(): String {
+    fun javaCallback(): String {
         return tmpl
             .replace("#__callback_class_name__#", callbackType.name)
             .replace("#__callback_channel__#", callerMethod.nameWithClass())

@@ -31,7 +31,7 @@ open class FluttifyExtension {
     /**
      * android工程输出语言
      */
-    var androidLanguage: String = "kotlin"
+    var androidLanguage: String = "java"
 
     /**
      * ios工程输出语言

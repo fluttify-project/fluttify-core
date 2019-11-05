@@ -48,9 +48,9 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //}
 class PlatformViewFactoryTmpl(private val viewType: Type) {
     private val tmpl =
-        this::class.java.getResource("/tmpl/kotlin/platform_view_factory.kt.tmpl").readText()
+        this::class.java.getResource("/tmpl/java/platform_view_factory.java.tmpl").readText()
 
-    fun kotlinPlatformViewFactory(): String {
+    fun javaPlatformViewFactory(): String {
         val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
         val factoryName= viewType.name.simpleName()
         val handlers = viewType.methods.filterMethod().joinToString("\n,") { HandlerMethodTmpl(it).kotlinHandlerMethod() }

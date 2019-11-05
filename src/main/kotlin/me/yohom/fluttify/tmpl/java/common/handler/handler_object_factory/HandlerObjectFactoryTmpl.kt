@@ -23,7 +23,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //    methodResult.success(obj.hashCode())
 //}
 internal class HandlerObjectFactoryTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/kotlin/handler_object_factory.stmt.kt.tmpl").readText()
+    private val tmpl = this::class.java.getResource("/tmpl/java/handler_object_factory.stmt.java.tmpl").readText()
 
     fun kotlinObjectFactory(): List<String> {
         return type.constructors
@@ -39,16 +39,12 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                             else -> ArgRefTmpl(it.variable).kotlinArgRef()
                         }
                     }
-                val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__") {
-                    it.variable.typeName.toUnderscore().replace("[]", "Array")
-                }}"
+                val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__")}"
                 val argsValue = it.formalParams.joinToString {
                     it.variable.name.run {
                         when {
-                            // 因为dart到kotlin这边都是double类型, 如果参数实际类型是float的话, 需要转一手
-                            it.variable.typeName.toLowerCase() == "float" -> "${this}.toFloat()"
                             // 如果是列表参数, 统一成ArrayList
-                            it.variable.isList -> "ArrayList($this)"
+                            it.variable.isList -> "new ArrayList($this)"
                             else -> this
                         }
                     }
