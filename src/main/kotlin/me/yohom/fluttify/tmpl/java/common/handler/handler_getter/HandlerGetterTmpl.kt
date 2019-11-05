@@ -11,7 +11,7 @@ import me.yohom.fluttify.model.Field
 //
 //    #__put_map__#
 //
-//    methodResult.success(result);
+//    methodResult.success(#__result__#);
 //});
 internal class HandlerGetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readText()
@@ -25,6 +25,10 @@ internal class HandlerGetterTmpl(private val field: Field) {
             .replace(
                 "#__put_map__#",
                 if (field.variable.jsonable()) "" else "getHEAP().put(result.hashCode(), result);"
+            )
+            .replace(
+                "#__result__#",
+                if (field.variable.jsonable()) "result" else "result.hashCode()"
             )
     }
 }
