@@ -5,8 +5,6 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
 class ReturnTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
-
     fun dartMethodReturn(): String {
         return returnString(method.returnType)
     }
@@ -25,6 +23,7 @@ class ReturnTmpl(private val method: Method) {
             concretType = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
         }
 
+        // 返回jsonable类型
         if (concretType.jsonable() || concretType == "void") {
             if (concretType.isList()) {
                 val type = if (concretType.genericLevel() != 0) {
@@ -36,9 +35,13 @@ class ReturnTmpl(private val method: Method) {
             } else {
                 resultBuilder.append("result")
             }
-        } else if (concretType.findType().isEnum()) {
+        }
+        // 返回枚举类型
+        else if (concretType.findType().isEnum()) {
             resultBuilder.append("${concretType.toDartType()}.values[result]")
-        } else {
+        }
+        // 返回列表类型
+        else {
             if (concretType.isList()) {
                 val type = if (concretType.genericLevel() != 0) {
                     concretType.genericType().toDartType()
