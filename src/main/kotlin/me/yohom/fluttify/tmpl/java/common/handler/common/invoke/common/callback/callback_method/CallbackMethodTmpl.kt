@@ -54,8 +54,15 @@ internal class CallbackMethodTmpl(private val method: Method) {
             .joinToString("\n") {
                 "put(\"${it.variable.name}\", arg${it.variable.name});"
             }
+        // 打印日志
+        val logArgs = method
+            .formalParams
+            .filterNot { it.variable.isCallback() }
+            .filterNot { it.variable.isLambda() }
+            .joinToString(" + ") { it.variable.name }
         val log =
-            "Log.d(\"kotlin-callback\", \"fluttify-kotlin-callback: ${method.name}(${method.formalParams.map { "\\\"${it.variable.name}\\\":$${it.variable.name}" }})\");"
+            """Log.d("java-callback", "fluttify-java-callback: ${method.name}(" + ${if (logArgs.isEmpty()) "\"\"" else logArgs} + ")");"""
+        // 返回语句
         val returnStmt = CallbackReturnTmpl(method).kotlinCallbackReturn()
 
         return tmpl
