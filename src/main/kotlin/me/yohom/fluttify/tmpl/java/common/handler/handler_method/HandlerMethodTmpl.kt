@@ -24,7 +24,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //    #__ref__#
 //
 //    // print log
-//    if (BuildConfig.DEBUG) {
+//    if (getEnableLog()) {
 //        #__log__#
 //    }
 //

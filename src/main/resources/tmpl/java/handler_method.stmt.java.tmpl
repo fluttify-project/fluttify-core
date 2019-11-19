@@ -6,7 +6,7 @@ put("#__method_name__#", (args, methodResult) -> {
     #__ref__#
 
     // print log
-    if (BuildConfig.DEBUG) {
+    if (getEnableLog()) {
         #__log__#
     }
 

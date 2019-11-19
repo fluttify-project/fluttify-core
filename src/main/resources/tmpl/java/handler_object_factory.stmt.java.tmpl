@@ -9,7 +9,7 @@ put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
     getHEAP().put(obj.hashCode(), obj);
 
     // print current HEAP
-    if (BuildConfig.DEBUG) {
+    if (getEnableLog()) {
         Log.d("ObjectFactory", "HEAP: " + getHEAP());
     }
 

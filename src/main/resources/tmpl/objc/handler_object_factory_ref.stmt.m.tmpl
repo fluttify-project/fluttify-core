@@ -6,7 +6,5 @@
 
     methodResult(@(ref.hash));
 
-#ifdef DEBUG
-    NSLog(@"HEAP: %@", HEAP);
-#endif
+    if (enableLog) NSLog(@"HEAP: %@", HEAP);
 },
