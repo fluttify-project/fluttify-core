@@ -55,6 +55,7 @@ fun List<Field>.filterGetters(): List<Field> {
         .filter { it.must("公开field") { isPublic } }
         .filter { it.mustNot("静态field") { isStatic } }
         .filter { it.variable.must("已知类型") { isKnownType() } }
+        .filter { it.variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } }
         .filter { it.variable.must("公开类型") { isPublicType() } }
         .filter { it.variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasSubtype() } }
         .filter { it.variable.must("返回类型的父类是已知类") { typeName.findType().superType() != Type.UNKNOWN_TYPE } }
@@ -72,6 +73,7 @@ fun List<Field>.filterSetters(): List<Field> {
         .filter { it.mustNot("不可改field") { isFinal } }
         .filter { it.mustNot("静态field") { isStatic } }
         .filter { it.variable.must("已知类型") { isKnownType() } }
+        .filter { it.variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } }
         .filter { it.variable.must("公开类型") { typeName.findType().isPublic } }
         .filter { it.variable.must("返回类型的父类是已知类") { typeName.findType().superType() != Type.UNKNOWN_TYPE } }
         .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
