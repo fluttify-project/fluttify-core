@@ -3,8 +3,10 @@
   FlutterMethodChannel *channel = [FlutterMethodChannel
       methodChannelWithName:@"#__method_channel__#"
             binaryMessenger:[_registrar messenger]];
-
-  NSLog(@"#__log__#");
+  // print log
+  if (enableLog) {
+    NSLog(@"#__log__#");
+  }
 
   // convert to jsonable arg
   #__local_args__#

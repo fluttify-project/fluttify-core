@@ -9,7 +9,9 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 
 //Future<#__return_type__#> #__function_name__#(#__formal_params__#) async {
 //  // print log
-//  #__log__#
+//  if (fluttifyLogEnabled) {
+//    #__log__#
+//  }
 //
 //  // invoke native method
 //  #__invoke__#

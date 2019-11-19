@@ -1,5 +1,8 @@
 @"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-    NSLog(@"#__method_name__#");
+    // print log
+    if (enableLog) {
+        NSLog(@"#__method_name__#");
+    }
 
     // args
     #__args__#

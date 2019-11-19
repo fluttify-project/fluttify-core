@@ -1,5 +1,8 @@
 @"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-    NSLog(@"#__method_name__#");
+    // print log
+    if (enableLog) {
+        NSLog(@"#__method_name__#");
+    }
 
     #__type_name__#* ref = [[#__type_name__# alloc] init];
     HEAP[@(ref.hash)] = ref;

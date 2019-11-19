@@ -16,9 +16,12 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
 //      methodChannelWithName:@"#__method_channel__#"
 //            binaryMessenger:[_registrar messenger]];
+//  // print log
+//  if (enableLog) {
+//    NSLog(@"#__log__#");
+//  }
 //
-//  NSLog(@"#__log__#");
-//
+//  // convert to jsonable arg
 //  #__local_args__#
 //
 //  #__callback__#

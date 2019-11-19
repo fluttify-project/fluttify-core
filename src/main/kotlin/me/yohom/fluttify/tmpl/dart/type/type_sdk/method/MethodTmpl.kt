@@ -8,16 +8,18 @@ import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
 
 //#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
-//  // 日志打印
-//  #__log__#
+//  // print log
+//  if (fluttifyLogEnabled) {
+//    #__log__#
+//  }
 //
-//  // 调用原生方法
+//  // invoke native method
 //  #__invoke__#
 //
-//  // 接受原生回调
+//  // handle native call
 //  #__callback__#
 //
-//  // 返回值
+//  // convert native result to dart side object
 //  if (result == null) {
 //    return null;
 //  } else {
