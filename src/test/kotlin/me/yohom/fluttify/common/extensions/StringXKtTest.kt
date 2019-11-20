@@ -12,6 +12,8 @@ class StringXKtTest {
 
     @Test
     fun toDartType() {
+        println("android_util_Pair<Integer,com_amap_api_maps_model_LatLng>".toDartType())
+        println("android_util_Pair<Float,com_amap_api_maps_model_LatLng>".toDartType())
     }
 
     @Test
