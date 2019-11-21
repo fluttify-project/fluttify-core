@@ -51,13 +51,32 @@ fun JAVA_FILE.javaType(): Type {
                 ?.importDeclaration()
                 ?.map { it.qualifiedName().text } ?: listOf()
             // 从这些import中找出extends后面的类
-            superClass = imports.firstOrNull { it.substringAfterLast(".") == ctx.typeType()?.text } ?: ""
-            interfaces.addAll(imports.filter {
+            // 同接口会碰到的问题, 如果父类是同包下面的类, 那么就
+            // 遍历当前文件夹, 如果找到当前父类名字的类, 那么就加上当前包名, 否则就认为是java.lang的类
+            val simpleSuperClass = ctx.typeType()?.text
+            superClass = imports.firstOrNull { it.substringAfterLast(".") == simpleSuperClass }
+                ?: parentFile
+                    .list()
+                    ?.firstOrNull { it.substringBeforeLast(".") == simpleSuperClass }
+                    ?.run { "$packageName.${substringBeforeLast(".").replace("$", ".")}" }
+                        ?: ""
+
+            // 从import中找出含有接口列表中接口名称的import
+            interfaces.addAll(imports.filter { import ->
                 ctx.typeList()
                     ?.typeType()
-                    ?.map { it.text }
-                    ?.contains(it.substringAfterLast(".")) == true
+                    ?.map { it.text } // 接口简称列表
+                    ?.contains(import.substringAfterLast(".")) == true
             })
+            // 碰到一种情况, 实现的接口是同包下面的接口, 所以没有import
+            // 遍历当前文件夹, 如果找到对应名字的类, 那么就加上当前包名, 否则就认为是java.lang的类
+            // 每个文件都和接口列表比对一下, 如果在接口列表中, 那么就过滤出来并加上包名
+            interfaces.addAll(parentFile.list()?.filter { fileName ->
+                ctx.typeList()
+                    ?.typeType()
+                    ?.map { it.text } // 接口简称列表
+                    ?.contains(fileName.substringBeforeLast(".")) == true
+            }?.map { "$packageName.${it.substringBeforeLast(".").replace("$", ".")}" } ?: listOf())
         }
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {

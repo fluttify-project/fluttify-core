@@ -13,13 +13,6 @@ fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
 }
 
 /**
- * 获取父类名称
- */
-fun JavaParser.ClassDeclarationContext.superClass(): String? {
-    return typeType()?.text
-}
-
-/**
  * 获取泛型类型
  */
 fun JavaParser.ClassDeclarationContext.genericTypes(): List<String> {
