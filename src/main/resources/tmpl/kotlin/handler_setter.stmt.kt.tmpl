@@ -1,5 +1,5 @@
 "#__setter_name__#" to { registrar, args, methodResult ->
-    val #__field_name__# = args["#__field_name__#"] as #__field_type__#
+    #__arg__#
 
     val refId = args["refId"] as Int
     val ref = HEAP[refId] as #__class_name__#

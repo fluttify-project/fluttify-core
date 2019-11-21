@@ -1,12 +1,14 @@
 package me.yohom.fluttify.tmpl.kotlin.common.handler.handler_setter
 
-import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.toKotlinType
-import me.yohom.fluttify.extensions.underscore2Camel
+import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 
 //"#__setter_name__#" to { registrar, args, methodResult ->
-//    val #__field_name__# = args["#__field_name__#"] as #__field_type__#
+//    #__arg__#
 //
 //    val refId = args["refId"] as Int
 //    val ref = HEAP[refId] as #__class_name__#
@@ -20,23 +22,18 @@ internal class HandlerSetterTmpl(private val field: Field) {
     fun kotlinSetter(): String {
         val setterName = field.setterMethodName()
         val fieldName = field.variable.name
-        val fieldType = field.variable.run {
-            if (isList) {
-                var result = typeName.toKotlinType()
-                for (i in 0 until genericLevel) {
-                    result = "List<$result>"
-                }
-                result
-            } else {
-                typeName.toKotlinType()
-            }
+        val arg = when {
+            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).kotlinArgJsonable()
+            field.variable.isEnum() -> ArgEnumTmpl(field.variable).kotlinArgEnum()
+            field.variable.isList -> ArgListTmpl(field.variable).kotlinArgList()
+            else -> ArgRefTmpl(field.variable).kotlinArgRef()
         }
         val className = field.className
 
         return tmpl
             .replace("#__setter_name__#", setterName)
             .replace("#__field_name__#", fieldName)
-            .replace("#__field_type__#", fieldType)
+            .replaceParagraph("#__arg__#", arg)
             .replace("#__class_name__#", className)
             .replace("#__field_value__#", fieldName.run {
                 // 因为dart到kotlin这边都是double类型, 如果参数实际类型是float的话, 需要转一手
