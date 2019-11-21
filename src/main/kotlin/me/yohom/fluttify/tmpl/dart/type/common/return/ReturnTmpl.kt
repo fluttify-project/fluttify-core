@@ -18,9 +18,20 @@ class ReturnTmpl(private val method: Method) {
         val resultBuilder = StringBuilder("")
 
         // 如果返回类型是抽象类, 那么先转换成它的子类
-        var concretType = returnType
-        if (returnType.findType().isAbstract) {
-            concretType = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
+        var concretType: String
+        // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
+        if (returnType.isList() && returnType.genericLevel() != 0) {
+            val genericType = returnType.genericType()
+            concretType = genericType
+            if (genericType.findType().isAbstract) {
+                concretType = genericType.findType().run { firstConcretSubtype()?.name ?: this.name }
+            }
+            concretType = "List<$concretType>"
+        } else {
+            concretType = returnType
+            if (returnType.findType().isAbstract) {
+                concretType = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
+            }
         }
 
         // 返回jsonable类型

@@ -28,7 +28,7 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.mustNot("废弃方法") { isDeprecated } }
         // 类似float*返回这样的类型的方法都暂时不处理
         .filter { it.mustNot("返回类型是C类型指针") { returnType.run { contains("*") && depointer().isValueType() } } }
-        .filter { it.must("返回类型是具体类型或者含有子类的抽象类") { returnType.findType().run { isConcret() || hasSubtype() } } }
+        .filter { it.must("返回类型是具体类型或者含有实体子类的抽象类") { returnType.findType().run { isConcret() || hasConcretSubtype() } } }
         .filter { it.mustNot("返回类型是混淆类") { returnType.isObfuscated() } }
         .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }

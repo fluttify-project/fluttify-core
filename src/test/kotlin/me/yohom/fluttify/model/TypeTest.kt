@@ -46,9 +46,9 @@ class TypeTest {
         Amap.androidMapSDK
             .libs[2]
             .types
-//            .find { it.name == "com.amap.api.maps.model.TileProvider" }
+            .find { it.name == "com.amap.api.maps.model.TileProvider" }
 //            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
-            .find { it.name == "com.amap.api.maps.AMap.InfoWindowAdapter" }
+//            .find { it.name == "com.amap.api.maps.AMap.InfoWindowAdapter" }
             ?.firstConcretSubtype()
             ?.run {
                 println("结果: $this")

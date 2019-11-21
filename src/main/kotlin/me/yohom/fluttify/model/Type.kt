@@ -132,6 +132,10 @@ open class Type : IPlatform, IScope {
             .filter { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
     }
 
+    fun hasConcretSubtype(): Boolean {
+        return firstConcretSubtype() != null
+    }
+
     fun firstConcretSubtype(): Type? {
         return if (isConcret()) {
             this
