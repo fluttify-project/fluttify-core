@@ -98,6 +98,7 @@ val SYSTEM_TYPE = listOf(
     /////////////////////////////////////////Android系统类/////////////////////////////////////////////
     Type().apply { name = "void" },
     Type().apply { name = "android.content.Context"; typeType = TypeType.Class },
+    Type().apply { name = "android.content.Intent"; typeType = TypeType.Class },
     Type().apply { name = "android.app.Application"; typeType = TypeType.Class },
     Type().apply { name = "android.app.Activity"; typeType = TypeType.Class },
     Type().apply { name = "android.os.Bundle"; typeType = TypeType.Class },
