@@ -61,7 +61,7 @@ open class FluttifyExtension {
     /**
      * Fluttify基础库版本 默认值最好跟随foundation_fluttify的更新而更新
      */
-    var foundationVersion: String = "^0.0.11"
+    var foundationVersion: String = "^0.1.0"
 
     /**
      * 插件依赖 <名称, 版本>
