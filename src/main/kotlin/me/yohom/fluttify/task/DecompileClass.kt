@@ -25,7 +25,10 @@ open class DecompileClass : FluttifyTask() {
         javaFilesDir.listFiles()?.forEach { it.deleteRecursively() }
 
         ConsoleDecompiler.main(arrayOf(
-            "-dgs=1", "-din=0", "-rsy=1", "-hdc=0",
+            "-dgs=1", // dgs (0): decompile generic signatures
+            "-din=0", // din (1): decompile inner classes
+            "-rsy=1", // rsy (0): hide synthetic class members
+            "-hdc=0", // hdc (1): hide empty default constructor
             classFilesDir.toString(),
             javaFilesDir.toString())
         )
