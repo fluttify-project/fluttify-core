@@ -1,10 +1,8 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct
 
-import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
 
-//// 结构体参数
+//// struct arg
 //NSValue* #__arg_name__#Value = (NSValue*) HEAP[@([args[@"#__arg_name__#"] integerValue])];
 //#__type_name__# #__arg_name__#;
 //[#__arg_name__#Value getValue:&#__arg_name__#];
@@ -17,9 +15,5 @@ internal class ArgStructTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__type_name__#", typeName)
             .replace("#__arg_name__#", argName)
-            .replace(
-                "#__plugin_name__#",
-                if (variable.isPlatformType()) "Platform" else ext.outputProjectName.underscore2Camel()
-            )
     }
 }

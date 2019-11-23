@@ -11,6 +11,7 @@ import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
 
+// todo 以嵌套/多个类的前提生成结构
 /**
  * Java源码解析
  */

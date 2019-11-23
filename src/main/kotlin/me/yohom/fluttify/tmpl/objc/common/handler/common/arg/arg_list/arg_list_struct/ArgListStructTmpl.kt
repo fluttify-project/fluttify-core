@@ -1,11 +1,9 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct
 
-import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.underscore2Camel
 import me.yohom.fluttify.model.Variable
 
-//// 列表参数
+//// list arg
 //NSArray* #__arg_name__#RefIdArray = (NSArray*) args[@"#__arg_name__#"];
 //#__type_name__# #__arg_name__#[#__arg_name__#RefIdArray.count];
 //
@@ -24,9 +22,5 @@ internal class ArgListStructTmpl(private val variable: Variable) {
         return tmpl
             .replace("#__type_name__#", typeName)
             .replace("#__arg_name__#", argName)
-            .replace(
-                "#__plugin_name__#",
-                if (variable.isPlatformType()) "Platform" else ext.outputProjectName.underscore2Camel()
-            )
     }
 }

@@ -1,6 +1,5 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
@@ -16,10 +15,6 @@ data class Variable(
 ) : IPlatform {
     fun constructable(): Boolean {
         return typeName.findType().constructable() || isList
-    }
-
-    fun isPlatformType(): Boolean {
-        return typeName in SYSTEM_TYPE.map { it.name }
     }
 
     fun isStructPointer(): Boolean {
