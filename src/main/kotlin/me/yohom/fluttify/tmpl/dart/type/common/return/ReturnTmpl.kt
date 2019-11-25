@@ -1,75 +1,58 @@
 package me.yohom.fluttify.tmpl.dart.type.common.`return`
 
-import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultEnumTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultJsonableTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultListTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultRefTmpl
 
-// todo 使用模板重构
 class ReturnTmpl(private val method: Method) {
     fun dartMethodReturn(): String {
-        return returnString(method.returnType)
-    }
-
-    private fun returnString(returnType: String): String {
-        // 如果是多维列表, 那么不处理, 直接返回空列表
-        if (returnType.isList() && returnType.genericLevel() > 1) {
-            return "[] /* 暂时不支持多维列表 */";
-        }
-
-        val resultBuilder = StringBuilder("")
-
-        // 如果返回类型是抽象类, 那么先转换成它的子类
-        var concretType: String
-        // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
-        if (returnType.isList() && returnType.genericLevel() != 0) {
-            val genericType = returnType.genericType()
-            concretType = genericType
-            if (genericType.findType().isAbstract) {
-                concretType = genericType.findType().run { firstConcretSubtype()?.name ?: this.name }
+        return method.run {
+            // 如果是多维列表, 那么不处理, 直接返回空列表
+            if (returnType.isList() && returnType.genericLevel() > 1) {
+                return "[] /* 暂时不支持多维列表 */";
             }
-            concretType = "List<$concretType>"
-        } else {
-            concretType = returnType
-            if (returnType.findType().isAbstract) {
-                concretType = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
-            }
-        }
 
-        // 返回jsonable类型
-        if (concretType.jsonable() || concretType == "void") {
-            if (concretType.isList()) {
-                val type = when {
-                    // 说明List有指定泛型, 拿出泛型类
-                    concretType.genericLevel() != 0 -> concretType.genericType().toDartType()
-                    // 数组类型
-                    concretType.endsWith("[]") -> concretType.removeSuffix("[]")
-                    // List没有指定泛型, 使用各个平台的Object类
-                    else -> method.platform.objectType()
+            // 如果返回类型是抽象类, 那么先转换成它的子类
+            var concretTypeWithContainer: String
+            // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
+            if (returnType.isList() && returnType.genericLevel() != 0) {
+                val genericType = returnType.genericType()
+                concretTypeWithContainer = genericType
+                if (genericType.findType().isAbstract) {
+                    concretTypeWithContainer = genericType.findType().run { firstConcretSubtype()?.name ?: this.name }
                 }
-                resultBuilder.append("(result as List).cast<${type}>()")
+                concretTypeWithContainer = "List<$concretTypeWithContainer>"
             } else {
-                resultBuilder.append("result")
-            }
-        }
-        // 返回枚举类型
-        else if (concretType.findType().isEnum()) {
-            resultBuilder.append("${concretType.toDartType()}.values[result]")
-        }
-        // 返回列表类型
-        else {
-            if (concretType.isList()) {
-                val type = if (concretType.genericLevel() != 0) {
-                    concretType.genericType().toDartType()
-                } else {
-                    method.platform.objectType()
+                concretTypeWithContainer = returnType
+                if (returnType.findType().isAbstract) {
+                    concretTypeWithContainer = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
                 }
+            }
 
-                resultBuilder.append("(result as List).cast<int>().map((it) => $type()..refId = it..tag = '${ext.outputProjectName}').toList()")
-            } else {
-                resultBuilder.append("${concretType.toDartType()}()..refId = result..tag = '${ext.outputProjectName}'")
+            // 返回jsonable类型
+            concretTypeWithContainer.run {
+                when {
+                    jsonable() || concretTypeWithContainer == "void" -> {
+                        ResultJsonableTmpl(concretTypeWithContainer, method.platform).dartResultJsonable()
+                    }
+                    // 返回枚举类型
+                    findType().isEnum() -> ResultEnumTmpl(concretTypeWithContainer).dartResultEnum()
+                    // 返回列表类型
+                    isList() -> {
+                        val type = if (concretTypeWithContainer.genericLevel() != 0) {
+                            concretTypeWithContainer.genericType()
+                        } else {
+                            method.platform.objectType()
+                        }
+
+                        ResultListTmpl(type, method.platform).dartResultList()
+                    }
+                    else -> ResultRefTmpl(concretTypeWithContainer).dartResultRef()
+                }
             }
         }
-
-        return resultBuilder.toString()
     }
 }

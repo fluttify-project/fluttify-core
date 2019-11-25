@@ -14,7 +14,7 @@ class GetterTmpl(private val field: Field) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
 
     fun dartGetter(): String {
-        val typeName = field.variable.run {
+        val typeNameWithContainer = field.variable.run {
             var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
             for (i in 0 until genericLevel) {
                 result = "List<$result>"
@@ -36,11 +36,11 @@ class GetterTmpl(private val field: Field) {
         val getter = field.getterMethodName()
         val result = field.variable.run {
             when {
-                jsonable() or isAliasType() -> ResultJsonableTmpl(this).dartResultJsonable()
-                isList -> ResultListTmpl(field).dartResultList()
-                isEnum() -> ResultEnumTmpl(this.typeName).dartResultEnum()
+                jsonable() or isAliasType() -> ResultJsonableTmpl(typeNameWithContainer, platform).dartResultJsonable()
+                isList -> ResultListTmpl(typeName, platform).dartResultList()
+                isEnum() -> ResultEnumTmpl(typeName).dartResultEnum()
                 typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
-                else -> ResultRefTmpl(this.typeName).dartResultRef()
+                else -> ResultRefTmpl(typeName).dartResultRef()
             }
         }
         val nativeObjectPool = field.variable.run {
@@ -53,7 +53,7 @@ class GetterTmpl(private val field: Field) {
 
         return field.variable.run {
             tmpl
-                .replace("#__type__#", typeName)
+                .replace("#__type__#", typeNameWithContainer)
                 .replace("#__name__#", name)
                 .replace("#__view_channel__#", viewChannel)
                 .replace("#__method_channel__#", methodChannel)
