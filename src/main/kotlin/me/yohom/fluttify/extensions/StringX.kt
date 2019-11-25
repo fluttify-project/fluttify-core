@@ -41,6 +41,7 @@ fun TYPE_NAME.isList(): Boolean {
             || Regex("Iterable<(\\w*|.*)>").matches(this)
             || Regex("Collection<(\\w*|.*)>").matches(this)
             || Regex("NSArray.*\\*?").matches(this)
+            || Regex("""\w+\[]""").matches(this)
 }
 
 /**
@@ -62,6 +63,27 @@ fun TYPE_NAME.isVoid(): Boolean {
  */
 fun TYPE_NAME.enlist(): TYPE_NAME {
     return "List<$this>"
+}
+
+/**
+ * 套上[]
+ */
+fun TYPE_NAME.enarray(): TYPE_NAME {
+    return "$this[]"
+}
+
+/**
+ * 是否是数组
+ */
+fun TYPE_NAME.isArray(): Boolean {
+    return endsWith("[]")
+}
+
+/**
+ * 去掉[]
+ */
+fun TYPE_NAME.dearray(): TYPE_NAME {
+    return removeSuffix("[]")
 }
 
 /**
@@ -172,7 +194,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
             "double", "Double", "float", "Float" -> "double"
             "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
-            "ArrayList<String>" -> "List<String>"
+            "ArrayList<String>", "String[]" -> "List<String>"
             "List<String>" -> "List<String>"
             "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
             "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"

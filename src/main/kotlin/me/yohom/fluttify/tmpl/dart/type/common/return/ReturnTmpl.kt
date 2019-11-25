@@ -37,10 +37,13 @@ class ReturnTmpl(private val method: Method) {
         // 返回jsonable类型
         if (concretType.jsonable() || concretType == "void") {
             if (concretType.isList()) {
-                val type = if (concretType.genericLevel() != 0) {
-                    concretType.genericType().toDartType()
-                } else {
-                    method.platform.objectType()
+                val type = when {
+                    // 说明List有指定泛型, 拿出泛型类
+                    concretType.genericLevel() != 0 -> concretType.genericType().toDartType()
+                    // 数组类型
+                    concretType.endsWith("[]") -> concretType.removeSuffix("[]")
+                    // List没有指定泛型, 使用各个平台的Object类
+                    else -> method.platform.objectType()
                 }
                 resultBuilder.append("(result as List).cast<${type}>()")
             } else {

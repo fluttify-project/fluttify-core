@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_return
 
 import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.isArray
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.CallbackTmpl
@@ -19,13 +20,15 @@ class InvokeReturnTmpl(private val method: Method) {
     }
 
     private fun var2formalParam(variable: Variable): String {
-        return if (variable.typeName.findType().isCallback()) {
-            CallbackTmpl(method, variable.typeName.findType()).javaCallback()
-        } else {
-            when {
-                variable.isList -> "new ArrayList(${variable.name})"
-                variable.typeName.toLowerCase() == "float" -> "${variable.name}.floatValue()"
-                else -> variable.name
+        return variable.run {
+            if (typeName.findType().isCallback()) {
+                CallbackTmpl(method, typeName.findType()).javaCallback()
+            } else {
+                when {
+                    isList -> if (typeName.isArray()) "$name.toArray(new $typeName[$name.size()])" else "new ArrayList($name)"
+                    typeName.toLowerCase() == "float" -> "$name.floatValue()"
+                    else -> name
+                }
             }
         }
     }

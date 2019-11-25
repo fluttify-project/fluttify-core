@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.arg
 
+import me.yohom.fluttify.extensions.dearray
 import me.yohom.fluttify.extensions.enlist
 import me.yohom.fluttify.model.Variable
 
@@ -12,7 +13,8 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
     fun kotlinArgJsonable(): String {
         val type = variable.typeName.run { if (toLowerCase() == "float") "Double" else this }
         return tmpl
-            .replace("#__type_name__#", if (variable.isList) type.enlist() else type)
+            // 如果是数组, 那么需要去掉`[]`, 再补成列表
+            .replace("#__type_name__#", if (variable.isList) type.dearray().enlist() else type)
             .replace("#__arg_name__#", variable.name)
     }
 }

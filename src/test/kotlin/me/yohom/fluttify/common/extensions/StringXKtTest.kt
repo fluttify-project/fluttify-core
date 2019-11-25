@@ -64,4 +64,9 @@ class StringXKtTest {
         println("com.amap.api.mapcore.util.el".isObfuscated())
     }
 
+    @Test
+    fun isArray() {
+        println("String[]".isArray())
+    }
+
 }

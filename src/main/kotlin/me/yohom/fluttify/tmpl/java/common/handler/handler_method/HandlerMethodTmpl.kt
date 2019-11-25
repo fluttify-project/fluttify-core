@@ -66,7 +66,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
 
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = when {
-            method.returnType.jsonable() -> ResultJsonableTmpl().javaJsonableResult()
+            method.returnType.jsonable() -> ResultJsonableTmpl(method.returnType).javaJsonableResult()
             method.returnType.isList() -> {
                 // 多维列表不处理
                 if (method.returnType.genericLevel() > 1) {

@@ -1,5 +1,8 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_void
 
+import me.yohom.fluttify.extensions.dearray
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.isArray
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Variable
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.CallbackTmpl
@@ -15,14 +18,17 @@ class InvokeVoidTmpl(private val method: Method) {
             .replace("#__actual_params__#", method.formalParams.joinToString { var2formalParam(it.variable) })
     }
 
+    // todo 和InvokeReturnTmpl合并一下
     private fun var2formalParam(variable: Variable): String {
-        return if (variable.isCallback()) {
-            CallbackTmpl(method, variable.type()).javaCallback()
-        } else {
-            when {
-                variable.isList -> "new ArrayList(${variable.name})"
-                variable.typeName.toLowerCase() == "float" -> "${variable.name}.floatValue()"
-                else -> variable.name
+        return variable.run {
+            if (typeName.findType().isCallback()) {
+                CallbackTmpl(method, typeName.findType()).javaCallback()
+            } else {
+                when {
+                    isList -> if (typeName.isArray()) "$name.toArray(new ${typeName.dearray()}[$name.size()])" else "new ArrayList($name)"
+                    typeName.toLowerCase() == "float" -> "$name.floatValue()"
+                    else -> name
+                }
             }
         }
     }
