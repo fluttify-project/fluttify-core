@@ -28,18 +28,20 @@ class GetterTmpl(private val field: Field) {
         val normalMethodChannel = ext.methodChannelName
         // 只有当前类是View的时候, 才需要区分普通channel和View channel
         val methodChannel = if (field.className.findType().isView()) {
-                "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
-            } else {
-                "'$normalMethodChannel'"
-            }
+            "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
+        } else {
+            "'$normalMethodChannel'"
+        }
 
         val getter = field.getterMethodName()
-        val result = when {
-            field.variable.run { jsonable() or isAliasType() } -> ResultJsonableTmpl().dartResultJsonable()
-            field.variable.isList -> ResultListTmpl(field).dartResultList()
-            field.variable.isEnum() -> ResultEnumTmpl(field.variable.typeName).dartResultEnum()
-            field.variable.typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
-            else -> ResultRefTmpl(field.variable.typeName).dartResultRef()
+        val result = field.variable.run {
+            when {
+                jsonable() or isAliasType() -> ResultJsonableTmpl(this).dartResultJsonable()
+                isList -> ResultListTmpl(field).dartResultList()
+                isEnum() -> ResultEnumTmpl(this.typeName).dartResultEnum()
+                typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
+                else -> ResultRefTmpl(this.typeName).dartResultRef()
+            }
         }
         val nativeObjectPool = field.variable.run {
             when {

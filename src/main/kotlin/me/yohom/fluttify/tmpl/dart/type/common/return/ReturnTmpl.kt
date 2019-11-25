@@ -4,6 +4,7 @@ import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
+// todo 使用模板重构
 class ReturnTmpl(private val method: Method) {
     fun dartMethodReturn(): String {
         return returnString(method.returnType)
