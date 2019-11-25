@@ -48,7 +48,7 @@ class MethodTmpl(private val method: Method) {
             }
         val log = LogTmpl(method).dartMethodLog()
         val invoke = InvokeTmpl(method).dartMethodInvoke()
-        val callback = CallbackMethodTmpl(method).callback()
+        val callback = CallbackMethodTmpl(method).dartCallback()
         val returnStatement = ReturnTmpl(method).dartMethodReturn()
         val nativeObjectPool = method.returnType.run {
             when {

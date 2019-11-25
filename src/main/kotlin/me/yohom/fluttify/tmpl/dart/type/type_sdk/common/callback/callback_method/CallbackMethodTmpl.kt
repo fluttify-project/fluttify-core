@@ -26,7 +26,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 class CallbackMethodTmpl(private val callerMethod: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText()
 
-    fun callback(): String {
+    fun dartCallback(): String {
         // 如果方法参数中没有回调类型的参数, 那么直接返回空字符串
         if (callerMethod
                 .formalParams
