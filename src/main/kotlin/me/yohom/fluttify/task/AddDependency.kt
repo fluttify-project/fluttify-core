@@ -24,7 +24,7 @@ open class AndroidAddDependency : FluttifyTask() {
 open class IOSAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
-        val frameworkFile: File = ext.frameworkDir.file()
+        val frameworkDir: File = ext.frameworkDir.file()
         val targetDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
 
         // 添加间接依赖到podspec中
@@ -37,6 +37,6 @@ open class IOSAddDependency : FluttifyTask() {
             .run { podspecFile.writeText(this) }
 
         // 添加framework到工程中
-        FileUtils.copyDirectory(frameworkFile, targetDir)
+        FileUtils.copyDirectory(frameworkDir, targetDir)
     }
 }
