@@ -52,7 +52,10 @@ class #__factory_name__#Factory extends PlatformViewFactory {
 
     @Override
     public PlatformView create(Context context, int id, Object params) {
-        #__native_view__# view = new #__native_view__#(registrar.activity());
+        Map<String, Object> args = (Map<String, Object>) params;
+        #__args__#
+
+        #__native_view__# view = new #__native_view__#(registrar.activity()#__creation_args__#);
         getHEAP().put(id, view);
         return new PlatformView() {
 

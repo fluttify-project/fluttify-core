@@ -3,6 +3,10 @@ package me.yohom.fluttify.tmpl.java.platform_view_factory
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
 
 //package #__package_name__#;
@@ -10,14 +14,20 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //import android.content.Context;
 //import android.view.View;
 //import android.util.Log;
+//
+//import java.util.Map;
+//import java.util.HashMap;
+//
 //import io.flutter.plugin.common.MethodChannel;
 //import io.flutter.plugin.common.PluginRegistry.Registrar;
 //import io.flutter.plugin.common.StandardMessageCodec;
 //import io.flutter.plugin.platform.PlatformView;
 //import io.flutter.plugin.platform.PlatformViewFactory;
-//import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;;
-//import java.util.Map;
 //
+//import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
+//import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableLog;
+//
+//@SuppressWarnings("ALL")
 //class #__factory_name__#Factory extends PlatformViewFactory {
 //
 //    #__factory_name__#Factory(Registrar registrar) {
@@ -49,13 +59,16 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //
 //    @Override
 //    public PlatformView create(Context context, int id, Object params) {
+//        Map<String, Object> args = (Map<String, Object>) params;
+//        #__args__#
+//
+//        #__native_view__# view = new #__native_view__#(registrar.activity()#__creation_args__#);
+//        getHEAP().put(id, view);
 //        return new PlatformView() {
 //
 //            // add to HEAP
 //            @Override
 //            public View getView() {
-//                #__native_view__# view = new #__native_view__#(registrar.activity());
-//                getHEAP().put(id, view);
 //                return view;
 //            }
 //
@@ -70,14 +83,48 @@ class PlatformViewFactoryTmpl(private val viewType: Type) {
 
     fun javaPlatformViewFactory(): String {
         val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
-        val factoryName= viewType.name.simpleName()
-        val pluginClass= "${ext.outputProjectName.underscore2Camel()}Plugin"
-        val handlers = viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
+        val factoryName = viewType.name.simpleName()
+        val pluginClass = "${ext.outputProjectName.underscore2Camel()}Plugin"
+        val handlers =
+            viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
         val nativeView = viewType.name
         val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
-        return tmpl
-            .replace("#__package_name__#", packageName)
+        // 找出是否存在非Context, AttributeSet和int类型参数的构造器
+        // 如果存在, 那么以这个构造器进行初始化
+        val customConstructorList = viewType
+            .constructors
+            .filter {
+                it.formalParams.any { param ->
+                    param.variable.typeName !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+                }
+            }
+
+        return if (customConstructorList.isNotEmpty()) {
+            val constructor = customConstructorList[0]
+            // 去掉Context的参数列表, 不需要Context
+            val formalParamsExcludeContext = constructor
+                .formalParams
+                .filter { it.variable.typeName != "android.content.Context" }
+
+            // 反序列化参数
+            val args = formalParamsExcludeContext
+                .joinToString("\n") {
+                    when {
+                        it.variable.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
+                        it.variable.isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
+                        it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
+                        else -> ArgRefTmpl(it.variable).kotlinArgRef()
+                    }
+                }
+            // 传入参数
+            val creationArgs = formalParamsExcludeContext.joinToString(prefix = ", ") { it.variable.name }
+            tmpl.replaceParagraph("#__args__#", args)
+                .replace("#__creation_args__#", creationArgs)
+        } else {
+            tmpl.replace("#__args__#", "")
+                .replace("#__creation_args__#", "")
+        }.replace("#__package_name__#", packageName)
             .replace("#__factory_name__#", factoryName)
             .replace("#__plugin_class__#", pluginClass)
             .replaceParagraph("#__handlers__#", handlers)

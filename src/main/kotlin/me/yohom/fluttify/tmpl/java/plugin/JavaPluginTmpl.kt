@@ -76,7 +76,7 @@ class JavaPluginTmpl(private val lib: Lib) {
         val registerPlatformViews = lib
             .types
             .filter { it.isView() && !it.isObfuscated() }
-            .joinToString("\n") { RegisterPlatformViewTmpl(it, ext).kotlinRegisterPlatformView() }
+            .joinToString("\n") { RegisterPlatformViewTmpl(it).javaRegisterPlatformView() }
 
         val getterHandlers = lib.types
             .filterType()
