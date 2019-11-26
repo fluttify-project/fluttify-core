@@ -8,17 +8,17 @@ import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
-//static Future<#__class_name__#> create#__creator_name__#(#__formal_params__#) async {
+//Future<#__class_name__#> create#__creator_name__#(#__formal_params__#) async {
 //  final int refId = await _channel.invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
 //  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
 //
 //  kNativeObjectPool.add(object);
 //  return object;
 //}
-class CreateObjectTmpl(val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/create_object.mtd.dart.tmpl").readText()
+class CreateObjectFunctionTmpl(val type: Type) {
+    private val tmpl = this::class.java.getResource("/tmpl/dart/create_object_function.mtd.dart.tmpl").readText()
 
-    fun dartCreateObject(): List<String> {
+    fun dartCreateObjectFunction(): List<String> {
         return when (type.platform) {
             Platform.Android -> type.constructors
                 .filterConstructor()
