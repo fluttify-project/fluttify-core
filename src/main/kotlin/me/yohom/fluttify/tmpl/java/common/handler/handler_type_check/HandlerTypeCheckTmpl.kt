@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Method
 internal class HandlerTypeCheckTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/java/handler_type_check.stmt.java.tmpl").readText()
 
-    fun kotlinTypeCheck(): String {
+    fun javaTypeCheck(): String {
         return if (method.isStatic)
             ""
         else

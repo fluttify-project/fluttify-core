@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Variable
 internal class ArgEnumTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/java/arg_enum.stmt.java.tmpl").readText()
 
-    fun kotlinArgEnum(): String {
+    fun javaArgEnum(): String {
         return tmpl
             .replace("#__type_name__#", variable.typeName)
             .replace("#__arg_name__#", variable.name)

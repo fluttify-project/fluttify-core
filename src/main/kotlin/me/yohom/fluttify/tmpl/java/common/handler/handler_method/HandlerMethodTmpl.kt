@@ -37,26 +37,26 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 internal class HandlerMethodTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText()
 
-    fun kotlinHandlerMethod(): String {
+    fun javaHandlerMethod(): String {
         val methodName = method.nameWithClass()
         val args = method.formalParams
             .filter { !it.variable.typeName.findType().isCallback() }
             .joinToString("\n") {
                 when {
-                    it.variable.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
-                    it.variable.isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
-                    it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
-                    else -> ArgRefTmpl(it.variable).kotlinArgRef()
+                    it.variable.jsonable() -> ArgJsonableTmpl(it.variable).javaArgJsonable()
+                    it.variable.isEnum() -> ArgEnumTmpl(it.variable).javaArgEnum()
+                    it.variable.isList -> ArgListTmpl(it.variable).javaArgList()
+                    else -> ArgRefTmpl(it.variable).javaArgRef()
                 }
             }
         val log = if (method.isStatic) {
-            LogStaticTmpl(method).kotlinLogStatic()
+            LogStaticTmpl(method).javaLogStatic()
         } else {
-            LogInstanceTmpl(method).kotlinLogInstance()
+            LogInstanceTmpl(method).javaLogInstance()
         }
 
         // 获取当前调用方法的对象引用
-        val ref = RefTmpl(method).kotlinRef()
+        val ref = RefTmpl(method).javaRef()
 
         // 调用kotlin端对应的方法
         val invoke = if (method.returnType.isVoid())
@@ -76,7 +76,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
                 }
             }
             method.returnType == "void" -> ResultVoidTmpl().javaVoidResult()
-            else -> ResultRefTmpl().kotlinRefResult()
+            else -> ResultRefTmpl().javaRefResult()
         }
         return tmpl
             .replace("#__method_name__#", methodName)

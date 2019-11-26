@@ -12,7 +12,7 @@ import me.yohom.fluttify.model.Variable
 internal class ArgListTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText()
 
-    fun kotlinArgList(): String {
+    fun javaArgList(): String {
         return if (variable.genericLevel <= 1) {
             tmpl
                 .replace("#__type_name__#", variable.typeName)

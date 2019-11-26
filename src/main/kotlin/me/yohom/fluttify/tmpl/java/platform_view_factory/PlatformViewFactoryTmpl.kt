@@ -86,7 +86,7 @@ class PlatformViewFactoryTmpl(private val viewType: Type) {
         val factoryName = viewType.name.simpleName()
         val pluginClass = "${ext.outputProjectName.underscore2Camel()}Plugin"
         val handlers =
-            viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
+            viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it).javaHandlerMethod() }
         val nativeView = viewType.name
         val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
@@ -111,10 +111,10 @@ class PlatformViewFactoryTmpl(private val viewType: Type) {
             val args = formalParamsExcludeContext
                 .joinToString("\n") {
                     when {
-                        it.variable.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
-                        it.variable.isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
-                        it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
-                        else -> ArgRefTmpl(it.variable).kotlinArgRef()
+                        it.variable.jsonable() -> ArgJsonableTmpl(it.variable).javaArgJsonable()
+                        it.variable.isEnum() -> ArgEnumTmpl(it.variable).javaArgEnum()
+                        it.variable.isList -> ArgListTmpl(it.variable).javaArgList()
+                        else -> ArgRefTmpl(it.variable).javaArgRef()
                     }
                 }
             // 传入参数

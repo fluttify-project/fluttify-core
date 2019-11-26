@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Method
 internal class RefTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/java/ref.stmt.java.tmpl").readText()
 
-    fun kotlinRef(): String {
+    fun javaRef(): String {
         return if (method.isStatic)
             ""
         else

@@ -82,23 +82,23 @@ class JavaPluginTmpl(private val lib: Lib) {
             .filterType()
             .flatMap { it.fields }
             .filterGetters()
-            .map { HandlerGetterTmpl(it).kotlinGetter() }
+            .map { HandlerGetterTmpl(it).javaGetter() }
 
         val setterHandlers = lib.types
             .filterType()
             .flatMap { it.fields }
             .filterSetters()
-            .map { HandlerSetterTmpl(it).kotlinSetter() }
+            .map { HandlerSetterTmpl(it).javaSetter() }
 
         val methodHandlers = lib.types
             .filterType()
             .flatMap { it.methods }
             .filterMethod()
-            .map { HandlerMethodTmpl(it).kotlinHandlerMethod() }
+            .map { HandlerMethodTmpl(it).javaHandlerMethod() }
 
         val objectFactoryHandlers = lib.types
             .filterConstructable()
-            .flatMap { HandlerObjectFactoryTmpl(it).kotlinObjectFactory() }
+            .flatMap { HandlerObjectFactoryTmpl(it).javaObjectFactory() }
 
         return tmpl
             .replace("#__package_name__#", packageName)

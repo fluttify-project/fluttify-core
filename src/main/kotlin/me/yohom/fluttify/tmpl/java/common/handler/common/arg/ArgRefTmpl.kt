@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Variable
 internal class ArgRefTmpl(private val variable: Variable) {
     private val tmpl = this::class.java.getResource("/tmpl/java/arg_ref.stmt.java.tmpl").readText()
 
-    fun kotlinArgRef(): String {
+    fun javaArgRef(): String {
         return tmpl
             .replace("#__type_name__#", variable.typeName)
             .replace("#__arg_name__#", variable.name)

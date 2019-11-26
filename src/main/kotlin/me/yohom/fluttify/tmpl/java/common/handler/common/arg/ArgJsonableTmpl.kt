@@ -10,7 +10,7 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
     private val tmpl =
         this::class.java.getResource("/tmpl/java/arg_jsonable.stmt.java.tmpl").readText()
 
-    fun kotlinArgJsonable(): String {
+    fun javaArgJsonable(): String {
         val type = variable.typeName.run { if (toLowerCase() == "float") "Double" else this }
         return tmpl
             // 如果是数组, 那么需要去掉`[]`, 再补成列表

@@ -63,7 +63,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
         val log =
             """Log.d("java-callback", "fluttify-java-callback: ${method.name}(" + ${if (logArgs.isEmpty()) "\"\"" else logArgs} + ")");"""
         // 返回语句
-        val returnStmt = CallbackReturnTmpl(method).kotlinCallbackReturn()
+        val returnStmt = CallbackReturnTmpl(method).javaCallbackReturn()
 
         return tmpl
             .replace("#__callback_method__#", callbackMethod)

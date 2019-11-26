@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Method
 internal class LogStaticTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/java/log_static.stmt.java.tmpl").readText()
 
-    fun kotlinLogStatic(): String {
+    fun javaLogStatic(): String {
         val className = method.className
         val methodName = method.name
         val args = method

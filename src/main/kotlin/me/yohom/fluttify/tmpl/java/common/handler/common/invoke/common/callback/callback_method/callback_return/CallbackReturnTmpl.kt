@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.toKotlinType
 import me.yohom.fluttify.model.Method
 
 class CallbackReturnTmpl(private val method: Method) {
-    fun kotlinCallbackReturn(): String {
+    fun javaCallbackReturn(): String {
         return when (method.returnType.toKotlinType()) {
             "Boolean" -> "return true;"
             "Int" -> "return 0;"

@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Method
 internal class HandlerTypeCastTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/java/handler_type_cast.stmt.java.tmpl").readText()
 
-    fun kotlinTypeCast(): String {
+    fun javaTypeCast(): String {
         return if (method.isStatic)
             ""
         else

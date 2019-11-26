@@ -28,7 +28,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 internal class HandlerObjectFactoryTmpl(private val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/java/handler_object_factory.stmt.java.tmpl").readText()
 
-    fun kotlinObjectFactory(): List<String> {
+    fun javaObjectFactory(): List<String> {
         return type.constructors
             .filterConstructor()
             .map {
@@ -36,10 +36,10 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                     .filter { !it.variable.typeName.findType().isCallback() }
                     .joinToString("\n") {
                         when {
-                            it.variable.jsonable() -> ArgJsonableTmpl(it.variable).kotlinArgJsonable()
-                            it.variable.isEnum() -> ArgEnumTmpl(it.variable).kotlinArgEnum()
-                            it.variable.isList -> ArgListTmpl(it.variable).kotlinArgList()
-                            else -> ArgRefTmpl(it.variable).kotlinArgRef()
+                            it.variable.jsonable() -> ArgJsonableTmpl(it.variable).javaArgJsonable()
+                            it.variable.isEnum() -> ArgEnumTmpl(it.variable).javaArgEnum()
+                            it.variable.isList -> ArgListTmpl(it.variable).javaArgList()
+                            else -> ArgRefTmpl(it.variable).javaArgRef()
                         }
                     }
                 val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__") {

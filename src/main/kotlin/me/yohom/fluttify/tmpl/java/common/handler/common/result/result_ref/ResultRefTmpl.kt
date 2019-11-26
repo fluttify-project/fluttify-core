@@ -12,7 +12,7 @@ internal class ResultRefTmpl {
 
     private val tmpl = this::class.java.getResource("/tmpl/java/result_ref.stmt.java.tmpl").readText()
 
-    fun kotlinRefResult(): String {
+    fun javaRefResult(): String {
         return tmpl
     }
 

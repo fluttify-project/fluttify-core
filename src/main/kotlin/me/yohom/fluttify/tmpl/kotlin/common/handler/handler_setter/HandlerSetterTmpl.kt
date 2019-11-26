@@ -23,10 +23,10 @@ internal class HandlerSetterTmpl(private val field: Field) {
         val setterName = field.setterMethodName()
         val fieldName = field.variable.name
         val arg = when {
-            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).kotlinArgJsonable()
-            field.variable.isEnum() -> ArgEnumTmpl(field.variable).kotlinArgEnum()
-            field.variable.isList -> ArgListTmpl(field.variable).kotlinArgList()
-            else -> ArgRefTmpl(field.variable).kotlinArgRef()
+            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).javaArgJsonable()
+            field.variable.isEnum() -> ArgEnumTmpl(field.variable).javaArgEnum()
+            field.variable.isList -> ArgListTmpl(field.variable).javaArgList()
+            else -> ArgRefTmpl(field.variable).javaArgRef()
         }
         val className = field.className
 
