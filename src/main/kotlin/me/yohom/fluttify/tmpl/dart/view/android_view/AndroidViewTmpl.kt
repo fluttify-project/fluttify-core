@@ -105,11 +105,11 @@ class AndroidViewTmpl(private val viewType: Type) {
                 .map { it.variable }
                 .toDartMap("creationParams: {", "},") {
                     when {
-                        it.typeName.findType().isEnum() -> "widget.${it.name.depointer()}.index"
-                        it.typeName.jsonable() -> "widget.it.name.depointer()"
-                        (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}.map((it) => it.refId).toList()"
+                        it.typeName.findType().isEnum() -> "widget.${it.name.depointer()}?.index"
+                        it.typeName.jsonable() -> "widget.${it.name}?.depointer()"
+                        (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
                         it.genericLevel > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
-                        else -> "widget.${it.name.depointer()}.refId"
+                        else -> "widget.${it.name.depointer()}?.refId ?? -1"
                     }
                 }
             tmpl.replaceParagraph("#__creation_params__#", params)
