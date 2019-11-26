@@ -188,7 +188,8 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  */
 fun TYPE_NAME.toDartType(): TYPE_NAME {
     return SYSTEM_TYPEDEF[this.depointer()]
-        ?: when (this.depointer()) {
+        ?: when (this.depointer().replace(" ", "")) {
+            // android
             "String" -> "String"
             "boolean", "Boolean" -> "bool"
             "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
@@ -199,22 +200,20 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
             "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
             "Map" -> "Map"
-            // 开始objc
+            // objc
             "NSString", "NSString*" -> "String"
-            "NSArray<NSString*>", "NSArray<NSString *>", "NSArray<NSString*>*", "NSArray<NSString *> *" -> "List<String>"
+            "NSArray<NSString*>", "NSArray<NSString*>*" -> "List<String>"
             "nil" -> "null"
             "id" -> "NSObject"
             "NSArray", "NSArray*" -> "List"
             "NSInteger", "NSUInteger" -> "int"
             "BOOL" -> "bool"
             "CGFloat" -> "double"
-            else -> {
-                when {
-                    Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
-                    startsWith("NSArray") -> "List<${genericType().depointer()}>"
-                    Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
-                    else -> this
-                }
+            else -> when {
+                Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
+                startsWith("NSArray") -> "List<${genericType().depointer()}>"
+                Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
+                else -> this
             }
         }.replace("$", ".").replace(".", "_").depointer()
 }
