@@ -58,7 +58,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
         // 获取当前调用方法的对象引用
         val ref = RefTmpl(method).javaRef()
 
-        // 调用kotlin端对应的方法
+        // 调用java端对应的方法
         val invoke = if (method.returnType.isVoid())
             InvokeVoidTmpl(method).javaInvokeVoid()
         else

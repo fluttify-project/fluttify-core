@@ -29,7 +29,10 @@ fun TYPE_NAME.jsonable(): Boolean {
         "List<String>",
         "Uint8List",
         "Uint32List",
-        "Uint64List"
+        "Uint64List",
+        "Int32List",
+        "Int64List",
+        "Float64List"
     )
 }
 
@@ -77,6 +80,28 @@ fun TYPE_NAME.enarray(): TYPE_NAME {
  */
 fun TYPE_NAME.isArray(): Boolean {
     return endsWith("[]")
+}
+
+/**
+ * 是否是字符串数组 只有字符串数组需要在数组和列表之间手动转换, 基本类型flutter自动会转换
+ */
+fun TYPE_NAME.isStringArray(): Boolean {
+    return this == "String[]"
+}
+
+/**
+ * 装箱后的类型
+ */
+fun TYPE_NAME.boxedType(): TYPE_NAME {
+    return when (this) {
+        "byte" -> "Byte"
+        "short" -> "Short"
+        "int" -> "Integer"
+        "long" -> "Long"
+        "float" -> "Float"
+        "double" -> "Double"
+        else -> this
+    }
 }
 
 /**
@@ -197,8 +222,11 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
             "ArrayList<String>", "String[]" -> "List<String>"
             "List<String>" -> "List<String>"
-            "byte[]", "Byte[]", "int[]", "Int[]", "long[]", "Long[]" -> "List<int>"
-            "double[]", "Double[]", "float[]", "Float[]", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
+            "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
+            "byte[]", "Byte[]" -> "Uint8List"
+            "int[]", "Integer[]" -> "Int32List"
+            "long[]", "Long[]" -> "Int64List"
+            "double[]", "Double[]", "float[]", "Float[]" -> "Float64List"
             "Map" -> "Map"
             // objc
             "NSString", "NSString*" -> "String"

@@ -13,8 +13,18 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
     fun javaArgJsonable(): String {
         val type = variable.typeName.run { if (toLowerCase() == "float") "Double" else this }
         return tmpl
-            // 如果是数组, 那么需要去掉`[]`, 再补成列表
-            .replace("#__type_name__#", if (variable.isList) type.dearray().enlist() else type)
+            .replace(
+                "#__type_name__#",
+                when {
+                    // 如果是数组, 那么需要去掉`[]`, 再补成列表
+                    variable.isStringArray() -> type.dearray().enlist()
+                    // 基本数据类型数组 保持原样
+                    variable.isArray() -> type
+                    // 其他列表类型, 加上List<>
+                    variable.isList -> type.enlist()
+                    else -> type
+                }
+            )
             .replace("#__arg_name__#", variable.name)
     }
 }

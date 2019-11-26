@@ -36,13 +36,6 @@ internal class HandlerSetterTmpl(private val field: Field) {
             .replace("#__field_name__#", fieldName)
             .replaceParagraph("#__arg__#", arg)
             .replace("#__class_name__#", className)
-            .replace("#__field_value__#", fieldName.run {
-                // 因为dart到java这边都是double类型, 如果参数实际类型是float的话, 需要转一手
-                if (field.variable.typeName.toLowerCase() == "float") {
-                    "new Double(${this}).floatValue()"
-                } else {
-                    this
-                }
-            })
+            .replace("#__field_value__#", field.variable.var2Args())
     }
 }

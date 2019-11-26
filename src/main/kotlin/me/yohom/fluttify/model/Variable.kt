@@ -2,6 +2,7 @@ package me.yohom.fluttify.model
 
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.CallbackTmpl
 
 /**
  * 表示一个变量(字段, 方法参数, 局部变量)
@@ -125,4 +126,27 @@ data class Variable(
             "$type ${name.depointer()}"
         }
     }
+
+    fun var2Args(hostMethod: Method? = null): String {
+        return if (typeName.findType().isCallback() && hostMethod != null) {
+            CallbackTmpl(hostMethod, typeName.findType()).javaCallback()
+        } else {
+            when {
+                isList -> when {
+                    // 字符串数组需要转换
+                    isStringArray() -> "$name.toArray(new ${typeName.dearray()}[$name.size()])"
+                    // 基本类型数组不需要转换, 直接使用
+                    isArray() -> name
+                    // 自定义类列表需要转换成ArrayList
+                    else -> "new ArrayList($name)"
+                }
+                typeName.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
+                else -> name
+            }
+        }
+    }
+
+    fun isStringArray(): Boolean = typeName.isStringArray()
+
+    fun isArray(): Boolean = typeName.isArray()
 }

@@ -45,16 +45,7 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                 val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__") {
                     it.variable.typeName.toUnderscore().replace("[]", "Array")
                 }}"
-                val argsValue = it.formalParams.joinToString {
-                    it.variable.run {
-                        when {
-                            // 如果是列表参数, 统一成ArrayList
-                            isList -> "new ArrayList($name)"
-                            typeName.toLowerCase() == "float" -> "${name}.floatValue()"
-                            else -> name
-                        }
-                    }
-                }
+                val argsValue = it.formalParams.joinToString { it.variable.var2Args() }
 
                 tmpl
                     .replace("#__creator_name__#", creatorName)
