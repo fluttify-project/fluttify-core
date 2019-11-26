@@ -8,9 +8,13 @@ import me.yohom.fluttify.model.*
 /**
  * 键值对转成dart的map字面量字符串
  */
-fun List<Variable>.toDartMap(valueBuilder: ((Variable) -> String) = { it.name }): String {
+fun List<Variable>.toDartMap(
+    prefix: String = "{",
+    postfix: String = "}",
+    valueBuilder: ((Variable) -> String) = { it.name }
+): String {
     if (isEmpty()) return ""
-    return joinToString(prefix = "{", postfix = "}") { "\"${it.name.depointer()}\": ${valueBuilder(it)}" }
+    return joinToString(prefix = prefix, postfix = postfix) { "\"${it.name.depointer()}\": ${valueBuilder(it)}" }
 }
 
 /**
