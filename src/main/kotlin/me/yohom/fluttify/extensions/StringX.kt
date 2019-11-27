@@ -205,7 +205,8 @@ fun String.toSwiftMethod(): String {
 fun TYPE_NAME.isObfuscated(): Boolean {
     val type = replace("$", ".").substringAfterLast(".")
     val regex = Regex("[a-z|\\d]{1,2}")
-    return regex.matches(type) || regex.matches(this)
+    // objc的id类型不作为混淆类型 todo 这里存在一个隐患, 如果一个java混淆类也叫id怎么办, 先不做处理, 如果真的碰到这种情况再说
+    return (regex.matches(type) || regex.matches(this)) && type != "id"
 }
 
 /**
