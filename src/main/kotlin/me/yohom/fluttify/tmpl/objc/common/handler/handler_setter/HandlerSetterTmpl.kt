@@ -34,7 +34,7 @@ internal class HandlerSetterTmpl(private val field: Field) {
             field.variable.isStructPointer() -> ArgListStructTmpl(field.variable).objcArgListStruct()
             field.variable.isCallback() -> ""
             field.variable.isStruct() -> ArgStructTmpl(field.variable).objcArgStruct()
-            else -> ArgRefTmpl(field.variable).objcArgRef() // 暂时过滤了引入类型的setter
+            else -> ArgRefTmpl(field.variable).objcArgRef()
         }
         val fieldName = field.variable.name
         // 如果setter的是一个delegate, 那么就认定是当前类作为delegate处理

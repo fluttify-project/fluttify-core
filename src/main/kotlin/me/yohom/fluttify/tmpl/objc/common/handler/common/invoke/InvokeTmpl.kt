@@ -15,16 +15,13 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     fun objcInvoke(): String {
         val invokeGetter = field?.run {
             val typeName = variable.run {
-                if (isStructPointer()) {
-                    typeName.enpointer()
-                } else if (typeName.isValueType() || isStruct()) {
-                    typeName
-                } else if (isList && genericLevel > 0) {
-                    if (isInterface()) "NSArray<${typeName.enprotocol()}>*" else "NSArray<${typeName}>*"
-                } else if (isInterface()) {
-                    typeName.enprotocol()
-                } else {
-                    "$typeName*"
+                when {
+                    typeName == "id" -> "NSObject*"
+                    isStructPointer() -> typeName.enpointer()
+                    typeName.isValueType() || isStruct() -> typeName
+                    isList && genericLevel > 0 -> if (isInterface()) "NSArray<${typeName.enprotocol()}>*" else "NSArray<${typeName}>*"
+                    isInterface() -> typeName.enprotocol()
+                    else -> typeName.enpointer()
                 }
             }
 

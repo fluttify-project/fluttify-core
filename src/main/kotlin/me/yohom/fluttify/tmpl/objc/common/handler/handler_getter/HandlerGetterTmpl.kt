@@ -6,16 +6,17 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-//    NSLog(@"#__method_name__#");
+//    // print log
+//    if (enableLog) {
+//        NSLog(@"#__method_name__#");
+//    }
 //
-//    // 引用对象
+//    // ref object
 //    NSInteger refId = [args[@"refId"] integerValue];
 //    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
 //
-//    // 开始调用
+//    // invoke native method
 //    #__invoke__#
-//
-//    #__note__#
 //
 //    #__result__#
 //},
@@ -24,10 +25,10 @@ internal class HandlerGetterTmpl(private val field: Field) {
 
     fun objcGetter(): String {
         val methodName = field.getterMethodName()
-        val className = if (field.className.findType().isInterface()) {
-            field.className.enprotocol()
-        } else {
-            field.className.enpointer()
+        val className = when {
+            field.className == "id" -> "NSObject*" // 如果是id类型, 就强转成NSObject*
+            field.className.findType().isInterface() -> field.className.enprotocol()
+            else -> field.className.enpointer()
         }
         // 调用objc端对应的方法
         val invoke = InvokeTmpl(field).objcInvoke()

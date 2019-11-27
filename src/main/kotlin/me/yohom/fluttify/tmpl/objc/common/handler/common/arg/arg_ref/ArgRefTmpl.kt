@@ -10,6 +10,7 @@ internal class ArgRefTmpl(private val variable: Variable) {
 
     fun objcArgRef(): String {
         val typeName = when {
+            variable.typeName == "id" -> variable.typeName
             variable.typeName.findType().isInterface() -> variable.typeName.deprotocol().enprotocol()
             else -> variable.typeName.enpointer()
         }

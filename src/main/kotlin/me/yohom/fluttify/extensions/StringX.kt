@@ -273,7 +273,7 @@ fun String.deprotocol(): String {
 }
 
 /**
- * 去除协议类型的id<>
+ * 加上协议类型的id<>
  */
 fun String.enprotocol(): String {
     return "id<${this}>"
