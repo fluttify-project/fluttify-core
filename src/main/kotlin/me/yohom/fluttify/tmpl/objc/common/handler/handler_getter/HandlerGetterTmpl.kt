@@ -37,7 +37,7 @@ internal class HandlerGetterTmpl(private val field: Field) {
             field.variable.jsonable() -> ResultJsonableTmpl().objcResultJsonable()
             field.variable.isList -> ResultListTmpl().objcResultList()
             field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName).objcResultStruct()
-            else -> ResultRefTmpl().objcResultRef()
+            else -> ResultRefTmpl(field.variable.typeName).objcResultRef()
         }
         return tmpl
             .replace("#__method_name__#", methodName)

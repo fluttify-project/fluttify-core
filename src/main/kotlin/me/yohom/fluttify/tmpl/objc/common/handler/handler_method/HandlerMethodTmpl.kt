@@ -63,7 +63,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
             method.returnType.isList() -> ResultListTmpl().objcResultList()
             method.returnType.findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()
             method.returnType.isVoid() -> ResultVoidTmpl().objcResultVoid()
-            else -> ResultRefTmpl().objcResultRef()
+            else -> ResultRefTmpl(method.returnType).objcResultRef()
         }
 
         return tmpl
