@@ -158,7 +158,6 @@ fun JAVA_FILE.javaType(): Type {
                     Variable(
                         ctx.type().genericType(),
                         ctx.name(),
-                        ctx.type().isList(),
                         ctx.type().run {
                             when {
                                 isArray() -> ListType.Array
@@ -483,9 +482,17 @@ fun OBJC_FILE.objcType(): List<Type> {
             val variable = Variable(
                 ctx.type().genericType(),
                 ctx.name(),
-                platform = Platform.iOS,
-                isList = ctx.isListType(),
-                genericLevel = ctx.type().genericLevel()
+                ctx.type().run {
+                    when {
+                        isArray() -> ListType.Array
+                        isArrayList() -> ListType.ArrayList
+                        isLinkedList() -> ListType.LinkedList
+                        isList() -> ListType.List
+                        else -> ListType.NonList
+                    }
+                },
+                ctx.type().genericLevel(),
+                Platform.iOS
             )
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(

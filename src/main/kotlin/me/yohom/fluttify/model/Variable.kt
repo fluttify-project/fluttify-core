@@ -10,11 +10,14 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 data class Variable(
     val typeName: TYPE_NAME,
     val name: String,
-    val isList: Boolean = false,
     val listType: ListType = ListType.NonList,
     val genericLevel: Int = 0,
     override var platform: Platform
 ) : IPlatform {
+
+    val isList: Boolean
+        get() = listType != ListType.NonList
+
     fun constructable(): Boolean {
         return typeName.findType().constructable() || isList
     }

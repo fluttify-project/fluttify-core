@@ -63,7 +63,6 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        formalParam.typeType().text.isList(),
                         formalParam.typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -92,7 +91,6 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        paramType.isList(),
                         paramType.run {
                             when {
                                 isArray() -> ListType.Array

@@ -170,7 +170,6 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        formalParam.typeType().text.isList(),
                         formalParam.typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -199,7 +198,6 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        typeType().text.isList(),
                         typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -236,7 +234,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        formalParam.typeType().text.isList(),
                         formalParam.typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -265,7 +262,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        typeType().text.isList(),
                         typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -331,9 +327,17 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                             blockType()?.run { "${returnType()}|${parameters()}" } ?: text
                         }.genericType(),
                         it.identifier().text,
-                        isList = it.methodType()[0].typeName().text.isList(),
-                        genericLevel = it.methodType()[0].typeName().text.genericLevel(),
-                        platform = Platform.iOS
+                        it.methodType()[0].typeName().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
+                        it.methodType()[0].typeName().text.genericLevel(),
+                        Platform.iOS
                     ),
                     platform = Platform.iOS
                 )

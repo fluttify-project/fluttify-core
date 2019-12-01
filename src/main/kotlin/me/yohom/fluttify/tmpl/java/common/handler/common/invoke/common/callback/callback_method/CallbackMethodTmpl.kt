@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.extensions.enlist
 import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
@@ -38,7 +39,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
         val formalParams = method
             .formalParams
             .map { it.variable }
-            .joinToString { "${if (it.isList && !it.isArray()) it.typeName.enlist() else it.typeName} ${it.name}" }
+            .joinToString { "${if (it.listType == ListType.List) it.typeName.enlist() else it.typeName} ${it.name}" }
         val returnType = method.returnType
         val localArgs = method
             .formalParams
