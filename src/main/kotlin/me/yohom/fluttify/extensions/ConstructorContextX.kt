@@ -1,5 +1,6 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable
@@ -44,7 +45,7 @@ fun JavaParser.ConstructorDeclarationContext.isStaticType(): Boolean {
 }
 
 /**
- * 是否是无参构造器
+ * 构造器参数
  */
 fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
     val result = mutableListOf<Parameter>()
@@ -63,6 +64,15 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
                         formalParam.typeType().text.isList(),
+                        formalParam.typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
                         formalParam.typeType().text.genericLevel(),
                         Platform.Android
                     ),
@@ -83,6 +93,15 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         variableDeclaratorId().text,
                         paramType.isList(),
+                        paramType.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
                         typeType().text.genericLevel(),
                         Platform.Android
                     ),

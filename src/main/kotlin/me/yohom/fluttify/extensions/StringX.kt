@@ -55,6 +55,13 @@ fun TYPE_NAME.isArrayList(): Boolean {
 }
 
 /**
+ * 是否是集合类型
+ */
+fun TYPE_NAME.isLinkedList(): Boolean {
+    return Regex("LinkedList<(\\w*|.*)>").matches(this)
+}
+
+/**
  * 是否是void类型
  */
 fun TYPE_NAME.isVoid(): Boolean {

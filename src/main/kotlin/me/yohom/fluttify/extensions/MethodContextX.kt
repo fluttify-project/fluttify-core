@@ -1,5 +1,6 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable
@@ -170,6 +171,15 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
                         formalParam.typeType().text.isList(),
+                        formalParam.typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
                         formalParam.typeType().text.genericLevel(),
                         Platform.Android
                     ),
@@ -190,6 +200,15 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                         typeFullName,
                         variableDeclaratorId().text,
                         typeType().text.isList(),
+                        typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
                         typeType().text.genericLevel(),
                         Platform.Android
                     ),
@@ -218,6 +237,15 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
                         formalParam.typeType().text.isList(),
+                        formalParam.typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
                         formalParam.typeType().text.genericLevel(),
                         Platform.Android
                     ),
@@ -238,6 +266,15 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                         typeFullName,
                         variableDeclaratorId().text,
                         typeType().text.isList(),
+                        typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
                         typeType().text.genericLevel(),
                         Platform.Android
                     ),

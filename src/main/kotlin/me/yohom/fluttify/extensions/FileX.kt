@@ -159,6 +159,15 @@ fun JAVA_FILE.javaType(): Type {
                         ctx.type().genericType(),
                         ctx.name(),
                         ctx.type().isList(),
+                        ctx.type().run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isList() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
                         ctx.type().genericLevel(),
                         Platform.Android
                     ),
