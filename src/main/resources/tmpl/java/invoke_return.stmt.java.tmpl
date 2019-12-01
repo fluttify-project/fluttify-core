@@ -1,1 +1,8 @@
-#__return_type__# result = #__invoke_target__#.#__method_name__#(#__actual_params__#);
+#__return_type__# result;
+try {
+    result = #__invoke_target__#.#__method_name__#(#__actual_params__#);
+} catch (Throwable throwable) {
+    throwable.printStackTrace();
+    methodResult.error(throwable.getMessage(), null, null);
+    return;
+}
