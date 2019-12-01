@@ -37,7 +37,8 @@ internal class CallbackMethodTmpl(private val method: Method) {
         val methodChannel = "${method.className}::Callback"
         val formalParams = method
             .formalParams
-            .joinToString { "${if (it.variable.isList) it.variable.typeName.enlist() else it.variable.typeName} ${it.variable.name}" }
+            .map { it.variable }
+            .joinToString { "${if (it.isList && !it.isArray()) it.typeName.enlist() else it.typeName} ${it.name}" }
         val returnType = method.returnType
         val localArgs = method
             .formalParams
