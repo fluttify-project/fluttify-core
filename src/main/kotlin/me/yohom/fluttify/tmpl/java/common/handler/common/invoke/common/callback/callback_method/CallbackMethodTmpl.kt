@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method
 
+import me.yohom.fluttify.extensions.enArrayList
 import me.yohom.fluttify.extensions.enlist
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.ListType
@@ -39,7 +40,11 @@ internal class CallbackMethodTmpl(private val method: Method) {
         val formalParams = method
             .formalParams
             .map { it.variable }
-            .joinToString { "${if (it.listType == ListType.List) it.typeName.enlist() else it.typeName} ${it.name}" }
+            .joinToString { "${when (it.listType) {
+                ListType.ArrayList -> it.typeName.enArrayList()
+                ListType.List -> it.typeName.enlist()
+                else -> it.typeName
+            }} ${it.name}" }
         val returnType = method.returnType
         val localArgs = method
             .formalParams

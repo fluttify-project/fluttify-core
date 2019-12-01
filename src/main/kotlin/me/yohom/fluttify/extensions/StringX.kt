@@ -76,6 +76,13 @@ fun TYPE_NAME.enlist(): TYPE_NAME {
 }
 
 /**
+ * 套上ArrayList<>
+ */
+fun TYPE_NAME.enArrayList(): TYPE_NAME {
+    return "ArrayList<$this>"
+}
+
+/**
  * 套上[]
  */
 fun TYPE_NAME.enarray(): TYPE_NAME {
