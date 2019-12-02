@@ -164,7 +164,7 @@ class ObjcPluginTmpl(
             .filterType()
             .filter { it.isCallback() }
             .flatMap { it.methods }
-            .distinctBy { "${it.name}${it.formalParams}" }
+            .distinctBy { it.exactName }
             .map { CallbackMethodTmpl(it).objcDelegateMethod() }
 
         return listOf(

@@ -197,6 +197,22 @@ fun TYPE_NAME.isValueType(): Boolean {
 }
 
 /**
+ * 是否是C的指针类型(相对objc指针类型)
+ *
+ * 先判断是否是c类型, 然后判断是不是`*`结尾
+ */
+fun TYPE_NAME.isCPointerType(): Boolean {
+    return (depointer().isValueType() && endsWith("*")) || pack() == "constvoid*"
+}
+
+/**
+ * 压缩字符串, 即去掉所有的空格
+ */
+fun String.pack(): String {
+    return replace(" ", "")
+}
+
+/**
  * objc方法名转swift名
  */
 fun String.toSwiftMethod(): String {
@@ -228,7 +244,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  */
 fun TYPE_NAME.toDartType(): TYPE_NAME {
     return SYSTEM_TYPEDEF[this.depointer()]
-        ?: when (this.depointer().replace(" ", "")) {
+        ?: when (this.pack()) {
             // android
             "String" -> "String"
             "boolean", "Boolean" -> "bool"

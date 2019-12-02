@@ -130,7 +130,7 @@ class PlatformViewFactoryTmpl(
             .types
             .filter { it.isCallback() }
             .flatMap { it.methods }
-            .distinctBy { "${it.name}${it.formalParams}" }
+            .distinctBy { it.exactName }
             .joinToString("\n") { CallbackMethodTmpl(it).objcDelegateMethod() }
 
         return listOf(
@@ -148,7 +148,6 @@ class PlatformViewFactoryTmpl(
                 )
                 .replace("#__method_channel__#", methodChannel)
                 .replaceParagraph("#__delegate_methods__#", delegateMethods)
-
         )
     }
 }

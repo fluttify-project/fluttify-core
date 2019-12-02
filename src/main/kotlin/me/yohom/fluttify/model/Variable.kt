@@ -101,6 +101,7 @@ data class Variable(
     fun paramType(): String {
         return when {
             typeName == "id" -> "id"
+            typeName == "constvoid*" -> "const void*"
             isValueType() or isStruct() -> typeName
             isInterface() -> typeName.enprotocol()
             isList && genericLevel > 0 -> "NSArray<$typeName>*"
