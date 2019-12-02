@@ -71,7 +71,7 @@ val PERMISSION_ANDROID = mapOf(
 /**
  * 忽略的方法
  */
-val IGNORE_METHOD = listOf(
+val EXCLUDE_METHOD = listOf(
     "toString",
     "equals",
     "writeToParcel",
@@ -143,12 +143,13 @@ val SYSTEM_TYPE = listOf(
 )
 
 /**
- * 忽略的类 todo 增加Activity和其他有关的类
+ * 排除生成的类
  */
-val IGNORE_TYPE = listOf(
-    "android.support.v4.app.Fragment",
-    "UIViewController"
-)
+val EXCLUDE_TYPE by lazy {
+    listOf("android.support.v4.app.Fragment", "UIViewController")
+        .union(ext.excludeIOSClasses)
+        .union(ext.excludeAndroidClasses)
+}
 
 /**
  * 类型名 包括类名和接口名

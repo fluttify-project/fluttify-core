@@ -69,6 +69,16 @@ open class FluttifyExtension {
     var pluginDependencies: Map<String, String> = mapOf()
 
     /**
+     * 排除生成的iOS类名
+     */
+    var excludeIOSClasses: List<String> = listOf()
+
+    /**
+     * 排除生成的Android类名
+     */
+    var excludeAndroidClasses: List<String> = listOf()
+
+    /**
      * 声明权限 <权限名称, 申请理由> 暂时不做
      */
     var permissions: Map<String, String> = mapOf()

@@ -1,7 +1,7 @@
 package me.yohom.fluttify.extensions
 
-import me.yohom.fluttify.IGNORE_METHOD
-import me.yohom.fluttify.IGNORE_TYPE
+import me.yohom.fluttify.EXCLUDE_METHOD
+import me.yohom.fluttify.EXCLUDE_TYPE
 import me.yohom.fluttify.model.*
 
 
@@ -28,7 +28,7 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.must("所在类是静态类型") { className.findType().isStaticType } }
         .filter { it.must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } }
         .filter { it.must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } }
-        .filter { it.mustNot("忽略方法") { name in IGNORE_METHOD } }
+        .filter { it.mustNot("忽略方法") { name in EXCLUDE_METHOD } }
         .filter { it.mustNot("废弃方法") { isDeprecated } }
         // 类似float*返回这样的类型的方法都暂时不处理
         .filter { it.mustNot("返回类型是C类型指针") { returnType.run { contains("*") && depointer().isValueType() } } }
@@ -104,7 +104,8 @@ fun List<Type>.filterType(): List<Type> {
         .filter { it.must("父类是已知类型") { superClass.findType() != Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("含有泛型") { genericTypes.isNotEmpty() } }
         .filter { it.mustNot("混淆类型") { isObfuscated() } }
-        .filter { it.mustNot("父类是忽略类型") { superClass in IGNORE_TYPE } }
+        .filter { it.mustNot("忽略类型") { name in EXCLUDE_TYPE } }
+        .filter { it.mustNot("父类是忽略类型") { superClass in EXCLUDE_TYPE } }
         .filter { it.mustNot("父类是混淆类型") { superClass.isObfuscated() } }
         .filter {
             (it.isEnum() or !it.isInnerClass or (it.constructors.any { it.isPublic } or it.constructors.isEmpty())).apply {
