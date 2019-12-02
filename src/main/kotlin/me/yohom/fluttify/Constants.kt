@@ -71,18 +71,35 @@ val PERMISSION_ANDROID = mapOf(
 /**
  * 忽略的方法
  */
-val EXCLUDE_METHOD = listOf(
-    "toString",
-    "equals",
-    "writeToParcel",
-    "describeContents",
-    "recycle",
-    "hashCode",
-    "addView",
-    "removeView",
-    "loadTileAtPath" // ios端的这个方法比较复杂, 先忽略
-)
+val EXCLUDE_METHOD by lazy {
+    listOf(
+        "toString",
+        "equals",
+        "writeToParcel",
+        "describeContents",
+        "recycle",
+        "hashCode",
+        "addView",
+        "removeView"
+    )
+        .union(ext.excludeAndroidMethods)
+        .union(ext.excludeIOSMethods)
+        .apply { println("排除方法集合: $this") }
+}
 
+/**
+ * 排除生成的类
+ */
+val EXCLUDE_TYPE by lazy {
+    listOf("android.support.v4.app.Fragment", "UIViewController")
+        .union(ext.excludeIOSClasses)
+        .union(ext.excludeAndroidClasses)
+        .apply { println("排除类型集合: $this") }
+}
+
+/**
+ * 系统别名
+ */
 val SYSTEM_TYPEDEF = mapOf(
     "CLLocationDirection" to "double",
     "CLLocationDistance" to "double",
@@ -141,15 +158,6 @@ val SYSTEM_TYPE = listOf(
 
     Type().apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum }
 )
-
-/**
- * 排除生成的类
- */
-val EXCLUDE_TYPE by lazy {
-    listOf("android.support.v4.app.Fragment", "UIViewController")
-        .union(ext.excludeIOSClasses)
-        .union(ext.excludeAndroidClasses)
-}
 
 /**
  * 类型名 包括类名和接口名

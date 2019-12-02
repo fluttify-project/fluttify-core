@@ -31,7 +31,9 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.mustNot("忽略方法") { name in EXCLUDE_METHOD } }
         .filter { it.mustNot("废弃方法") { isDeprecated } }
         // 类似float*返回这样的类型的方法都暂时不处理
-        .filter { it.mustNot("返回类型是C类型指针") { returnType.run { contains("*") && depointer().isValueType() } } }
+        .filter { it.mustNot("返回类型是C类型指针") { returnType.isCPointerType() } }
+        // 不处理c指针类型参数的方法
+        .filter { it.mustNot("参数含有是C指针类型") { formalParams.any { it.variable.typeName.isCPointerType() } } }
         .filter {
             it.must("返回类型是具体类型或者含有实体子类的抽象类") {
                 returnType.findType().run { isConcret() || hasConcretSubtype() }

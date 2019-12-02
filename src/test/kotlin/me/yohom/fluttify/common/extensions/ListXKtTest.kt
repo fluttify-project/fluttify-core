@@ -1,18 +1,30 @@
 package me.yohom.fluttify.common.extensions
 
 import me.yohom.fluttify.Amap
-import me.yohom.fluttify.extensions.filterGetters
-import me.yohom.fluttify.extensions.filterMethod
-import me.yohom.fluttify.extensions.isList
+import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.SDK
 import org.junit.Test
 
 class ListXKtTest {
 
     @Test
     fun filterMethod() {
-        Amap.androidSearchSDK.libs[1]
-            .types.apply { println("types:$this") }
-            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
+//        Amap.androidSearchSDK.libs[1]
+//            .types.apply { println("types:$this") }
+//            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
+//            ?.methods
+//            ?.apply { println("before:$this") }
+//            ?.filterMethod()
+//            ?.apply { println("after:$this") }
+
+        val sdk = "/Users/yohom/Github/Me/All/fluttify/3rd_party/xftts/jr/xftts_fluttify.ios.json"
+            .file()
+            .readText()
+            .fromJson<SDK>()
+
+        sdk.libs
+            .flatMap { it.types }
+            .find { it.name == "IFlySpeechRecognizerDelegate" }
             ?.methods
             ?.apply { println("before:$this") }
             ?.filterMethod()

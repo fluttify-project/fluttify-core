@@ -79,6 +79,16 @@ open class FluttifyExtension {
     var excludeAndroidClasses: List<String> = listOf()
 
     /**
+     * 排除生成的iOS方法
+     */
+    var excludeIOSMethods: List<String> = listOf()
+
+    /**
+     * 排除生成的Android方法
+     */
+    var excludeAndroidMethods: List<String> = listOf()
+
+    /**
      * 声明权限 <权限名称, 申请理由> 暂时不做
      */
     var permissions: Map<String, String> = mapOf()
