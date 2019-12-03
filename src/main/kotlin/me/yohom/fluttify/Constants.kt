@@ -71,7 +71,7 @@ val PERMISSION_ANDROID = mapOf(
 /**
  * 忽略的方法
  */
-val EXCLUDE_METHOD by lazy {
+val EXCLUDE_METHODS by lazy {
     listOf(
         "toString",
         "equals",
@@ -90,7 +90,7 @@ val EXCLUDE_METHOD by lazy {
 /**
  * 排除生成的类
  */
-val EXCLUDE_TYPE by lazy {
+val EXCLUDE_TYPES by lazy {
     listOf("android.support.v4.app.Fragment", "UIViewController")
         .union(ext.excludeIOSClasses)
         .union(ext.excludeAndroidClasses)
