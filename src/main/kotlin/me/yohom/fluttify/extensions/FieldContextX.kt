@@ -126,7 +126,7 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
  * 导致了先有鸡还是先有蛋的问题, 所以这里暂时就先只判断是否是NSArray
  */
 fun ObjectiveCParser.FieldDeclarationContext.isListType(): Boolean {
-    return specifierQualifierList().text.isList()
+    return specifierQualifierList().text.isCollection()
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {

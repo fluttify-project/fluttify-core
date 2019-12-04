@@ -11,14 +11,14 @@ class ReturnTmpl(private val method: Method) {
     fun dartMethodReturn(): String {
         return method.run {
             // 如果是多维列表, 那么不处理, 直接返回空列表
-            if (returnType.isList() && returnType.genericLevel() > 1) {
+            if (returnType.isCollection() && returnType.genericLevel() > 1) {
                 return "[] /* 暂时不支持多维列表 */";
             }
 
             // 如果返回类型是抽象类, 那么先转换成它的子类
             var concretTypeWithContainer: String
             // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
-            if (returnType.isList() && returnType.genericLevel() != 0) {
+            if (returnType.isCollection() && returnType.genericLevel() != 0) {
                 val genericType = returnType.genericType()
                 concretTypeWithContainer = genericType
                 if (genericType.findType().isAbstract) {
@@ -41,7 +41,7 @@ class ReturnTmpl(private val method: Method) {
                     // 返回枚举类型
                     findType().isEnum() -> ResultEnumTmpl(concretTypeWithContainer).dartResultEnum()
                     // 返回列表类型
-                    isList() -> {
+                    isCollection() -> {
                         val type = if (concretTypeWithContainer.genericLevel() != 0) {
                             concretTypeWithContainer.genericType()
                         } else {

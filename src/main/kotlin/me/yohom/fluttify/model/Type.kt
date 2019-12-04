@@ -198,7 +198,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun isList(): Boolean {
-        return name.isList()
+        return name.isCollection()
     }
 
     fun jsonable(): Boolean {

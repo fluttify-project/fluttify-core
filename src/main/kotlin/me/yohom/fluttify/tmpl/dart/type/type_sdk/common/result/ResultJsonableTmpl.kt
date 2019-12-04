@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Platform
 //result
 class ResultJsonableTmpl(val returnType: TYPE_NAME, val platform: Platform) {
     fun dartResultJsonable(): String {
-        return if (returnType.isList()) {
+        return if (returnType.isCollection()) {
             val type = when {
                 // 说明List有指定泛型, 拿出泛型类
                 returnType.genericLevel() != 0 -> returnType.genericType().toDartType()

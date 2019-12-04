@@ -52,13 +52,13 @@ class ListXKtTest {
 
     @Test
     fun isList() {
-        val result0 = "List".isList()
+        val result0 = "List".isCollection()
         println("List is: $result0")
-        val result1 = "List<Object>".isList()
+        val result1 = "List<Object>".isCollection()
         println("List<Object> is: $result1")
-        val result2 = "NSArray".isList()
+        val result2 = "NSArray".isCollection()
         println("NSArray is: $result2")
-        val result3 = "NSArray*".isList()
+        val result3 = "NSArray*".isCollection()
         println("NSArray* is: $result3")
     }
 }

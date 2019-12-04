@@ -60,7 +60,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
         val result = when {
             method.returnType.isValueType() -> ResultValueTmpl().objcResultValue()
             method.returnType.jsonable() -> ResultJsonableTmpl().objcResultJsonable()
-            method.returnType.isList() -> ResultListTmpl().objcResultList()
+            method.returnType.isCollection() -> ResultListTmpl().objcResultList()
             method.returnType.findType().isStruct() -> ResultStructTmpl(method.returnType).objcResultStruct()
             method.returnType.isVoid() -> ResultVoidTmpl().objcResultVoid()
             else -> ResultRefTmpl(method.returnType).objcResultRef()

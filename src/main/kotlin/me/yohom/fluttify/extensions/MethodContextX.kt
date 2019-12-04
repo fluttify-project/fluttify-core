@@ -27,7 +27,7 @@ fun JavaParser.MethodDeclarationContext.returnType(): String {
     }
 
     return when {
-        typeTypeOrVoid().text.isList() -> {
+        typeTypeOrVoid().text.isCollection() -> {
             var result = fullGenericTypes[0]
             for (i in 0 until typeTypeOrVoid().text.genericLevel()) {
                 result = result.enlist()
@@ -64,7 +64,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
     }
 
     return when {
-        typeTypeOrVoid().text.isList() -> {
+        typeTypeOrVoid().text.isCollection() -> {
             var result = fullGenericTypes[0]
             for (i in 0 until typeTypeOrVoid().text.genericLevel()) {
                 result = result.enlist()
@@ -175,7 +175,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },
@@ -203,7 +203,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },
@@ -239,7 +239,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },
@@ -267,7 +267,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },
@@ -332,7 +332,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },

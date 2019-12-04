@@ -39,7 +39,7 @@ fun TYPE_NAME.jsonable(): Boolean {
 /**
  * 是否是集合类型
  */
-fun TYPE_NAME.isList(): Boolean {
+fun TYPE_NAME.isCollection(): Boolean {
     return Regex("\\w*List<(\\w*|.*)>").matches(this)
             || Regex("Iterable<(\\w*|.*)>").matches(this)
             || Regex("Collection<(\\w*|.*)>").matches(this)
@@ -139,7 +139,7 @@ fun TYPE_NAME.findType(): Type {
     val type = depointer()
         .deprotocol()
         .let {
-            if (it.isList()) {
+            if (it.isCollection()) {
                 if (it.genericLevel() != 0) it.genericType() else ""
             } else {
                 it

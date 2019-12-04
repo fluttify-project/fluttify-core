@@ -52,7 +52,7 @@ class TypeFunctionTmpl(private val functionType: Type) {
         val nativeObjectPool = functionType.returnType.run {
             when {
                 jsonable() or findType().isEnum() or isVoid() -> ""
-                isList() -> "kNativeObjectPool.addAll($returnStatement);"
+                isCollection() -> "kNativeObjectPool.addAll($returnStatement);"
                 else -> "kNativeObjectPool.add($returnStatement);"
             }
         }

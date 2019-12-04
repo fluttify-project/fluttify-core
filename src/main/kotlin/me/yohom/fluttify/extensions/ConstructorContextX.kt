@@ -68,7 +68,7 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },
@@ -96,7 +96,7 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },

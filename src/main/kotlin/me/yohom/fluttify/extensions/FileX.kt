@@ -163,7 +163,7 @@ fun JAVA_FILE.javaType(): Type {
                                 isArray() -> ListType.Array
                                 isArrayList() -> ListType.ArrayList
                                 isLinkedList() -> ListType.LinkedList
-                                isList() -> ListType.List
+                                isCollection() -> ListType.List
                                 else -> ListType.NonList
                             }
                         },
@@ -487,7 +487,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         isArray() -> ListType.Array
                         isArrayList() -> ListType.ArrayList
                         isLinkedList() -> ListType.LinkedList
-                        isList() -> ListType.List
+                        isCollection() -> ListType.List
                         else -> ListType.NonList
                     }
                 },

@@ -1,7 +1,7 @@
 package me.yohom.fluttify.tmpl.kotlin.common.handler.handler_method
 
 import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isList
+import me.yohom.fluttify.extensions.isCollection
 import me.yohom.fluttify.extensions.jsonable
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
@@ -70,7 +70,7 @@ internal class HandlerMethodTmpl(private val method: Method) {
         // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
         val result = when {
             method.returnType.jsonable() -> ResultJsonableTmpl().kotlinJsonableResult()
-            method.returnType.isList() -> ResultListTmpl().kotlinListResult()
+            method.returnType.isCollection() -> ResultListTmpl().kotlinListResult()
             method.returnType == "void" -> ResultVoidTmpl().kotlinVoidResult()
             else -> ResultRefTmpl().kotlinRefResult()
         }
