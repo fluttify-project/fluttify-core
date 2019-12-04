@@ -23,30 +23,19 @@ fun List<Variable>.toDartMap(
 fun List<Method>.filterMethod(): List<Method> {
     return asSequence()
         .filter { it.must("公开方法") { isPublic } }
-        .filter { it.must("所在类是公开类") { className.findType().isPublic } }
-        .filter { it.must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } }
-        .filter { it.must("所在类是静态类型") { className.findType().isStaticType } }
-        .filter { it.must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } }
-        .filter { it.must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } }
         .filter { it.mustNot("忽略方法") { name in EXCLUDE_METHODS } }
         .filter { it.mustNot("废弃方法") { isDeprecated } }
-        // 类似float*返回这样的类型的方法都暂时不处理
-        .filter { it.mustNot("返回类型是C类型指针") { returnType.isCPointerType() } }
-        // 不处理c指针类型参数的方法
-        .filter { it.mustNot("参数含有是C指针类型") { formalParams.any { param -> param.variable.typeName.isCPointerType() } } }
-        // 参数不能中含有排除的类
-        .filter { it.mustNot("参数含有排除的类") { formalParams.any { param -> param.variable.typeName.depointer() in EXCLUDE_TYPES } } }
-        .filter {
-            it.must("返回类型是具体类型或者含有实体子类的抽象类") {
-                returnType.findType().run { isConcret() || hasConcretSubtype() }
-            }
-        }
-        .filter { it.mustNot("返回类型是混淆类") { returnType.isObfuscated() } }
-        .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
-        .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
-        .filter { it.must("返回类型的父类是已知类") { returnType.findType().superType() != Type.UNKNOWN_TYPE } }
+        .filter { it.must("所在类是公开类") { className.findType().isPublic } }
+        .filter { it.must("所在类是静态类型") { className.findType().isStaticType } }
+        .filter { it.must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } }
+        .filter { it.must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } }
+        .filter { it.must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } }
         .filter { it.mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } } }
         .filter { it.mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } } }
+        // 不处理c指针类型参数的方法
+        .filter { it.mustNot("形参含有是C指针类型") { formalParams.any { param -> param.variable.typeName.isCPointerType() } } }
+        // 参数不能中含有排除的类
+        .filter { it.mustNot("形参含有排除的类") { formalParams.any { param -> param.variable.typeName.depointer() in EXCLUDE_TYPES } } }
         .filter {
             it.mustNot("形参父类含有未知类型") {
                 formalParams
@@ -59,6 +48,19 @@ fun List<Method>.filterMethod(): List<Method> {
                 formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
             }
         }
+        // 类似float*返回这样的类型的方法都暂时不处理
+        .filter { it.mustNot("返回类型是C类型指针") { returnType.isCPointerType() } }
+        .filter {
+            it.must("返回类型是具体类型或者含有实体子类的抽象类") {
+                returnType.findType().run { isConcret() || hasConcretSubtype() }
+            }
+        }
+        .filter { it.mustNot("返回类型是混淆类") { returnType.isObfuscated() } }
+        .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
+        .filter { it.mustNot("返回类型是嵌套数组/列表") { returnType.run { genericLevel() > 1 || (isList() && genericType().isArray()) } } }
+        .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
+        .filter { it.must("返回类型的父类是已知类") { returnType.findType().superType() != Type.UNKNOWN_TYPE } }
+
         .distinctBy { "${it.className}${it.exactName.replace(":", "")}" } // 加冒号的只拿来看, 这里判断的时候把冒号们去掉
         .filter { println("Method::${it.name}通过Method过滤"); true }
         .toList()

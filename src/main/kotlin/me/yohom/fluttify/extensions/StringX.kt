@@ -55,6 +55,13 @@ fun TYPE_NAME.isArrayList(): Boolean {
 }
 
 /**
+ * 是否是列表类型
+ */
+fun TYPE_NAME.isList(): Boolean {
+    return Regex("List<(\\w*|.*)>").matches(this)
+}
+
+/**
  * 是否是集合类型
  */
 fun TYPE_NAME.isLinkedList(): Boolean {
