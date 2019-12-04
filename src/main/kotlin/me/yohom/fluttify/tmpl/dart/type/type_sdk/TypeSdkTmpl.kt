@@ -37,9 +37,12 @@ class TypeSdkTmpl(private val type: Type) {
 
         val mixins = if (type.interfaces.isNotEmpty() && type.interfaces.none { it.findType() == Type.UNKNOWN_TYPE }) {
             // todo 使用递归处理完全, 现在只是写死了只处理了两层
-            "with ${type.interfaces.union(type.interfaces.flatMap { it.findType().interfaces }).filter {
-                it.findType().isInterface()
-            }.reversed().joinToString { it.toDartType() }}"
+            val interfaces = type.interfaces
+                .union(type.interfaces.flatMap { it.findType().interfaces })
+                .filter { it.findType().isInterface() }
+                .reversed()
+                .joinToString { it.toDartType() }
+            if (interfaces.isEmpty()) "" else "with $interfaces"
         } else {
             ""
         }
