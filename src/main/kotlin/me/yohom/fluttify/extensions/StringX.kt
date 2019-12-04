@@ -48,7 +48,7 @@ fun TYPE_NAME.isCollection(): Boolean {
 }
 
 /**
- * 是否是集合类型
+ * 是否是ArrayList类型
  */
 fun TYPE_NAME.isArrayList(): Boolean {
     return Regex("ArrayList<(\\w*|.*)>").matches(this)
