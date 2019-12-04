@@ -35,7 +35,7 @@ fun List<Method>.filterMethod(): List<Method> {
         // 不处理c指针类型参数的方法
         .filter { it.mustNot("参数含有是C指针类型") { formalParams.any { param -> param.variable.typeName.isCPointerType() } } }
         // 参数不能中含有排除的类
-        .filter { it.mustNot("参数含有排除的类") { formalParams.any { param -> param.variable.typeName in EXCLUDE_TYPES } } }
+        .filter { it.mustNot("参数含有排除的类") { formalParams.any { param -> param.variable.typeName.depointer() in EXCLUDE_TYPES } } }
         .filter {
             it.must("返回类型是具体类型或者含有实体子类的抽象类") {
                 returnType.findType().run { isConcret() || hasConcretSubtype() }

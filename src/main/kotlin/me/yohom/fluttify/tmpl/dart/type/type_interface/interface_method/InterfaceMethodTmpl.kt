@@ -8,6 +8,10 @@ import me.yohom.fluttify.model.Method
 //@mustCallSuper
 //Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {
 //  #__callback_pool__#
+//
+//  if (fluttifyLogEnabled) {
+//    debugPrint('#__interface_method__#::kNativeObjectPool: $kNativeObjectPool');
+//  }
 //}
 class InterfaceMethodTmpl(private val method: Method) {
     private val tmpl =
