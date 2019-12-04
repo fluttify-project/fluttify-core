@@ -14,7 +14,9 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //@Override
 //public #__return_type__# #__callback_method__#(#__formal_params__#) {
 //    // print log
-//    #__log__#
+//    if (getEnableLog()) {
+//        #__log__#
+//    }
 //
 //    // convert to jsonable data
 //    #__local_args__#
