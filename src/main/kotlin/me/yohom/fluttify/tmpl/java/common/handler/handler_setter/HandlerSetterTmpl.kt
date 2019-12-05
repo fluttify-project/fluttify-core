@@ -29,7 +29,7 @@ internal class HandlerSetterTmpl(private val field: Field) {
             field.variable.isList -> ArgListTmpl(field.variable).javaArgList()
             else -> ArgRefTmpl(field.variable).javaArgRef()
         }
-        val className = field.className
+        val className = field.className.replace("$", ".")
 
         return tmpl
             .replace("#__setter_name__#", setterName)

@@ -8,7 +8,7 @@ internal class LogInstanceTmpl(private val method: Method) {
     private val tmpl = this::class.java.getResource("/tmpl/java/log_instance.stmt.java.tmpl").readText()
 
     fun javaLogInstance(): String {
-        val className = method.className
+        val className = method.className.replace("$", ".")
         val methodName = method.name
         val args = method
             .formalParams

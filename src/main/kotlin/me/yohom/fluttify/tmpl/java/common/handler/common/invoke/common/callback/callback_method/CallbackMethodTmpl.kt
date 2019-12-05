@@ -38,7 +38,7 @@ internal class CallbackMethodTmpl(private val method: Method) {
     fun javaCallbackMethod(): String {
         val callbackMethod = method.name
         val callbackMethodName = method.nameWithClass()
-        val methodChannel = "${method.className}::Callback"
+        val methodChannel = "${method.className.replace("$", ".")}::Callback"
         val formalParams = method
             .formalParams
             .map { it.variable }
@@ -46,8 +46,8 @@ internal class CallbackMethodTmpl(private val method: Method) {
                 ListType.ArrayList -> it.typeName.enArrayList()
                 ListType.List -> it.typeName.enlist()
                 else -> it.typeName
-            }} ${it.name}" }
-        val returnType = method.returnType
+            }.replace("$", ".")} ${it.name}" }
+        val returnType = method.returnType.replace("$", ".")
         val localArgs = method
             .formalParams
             .joinToString("\n") {

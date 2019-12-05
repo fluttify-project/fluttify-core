@@ -52,10 +52,10 @@ data class Field(
     }
 
     fun getterMethodName(): String {
-        return "$className::get_${getterName.depointer()}"
+        return "${className.replace("$", ".")}::get_${getterName.depointer()}"
     }
 
     fun setterMethodName(): String {
-        return "$className::set_${setterName.depointer()}"
+        return "${className.replace("$", ".")}::set_${setterName.depointer()}"
     }
 }

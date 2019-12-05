@@ -29,7 +29,7 @@ class CallbackSetterTmpl(private val field: Field) {
         if (!field.variable.typeName.findType().isCallback())
             return ""
 
-        val callbackChannel = "${field.variable.typeName}::Callback"
+        val callbackChannel = "${field.variable.typeName.replace("$", ".")}::Callback"
         val callbackDelegateCases = field
             .variable
             .typeName

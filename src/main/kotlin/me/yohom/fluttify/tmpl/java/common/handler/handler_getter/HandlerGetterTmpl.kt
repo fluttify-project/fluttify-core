@@ -19,8 +19,8 @@ internal class HandlerGetterTmpl(private val field: Field) {
     fun javaGetter(): String {
         return tmpl
             .replace("#__getter_name__#", field.getterMethodName())
-            .replace("#__class_name__#", field.className)
-            .replace("#__field_type__#", field.variable.typeName)
+            .replace("#__class_name__#", field.className.replace("$", "."))
+            .replace("#__field_type__#", field.variable.typeName.replace("$", "."))
             .replace("#__field_name__#", field.variable.name)
             .replace(
                 "#__put_map__#",

@@ -17,7 +17,7 @@ internal class CallbackTmpl(private val callerMethod: Method, private val callba
 
     fun javaCallback(): String {
         return tmpl
-            .replace("#__callback_class_name__#", callbackType.name)
+            .replace("#__callback_class_name__#", callbackType.name.replace("$", "."))
             .replace("#__callback_channel__#", callerMethod.nameWithClass())
             .replaceParagraph("#__callback_methods__#", callbackType
                 .methods

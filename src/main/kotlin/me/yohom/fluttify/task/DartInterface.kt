@@ -34,8 +34,9 @@ open class AndroidDartInterface : FluttifyTask() {
             .filter { it.isView() && !it.isObfuscated() }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it).dartAndroidView()
+                val viewName = it.name.replace("$", ".").simpleName()
                 val androidViewFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/platformview/${it.name.simpleName()}.g.dart"
+                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/platformview/${viewName}.g.dart"
 
                 androidViewFile.file().writeText(dartAndroidView)
             }
@@ -56,11 +57,8 @@ open class AndroidDartInterface : FluttifyTask() {
                 }
 
                 if (resultDart.isNotBlank()) {
-                    val resultFile =
-                        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${it.name.replace(
-                            ".",
-                            "/"
-                        )}.g.dart"
+                    val fileName = it.name.replace("$", ".").replace(".", "/")
+                    val resultFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${fileName}.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }

@@ -15,11 +15,11 @@ internal class ArgListTmpl(private val variable: Variable) {
     fun javaArgList(): String {
         return if (variable.genericLevel <= 1) {
             tmpl
-                .replace("#__type_name__#", variable.typeName)
+                .replace("#__type_name__#", variable.typeName.replace("$", "."))
                 .replace("#__arg_name__#", variable.name)
 
         } else {
-            var typeName = variable.typeName
+            var typeName = variable.typeName.replace("$", ".")
             for (i in 0 until (variable.genericLevel - 1)) {
                 typeName = typeName.enlist()
             }

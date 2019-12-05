@@ -40,6 +40,7 @@ class TypeSdkTmpl(private val type: Type) {
             val interfaces = type.interfaces
                 .union(type.interfaces.flatMap { it.findType().interfaces })
                 .filter { it.findType().isInterface() }
+                .filterNot { it.isObfuscated() }
                 .reversed()
                 .joinToString { it.toDartType() }
             if (interfaces.isEmpty()) "" else "with $interfaces"

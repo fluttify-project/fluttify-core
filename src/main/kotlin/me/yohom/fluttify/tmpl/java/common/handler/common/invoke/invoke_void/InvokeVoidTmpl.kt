@@ -8,7 +8,7 @@ class InvokeVoidTmpl(private val method: Method) {
 
     fun javaInvokeVoid(): String {
         return tmpl
-            .replace("#__invoke_target__#", if (method.isStatic) method.className else "ref")
+            .replace("#__invoke_target__#", if (method.isStatic) method.className.replace("$", ".") else "ref")
             .replace("#__method_name__#", method.name)
             .replace("#__actual_params__#", method.formalParams.joinToString { it.variable.var2Args(method) })
     }

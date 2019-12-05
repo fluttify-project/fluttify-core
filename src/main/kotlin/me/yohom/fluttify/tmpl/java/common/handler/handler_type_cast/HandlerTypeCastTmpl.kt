@@ -12,7 +12,7 @@ internal class HandlerTypeCastTmpl(private val method: Method) {
         return if (method.isStatic)
             ""
         else
-            tmpl.replace("#__class_name__#", method.className)
+            tmpl.replace("#__class_name__#", method.className.replace("$", "."))
 
     }
 }

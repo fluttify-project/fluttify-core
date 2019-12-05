@@ -59,7 +59,7 @@ fun JavaParser.ClassDeclarationContext.fullName(): String {
         ?.packageDeclaration()
         ?.qualifiedName()
         ?.text ?: ""
-    return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
+    return "$packageName.${IDENTIFIER().text}"
 }
 
 /**
@@ -70,7 +70,7 @@ fun JavaParser.EnumDeclarationContext.fullName(): String {
         ?.packageDeclaration()
         ?.qualifiedName()
         ?.text ?: ""
-    return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
+    return "$packageName.${IDENTIFIER().text}"
 }
 
 /**

@@ -9,8 +9,8 @@ class InvokeReturnTmpl(private val method: Method) {
     fun javaInvokeReturn(): String {
         // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
         return tmpl
-            .replace("#__return_type__#", method.returnType)
-            .replace("#__invoke_target__#", if (method.isStatic) method.className else "ref")
+            .replace("#__return_type__#", method.returnType.replace("$", "."))
+            .replace("#__invoke_target__#", if (method.isStatic) method.className.replace("$", ".") else "ref")
             .replace("#__method_name__#", method.name)
             .replace("#__actual_params__#", method.formalParams.joinToString { it.variable.var2Args(method) })
     }

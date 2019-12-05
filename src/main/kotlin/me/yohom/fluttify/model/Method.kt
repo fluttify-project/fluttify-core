@@ -52,7 +52,7 @@ data class Method(
     }
 
     fun nameWithClass(): String {
-        return "${className}::$name${formalParams.joinToString("") { it.named }.capitalize()}"
+        return "${className.replace("$", ".")}::$name${formalParams.joinToString("") { it.named }.capitalize()}"
     }
 
     override fun toString(): String {

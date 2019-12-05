@@ -59,7 +59,7 @@ fun JAVA_FILE.javaType(): Type {
                 ?: parentFile
                     .list()
                     ?.firstOrNull { it.substringBeforeLast(".") == simpleSuperClass }
-                    ?.run { "$packageName.${substringBeforeLast(".").replace("$", ".")}" }
+                    ?.run { "$packageName.${substringBeforeLast(".")}" }
                         ?: ""
 
             // 从import中找出含有接口列表中接口名称的import
@@ -77,7 +77,7 @@ fun JAVA_FILE.javaType(): Type {
                     ?.typeType()
                     ?.map { it.text } // 接口简称列表
                     ?.contains(fileName.substringBeforeLast(".")) == true
-            }?.map { "$packageName.${it.substringBeforeLast(".").replace("$", ".")}" } ?: listOf())
+            }?.map { "$packageName.${it.substringBeforeLast(".")}" } ?: listOf())
         }
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {
@@ -125,7 +125,7 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     ctx.isAbstract(),
                     ctx.isPublic(),
-                    "$packageName.${simpleName.replace("$", ".")}",
+                    "$packageName.$simpleName",
                     Platform.Android,
                     ctx.isDeprecated()
                 )
@@ -141,7 +141,7 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     true,
                     true,
-                    "$packageName.${simpleName.replace("$", ".")}",
+                    "$packageName.$simpleName",
                     Platform.Android,
                     ctx.isDeprecated()
                 )
@@ -170,7 +170,7 @@ fun JAVA_FILE.javaType(): Type {
                         ctx.type().genericLevel(),
                         Platform.Android
                     ),
-                    "$packageName.${simpleName.replace("$", ".")}",
+                    "$packageName.$simpleName",
                     platform = Platform.Android,
                     isDeprecated = ctx.isDeprecated()
                 )
@@ -191,7 +191,7 @@ fun JAVA_FILE.javaType(): Type {
         it.genericTypes.addAll(genericTypes)
         it.constructors = constructors
         it.interfaces = interfaces
-        it.name = "$packageName.${simpleName.replace("$", ".")}"
+        it.name = "$packageName.$simpleName"
         it.superClass = superClass
         it.fields.addAll(fields)
         it.methods.addAll(methods)

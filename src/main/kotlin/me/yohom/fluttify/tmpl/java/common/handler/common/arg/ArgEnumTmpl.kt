@@ -9,7 +9,7 @@ internal class ArgEnumTmpl(private val variable: Variable) {
 
     fun javaArgEnum(): String {
         return tmpl
-            .replace("#__type_name__#", variable.typeName)
+            .replace("#__type_name__#", variable.typeName.replace("$", "."))
             .replace("#__arg_name__#", variable.name)
     }
 }

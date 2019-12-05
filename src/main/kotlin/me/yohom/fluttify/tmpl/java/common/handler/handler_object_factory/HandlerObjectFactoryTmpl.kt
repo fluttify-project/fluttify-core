@@ -51,7 +51,7 @@ internal class HandlerObjectFactoryTmpl(private val type: Type) {
                     .replace("#__creator_name__#", creatorName)
                     .replaceParagraph("#__args__#", args)
                     .replace("#__args_value__#", argsValue)
-                    .replace("#__class_name__#", type.name)
+                    .replace("#__class_name__#", type.name.replace("$", "."))
 
             }
     }
