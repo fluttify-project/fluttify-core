@@ -385,7 +385,8 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-            if (typeType == TypeType.Struct && name.isNotEmpty()) {
+            // 结构体 && 名称不为空 && result中不包含当前名称
+            if (typeType == TypeType.Struct && name.isNotEmpty() && !result.map { it.name }.contains(name)) {
                 result.add(
                     Type().also {
                         it.typeType = typeType
@@ -476,38 +477,40 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
-            // 只接收property
-            ctx.ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class) ?: return
-
-            val variable = Variable(
-                ctx.type().genericType(),
-                ctx.name(),
-                Platform.iOS,
-                ctx.type().run {
-                    when {
-                        isArray() -> ListType.Array
-                        isArrayList() -> ListType.ArrayList
-                        isLinkedList() -> ListType.LinkedList
-                        isCollection() -> ListType.List
-                        else -> ListType.NonList
-                    }
-                },
-                ctx.type().genericLevel()
-            )
-            // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
-            fields.add(
-                Field(
-                    true,
-                    ctx.isFinal(),
-                    false,
-                    variable,
-                    name,
-                    ctx.getterName(),
-                    ctx.setterName(),
+            // 只接收property和struct
+            if (ctx.isChildOf(ObjectiveCParser.PropertyDeclarationContext::class)
+                || ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)
+            ) {
+                val variable = Variable(
+                    ctx.type().genericType(),
+                    ctx.name(),
                     Platform.iOS,
-                    ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+                    ctx.type().run {
+                        when {
+                            isArray() -> ListType.Array
+                            isArrayList() -> ListType.ArrayList
+                            isLinkedList() -> ListType.LinkedList
+                            isCollection() -> ListType.List
+                            else -> ListType.NonList
+                        }
+                    },
+                    ctx.type().genericLevel()
                 )
-            )
+                // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
+                fields.add(
+                    Field(
+                        true,
+                        ctx.isFinal(),
+                        false,
+                        variable,
+                        name,
+                        ctx.getterName(),
+                        ctx.setterName(),
+                        Platform.iOS,
+                        ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+                    )
+                )
+            }
         }
 
         override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
