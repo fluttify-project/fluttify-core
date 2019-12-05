@@ -170,6 +170,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
+                        Platform.Android,
                         formalParam.typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -179,8 +180,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        formalParam.typeType().text.genericLevel(),
-                        Platform.Android
+                        formalParam.typeType().text.genericLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -198,6 +198,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
+                        Platform.Android,
                         typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -207,8 +208,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        typeType().text.genericLevel(),
-                        Platform.Android
+                        typeType().text.genericLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -234,6 +234,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
+                        Platform.Android,
                         formalParam.typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -243,8 +244,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                                 else -> ListType.NonList
                             }
                         },
-                        formalParam.typeType().text.genericLevel(),
-                        Platform.Android
+                        formalParam.typeType().text.genericLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -262,6 +262,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
+                        Platform.Android,
                         typeType().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -271,8 +272,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                                 else -> ListType.NonList
                             }
                         },
-                        typeType().text.genericLevel(),
-                        Platform.Android
+                        typeType().text.genericLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -327,6 +327,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                             blockType()?.run { "${returnType()}|${parameters()}" } ?: text
                         }.genericType(),
                         it.identifier().text,
+                        Platform.iOS,
                         it.methodType()[0].typeName().text.run {
                             when {
                                 isArray() -> ListType.Array
@@ -336,8 +337,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        it.methodType()[0].typeName().text.genericLevel(),
-                        Platform.iOS
+                        it.methodType()[0].typeName().text.genericLevel()
                     ),
                     platform = Platform.iOS
                 )

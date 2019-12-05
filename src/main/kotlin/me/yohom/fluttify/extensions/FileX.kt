@@ -158,6 +158,7 @@ fun JAVA_FILE.javaType(): Type {
                     Variable(
                         ctx.type().genericType(),
                         ctx.name(),
+                        Platform.Android,
                         ctx.type().run {
                             when {
                                 isArray() -> ListType.Array
@@ -167,8 +168,7 @@ fun JAVA_FILE.javaType(): Type {
                                 else -> ListType.NonList
                             }
                         },
-                        ctx.type().genericLevel(),
-                        Platform.Android
+                        ctx.type().genericLevel()
                     ),
                     "$packageName.$simpleName",
                     platform = Platform.Android,
@@ -429,9 +429,9 @@ fun OBJC_FILE.objcType(): List<Type> {
                         .run {
                             Parameter(
                                 variable = Variable(
-                                    typeName = declarationSpecifiers().text,
-                                    platform = Platform.iOS,
-                                    name = declarator().text
+                                    declarationSpecifiers().text,
+                                    declarator().text,
+                                    Platform.iOS
                                 ),
                                 platform = Platform.iOS
                             )
@@ -482,6 +482,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             val variable = Variable(
                 ctx.type().genericType(),
                 ctx.name(),
+                Platform.iOS,
                 ctx.type().run {
                     when {
                         isArray() -> ListType.Array
@@ -491,8 +492,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         else -> ListType.NonList
                     }
                 },
-                ctx.type().genericLevel(),
-                Platform.iOS
+                ctx.type().genericLevel()
             )
             // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
             fields.add(

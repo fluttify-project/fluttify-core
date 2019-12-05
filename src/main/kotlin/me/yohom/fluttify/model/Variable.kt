@@ -10,9 +10,9 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 data class Variable(
     val typeName: TYPE_NAME,
     val name: String,
+    override var platform: Platform,
     val listType: ListType = ListType.NonList,
-    val genericLevel: Int = 0,
-    override var platform: Platform
+    val genericLevel: Int = 0
 ) : IPlatform {
 
     val isList: Boolean
