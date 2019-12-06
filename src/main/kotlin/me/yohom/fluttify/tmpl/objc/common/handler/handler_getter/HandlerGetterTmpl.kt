@@ -3,6 +3,8 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_getter
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
@@ -12,8 +14,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //    }
 //
 //    // ref object
-//    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__# ref = (#__class_name__#) HEAP[@(refId)];
+//    #__ref__#
 //
 //    // invoke native method
 //    #__invoke__#
@@ -30,6 +31,14 @@ internal class HandlerGetterTmpl(private val field: Field) {
             field.className.findType().isInterface() -> field.className.enprotocol()
             else -> field.className.enpointer()
         }
+
+        // 获取当前调用方法的对象引用
+        val ref = if (field.className.findType().isStruct()) {
+            StructRefTmpl(field.asGetterMethod()).objcStructRef()
+        } else {
+            RefRefTmpl(field.asGetterMethod()).objcRefRef()
+        }
+
         // 调用objc端对应的方法
         val invoke = InvokeTmpl(field).objcInvoke()
         val result = when {
@@ -42,6 +51,7 @@ internal class HandlerGetterTmpl(private val field: Field) {
         return tmpl
             .replace("#__method_name__#", methodName)
             .replace("#__class_name__#", className)
+            .replaceParagraph("#__ref__#", ref)
             .replace("#__invoke__#", invoke)
             .replaceParagraph("#__result__#", result)
 

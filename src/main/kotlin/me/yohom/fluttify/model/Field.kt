@@ -58,4 +58,32 @@ data class Field(
     fun setterMethodName(): String {
         return "${className.replace("$", ".")}::set_${setterName.depointer()}"
     }
+
+    fun asGetterMethod(): Method {
+        return Method(
+            variable.typeName,
+            getterName,
+            listOf(),
+            isStatic = false,
+            isAbstract = false,
+            isPublic = true,
+            className = className,
+            platform = platform,
+            isDeprecated = isDeprecated
+        )
+    }
+
+    fun asSetterMethod(): Method {
+        return Method(
+            "void",
+            setterName,
+            listOf(Parameter(variable = variable, platform = platform)),
+            isStatic = false,
+            isAbstract = false,
+            isPublic = true,
+            className = className,
+            platform = platform,
+            isDeprecated = isDeprecated
+        )
+    }
 }

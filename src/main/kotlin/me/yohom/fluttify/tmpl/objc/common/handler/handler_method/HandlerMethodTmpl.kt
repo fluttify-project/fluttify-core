@@ -9,7 +9,8 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_s
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_ref.ArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.RefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
 //@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
@@ -52,7 +53,11 @@ internal class HandlerMethodTmpl(private val method: Method) {
         }
 
         // 获取当前调用方法的对象引用
-        val ref = RefTmpl(method).objcRef()
+        val ref = if (method.className.findType().isStruct()) {
+            StructRefTmpl(method).objcStructRef()
+        } else {
+            RefRefTmpl(method).objcRefRef()
+        }
 
         // 调用objc端对应的方法
         val invoke = InvokeTmpl(method).objcInvoke()
