@@ -13,7 +13,7 @@ internal class CallbackArgListTmpl(private val param: Parameter) {
     fun javaCallbackArgList(): String {
         return tmpl
             .replace("#__arg_name__#", param.variable.name)
-            .replace("#__type_name__#", param.variable.typeName)
+            .replace("#__type_name__#", param.variable.typeName.replace("$", "."))
 
     }
 }
