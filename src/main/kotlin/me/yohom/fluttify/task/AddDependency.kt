@@ -14,7 +14,7 @@ open class AndroidAddDependency : FluttifyTask() {
         val archiveDir: File = ext.archiveDir.file()
         val libDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
 
-        FileUtils.copyDirectory(archiveDir, libDir) { it.extension in listOf("jar", "aar") && it.length() > 0 }
+        FileUtils.copyDirectory(archiveDir, libDir) { it.name != "unzip" && it.length() > 0 }
     }
 }
 
