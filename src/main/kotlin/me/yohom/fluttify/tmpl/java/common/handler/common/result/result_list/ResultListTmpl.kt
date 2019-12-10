@@ -19,7 +19,7 @@ internal class ResultListTmpl(private val returnType: TYPE_NAME) {
 
     fun javaListResult(): String {
         return tmpl
-            .replace("#__type_name__#", returnType.genericType())
+            .replace("#__type_name__#", returnType.genericType().replace("$", "."))
     }
 
 }
