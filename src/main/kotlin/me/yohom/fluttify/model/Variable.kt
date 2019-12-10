@@ -19,7 +19,7 @@ data class Variable(
         get() = listType != ListType.NonList
 
     fun constructable(): Boolean {
-        return typeName.findType().constructable() || isList
+        return typeName.findType().constructable()
     }
 
     fun isStructPointer(): Boolean {

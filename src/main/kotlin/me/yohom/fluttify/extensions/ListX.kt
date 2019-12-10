@@ -139,7 +139,7 @@ fun List<Constructor>.filterConstructor(): List<Constructor> {
     return asSequence()
         // 构造器参数为空或者递归检查构造器参数的构造器是否符合相同条件
         .filter {
-            ((it.formalParams.isEmpty() || it.formalParams.all { it.variable.typeName.findType().constructable() || it.variable.isList }) && it.isPublic)
+            ((it.formalParams.isEmpty() || it.formalParams.all { it.variable.typeName.findType().constructable() || it.variable.jsonable() }) && it.isPublic)
                 .apply { if (!this) println("Constructor::${it.name} 由于构造器含有未知类 被过滤") }
         }
         .toList()
