@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.arg
 
-import me.yohom.fluttify.extensions.enlist
+import me.yohom.fluttify.extensions.enList
 import me.yohom.fluttify.model.Variable
 
 //// list arg
@@ -21,7 +21,7 @@ internal class ArgListTmpl(private val variable: Variable) {
         } else {
             var typeName = variable.typeName.replace("$", ".")
             for (i in 0 until (variable.genericLevel - 1)) {
-                typeName = typeName.enlist()
+                typeName = typeName.enList()
             }
             "$typeName ${variable.name} = new ArrayList<>();"
         }

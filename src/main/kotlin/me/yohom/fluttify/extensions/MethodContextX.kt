@@ -30,7 +30,11 @@ fun JavaParser.MethodDeclarationContext.returnType(): String {
         typeTypeOrVoid().text.isCollection() -> {
             var result = fullGenericTypes[0]
             for (i in 0 until typeTypeOrVoid().text.genericLevel()) {
-                result = result.enlist()
+                result = if (Regex("Collection<(\\w*|.*)>").matches(typeTypeOrVoid().text)) {
+                    result.enCollection()
+                } else {
+                    result.enList()
+                }
             }
             result
         }
@@ -67,7 +71,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
         typeTypeOrVoid().text.isCollection() -> {
             var result = fullGenericTypes[0]
             for (i in 0 until typeTypeOrVoid().text.genericLevel()) {
-                result = result.enlist()
+                result = result.enList()
             }
             result
         }

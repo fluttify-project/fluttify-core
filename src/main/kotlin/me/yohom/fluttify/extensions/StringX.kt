@@ -78,8 +78,15 @@ fun TYPE_NAME.isVoid(): Boolean {
 /**
  * 套上List<>
  */
-fun TYPE_NAME.enlist(): TYPE_NAME {
+fun TYPE_NAME.enList(): TYPE_NAME {
     return "List<$this>"
+}
+
+/**
+ * 套上Collection<>
+ */
+fun TYPE_NAME.enCollection(): TYPE_NAME {
+    return "Collection<$this>"
 }
 
 /**
@@ -92,7 +99,7 @@ fun TYPE_NAME.enArrayList(): TYPE_NAME {
 /**
  * 套上[]
  */
-fun TYPE_NAME.enarray(): TYPE_NAME {
+fun TYPE_NAME.enArray(): TYPE_NAME {
     return "$this[]"
 }
 
@@ -264,10 +271,10 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "boolean", "Boolean" -> "bool"
             "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
             "double", "Double", "float", "Float" -> "double"
-            "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
+            "Collection<Byte>", "Collection<Integer>", "Collection<Long>", "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
             "ArrayList<String>", "String[]" -> "List<String>"
-            "List<String>" -> "List<String>"
-            "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
+            "Collection<String>", "List<String>" -> "List<String>"
+            "Collection<Float>", "Collection<Double>", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
             "byte[]", "Byte[]" -> "Uint8List"
             "int[]", "Integer[]" -> "Int32List"
             "long[]", "Long[]" -> "Int64List"
@@ -283,9 +290,10 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "BOOL" -> "bool"
             "CGFloat" -> "double"
             else -> when {
-                Regex("ArrayList<\\w*>").matches(this) -> removePrefix("Array")
+                Regex("ArrayList<.+>").matches(this) -> removePrefix("Array")
+                Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
                 startsWith("NSArray") -> "List<${genericType().depointer()}>"
-                Regex("id<\\w*>").matches(this) -> removePrefix("id<").removeSuffix(">")
+                Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
                 else -> this
             }
         }.replace("$", ".").replace(".", "_").depointer()

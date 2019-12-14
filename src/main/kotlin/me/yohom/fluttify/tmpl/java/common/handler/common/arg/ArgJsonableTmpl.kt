@@ -1,7 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.arg
 
 import me.yohom.fluttify.extensions.dearray
-import me.yohom.fluttify.extensions.enlist
+import me.yohom.fluttify.extensions.enList
 import me.yohom.fluttify.model.Variable
 
 //// jsonable arg
@@ -17,11 +17,11 @@ internal class ArgJsonableTmpl(private val variable: Variable) {
                 "#__type_name__#",
                 when {
                     // 如果是数组, 那么需要去掉`[]`, 再补成列表
-                    variable.isStringArray() -> type.dearray().enlist()
+                    variable.isStringArray() -> type.dearray().enList()
                     // 基本数据类型数组 保持原样
                     variable.isArray() -> type
                     // 其他列表类型, 加上List<>
-                    variable.isList -> type.enlist()
+                    variable.isList -> type.enList()
                     else -> type
                 }
             )
