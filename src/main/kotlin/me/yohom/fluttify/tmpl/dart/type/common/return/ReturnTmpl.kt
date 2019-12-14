@@ -8,7 +8,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultListTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultRefTmpl
 
 class ReturnTmpl(private val method: Method) {
-    fun dartMethodReturn(): String {
+    fun dartReturn(): String {
         return method.run {
             // 如果是多维列表, 那么不处理, 直接返回空列表
             if (returnType.isCollection() && returnType.genericLevel() > 1) {
@@ -32,7 +32,6 @@ class ReturnTmpl(private val method: Method) {
                 }
             }
 
-            // 返回jsonable类型
             concretTypeWithContainer.run {
                 when {
                     jsonable() || concretTypeWithContainer == "void" -> {

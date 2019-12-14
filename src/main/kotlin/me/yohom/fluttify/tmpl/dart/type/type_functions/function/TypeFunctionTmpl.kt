@@ -48,7 +48,7 @@ class TypeFunctionTmpl(private val functionType: Type) {
         val log = LogTmpl(functionType.asMethod()).dartMethodLog()
         val invoke = InvokeTmpl(functionType.asMethod()).dartMethodInvoke()
         val callback = CallbackMethodTmpl(functionType.asMethod()).dartCallback()
-        val returnStatement = ReturnTmpl(functionType.asMethod()).dartMethodReturn()
+        val returnStatement = ReturnTmpl(functionType.asMethod()).dartReturn()
         val nativeObjectPool = functionType.returnType.run {
             when {
                 jsonable() or findType().isEnum() or isVoid() -> ""

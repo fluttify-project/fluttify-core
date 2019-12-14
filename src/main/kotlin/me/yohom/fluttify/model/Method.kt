@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.toDartType
 
 data class Method(
@@ -30,7 +31,7 @@ data class Method(
     /**
      * 所在类名称
      */
-    var className: String,
+    var className: TYPE_NAME,
 
     override var platform: Platform,
 
