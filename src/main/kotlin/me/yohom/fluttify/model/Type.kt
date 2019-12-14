@@ -149,8 +149,8 @@ open class Type : IPlatform, IScope {
         }
     }
 
-    fun superType() : Type {
-        return superClass.findType()
+    fun superType() : List<Type> {
+        return listOf(superClass.findType()).union(interfaces.map { it.findType() }).toList()
     }
 
     fun isAlias(): Boolean {

@@ -140,6 +140,13 @@ fun TYPE_NAME.simpleName(): String {
 }
 
 /**
+ * 父类类型
+ */
+fun TYPE_NAME.superType(): List<Type> {
+    return findType().superType()
+}
+
+/**
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
