@@ -85,6 +85,20 @@ fun List<Field>.filterGetters(): List<Field> {
 }
 
 /**
+ * 从field中过滤出常量
+ */
+fun List<Field>.filterConstants(): List<Field> {
+    return asSequence()
+        .filter { it.must("公开field") { isPublic } }
+        .filter { it.must("静态field") { isStatic == true } }
+        .filter { it.must("不可变变量") { isFinal == true } }
+        .filter { it.variable.must("数字或字符串类型") { typeName in listOf("int", "double", "String") } }
+        .filter { it.mustNot("包含new关键字") { value.startsWith("new") } }
+        .filter { println("Field::${it.variable.name}通过Constants过滤"); true }
+        .toList()
+}
+
+/**
  * 从field中过滤出setter
  */
 fun List<Field>.filterSetters(): List<Field> {

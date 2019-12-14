@@ -11,17 +11,20 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //
 //import 'package:#__current_package__#/src/ios/ios.export.g.dart';
 //import 'package:#__current_package__#/src/android/android.export.g.dart';
+//import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
 //// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //class #__class_name__# extends #__super_class__# #__mixins__# {
-//  // 生成getters
+//  #__constants__#
+//
+//  // generate getters
 //  #__getters__#
 //
-//  // 生成setters
+//  // generate setters
 //  #__setters__#
 //
-//  // 生成方法们
+//  // generate methods
 //  #__methods__#
 //}
 class TypeSdkTmpl(private val type: Type) {
@@ -48,6 +51,8 @@ class TypeSdkTmpl(private val type: Type) {
             ""
         }
 
+        val constants = type.fields.filterConstants()
+
         val getters = type.fields
             .filterGetters()
             .map { GetterTmpl(it).dartGetter() }
@@ -65,6 +70,7 @@ class TypeSdkTmpl(private val type: Type) {
             .replace("#__class_name__#", className)
             .replace("#__super_class__#", superClass)
             .replace("#__mixins__#", mixins)
+            .replaceParagraph("#__constants__#", constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeSuffix("L").removeSuffix("F").removeSuffix("D")};" })
             .replaceParagraph("#__getters__#", getters.joinToString("\n"))
             .replaceParagraph("#__setters__#", setters.joinToString("\n"))
             .replaceParagraph("#__methods__#", methods.joinToString("\n"))

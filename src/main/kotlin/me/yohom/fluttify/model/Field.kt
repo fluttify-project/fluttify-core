@@ -19,7 +19,7 @@ data class Field(
     /**
      * 属性的值
      */
-    val value: Any? = null,
+    val value: String = "null",
     /**
      * 变量
      */
