@@ -155,6 +155,7 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isPublic(),
                     ctx.isFinal(),
                     ctx.isStatic(),
+                    ctx.getValue(),
                     Variable(
                         ctx.type().run { if (isCollection()) genericType() else this }, // 如果是集合类型, 那么抽取出泛型类型作为类型, 其他直接使用原始类名
                         ctx.name(),
@@ -502,6 +503,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         true,
                         ctx.isFinal(),
                         false,
+                        ctx.getValue(),
                         variable,
                         name,
                         ctx.getterName(),

@@ -31,6 +31,29 @@ fun JavaParser.FieldDeclarationContext.isPublic(): Boolean {
         ?.contains("public") == true
 }
 
+fun JavaParser.FieldDeclarationContext.getValue(): Any? {
+    val rawValue = variableDeclarators()
+        ?.variableDeclarator()
+        ?.get(0)
+        ?.variableInitializer()
+        ?.text ?: ""
+
+    return when {
+        // 如果是int, 那么使用int值返回
+        rawValue.removeSuffix("L").toLongOrNull() != null -> rawValue.removeSuffix("L").toLong()
+        // 如果是double, 那么使用double值返回
+        rawValue.toDoubleOrNull() != null -> rawValue.toDouble()
+        // 如果是字符串, 那么去除双引号后作为字符串返回
+        Regex("\".*\"").matches(rawValue) -> rawValue.replace("\"", "")
+        // 只有是true值才返回true, 其余的一律是false, 所以不会返回空, 因此这个要最后处理
+        rawValue in listOf("true", "false", "YES", "NO") -> rawValue.toBoolean()
+        // 如果是null, 那么就返回null
+        rawValue == "null" -> null
+        // 其他的原样返回
+        else -> rawValue
+    }
+}
+
 fun JavaParser.FieldDeclarationContext.type(): String {
     return typeFullName(typeType().text)
 }
@@ -101,6 +124,10 @@ fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
 //    val copy = propertyAttributes?.contains("copy") == true
 
     return readonly /*|| copy || (getter.isNotEmpty() && setter.isEmpty())*/
+}
+
+fun ObjectiveCParser.FieldDeclarationContext.getValue(): String {
+    return "null"
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {

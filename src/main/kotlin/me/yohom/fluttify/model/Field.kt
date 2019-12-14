@@ -17,6 +17,10 @@ data class Field(
      */
     val isStatic: Boolean?,
     /**
+     * 属性的值
+     */
+    val value: Any? = null,
+    /**
      * 变量
      */
     val variable: Variable,
