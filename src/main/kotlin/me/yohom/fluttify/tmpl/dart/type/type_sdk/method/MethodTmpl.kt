@@ -33,7 +33,8 @@ class MethodTmpl(private val method: Method) {
     fun dartMethod(): String {
         val static = if (method.isStatic) "static " else ""
         val returnType = method.returnType.toDartType()
-        val name = method.name + method.formalParams.joinToString("") { it.named }.capitalize()
+        val methodName = method.signature()
+
         // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
         val formalParams = method
             .formalParams
@@ -61,7 +62,7 @@ class MethodTmpl(private val method: Method) {
         return tmpl
             .replace("#__static__#", static)
             .replace("#__return_type__#", returnType)
-            .replace("#__method_name__#", name)
+            .replace("#__method_name__#", methodName)
             .replace("#__formal_params__#", formalParams)
             .replaceParagraph("#__log__#", log)
             .replaceParagraph("#__invoke__#", invoke)

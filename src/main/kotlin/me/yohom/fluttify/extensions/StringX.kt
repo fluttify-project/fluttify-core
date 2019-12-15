@@ -357,6 +357,13 @@ fun TYPE_NAME.containerType(): TYPE_NAME {
 }
 
 /**
+ * 去除数字后面的标识 (L/F/D等)
+ */
+fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
+    return removeSuffix("L").removeSuffix("F").removeSuffix("D")
+}
+
+/**
  * 获取泛型层数 用在List中 表示嵌套了几层
  */
 fun TYPE_NAME.genericLevel(): Int {

@@ -70,7 +70,7 @@ class TypeSdkTmpl(private val type: Type) {
             .replace("#__class_name__#", className)
             .replace("#__super_class__#", superClass)
             .replace("#__mixins__#", mixins)
-            .replaceParagraph("#__constants__#", constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeSuffix("L").removeSuffix("F").removeSuffix("D")};" })
+            .replaceParagraph("#__constants__#", constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" })
             .replaceParagraph("#__getters__#", getters.joinToString("\n"))
             .replaceParagraph("#__setters__#", setters.joinToString("\n"))
             .replaceParagraph("#__methods__#", methods.joinToString("\n"))

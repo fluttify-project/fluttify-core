@@ -19,7 +19,7 @@ class InterfaceMethodTmpl(private val method: Method) {
 
     fun dartInterfaceMethod(): String {
         val returnType = method.returnType.toDartType()
-        val name = method.name + method.formalParams.joinToString("") { it.named }.capitalize()
+        val name = method.signature()
         val formalParams = method.formalParams.joinToString { it.variable.toDartString() }
         val callbackPool = if (method.className.findType().isCallback()) {
             // 只有回调类的参数需要加入释放池

@@ -1,6 +1,8 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.joinToStringX
 import me.yohom.fluttify.extensions.toDartType
 
 data class Method(
@@ -53,7 +55,26 @@ data class Method(
     }
 
     fun nameWithClass(): String {
-        return "${className.replace("$", ".")}::$name${formalParams.joinToString("") { it.named }.capitalize()}"
+        return "${className.replace("$", ".")}::${signature()}"
+    }
+
+    /**
+     * 包含方法名, 命名参数和参数类型的完整签名
+     */
+    fun signature(): String {
+        return if (className.findType().methods.map { it.signatureNamed() }.filter { it == this.signatureNamed() }.size > 1) {
+            // 类内部含有相同方法名超过1个, 说明有重载, 这里需要给方法名加上类型
+            name + formalParams.joinToStringX("__", "__") { "${it.named}${it.variable.typeName.toDartType()}" }
+        } else {
+            signatureNamed()
+        }
+    }
+
+    /**
+     * 只包含方法名和命名参数部分的签名
+     */
+    fun signatureNamed(): String {
+        return name + formalParams.joinToString("") { it.named }.capitalize()
     }
 
     override fun toString(): String {
