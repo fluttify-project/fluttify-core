@@ -61,7 +61,7 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.mustNot("返回类型是嵌套数组/列表") { returnType.run { genericLevel() > 1 || (isList() && genericType().isArray()) } } }
         .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
         .filter { it.must("返回类型的父类是已知类") { returnType.findType().superType().all { it != Type.UNKNOWN_TYPE } } }
-        .distinctBy { "${it.className}${it.name}${it.formalParams.joinToString { it.variable.typeName }}" }
+        .distinctBy { it.nameWithClass() }
         .filter { println("Method::${it.name}通过Method过滤"); true }
         .toList()
 }
