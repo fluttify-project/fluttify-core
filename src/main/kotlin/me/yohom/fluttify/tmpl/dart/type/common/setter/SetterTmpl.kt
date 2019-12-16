@@ -24,7 +24,6 @@ class SetterTmpl(private val field: Field) {
                         result = "List<$result>"
                     }
                 }
-
                 result
             }
             val name = name.toDartType()

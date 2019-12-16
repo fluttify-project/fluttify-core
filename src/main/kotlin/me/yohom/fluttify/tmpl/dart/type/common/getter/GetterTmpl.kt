@@ -16,8 +16,12 @@ class GetterTmpl(private val field: Field) {
     fun dartGetter(): String {
         val typeNameWithContainer = field.variable.run {
             var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
-            for (i in 0 until genericLevel) {
+            if (isStructPointer()) {
                 result = "List<$result>"
+            } else {
+                for (i in 0 until genericLevel) {
+                    result = "List<$result>"
+                }
             }
             result
         }
@@ -37,7 +41,7 @@ class GetterTmpl(private val field: Field) {
         val result = field.variable.run {
             when {
                 jsonable() or isAliasType() -> ResultJsonableTmpl(typeNameWithContainer, platform).dartResultJsonable()
-                isList -> ResultListTmpl(typeName, platform).dartResultList()
+                isList || isStructPointer() -> ResultListTmpl(typeName, platform).dartResultList()
                 isEnum() -> ResultEnumTmpl(typeName).dartResultEnum()
                 typeName.isVoid() -> ResultVoidTmpl().dartResultVoid()
                 else -> ResultRefTmpl(typeName).dartResultRef()
@@ -46,7 +50,7 @@ class GetterTmpl(private val field: Field) {
         val nativeObjectPool = field.variable.run {
             when {
                 jsonable() or isEnum() or isAliasType() -> ""
-                isList -> "kNativeObjectPool.addAll($result);"
+                isList || isStructPointer() -> "kNativeObjectPool.addAll($result);"
                 else -> "kNativeObjectPool.add($result);"
             }
         }

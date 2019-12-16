@@ -185,6 +185,10 @@ open class Type : IPlatform, IScope {
         return typeType == TypeType.Struct
     }
 
+    fun isStructPointer(): Boolean {
+        return typeType == TypeType.Struct && name.pack().endsWith("*")
+    }
+
     fun isInterface(): Boolean {
         return typeType == TypeType.Interface
     }

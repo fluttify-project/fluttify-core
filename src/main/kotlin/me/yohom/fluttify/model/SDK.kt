@@ -71,11 +71,7 @@ class SDK : IPlatform {
                         .map { it.trim().split(" ") }
                         .map {
                             Parameter(
-                                variable = Variable(
-                                    it[0],
-                                    it[1],
-                                    platform = Platform.General
-                                ),
+                                variable = Variable(it[0], it[1], platform = Platform.General),
                                 platform = Platform.General
                             )
                         }
