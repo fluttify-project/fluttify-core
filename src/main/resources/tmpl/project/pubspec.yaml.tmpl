@@ -5,13 +5,14 @@ author: #__author__# <#__email__#>
 homepage: #__homepage__#
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
+  flutter: ">=1.12.13 <2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  foundation_fluttify: #__foundation_version__#
   #__plugin_dependency__#
+  #__foundation_version__#
 
 dev_dependencies:
   flutter_test:
@@ -19,5 +20,9 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: #__android_identifier__#
-    pluginClass: #__plugin_class__#
+    platforms:
+      android:
+        package: #__android_identifier__#
+        pluginClass: #__plugin_class__#
+      ios:
+        pluginClass: #__plugin_class__#
