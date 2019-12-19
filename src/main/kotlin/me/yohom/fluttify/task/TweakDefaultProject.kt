@@ -62,11 +62,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
-                    .replace(
-                        "#__foundation_version__#",
-                        // 如果没有间接依赖其他fluttify插件, 那么加上foundation, 否则使用其他fluttify插件带有的foundation即可.
-                        if (ext.pluginDependencies.isEmpty()) "foundation_fluttify: ${ext.foundationVersion}" else ""
-                    )
+                    .replace("#__foundation_version__#", ext.foundationVersion)
                     .replaceParagraph(
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")
