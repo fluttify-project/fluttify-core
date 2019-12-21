@@ -1,7 +1,0 @@
-Future<#__class_name__#> create#__creator_name__#(#__formal_params__#) async {
-  final int refId = await _channel.invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
-  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
-
-  kNativeObjectPool.add(object);
-  return object;
-}

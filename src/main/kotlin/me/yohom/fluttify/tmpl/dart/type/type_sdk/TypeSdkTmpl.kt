@@ -5,6 +5,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
 //import 'dart:typed_data';
@@ -14,9 +15,10 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //class #__class_name__# extends #__super_class__# #__mixins__# {
 //  #__constants__#
+//
+//  #__creators__#
 //
 //  // generate getters
 //  #__getters__#
@@ -53,6 +55,11 @@ class TypeSdkTmpl(private val type: Type) {
 
         val constants = type.fields.filterConstants()
 
+        val creators = if (type.constructable()) {
+            CreatorTmpl(type).dartCreator()
+        } else {
+            listOf()
+        }
         val getters = type.fields
             .filterGetters()
             .map { GetterTmpl(it).dartGetter() }
@@ -71,6 +78,7 @@ class TypeSdkTmpl(private val type: Type) {
             .replace("#__super_class__#", superClass)
             .replace("#__mixins__#", mixins)
             .replaceParagraph("#__constants__#", constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" })
+            .replaceParagraph("#__creators__#", creators.joinToString("\n"))
             .replaceParagraph("#__getters__#", getters.joinToString("\n"))
             .replaceParagraph("#__setters__#", setters.joinToString("\n"))
             .replaceParagraph("#__methods__#", methods.joinToString("\n"))
