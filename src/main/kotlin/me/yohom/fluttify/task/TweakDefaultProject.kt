@@ -33,7 +33,9 @@ open class TweakDefaultProject : FluttifyTask() {
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
-                        ext.pluginDependencies.map { "compileOnly rootProject.findProject(\":${it.key}\")" }.joinToString("\n")
+                        ext.pluginDependencies
+                            .map { "compileOnly rootProject.findProject(\":${it.key}\")" }
+                            .joinToString("\n")
                     )
             )
 
@@ -57,6 +59,9 @@ open class TweakDefaultProject : FluttifyTask() {
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "s.dependency '${it.key}'" }.joinToString("\n")
                     )
+                    .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
+                    .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString { "\"$it\"" })
+                    .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
             )
 
         "${outputProjectPath}/pubspec.yaml"

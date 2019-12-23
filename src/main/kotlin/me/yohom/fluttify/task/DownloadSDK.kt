@@ -9,13 +9,15 @@ import java.io.File
 open class DownloadAndroidSDK : FluttifyTask() {
     @TaskAction
     fun process() {
-        project.repositories.jcenter()
-        val config = project.configurations.create("targetJar")
-        val dep = project.dependencies.create(ext.androidArchiveCoordinate)
-        config.dependencies.add(dep)
-        if (config.files.isNotEmpty()) {
-            config.files.first().run {
-                FileUtils.copyFile(this, "${ext.archiveDir}/${name}".file())
+        if (ext.androidArchiveCoordinate.isNotEmpty()) {
+            project.repositories.jcenter()
+            val config = project.configurations.create("targetJar")
+            val dep = project.dependencies.create(ext.androidArchiveCoordinate)
+            config.dependencies.add(dep)
+            if (config.files.isNotEmpty()) {
+                config.files.first().run {
+                    FileUtils.copyFile(this, "${ext.archiveDir}/${name}".file())
+                }
             }
         }
     }
