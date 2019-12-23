@@ -1,7 +1,6 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.file
-import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
@@ -13,17 +12,16 @@ import java.io.InputStreamReader
  */
 open class UnzipArchive : FluttifyTask() {
 
-    @InputFiles
-    var archiveFiles: List<File> = ext.archiveDir
-        .file()
-        .listFiles()
-        ?.filter { it.name.run { endsWith("jar") || endsWith("aar") } } ?: listOf()
-
     @OutputDirectory
     var unzippedJarDir: File = "${ext.archiveDir}unzip/".file()
 
     @TaskAction
     fun unzip() {
+        val archiveFiles: List<File> = ext.archiveDir
+            .file()
+            .listFiles()
+            ?.filter { it.name.run { endsWith("jar") || endsWith("aar") } } ?: listOf()
+
         if (archiveFiles.isEmpty()) return
 
         archiveFiles.forEach {

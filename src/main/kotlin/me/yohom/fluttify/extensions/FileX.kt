@@ -4,12 +4,27 @@ import me.yohom.fluttify.JAVA_FILE
 import me.yohom.fluttify.OBJC_FILE
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.model.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.IOFileFilter
+import org.apache.commons.io.filefilter.TrueFileFilter
 import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 // todo 以嵌套/多个类的前提生成结构
 /**
@@ -576,8 +591,89 @@ fun OBJC_FILE.objcType(): List<Type> {
     return result
 }
 
-fun File.iterate(fileSuffix: String?, recursive: Boolean = true, forEach: (File) -> Unit) {
+fun File.iterate(
+    fileSuffix: String?,
+    recursive: Boolean = true,
+    fileFilter: IOFileFilter = TrueFileFilter.INSTANCE,
+    forEach: (File) -> Unit
+) {
     FileUtils
         .iterateFiles(this, arrayOf(fileSuffix), recursive)
-        .forEach { forEach(it) }
+        .forEach { if (fileFilter.accept(it)) forEach(it) }
+}
+
+@Throws(Exception::class)
+fun File.downloadFrom(url: String) {
+    println("开始从 $url 下载")
+    // 忽略HTTPS效验
+    var sslContext: SSLContext? = null
+    val manager = object : X509TrustManager {
+        @Throws(CertificateException::class)
+        override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+        }
+
+        @Throws(CertificateException::class)
+        override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+        }
+
+        override fun getAcceptedIssuers(): Array<X509Certificate?> {
+            return arrayOfNulls(0)
+        }
+    }
+    val trustAllCerts: Array<TrustManager> = arrayOf(manager)
+    try {
+        sslContext = SSLContext.getInstance("SSL")
+        sslContext!!.init(null, trustAllCerts, java.security.SecureRandom())
+    } catch (e: NoSuchAlgorithmException) {
+        e.printStackTrace()
+    } catch (e: KeyManagementException) {
+        e.printStackTrace()
+    }
+
+    val httpClient: OkHttpClient = OkHttpClient.Builder()
+        // 忽略HTTPS效验
+        .sslSocketFactory(sslContext!!.socketFactory, manager)
+        .callTimeout(20, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.MINUTES)
+        .retryOnConnectionFailure(true)
+        .hostnameVerifier { _, _ -> true }
+        .build()
+
+    val request: Request = Request.Builder()
+        .url(url)
+        .build()
+
+    val response = httpClient.newCall(request).execute()
+
+    var inStream: InputStream? = null
+    val buffer = ByteArray(2048)
+    var length: Int
+    var outStream: FileOutputStream? = null
+
+    try {
+        val total = response.body()?.contentLength()
+        if (total != (-1).toLong()) {
+            var current: Long = 0
+            inStream = response.body()?.byteStream()
+            outStream = FileOutputStream(this)
+            do {
+                length = inStream?.read(buffer) ?: -1
+                if (length != -1) {
+                    current += length.toLong()
+                    outStream.write(buffer, 0, length)
+                }
+            } while (length != -1)
+            outStream.flush()
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+        throw e
+    } finally {
+        try {
+            inStream?.close()
+            outStream?.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 }

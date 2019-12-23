@@ -28,6 +28,9 @@ open class TweakDefaultProject : FluttifyTask() {
             .writeText(
                 buildGradleTmpl
                     .replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}")
+                    .replace("#__sdk_dependency__#", ext.androidArchiveCoordinate.run {
+                        if (isNotBlank()) "implementation '$this'" else ""
+                    })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "compileOnly rootProject.findProject(\":${it.key}\")" }.joinToString("\n")
@@ -47,6 +50,9 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
+                    .replace("#__sdk_dependency__#", ext.iosArchiveCoordinate.run {
+                        if (isNotBlank()) "s.dependency $this" else ""
+                    })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "s.dependency '${it.key}'" }.joinToString("\n")

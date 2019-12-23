@@ -93,6 +93,16 @@ open class FluttifyExtension {
      */
     var permissions: Map<String, String> = mapOf()
 
+    /**
+     * android端远程依赖坐标 形如`com.amap.api:3dmap:7.1.0`
+     */
+    var androidArchiveCoordinate: String = ""
+
+    /**
+     * ios端远程依赖坐标 形如`'AMap3DMap', '~> 7.1'`
+     */
+    var iosArchiveCoordinate: String = ""
+
     val androidTransitiveDependencies get() = transitiveDependencies["android"] ?: listOf()
 
     val iOSTransitiveFramework: List<String>

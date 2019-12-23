@@ -11,10 +11,13 @@ import java.io.File
 open class AndroidAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
-        val archiveDir: File = ext.archiveDir.file()
-        val libDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
+        // 只有当不是远程依赖时才需要拷贝
+        if (ext.androidArchiveCoordinate.isBlank()) {
+            val archiveDir: File = ext.archiveDir.file()
+            val libDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
 
-        FileUtils.copyDirectory(archiveDir, libDir) { it.name != "unzip" && it.length() > 0 }
+            FileUtils.copyDirectory(archiveDir, libDir) { it.name != "unzip" && it.length() > 0 }
+        }
     }
 }
 
@@ -24,19 +27,22 @@ open class AndroidAddDependency : FluttifyTask() {
 open class IOSAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
-        val frameworkDir: File = ext.frameworkDir.file()
-        val targetDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
+        // 只有当不是远程依赖时才需要拷贝
+        if (ext.iosArchiveCoordinate.isBlank()) {
+            val frameworkDir: File = ext.frameworkDir.file()
+            val targetDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
 
-        // 添加间接依赖到podspec中
-        val podspecFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/${ext.outputProjectName}.podspec".file()
-        podspecFile.readText()
-            .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
-            .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString { "\"$it\"" })
-            .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
-            .run { podspecFile.writeText(this) }
+            // 添加间接依赖到podspec中
+            val podspecFile =
+                "${project.projectDir}/output-project/${ext.outputProjectName}/ios/${ext.outputProjectName}.podspec".file()
+            podspecFile.readText()
+                .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
+                .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString { "\"$it\"" })
+                .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
+                .run { podspecFile.writeText(this) }
 
-        // 添加framework到工程中
-        FileUtils.copyDirectory(frameworkDir, targetDir)
+            // 添加framework到工程中
+            FileUtils.copyDirectory(frameworkDir, targetDir)
+        }
     }
 }

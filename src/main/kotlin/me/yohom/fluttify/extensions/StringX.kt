@@ -486,3 +486,15 @@ fun String.replaceParagraph(oldValue: String, newValue: String): String {
             it
     }
 }
+
+fun String.stripQuotes(): String {
+    return replace("\"", "").replace("'", "")
+}
+
+fun String.isAndroidArchive(): Boolean {
+    return endsWith("jar") || endsWith("aar")
+}
+
+fun String.isIOSArchive(): Boolean {
+    return endsWith("framework")
+}

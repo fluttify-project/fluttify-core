@@ -14,6 +14,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         ext.frameworkDir = "${project.projectDir}/sdk/ios/"
 
         // 必需任务 顺序已经排列好
+        val downloadAndroidSDK = project.tasks.create("downloadAndroidSDK", DownloadAndroidSDK::class.java)
+        val downloadIOSSDK = project.tasks.create("downloadIOSSDK", DownloadIOSSDK::class.java)
         val unzip = project.tasks.create("unzipArchive", UnzipArchive::class.java)
         val decompileClass = project.tasks.create("decompileClass", DecompileClass::class.java)
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
@@ -35,12 +37,14 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
+        // assembly
+        project.task("fluttify").apply { group = "fluttify" }.dependsOn(export)
+
         // 导出
         export.dependsOn(iOSObjcInterface, androidJavaInterface)
 
         // 原生接口
         iOSObjcInterface.dependsOn(iOSDartInterface)
-//        androidKotlinInterface.dependsOn(androidDartInterface)
         androidJavaInterface.dependsOn(androidDartInterface)
 
         // dart接口
@@ -64,7 +68,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         // 反编译jar
         decompileClass.dependsOn(unzip)
 
-        // assembly
-        project.task("fluttify").apply { group = "fluttify" }.dependsOn(export)
+        // 下载SDK
+        unzip.dependsOn(downloadAndroidSDK)
+        unzip.dependsOn(downloadIOSSDK)
     }
 }

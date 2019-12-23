@@ -49,6 +49,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
     compileOnly rootProject.findProject(":foundation_fluttify")
-    //  flutter插件依赖
+    // flutter plugin dependency
     #__plugin_dependency__#
+    // sdk dependency
+    #__sdk_dependency__#
 }
