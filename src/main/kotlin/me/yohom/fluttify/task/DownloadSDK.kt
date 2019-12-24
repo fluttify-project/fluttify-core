@@ -68,12 +68,15 @@ open class DownloadIOSSDK : FluttifyTask() {
                 targetVersion?.run {
                     val podspecJson = File("$this/$archiveName.podspec.json").readText().fromJson<Map<String, Any>>()
                     val source: Map<String, String> = podspecJson["source"] as Map<String, String>
-                    val archiveFile = "${ext.frameworkDir}/ARCHIVE.zip".file()
-                    source["http"]?.run { archiveFile.downloadFrom(this) }
-                    // 下载完成后解压
-                    ZipUtil.unpack(archiveFile, archiveFile.parentFile)
-                    // 删除压缩文件
-                    archiveFile.delete()
+                    source["http"]?.run {
+                        val archiveFile = "${ext.frameworkDir}/ARCHIVE.zip".file()
+
+                        archiveFile.downloadFrom(this)
+                        // 下载完成后解压
+                        ZipUtil.unpack(archiveFile, archiveFile.parentFile)
+                        // 删除压缩文件
+                        archiveFile.delete()
+                    }
                 }
             }
         }
