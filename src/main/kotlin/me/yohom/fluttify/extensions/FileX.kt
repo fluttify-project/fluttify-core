@@ -633,8 +633,8 @@ fun File.downloadFrom(url: String) {
     val httpClient: OkHttpClient = OkHttpClient.Builder()
         // 忽略HTTPS效验
         .sslSocketFactory(sslContext!!.socketFactory, manager)
-        .callTimeout(20, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.MINUTES)
+        .callTimeout(20, TimeUnit.MINUTES)
+        .readTimeout(20, TimeUnit.MINUTES)
         .retryOnConnectionFailure(true)
         .hostnameVerifier { _, _ -> true }
         .build()
