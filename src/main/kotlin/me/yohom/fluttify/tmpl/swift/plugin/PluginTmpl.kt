@@ -61,13 +61,13 @@ class PluginTmpl(
 
     fun swiftPlugin(): String {
         // 包名 iOS端是不需要的其实
-        val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
+        val packageName = "${ext.org}.${ext.projectName}"
 
         // 插件名称
-        val pluginClassName = ext.outputProjectName.underscore2Camel(true)
+        val pluginClassName = ext.projectName.underscore2Camel(true)
 
         // method channel
-        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
+        val methodChannel = "${ext.org}/${ext.projectName}"
 
         // 分支们 分为三种
         // 1. 普通方法

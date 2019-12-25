@@ -442,7 +442,9 @@ fun String.objc2SwiftSpec(): String {
  *     返回文件
  */
 fun PATH.file(): File {
-    val file = File(this)
+    // 如果不小心多加了一个`/`, 那么替换一下
+    val cleanPath = replace("//", "/")
+    val file = File(cleanPath)
     if (!file.exists()) {
         if (endsWith("/")) {
             file.mkdirs()

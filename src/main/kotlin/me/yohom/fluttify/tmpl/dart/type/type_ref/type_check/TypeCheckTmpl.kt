@@ -12,7 +12,7 @@ class TypeCheckTmpl(private val type: Type, private val ext: FluttifyExtension) 
     private val tmpl = this::class.java.getResource("/tmpl/dart/type_check.mtd.dart.tmpl").readText()
 
     fun dartTypeCheck(): String {
-        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
+        val methodChannel = "${ext.org}/${ext.projectName}"
         return tmpl
             .replace("#__type_name__#", type.name.toUnderscore())
             .replace("#__method_channel__#", methodChannel)

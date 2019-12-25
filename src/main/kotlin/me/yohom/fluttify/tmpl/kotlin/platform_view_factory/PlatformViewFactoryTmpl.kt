@@ -48,7 +48,7 @@ class PlatformViewFactoryTmpl(private val viewType: Type) {
         this::class.java.getResource("/tmpl/kotlin/platform_view_factory.kt.tmpl").readText()
 
     fun kotlinPlatformViewFactory(): String {
-        val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
+        val packageName = "${ext.org}.${ext.projectName}"
         val factoryName= viewType.name.simpleName()
         val handlers = viewType.methods.filterMethod().joinToString("\n,") { HandlerMethodTmpl(it).kotlinHandlerMethod() }
         val nativeView = viewType.name

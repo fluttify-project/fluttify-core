@@ -15,7 +15,7 @@ internal class RegisterPlatformViewTmpl(
 
     fun kotlinRegisterPlatformView(): String {
         return tmpl
-            .replace("#__view_type__#", "${ext.outputOrg}/${viewType.name}")
+            .replace("#__view_type__#", "${ext.org}/${viewType.name}")
             .replace("#__factory_name__#", viewType.name.simpleName())
     }
 }

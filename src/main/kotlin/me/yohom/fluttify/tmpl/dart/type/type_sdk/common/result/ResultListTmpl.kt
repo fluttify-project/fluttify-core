@@ -23,6 +23,6 @@ class ResultListTmpl(private val genericType: TYPE_NAME, private val platform: P
                 .genericType()
                 .toDartType()
                 .run { if (isEmpty()) { platform.objectType() } else { this } })
-            .replace("#__tag__#", ext.outputProjectName)
+            .replace("#__tag__#", ext.projectName)
     }
 }

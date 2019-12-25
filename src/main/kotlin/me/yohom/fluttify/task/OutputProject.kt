@@ -10,11 +10,11 @@ import java.io.InputStreamReader
 open class OutputProject : FluttifyTask() {
     @TaskAction
     fun process() {
-        val outputProjectPath = "${project.projectDir}/output-project/${ext.outputProjectName}"
+        val outputProjectPath = "${project.projectDir}/output-project/${ext.projectName}"
 
         val process = Runtime
             .getRuntime()
-            .exec("flutter create --offline --no-pub -a ${ext.androidLanguage} -i ${ext.iOSLanguage} --androidx --template plugin --org ${ext.outputOrg} $outputProjectPath")
+            .exec("flutter create --offline --no-pub -a ${ext.android.language} -i ${ext.ios.language} --androidx --template plugin --org ${ext.org} $outputProjectPath")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
     }

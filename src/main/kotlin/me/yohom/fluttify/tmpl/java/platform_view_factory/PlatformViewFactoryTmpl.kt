@@ -82,9 +82,9 @@ class PlatformViewFactoryTmpl(private val viewType: Type) {
         this::class.java.getResource("/tmpl/java/platform_view_factory.java.tmpl").readText()
 
     fun javaPlatformViewFactory(): String {
-        val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
+        val packageName = "${ext.org}.${ext.projectName}"
         val factoryName = viewType.name.simpleName()
-        val pluginClass = "${ext.outputProjectName.underscore2Camel()}Plugin"
+        val pluginClass = "${ext.projectName.underscore2Camel()}Plugin"
         val handlers =
             viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it).javaHandlerMethod() }
         val nativeView = viewType.name

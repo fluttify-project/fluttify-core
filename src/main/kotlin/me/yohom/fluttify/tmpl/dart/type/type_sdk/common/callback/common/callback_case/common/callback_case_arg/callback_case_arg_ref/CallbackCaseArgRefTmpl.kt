@@ -19,6 +19,6 @@ class CallbackCaseArgRefTmpl(private val param: Parameter) {
                 .run { firstConcretSubtype()?.name ?: name }
                 .toDartType())
             .replace("#__arg_name__#", param.variable.name.depointer())
-            .replace("#__plugin_name__#", ext.outputProjectName)
+            .replace("#__plugin_name__#", ext.projectName)
     }
 }

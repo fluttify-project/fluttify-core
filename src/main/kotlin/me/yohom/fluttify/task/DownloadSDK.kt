@@ -1,6 +1,9 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.downloadFrom
+import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.fromJson
+import me.yohom.fluttify.extensions.isIOSArchive
 import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.TaskAction
 import org.zeroturnaround.zip.ZipUtil
@@ -9,14 +12,14 @@ import java.io.File
 open class DownloadAndroidSDK : FluttifyTask() {
     @TaskAction
     fun process() {
-        if (ext.androidArchiveCoordinate.isNotEmpty()) {
+        if (ext.android.remote.run { "$org$name$version" }.isNotEmpty()) {
             project.repositories.jcenter()
             val config = project.configurations.create("targetJar")
-            val dep = project.dependencies.create(ext.androidArchiveCoordinate)
+            val dep = project.dependencies.create(ext.android.remote.run { "$org:$name:$version" })
             config.dependencies.add(dep)
             if (config.files.isNotEmpty()) {
                 config.files.first().run {
-                    FileUtils.copyFile(this, "${ext.archiveDir}/${name}".file())
+                    FileUtils.copyFile(this, "${ext.android.libDir}/${name}".file())
                 }
             }
         }
@@ -26,18 +29,13 @@ open class DownloadAndroidSDK : FluttifyTask() {
 open class DownloadIOSSDK : FluttifyTask() {
     @TaskAction
     fun process() {
-        ext.frameworkDir.file().run {
-            if (list()?.none { it.isIOSArchive() } == true && ext.iosArchiveCoordinate.isNotEmpty()) {
+        ext.ios.libDir.file().run {
+            if (list()?.none { it.isIOSArchive() } == true && ext.ios.remote.run { "$name$version" }.isNotEmpty()) {
                 var iosArchiveSpec: File? = null
 
                 val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
-                val archiveName = ext.iosArchiveCoordinate.split(",").map { it.stripQuotes().trim() }[0]
-                val archiveVersion = try {
-                    ext.iosArchiveCoordinate.split(",").map { it.stripQuotes().trim() }[1]
-                } catch (e: Exception) {
-                    ""
-                }.removePrefix("~>").trim()
-                // 找出目标pod所在的文件
+                val archiveName = ext.ios.remote.name
+                val archiveVersion = ext.ios.remote.version                // 找出目标pod所在的文件
                 // cocoapods的Specs文件夹分为三层0x0-0xf的文件夹, 最后一层文件夹下的分别存放着所有的pod, 找到目标pod后再根据版本号找到目标podspec.json
                 // 解析出下载地址后进行下载
                 val l0Files = specDir.listFiles()
@@ -69,7 +67,7 @@ open class DownloadIOSSDK : FluttifyTask() {
                     val podspecJson = File("$this/$archiveName.podspec.json").readText().fromJson<Map<String, Any>>()
                     val source: Map<String, String> = podspecJson["source"] as Map<String, String>
                     source["http"]?.run {
-                        val archiveFile = "${ext.frameworkDir}/ARCHIVE.zip".file()
+                        val archiveFile = "${ext.ios.libDir}/ARCHIVE.zip".file()
 
                         archiveFile.downloadFrom(this)
                         // 下载完成后解压

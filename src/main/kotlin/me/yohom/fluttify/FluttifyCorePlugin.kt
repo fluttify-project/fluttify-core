@@ -9,9 +9,9 @@ lateinit var ext: FluttifyExtension
 // todo 可以提供一些启动Activity的方法, 就是以`迁移原生平台的代码`为场景的功能
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        ext = project.extensions.create("fluttify", FluttifyExtension::class.java)
-        ext.archiveDir = "${project.projectDir}/sdk/android/"
-        ext.frameworkDir = "${project.projectDir}/sdk/ios/"
+        ext = project.extensions.create("fluttify", FluttifyExtension::class.java, project.objects)
+        ext.android.libDir = "${project.projectDir}/sdk/android/"
+        ext.ios.libDir = "${project.projectDir}/sdk/ios/"
 
         // 必需任务 顺序已经排列好
         val downloadAndroidSDK = project.tasks.create("downloadAndroidSDK", DownloadAndroidSDK::class.java)

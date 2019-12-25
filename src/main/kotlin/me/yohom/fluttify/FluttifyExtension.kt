@@ -1,47 +1,24 @@
 package me.yohom.fluttify
 
-// todo 配置信息里再加一个元信息的配置 比如Android的manifest文件和ios的plist文件的配置
-open class FluttifyExtension {
+import org.gradle.api.Action
+import org.gradle.api.model.ObjectFactory
+import javax.inject.Inject
+
+open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
-     * jar/aar路径 会在FluttifyCorePlugin创建的时候赋值
+     * 项目名称
      */
-    var archiveDir: String = ""
+    var projectName: String = ""
 
     /**
-     * framework路径 会在FluttifyCorePlugin创建的时候赋值
+     * 组织名称
      */
-    var frameworkDir: String = ""
+    var org: String = ""
 
     /**
-     * iOS间接依赖 包括前缀和后缀名 形如 xx.framework libxx.a libxx.tbd(tbd是代替dylib的动态库)
-     * android间接依赖 maven坐标全名 形如 org.antlr:antlr4-runtime:4.7.2
+     * 描述
      */
-    var transitiveDependencies = mapOf<String, List<String>>()
-
-    /**
-     * 生成工程的组织名
-     */
-    var outputOrg: String = ""
-
-    /**
-     * 生成工程名称
-     */
-    var outputProjectName: String = ""
-
-    /**
-     * android工程输出语言
-     */
-    var androidLanguage: String = "java"
-
-    /**
-     * ios工程输出语言
-     */
-    var iOSLanguage: String = "objc"
-
-    /**
-     * 插件描述
-     */
-    var desc: String = "A new fluttify plugin."
+    var desc: String = ""
 
     /**
      * 作者
@@ -49,85 +26,167 @@ open class FluttifyExtension {
     var author: String = ""
 
     /**
-     * 作者邮箱
+     * 邮箱地址
      */
     var email: String = ""
 
     /**
-     * 项目主页
+     * 主页
      */
     var homepage: String = ""
 
     /**
-     * Fluttify基础库版本 默认值最好跟随foundation_fluttify的更新而更新
+     * foundation版本
      */
-    var foundationVersion: String = "^0.1.0"
+    var foundationVersion: String = ""
 
     /**
-     * 插件依赖 <名称, 版本>
+     * 插件依赖
      */
     var pluginDependencies: Map<String, String> = mapOf()
 
     /**
-     * 排除生成的iOS类名
+     * android端配置
      */
-    var excludeIOSClasses: List<String> = listOf()
+    var android: PlatformSpec = objectFactory.newInstance(PlatformSpec::class.java)
+
+    fun android(action: Action<PlatformSpec>) {
+        action.execute(android)
+    }
 
     /**
-     * 排除生成的Android类名
+     * ios端配置
      */
-    var excludeAndroidClasses: List<String> = listOf()
+    var ios: PlatformSpec = objectFactory.newInstance(PlatformSpec::class.java)
 
-    /**
-     * 排除生成的iOS方法
-     */
-    var excludeIOSMethods: List<String> = listOf()
-
-    /**
-     * 排除生成的Android方法
-     */
-    var excludeAndroidMethods: List<String> = listOf()
-
-    /**
-     * 声明权限 <权限名称, 申请理由> 暂时不做
-     */
-    var permissions: Map<String, String> = mapOf()
-
-    /**
-     * android端远程依赖坐标 形如`com.amap.api:3dmap:7.1.0`
-     */
-    var androidArchiveCoordinate: String = ""
-
-    /**
-     * ios端远程依赖坐标 形如`'AMap3DMap', '~> 7.1'`
-     */
-    var iosArchiveCoordinate: String = ""
-
-    val androidTransitiveDependencies get() = transitiveDependencies["android"] ?: listOf()
+    fun ios(action: Action<PlatformSpec>) {
+        action.execute(ios)
+    }
 
     val iOSTransitiveFramework: List<String>
         get() {
-            return transitiveDependencies["iOS"]
-                ?.filter { it.endsWith(".framework") }
-                ?.map { it.removeSuffix(".framework") }
-                ?: listOf()
+            return ios.local.transitiveDependencies
+                .filter { it.endsWith(".framework") }
+                .map { it.removeSuffix(".framework") }
         }
 
     val iOSTransitiveTbd: List<String>
         get() {
-            return transitiveDependencies["iOS"]
-                ?.filter { it.startsWith("lib") && it.endsWith(".tbd") }
-                ?.map { it.removePrefix("lib").removeSuffix(".tbd") }
-                ?: listOf()
+            return ios.local.transitiveDependencies
+                .filter { it.startsWith("lib") && it.endsWith(".tbd") }
+                .map { it.removePrefix("lib").removeSuffix(".tbd") }
         }
 
     val iOSResource: List<String>
         get() {
-            return transitiveDependencies["iOS"]
-                ?.filter { it.endsWith(".bundle") }
-                ?: listOf()
+            return ios.local.transitiveDependencies.filter { it.endsWith(".bundle") }
         }
 
     val methodChannelName: String
-        get() = "${outputOrg}/${outputProjectName}"
+        get() = "$org/$projectName"
+
+    override fun toString(): String {
+        return "Extension(projectName='$projectName', org='$org', desc='$desc', author='$author', email='$email', homepage='$homepage', foundationVersion='$foundationVersion', pluginDependencies='$pluginDependencies', android=$android, ios=$ios)"
+    }
+}
+
+open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
+    /**
+     * 实现语言
+     */
+    var language: String = ""
+
+    /**
+     * library所在路径
+     */
+    var libDir: String = ""
+
+    /**
+     * 远程依赖配置
+     */
+    val remote: Remote = objectFactory.newInstance(Remote::class.java)
+
+    fun remote(action: Action<Remote>) {
+        action.execute(remote)
+    }
+
+    /**
+     * 本地依赖配置
+     */
+    val local: Local = objectFactory.newInstance(Local::class.java)
+
+    fun local(action: Action<Local>) {
+        action.execute(local)
+    }
+
+    /**
+     * 排除的成员
+     */
+    val exclude: Exclude = objectFactory.newInstance(Exclude::class.java)
+
+    fun exclude(action: Action<Exclude>) {
+        action.execute(exclude)
+    }
+
+    override fun toString(): String {
+        return "PlatformSpec(language='$language', libDir='$libDir', remote=$remote, local=$local, exclude=$exclude)"
+    }
+}
+
+open class Exclude {
+    /**
+     * 排除的类
+     */
+    var classes: List<String> = listOf()
+
+    /**
+     * 排除的方法
+     */
+    var methods: List<String> = listOf()
+
+    override fun toString(): String {
+        return "Exclude(classes=$classes, methods=$methods)"
+    }
+}
+
+open class Remote {
+    /**
+     * 组织名 ios可不填
+     */
+    var org: String = ""
+
+    /**
+     * 依赖名称
+     */
+    var name: String = ""
+
+    /**
+     * 依赖版本
+     */
+    var version: String = ""
+
+    /**
+     * android maven 坐标
+     */
+    val androidCoordinate get() = "$org:$name:$version"
+
+    /**
+     * ios pod 坐标
+     */
+    val iosCoordinate get() = "'$name', '$version'"
+
+    override fun toString(): String {
+        return "Remote(org='$org', name='$name', version='$version')"
+    }
+}
+
+open class Local {
+    /**
+     * 间接依赖
+     */
+    var transitiveDependencies = listOf<String>()
+
+    override fun toString(): String {
+        return "Local(transitiveDependencies=$transitiveDependencies)"
+    }
 }

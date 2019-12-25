@@ -15,7 +15,7 @@ open class AndroidJsonRepresentation : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
 
         // 依赖插件的jr文件们, 过滤掉没有对应fluttify工程的插件
         val dependenciesJrFiles = ext.pluginDependencies
@@ -55,7 +55,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.ios.json".file()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
 
         // 依赖插件的jr文件们, 过滤掉没有对应fluttify工程的插件
         val dependenciesJrFiles = ext.pluginDependencies

@@ -10,11 +10,11 @@ import org.gradle.api.tasks.TaskAction
 open class Export : FluttifyTask() {
     @TaskAction
     fun process() {
-        val androidDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file()
-        val iosDartSrcDir = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file()
+        val androidDartSrcDir = "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/".file()
+        val iosDartSrcDir = "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/".file()
 
-        val androidExportFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/android.export.g.dart".file()
-        val iosExportFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/ios.export.g.dart".file()
+        val androidExportFile = "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/android.export.g.dart".file()
+        val iosExportFile = "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/ios.export.g.dart".file()
 
         val androidResult = StringBuilder()
         val iosResult = StringBuilder()

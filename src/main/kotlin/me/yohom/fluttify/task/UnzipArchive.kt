@@ -13,11 +13,11 @@ import java.io.InputStreamReader
 open class UnzipArchive : FluttifyTask() {
 
     @OutputDirectory
-    var unzippedJarDir: File = "${ext.archiveDir}unzip/".file()
+    var unzippedJarDir: File = "${ext.android.libDir}/unzip/".file()
 
     @TaskAction
     fun unzip() {
-        val archiveFiles: List<File> = ext.archiveDir
+        val archiveFiles: List<File> = ext.android.libDir
             .file()
             .listFiles()
             ?.filter { it.name.run { endsWith("jar") || endsWith("aar") } } ?: listOf()
@@ -32,7 +32,7 @@ open class UnzipArchive : FluttifyTask() {
                     br.lines().forEach(::println)
                 }
                 "aar" -> {
-                    val aarUnzipDirPath = "${ext.archiveDir}/${it.nameWithoutExtension}"
+                    val aarUnzipDirPath = "${ext.android.libDir}/${it.nameWithoutExtension}"
                     // 先把aar解压在当前文件夹
                     val aarProcess = Runtime.getRuntime().exec("unzip -o ${it.absolutePath} -d $aarUnzipDirPath")
                     var br = BufferedReader(InputStreamReader(aarProcess.inputStream))

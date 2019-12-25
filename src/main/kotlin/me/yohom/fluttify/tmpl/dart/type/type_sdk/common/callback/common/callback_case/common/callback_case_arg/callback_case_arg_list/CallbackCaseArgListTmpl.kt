@@ -21,6 +21,6 @@ class CallbackCaseArgListTmpl(private val param: Parameter) {
                     this
                 } }
                 .toDartType())
-            .replace("#__plugin_name__#", ext.outputProjectName)
+            .replace("#__plugin_name__#", ext.projectName)
     }
 }

@@ -33,7 +33,7 @@ class TypeSdkTmpl(private val type: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
     fun dartClass(): String {
-        val currentPackage = ext.outputProjectName
+        val currentPackage = ext.projectName
         val className = type.name.toDartType()
         val superClass = if (type.superClass.isEmpty())
             type.platform.objectType()

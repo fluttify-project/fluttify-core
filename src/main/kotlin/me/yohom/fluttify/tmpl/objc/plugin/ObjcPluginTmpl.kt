@@ -80,10 +80,10 @@ class ObjcPluginTmpl(
 
     fun objcPlugin(): List<String> {
         // 插件名称
-        val pluginClassName = ext.outputProjectName.underscore2Camel(true)
+        val pluginClassName = ext.projectName.underscore2Camel(true)
 
         // method channel
-        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
+        val methodChannel = "${ext.org}/${ext.projectName}"
 
         val platformViewHeader = mutableListOf<String>()
         // 注册PlatformView
@@ -169,7 +169,7 @@ class ObjcPluginTmpl(
 
         return listOf(
             hTmpl
-                .replace("#__imports__#", ext.frameworkDir
+                .replace("#__imports__#", ext.ios.libDir
                     .file()
                     .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
                     ?.flatMap { framework ->

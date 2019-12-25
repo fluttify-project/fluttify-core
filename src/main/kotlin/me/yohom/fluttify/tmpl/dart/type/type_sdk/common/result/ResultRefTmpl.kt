@@ -20,6 +20,6 @@ class ResultRefTmpl(private val returnType: TYPE_NAME) {
                     .run { firstConcretSubtype()?.name ?: name }
                     .toDartType()
             )
-            .replace("#__tag__#", ext.outputProjectName)
+            .replace("#__tag__#", ext.projectName)
     }
 }

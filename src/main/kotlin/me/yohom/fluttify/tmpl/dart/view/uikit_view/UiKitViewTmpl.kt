@@ -66,10 +66,10 @@ class UiKitViewTmpl(private val viewClass: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/uikit_view.dart.tmpl").readText()
 
     fun dartUiKitView(): String {
-        val currentPackage = ext.outputProjectName
+        val currentPackage = ext.projectName
         val viewSimpleName = viewClass.name.simpleName()
         val view = viewClass.name
-        val org = ext.outputOrg
+        val org = ext.org
         val viewType = viewClass.name
 
         return tmpl

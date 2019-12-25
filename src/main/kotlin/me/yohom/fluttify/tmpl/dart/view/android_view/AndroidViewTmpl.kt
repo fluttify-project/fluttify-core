@@ -67,10 +67,10 @@ class AndroidViewTmpl(private val viewType: Type) {
     private val tmpl = this::class.java.getResource("/tmpl/dart/android_view.dart.tmpl").readText()
 
     fun dartAndroidView(): String {
-        val currentPackage = ext.outputProjectName
+        val currentPackage = ext.projectName
         val viewSimpleName = viewType.name.simpleName()
         val view = viewType.name
-        val org = ext.outputOrg
+        val org = ext.org
         val nativeView = viewType.name
 
         // 找出是否存在非Context, AttributeSet和int类型参数的构造器

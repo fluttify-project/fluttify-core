@@ -31,7 +31,6 @@ jar {
 }
 
 dependencies {
-    implementation gradleApi()
     implementation group: 'org.jboss.windup.decompiler', name: 'decompiler-fernflower', version: '4.2.1.Final'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation 'org.antlr:antlr4-runtime:4.7.2'

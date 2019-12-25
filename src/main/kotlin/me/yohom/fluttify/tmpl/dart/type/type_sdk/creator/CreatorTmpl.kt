@@ -45,7 +45,7 @@ class CreatorTmpl(private val type: Type) {
                                 else -> "${it.name}.refId"
                             }
                         })
-                        .replace("#__tag__#", ext.outputProjectName)
+                        .replace("#__tag__#", ext.projectName)
                 }
             Platform.iOS -> listOf(
                 tmpl
@@ -56,7 +56,7 @@ class CreatorTmpl(private val type: Type) {
                     .replace("#__channel_name__#", ext.methodChannelName)
                     .replace("#__separator__#", "")
                     .replace("#__args__#", "")
-                    .replace("#__tag__#", ext.outputProjectName)
+                    .replace("#__tag__#", ext.projectName)
             )
             else -> listOf()
         }

@@ -88,7 +88,7 @@ class PlatformViewFactoryTmpl(
         this::class.java.getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
 
     fun objcPlatformViewFactory(): List<String> {
-        val imports = ext.frameworkDir
+        val imports = ext.ios.libDir
             .file()
             .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
             ?.flatMap { framework ->
@@ -108,7 +108,7 @@ class PlatformViewFactoryTmpl(
             .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
             .joinToString(", ")
 
-        val plugin = ext.outputProjectName.underscore2Camel()
+        val plugin = ext.projectName.underscore2Camel()
         val getterHandlers = viewType
             .fields
             .filterGetters()

@@ -64,13 +64,13 @@ class JavaPluginTmpl(private val lib: Lib) {
 
     fun javaPlugin(): String {
         // 包名
-        val packageName = "${ext.outputOrg}.${ext.outputProjectName}"
+        val packageName = "${ext.org}.${ext.projectName}"
 
         // 插件名称
-        val pluginClassName = ext.outputProjectName.underscore2Camel(true)
+        val pluginClassName = ext.projectName.underscore2Camel(true)
 
         // method channel
-        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}"
+        val methodChannel = "${ext.org}/${ext.projectName}"
 
         // 注册PlatformView
         val registerPlatformViews = lib

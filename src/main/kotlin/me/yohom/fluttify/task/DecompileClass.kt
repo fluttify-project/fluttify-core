@@ -14,7 +14,7 @@ import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
  */
 open class DecompileClass : FluttifyTask() {
     @InputDirectory
-    val classFilesDir = "${ext.archiveDir}unzip/".file()
+    val classFilesDir = "${ext.android.libDir}/unzip/".file()
 
     @OutputDirectory
     val javaFilesDir = "${project.buildDir}/decompiled/".file()

@@ -11,7 +11,7 @@ internal class RegisterPlatformViewTmpl(private val viewType: Type) {
             .readText()
 
     fun objcRegisterPlatformView(): String {
-        val viewType = "${ext.outputOrg}/${viewType.name}"
+        val viewType = "${ext.org}/${viewType.name}"
         val factoryName = this.viewType.name.simpleName()
 
         return tmpl

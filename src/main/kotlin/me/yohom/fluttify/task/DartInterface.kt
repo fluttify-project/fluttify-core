@@ -22,11 +22,11 @@ import org.gradle.api.tasks.TaskAction
 open class AndroidDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
         val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成前先删除之前的文件
-        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/".file().deleteRecursively()
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/".file().deleteRecursively()
 
         // 处理View, 生成AndroidView
         sdk.directLibs
@@ -36,7 +36,7 @@ open class AndroidDartInterface : FluttifyTask() {
                 val dartAndroidView = AndroidViewTmpl(it).dartAndroidView()
                 val viewName = it.name.replace("$", ".").simpleName()
                 val androidViewFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/platformview/${viewName}.g.dart"
+                    "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/platformview/${viewName}.g.dart"
 
                 androidViewFile.file().writeText(dartAndroidView)
             }
@@ -58,7 +58,7 @@ open class AndroidDartInterface : FluttifyTask() {
 
                 if (resultDart.isNotBlank()) {
                     val fileName = it.name.replace("$", ".").replace(".", "/")
-                    val resultFile = "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/${fileName}.g.dart"
+                    val resultFile = "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/${fileName}.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }
@@ -70,7 +70,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .filter { it.isKnownFunction() }
             .run {
                 val functionsFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/functions.g.dart"
+                    "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/functions.g.dart"
 
                 functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
             }
@@ -91,10 +91,10 @@ open class AndroidDartInterface : FluttifyTask() {
         // 类型造型
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it, me.yohom.fluttify.ext).dartTypeCast() }
         utilTmpl
-            .replace("#__current_package__#", ext.outputProjectName)
+            .replace("#__current_package__#", ext.projectName)
             .replace("#__type_check__#", typeChecks)
             .replace("#__type_cast__#", typeCasts)
-            .run { "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/android/type_op.g.dart".file().writeText(this) }
+            .run { "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/type_op.g.dart".file().writeText(this) }
     }
 
 }
@@ -105,11 +105,11 @@ open class AndroidDartInterface : FluttifyTask() {
 open class IOSDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.ios.json".file()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
         val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成前先删除之前的文件
-        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/".file().deleteRecursively()
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/".file().deleteRecursively()
 
         // 处理View, 生成UiKitView
         sdk.directLibs
@@ -118,7 +118,7 @@ open class IOSDartInterface : FluttifyTask() {
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it).dartUiKitView()
                 val uiKitViewFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/platformview/${it.name.simpleName()}.g.dart"
+                    "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/platformview/${it.name.simpleName()}.g.dart"
 
                 uiKitViewFile.file().writeText(dartUiKitView)
             }
@@ -140,7 +140,7 @@ open class IOSDartInterface : FluttifyTask() {
 
                 if (resultDart.isNotBlank()) {
                     val resultFile =
-                        "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/${it.name.replace(
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/${it.name.replace(
                             ".",
                             "/"
                         )}.g.dart"
@@ -155,7 +155,7 @@ open class IOSDartInterface : FluttifyTask() {
             .filter { it.isKnownFunction() }
             .run {
                 val functionsFile =
-                    "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/functions.g.dart"
+                    "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/functions.g.dart"
 
                 functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
             }
@@ -176,9 +176,9 @@ open class IOSDartInterface : FluttifyTask() {
         // 类型造型
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it, me.yohom.fluttify.ext).dartTypeCast() }
         utilTmpl
-            .replace("#__current_package__#", ext.outputProjectName)
+            .replace("#__current_package__#", ext.projectName)
             .replace("#__type_check__#", typeChecks)
             .replace("#__type_cast__#", typeCasts)
-            .run { "${project.projectDir}/output-project/${ext.outputProjectName}/lib/src/ios/type_op.g.dart".file().writeText(this) }
+            .run { "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/type_op.g.dart".file().writeText(this) }
     }
 }

@@ -12,9 +12,9 @@ open class AndroidAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
         // 只有当不是远程依赖时才需要拷贝
-        if (ext.androidArchiveCoordinate.isBlank()) {
-            val archiveDir: File = ext.archiveDir.file()
-            val libDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
+        if (ext.android.remote.run { "$org$name$version" }.isBlank()) {
+            val archiveDir: File = ext.android.libDir.file()
+            val libDir: File = "${project.projectDir}/output-project/${ext.projectName}/android/libs/".file()
 
             FileUtils.copyDirectory(archiveDir, libDir) { it.name != "unzip" && it.length() > 0 }
         }
@@ -28,9 +28,9 @@ open class IOSAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
         // 只有当不是远程依赖时才需要拷贝
-        if (ext.iosArchiveCoordinate.isBlank()) {
-            val frameworkDir: File = ext.frameworkDir.file()
-            val targetDir: File = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
+        if (ext.ios.remote.run { "$name$version" }.isBlank()) {
+            val frameworkDir: File = ext.ios.libDir.file()
+            val targetDir: File = "${project.projectDir}/output-project/${ext.projectName}/ios/".file()
 
             // 添加framework到工程中
             FileUtils.copyDirectory(frameworkDir, targetDir)

@@ -23,12 +23,12 @@ open class AndroidJavaInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
         val pluginOutputFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/java/${ext.outputOrg.replace(
+            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/java/${ext.org.replace(
                 ".",
                 "/"
-            )}/${ext.outputProjectName}/${ext.outputProjectName.underscore2Camel()}Plugin.java"
+            )}/${ext.projectName}/${ext.projectName.underscore2Camel()}Plugin.java"
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
@@ -48,10 +48,10 @@ open class AndroidJavaInterface : FluttifyTask() {
                     .filter { it.isView() && !it.isObfuscated() }
                     .forEach {
                         val factoryOutputFile =
-                            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/java/${ext.outputOrg.replace(
+                            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/java/${ext.org.replace(
                                 ".",
                                 "/"
-                            )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.java".file()
+                            )}/${ext.projectName}/${it.name.simpleName()}Factory.java".file()
 
                         JavaPlatformViewFactory(it)
                             .javaPlatformViewFactory()
@@ -73,12 +73,12 @@ open class AndroidKotlinInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.android.json".file()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
         val pluginOutputFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
+            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/kotlin/${ext.org.replace(
                 ".",
                 "/"
-            )}/${ext.outputProjectName}/${ext.outputProjectName.underscore2Camel()}Plugin.kt"
+            )}/${ext.projectName}/${ext.projectName.underscore2Camel()}Plugin.kt"
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
@@ -98,10 +98,10 @@ open class AndroidKotlinInterface : FluttifyTask() {
                     .filter { it.isView() && !it.isObfuscated() }
                     .forEach {
                         val factoryOutputFile =
-                            "${project.projectDir}/output-project/${ext.outputProjectName}/android/src/main/kotlin/${ext.outputOrg.replace(
+                            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/kotlin/${ext.org.replace(
                                 ".",
                                 "/"
-                            )}/${ext.outputProjectName}/${it.name.simpleName()}Factory.kt".file()
+                            )}/${ext.projectName}/${it.name.simpleName()}Factory.kt".file()
 
                         KotlinPlatformViewFactory(it)
                             .kotlinPlatformViewFactory()
@@ -123,11 +123,11 @@ open class IOSObjcInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.outputProjectName}.ios.json".file()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
         val pluginHFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel()}Plugin.h"
+            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${ext.projectName.underscore2Camel()}Plugin.h"
         val pluginMFile =
-            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${ext.outputProjectName.underscore2Camel()}Plugin.m"
+            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${ext.projectName.underscore2Camel()}Plugin.m"
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
@@ -146,9 +146,9 @@ open class IOSObjcInterface : FluttifyTask() {
                     .filter { it.isView() && !it.isObfuscated() }
                     .forEach {
                         val factoryHFile =
-                            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.h".file()
+                            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${it.name.simpleName()}Factory.h".file()
                         val factoryMFile =
-                            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.m".file()
+                            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${it.name.simpleName()}Factory.m".file()
 
                         ObjcPlatformViewFactory(it, lib, ext)
                             .objcPlatformViewFactory()
@@ -172,7 +172,7 @@ open class IOSSwiftInterface : FluttifyTask() {
     @TaskAction
     fun process() {
 //        val pluginOutputFile =
-//            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/Swift${ext.outputProjectName.underscore2Camel()}Plugin.swift"
+//            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/Swift${ext.projectName.underscore2Camel()}Plugin.swift"
 //
 //        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
 //
@@ -190,7 +190,7 @@ open class IOSSwiftInterface : FluttifyTask() {
 //                    .filter { it.isView() }
 //                    .forEach {
 //                        val factoryOutputFile =
-//                            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/Classes/${it.name.simpleName()}Factory.swift".file()
+//                            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${it.name.simpleName()}Factory.swift".file()
 //
 //                        SwiftPlatformViewFactoryTmpl(it, lib)
 //                            .swiftPlatformViewFactory()

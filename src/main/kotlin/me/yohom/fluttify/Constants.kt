@@ -82,8 +82,8 @@ val EXCLUDE_METHODS by lazy {
         "addView",
         "removeView"
     )
-        .union(ext.excludeAndroidMethods)
-        .union(ext.excludeIOSMethods)
+        .union(ext.ios.exclude.methods)
+        .union(ext.android.exclude.methods)
         .apply { println("排除方法集合: $this") }
 }
 
@@ -92,8 +92,8 @@ val EXCLUDE_METHODS by lazy {
  */
 val EXCLUDE_TYPES by lazy {
     listOf("android.support.v4.app.Fragment", "UIViewController")
-        .union(ext.excludeIOSClasses)
-        .union(ext.excludeAndroidClasses)
+        .union(ext.ios.exclude.classes)
+        .union(ext.android.exclude.classes)
         .apply { println("排除类型集合: $this") }
 }
 

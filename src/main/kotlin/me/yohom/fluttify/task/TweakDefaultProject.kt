@@ -10,25 +10,26 @@ import org.gradle.api.tasks.TaskAction
  */
 open class TweakDefaultProject : FluttifyTask() {
 
-    private val buildGradleTmpl = when (ext.androidLanguage) {
-        "kotlin" -> this::class.java.getResource("/tmpl/project/build.gradle.kotlin.tmpl").readText()
-        "java" -> this::class.java.getResource("/tmpl/project/build.gradle.java.tmpl").readText()
-        else -> ""
-    }
+    private val buildGradleTmpl
+        get() = when (ext.android.language) {
+            "kotlin" -> this::class.java.getResource("/tmpl/project/build.gradle.kotlin.tmpl").readText()
+            "java" -> this::class.java.getResource("/tmpl/project/build.gradle.java.tmpl").readText()
+            else -> "INVALID LANGUAGE"
+        }
     private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
     private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
     private val pubSpecTmpl = this::class.java.getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
 
     @TaskAction
     fun process() {
-        val outputProjectPath = "${project.projectDir}/output-project/${ext.outputProjectName}"
+        val outputProjectPath = "${project.projectDir}/output-project/${ext.projectName}"
 
         "${outputProjectPath}/android/build.gradle"
             .file()
             .writeText(
                 buildGradleTmpl
-                    .replace("#__project_id__#", "${ext.outputOrg}.${ext.outputProjectName}")
-                    .replace("#__sdk_dependency__#", ext.androidArchiveCoordinate.run {
+                    .replace("#__project_id__#", "${ext.org}.${ext.projectName}")
+                    .replace("#__sdk_dependency__#", ext.android.remote.androidCoordinate.run {
                         if (isNotBlank()) "implementation '$this'" else ""
                     })
                     .replaceParagraph(
@@ -41,18 +42,18 @@ open class TweakDefaultProject : FluttifyTask() {
 
         "${outputProjectPath}/example/ios/Runner/Info.plist"
             .file()
-            .writeText(infoPlistTmpl.replace("#__project_name__#", ext.outputProjectName))
+            .writeText(infoPlistTmpl.replace("#__project_name__#", ext.projectName))
 
-        "${outputProjectPath}/ios/${ext.outputProjectName}.podspec"
+        "${outputProjectPath}/ios/${ext.projectName}.podspec"
             .file()
             .writeText(
                 podSpecTmpl
-                    .replace("#__project_name__#", ext.outputProjectName)
+                    .replace("#__project_name__#", ext.projectName)
                     .replace("#__desc__#", ext.desc)
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
-                    .replace("#__sdk_dependency__#", ext.iosArchiveCoordinate.run {
+                    .replace("#__sdk_dependency__#", ext.ios.remote.iosCoordinate.run {
                         if (isNotBlank()) "s.dependency $this" else ""
                     })
                     .replaceParagraph(
@@ -68,7 +69,7 @@ open class TweakDefaultProject : FluttifyTask() {
             .file()
             .writeText(
                 pubSpecTmpl
-                    .replace("#__project_name__#", ext.outputProjectName)
+                    .replace("#__project_name__#", ext.projectName)
                     .replace("#__desc__#", ext.desc)
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
@@ -82,8 +83,8 @@ open class TweakDefaultProject : FluttifyTask() {
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")
                     )
-                    .replace("#__android_identifier__#", "${ext.outputOrg}.${ext.outputProjectName}")
-                    .replace("#__plugin_class__#", "${ext.outputProjectName.underscore2Camel()}Plugin")
+                    .replace("#__android_identifier__#", "${ext.org}.${ext.projectName}")
+                    .replace("#__plugin_class__#", "${ext.projectName.underscore2Camel()}Plugin")
             )
     }
 }

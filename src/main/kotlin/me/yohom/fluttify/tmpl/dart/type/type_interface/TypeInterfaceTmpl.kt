@@ -31,7 +31,7 @@ class TypeInterfaceTmpl(
     private val tmpl = this::class.java.getResource("/tmpl/dart/interface_type.dart.tmpl").readText()
 
     fun dartInterface(): String {
-        val currentPackage = ext.outputProjectName
+        val currentPackage = ext.projectName
         val className = type.name.toDartType()
 
         val constants = type.fields.filterConstants()

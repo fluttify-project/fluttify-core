@@ -19,7 +19,7 @@ class TypeFunctionsTmpl(private val functions: List<Type>) {
 
     fun dartFunctions(): String {
         return tmpl
-            .replace("#__current_package__#", ext.outputProjectName)
+            .replace("#__current_package__#", ext.projectName)
             .replaceParagraph("#__functions__#", functions.joinToString("\n") { TypeFunctionTmpl(it).dartFunction() })
     }
 }
