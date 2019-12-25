@@ -121,6 +121,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.app.Activity"; typeType = TypeType.Class },
     Type().apply { name = "android.app.PendingIntent"; typeType = TypeType.Class },
     Type().apply { name = "android.os.Bundle"; typeType = TypeType.Class },
+    Type().apply { name = "android.os.Binder"; typeType = TypeType.Class },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class },
     Type().apply { name = "android.view.ViewGroup"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.Point"; typeType = TypeType.Class },
