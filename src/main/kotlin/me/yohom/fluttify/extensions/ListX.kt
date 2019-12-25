@@ -92,6 +92,7 @@ fun List<Field>.filterConstants(): List<Field> {
         .filter { it.must("静态field") { isStatic == true } }
         .filter { it.must("不可变变量") { isFinal == true } }
         .filter { it.variable.must("数字或字符串类型") { typeName in listOf("int", "double", "String") } }
+        .filter { it.must("有值") { value.isNotEmpty() } }
         .filter { it.mustNot("包含new关键字") { value.startsWith("new") } }
         .filter { println("Field::${it.variable.name}通过Constants过滤"); true }
         .toList()
