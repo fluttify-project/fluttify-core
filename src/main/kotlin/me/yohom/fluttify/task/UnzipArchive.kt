@@ -39,9 +39,20 @@ open class UnzipArchive : FluttifyTask() {
                     br.lines().forEach(::println)
 
                     // 然后去解压文件夹内找到classes.jar, 对它进行和普通jar一样的操作
-                    val jarProcess = Runtime.getRuntime().exec("unzip -o $aarUnzipDirPath/classes.jar -d $unzippedJarDir")
+                    val jarProcess =
+                        Runtime.getRuntime().exec("unzip -o $aarUnzipDirPath/classes.jar -d $unzippedJarDir")
                     br = BufferedReader(InputStreamReader(jarProcess.inputStream))
                     br.lines().forEach(::println)
+
+                    // 如果在libs文件夹下发现其他jar, 对它进行和普通jar一样的操作
+                    "$aarUnzipDirPath/libs/".file()
+                        .listFiles()
+                        ?.filter { file -> file.extension == "jar" }
+                        ?.forEach { jarFile ->
+                            val libsJarProcess = Runtime.getRuntime().exec("unzip -o $jarFile -d $unzippedJarDir")
+                            br = BufferedReader(InputStreamReader(libsJarProcess.inputStream))
+                            br.lines().forEach(::println)
+                        }
                 }
             }
         }
