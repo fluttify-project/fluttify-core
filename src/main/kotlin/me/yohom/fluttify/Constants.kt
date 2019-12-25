@@ -71,31 +71,32 @@ val PERMISSION_ANDROID = mapOf(
 /**
  * 忽略的方法
  */
-val EXCLUDE_METHODS by lazy {
-    listOf(
-        "toString",
-        "equals",
-        "writeToParcel",
-        "describeContents",
-        "recycle",
-        "hashCode",
-        "addView",
-        "removeView"
-    )
-        .union(ext.ios.exclude.methods)
-        .union(ext.android.exclude.methods)
-        .apply { println("排除方法集合: $this") }
-}
+val EXCLUDE_METHODS
+    get() =
+        listOf(
+            "toString",
+            "equals",
+            "writeToParcel",
+            "describeContents",
+            "recycle",
+            "hashCode",
+            "addView",
+            "removeView"
+        )
+            .union(ext.ios.exclude.methods)
+            .union(ext.android.exclude.methods)
+            .apply { println("排除方法集合: $this") }
+
 
 /**
  * 排除生成的类
  */
-val EXCLUDE_TYPES by lazy {
-    listOf("android.support.v4.app.Fragment", "UIViewController")
+val EXCLUDE_TYPES
+    get() = listOf("android.support.v4.app.Fragment", "UIViewController")
         .union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
         .apply { println("排除类型集合: $this") }
-}
+
 
 /**
  * 系统别名
