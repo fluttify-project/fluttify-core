@@ -85,7 +85,6 @@ val EXCLUDE_METHODS
         )
             .union(ext.ios.exclude.methods)
             .union(ext.android.exclude.methods)
-            .apply { println("排除方法集合: $this") }
 
 
 /**
@@ -95,7 +94,6 @@ val EXCLUDE_TYPES
     get() = listOf("android.support.v4.app.Fragment", "UIViewController")
         .union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
-        .apply { println("排除类型集合: $this") }
 
 
 /**
