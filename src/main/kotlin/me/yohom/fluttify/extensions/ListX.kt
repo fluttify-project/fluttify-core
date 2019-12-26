@@ -58,8 +58,6 @@ fun List<Field>.filterGetters(): List<Field> {
 
 /**
  * 从field中过滤出setter
- *
- * 由于getter和setter的逻辑除了只读field不生成setter外其他的都一样, 所以这里调用了getter的逻辑
  */
 fun List<Field>.filterSetters(): List<Field> {
     return asSequence()
