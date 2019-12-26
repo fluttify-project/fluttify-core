@@ -89,7 +89,7 @@ class TypeTest {
             .libs[0]
             .types
             .find { it.name == "MAGroundOverlay" }
-            ?.ancestorTypes()
+            ?.ancestorTypes
             ?.run {
                 println("结果: $this")
             }

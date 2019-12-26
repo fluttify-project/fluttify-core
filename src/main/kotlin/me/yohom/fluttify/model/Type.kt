@@ -101,6 +101,7 @@ open class Type : IPlatform, IScope {
      *
      * 包括类和接口, 因为需要递归, 而且结果是不变的, 所以这里用lazy计算, 提高性能
      */
+    @delegate:Transient
     val ancestorTypes by lazy {
         val result = mutableListOf<String>()
 
