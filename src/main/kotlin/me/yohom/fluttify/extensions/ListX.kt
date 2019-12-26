@@ -18,6 +18,21 @@ fun List<Variable>.toDartMap(
 }
 
 /**
+ * 从field中过滤出常量
+ */
+fun List<Field>.filterConstants(): List<Field> {
+    return asSequence()
+        .filter { it.must("公开field") { isPublic } }
+        .filter { it.must("静态field") { isStatic == true } }
+        .filter { it.must("不可变变量") { isFinal == true } }
+        .filter { it.variable.must("数字或字符串类型") { typeName in listOf("int", "double", "String") } }
+        .filter { it.must("有值") { value.isNotEmpty() } }
+        .filter { it.mustNot("包含new关键字") { value.startsWith("new") } }
+        .filter { println("Field::${it.variable.name}通过Constants过滤"); true }
+        .toList()
+}
+
+/**
  * 过滤出可以自动生成的方法
  */
 fun List<Method>.filterMethod(): List<Method> {
@@ -65,24 +80,10 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("返回类型是嵌套数组/列表") { returnType.run { genericLevel() > 1 || (isList() && genericType().isArray()) } } }
         .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
+        .filter { it.mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } } }
         .filter { it.must("返回类型的祖宗类是已知类") { returnType.findType().ancestorTypes.all { it.findType().isKnownType() } } }
         .distinctBy { it.nameWithClass() }
         .filter { println("Method::${it.name}通过Method过滤"); true }
-        .toList()
-}
-
-/**
- * 从field中过滤出常量
- */
-fun List<Field>.filterConstants(): List<Field> {
-    return asSequence()
-        .filter { it.must("公开field") { isPublic } }
-        .filter { it.must("静态field") { isStatic == true } }
-        .filter { it.must("不可变变量") { isFinal == true } }
-        .filter { it.variable.must("数字或字符串类型") { typeName in listOf("int", "double", "String") } }
-        .filter { it.must("有值") { value.isNotEmpty() } }
-        .filter { it.mustNot("包含new关键字") { value.startsWith("new") } }
-        .filter { println("Field::${it.variable.name}通过Constants过滤"); true }
         .toList()
 }
 
@@ -105,29 +106,19 @@ fun List<Field>.filterGetters(): List<Field> {
             }
         }
         .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
+        .filter { it.variable.mustNot("类型是排除类") { EXCLUDE_TYPES.any { it.matches(typeName) } } }
         .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
         .toList()
 }
 
 /**
  * 从field中过滤出setter
+ *
+ * 由于getter和setter的逻辑除了只读field不生成setter外其他的都一样, 所以这里调用了getter的逻辑
  */
 fun List<Field>.filterSetters(): List<Field> {
-    return asSequence()
-        .filter { it.must("公开field") { isPublic } }
+    return filterGetters()
         .filter { it.mustNot("不可改field") { isFinal } }
-        .filter { it.mustNot("静态field") { isStatic } }
-        .filter { it.variable.must("已知类型") { isKnownType() } }
-        .filter { it.variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } }
-        .filter { it.variable.must("公开类型") { typeName.findType().isPublic } }
-        .filter {
-            it.variable.must("返回类型的祖宗类是已知类") {
-                typeName.findType().ancestorTypes.all {
-                    it.findType().isKnownType()
-                }
-            }
-        }
-        .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
         .filter { println("Field::${it.variable.name}通过Setter过滤"); true }
         .toList()
 }
