@@ -202,13 +202,13 @@ fun JAVA_FILE.javaType(): Type {
         it.typeType = typeType
         it.isPublic = isPublic
         it.isAbstract = isAbstract
-        it.isInnerClass = isInnerClass
+        it.isInnerType = isInnerClass
         it.isStaticType = isStaticType
         it.genericTypes.addAll(genericTypes)
         it.constructors = constructors
         it.interfaces = interfaces
         it.name = "$packageName.$simpleName"
-        it.superClass = superClass
+        it.superType = superClass
         it.fields.addAll(fields)
         it.methods.addAll(methods)
         it.constants.addAll(enumConstants)
@@ -254,7 +254,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isAbstract = isAbstract
                         it.name = name
                         it.isStaticType = true
-                        it.superClass = superClass
+                        it.superType = superClass
                         it.interfaces = interfaces
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
@@ -287,7 +287,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isPublic = true
                         it.isAbstract = isAbstract
                         it.name = name
-                        it.superClass = superClass
+                        it.superType = superClass
                         it.isStaticType = true
                         it.interfaces = interfaces
                         it.fields.addAll(fields)
@@ -342,7 +342,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     it.isPublic = true
                     it.isAbstract = isAbstract
                     it.name = name
-                    it.superClass = superClass
+                    it.superType = superClass
                     it.isStaticType = true
                     it.fields.addAll(fields)
                     it.methods.addAll(methods)
@@ -409,7 +409,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isPublic = true
                         it.isAbstract = isAbstract
                         it.name = name
-                        it.superClass = superClass
+                        it.superType = superClass
                         it.isStaticType = true
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)

@@ -35,10 +35,10 @@ class TypeSdkTmpl(private val type: Type) {
     fun dartClass(): String {
         val currentPackage = ext.projectName
         val className = type.name.toDartType()
-        val superClass = if (type.superClass.isEmpty())
+        val superClass = if (type.superType.isEmpty())
             type.platform.objectType()
         else
-            type.superClass.toDartType()
+            type.superType.toDartType()
 
         val mixins = if (type.interfaces.isNotEmpty() && type.interfaces.none { it.findType() == Type.UNKNOWN_TYPE }) {
             // todo 使用递归处理完全, 现在只是写死了只处理了两层

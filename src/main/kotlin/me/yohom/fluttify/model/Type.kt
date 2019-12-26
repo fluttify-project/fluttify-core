@@ -39,7 +39,7 @@ open class Type : IPlatform, IScope {
     /**
      * 是否是内部类
      */
-    var isInnerClass: Boolean = false
+    var isInnerType: Boolean = false
 
     /**
      * 是否是静态(内部)类
@@ -54,7 +54,12 @@ open class Type : IPlatform, IScope {
     /**
      * 父类全名
      */
-    var superClass: String = ""
+    var superType: String = ""
+
+    /**
+     * 祖宗们
+     */
+    var ancestorTypes: List<String> = listOf()
 
     /**
      * 实现的接口全名
@@ -108,7 +113,7 @@ open class Type : IPlatform, IScope {
                 // 不能有泛型
                 && genericTypes.isEmpty()
                 // 回调类不能有超类
-                && superClass == ""
+                && superType == ""
                 && (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 // 必须没有子类
                 && !hasSubtype()
@@ -129,7 +134,7 @@ open class Type : IPlatform, IScope {
             .sdks
             .flatMap { it.libs }
             .flatMap { it.types }
-            .filter { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
+            .filter { (it.superType == name || name in it.interfaces) && !it.name.isObfuscated() }
     }
 
     fun hasConcretSubtype(): Boolean {
@@ -144,13 +149,13 @@ open class Type : IPlatform, IScope {
                 .sdks
                 .flatMap { it.libs }
                 .flatMap { it.types }
-                .firstOrNull { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
+                .firstOrNull { (it.superType == name || name in it.interfaces) && !it.name.isObfuscated() }
                 ?.firstConcretSubtype()
         }
     }
 
     fun superType() : List<Type> {
-        return listOf(superClass.findType()).union(interfaces.map { it.findType() }).toList()
+        return listOf(superType.findType()).union(interfaces.map { it.findType() }).toList()
     }
 
     fun isAlias(): Boolean {
@@ -169,9 +174,9 @@ open class Type : IPlatform, IScope {
                 && !isAlias()
                 && !isObfuscated()
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
-                && ((isInnerClass && isStaticType) || !isInnerClass)
+                && ((isInnerType && isStaticType) || !isInnerType)
                 && (constructors.any { it.isPublic } || constructors.isEmpty())
-                && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
+                && (superType.findType() != UNKNOWN_TYPE || superType == "")
                 && (constructors.any { it.formalParams.isEmpty() || it.formalParams.all { it.variable.constructable() } && it.isPublic } || constructors.isEmpty() || isJsonable)
                 // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
                 && ((platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false) || platform != Platform.iOS)
@@ -222,7 +227,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun isView(): Boolean {
-        return superClass in listOf(
+        return superType in listOf(
             "android.view.View",
             "android.view.ViewGroup",
             "android.widget.FrameLayout",
@@ -253,7 +258,7 @@ open class Type : IPlatform, IScope {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superType', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {
