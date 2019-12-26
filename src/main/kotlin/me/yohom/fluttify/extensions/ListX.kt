@@ -23,7 +23,7 @@ fun List<Variable>.toDartMap(
 fun List<Method>.filterMethod(): List<Method> {
     return asSequence()
         .filter { it.must("公开方法") { isPublic } }
-        .filter { it.mustNot("忽略方法") { name in EXCLUDE_METHODS } }
+        .filter { it.mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } } }
         .filter { it.mustNot("废弃方法") { isDeprecated } }
         .filter { it.mustNot("父类已有的方法") { name in className.superType().flatMap { it.methods }.map { it.name } } } // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
         .filter { it.must("所在类是公开类") { className.findType().isPublic } }
@@ -36,17 +36,17 @@ fun List<Method>.filterMethod(): List<Method> {
         // 不处理c指针类型参数的方法
         .filter { it.mustNot("形参含有是C指针类型") { formalParams.any { param -> param.variable.typeName.isCPointerType() } } }
         // 参数不能中含有排除的类
-        .filter { it.mustNot("形参含有排除的类") { formalParams.any { param -> param.variable.typeName.depointer() in EXCLUDE_TYPES } } }
+        .filter { it.mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.typeName.depointer()) } } } }
         .filter {
             it.mustNot("形参父类含有未知类型") {
                 formalParams
-                    .map { it.variable.typeName.findType().superClass }
+                    .map { it.variable.typeName.findType().superType }
                     .any { it.findType() == Type.UNKNOWN_TYPE }
             }
         }
         .filter {
             it.mustNot("形参父类是混淆类") {
-                formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
+                formalParams.any { it.variable.typeName.findType().superType.isObfuscated() }
             }
         }
         // 类似float*返回这样的类型的方法都暂时不处理
@@ -122,14 +122,14 @@ fun List<Type>.filterType(): List<Type> {
     return asSequence()
         .filter { it.must("已知类型") { this != Type.UNKNOWN_TYPE } }
         .filter { it.must("公开类型") { isPublic } }
-        .filter { it.must("父类是已知类型") { superClass.findType() != Type.UNKNOWN_TYPE } }
+        .filter { it.must("父类是已知类型") { superType.findType() != Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("含有泛型") { genericTypes.isNotEmpty() } }
         .filter { it.mustNot("混淆类型") { isObfuscated() } }
-        .filter { it.mustNot("忽略类型") { name in EXCLUDE_TYPES } }
-        .filter { it.mustNot("父类是忽略类型") { superClass in EXCLUDE_TYPES } }
-        .filter { it.mustNot("父类是混淆类型") { superClass.isObfuscated() } }
+        .filter { it.mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } }
+        .filter { it.mustNot("父类是忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(superType) } } }
+        .filter { it.mustNot("父类是混淆类型") { superType.isObfuscated() } }
         .filter {
-            (it.isEnum() or !it.isInnerClass or (it.constructors.any { it.isPublic } or it.constructors.isEmpty())).apply {
+            (it.isEnum() or !it.isInnerType or (it.constructors.any { it.isPublic } or it.constructors.isEmpty())).apply {
                 if (!this) println("filterType: ${it.name} 由于构造器不是全公开且是内部类 被过滤")
             }
         }

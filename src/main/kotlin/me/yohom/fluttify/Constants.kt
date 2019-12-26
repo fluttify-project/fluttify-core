@@ -73,27 +73,19 @@ val PERMISSION_ANDROID = mapOf(
  */
 val EXCLUDE_METHODS
     get() =
-        listOf(
-            "toString",
-            "equals",
-            "writeToParcel",
-            "describeContents",
-            "recycle",
-            "hashCode",
-            "addView",
-            "removeView"
-        )
+        listOf("toString", "equals", "writeToParcel", "describeContents", "recycle", "hashCode", "addView", "removeView")
             .union(ext.ios.exclude.methods)
             .union(ext.android.exclude.methods)
+            .map { Regex(it) }
 
 
 /**
  * 排除生成的类
  */
 val EXCLUDE_TYPES
-    get() = listOf("android.support.v4.app.Fragment", "UIViewController")
-        .union(ext.ios.exclude.classes)
+    get() = ext.ios.exclude.classes
         .union(ext.android.exclude.classes)
+        .map { Regex(it) }
 
 
 /**

@@ -135,12 +135,12 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
 
 open class Exclude {
     /**
-     * 排除的类
+     * 排除的类 接受正则表达式
      */
     var classes: List<String> = listOf()
 
     /**
-     * 排除的方法
+     * 排除的方法 接受正则表达式
      */
     var methods: List<String> = listOf()
 
