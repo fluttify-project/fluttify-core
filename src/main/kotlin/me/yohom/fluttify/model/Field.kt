@@ -50,7 +50,9 @@ data class Field(
         return must("公开field") { isPublic } &&
                 must("静态field") { isStatic == true } &&
                 must("不可变变量") { isFinal == true } &&
-                variable.must("数字或字符串类型") { typeName in listOf("int", "double", "String") } &&
+                variable.must("数字或字符串类型") {
+                    typeName in listOf("int", "double", "String") && (value.isNumber() || value.isString())
+                } &&
                 must("有值") { value.isNotEmpty() } &&
                 mustNot("包含new关键字") { value.startsWith("new") }
     }

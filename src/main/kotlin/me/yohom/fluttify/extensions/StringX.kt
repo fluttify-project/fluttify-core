@@ -62,6 +62,20 @@ fun TYPE_NAME.isList(): Boolean {
 }
 
 /**
+ * 是否是数字
+ */
+fun TYPE_NAME.isNumber(): Boolean {
+    return toDoubleOrNull() != null
+}
+
+/**
+ * 是否是字符串
+ */
+fun TYPE_NAME.isString(): Boolean {
+    return Regex("\"*\"").matches(this)
+}
+
+/**
  * 是否是集合类型
  */
 fun TYPE_NAME.isLinkedList(): Boolean {
