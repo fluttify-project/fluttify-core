@@ -131,9 +131,10 @@ open class Type : IPlatform, IScope {
     }
 
     fun filter(): Boolean {
-        return must("已知类型") { this != Type.UNKNOWN_TYPE } &&
+        return must("已知类型") { this != UNKNOWN_TYPE } &&
                 must("公开类型") { isPublic } &&
-                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != Type.UNKNOWN_TYPE } } &&
+                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } } &&
+                must("祖宗类全部通过过滤") { ancestorTypes.all { it.findType().filter() } } &&
                 mustNot("含有泛型") { genericTypes.isNotEmpty() } &&
                 mustNot("混淆类型") { isObfuscated() } &&
                 mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&

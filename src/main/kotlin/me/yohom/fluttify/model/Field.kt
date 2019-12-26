@@ -56,7 +56,8 @@ data class Field(
     }
 
     fun filterGetters(): Boolean {
-        return must("公开field") { isPublic } &&
+        return variable.type().filter() && // 必须先通过类型的过滤
+                must("公开field") { isPublic } &&
                 mustNot("静态field") { isStatic } &&
                 variable.must("已知类型") { isKnownType() } &&
                 variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } &&
@@ -72,7 +73,9 @@ data class Field(
     }
 
     fun filterSetter(): Boolean {
-        return filterGetters() && mustNot("不可改field") { isFinal }
+        return variable.type().filter() && // 必须先通过类型的过滤
+                filterGetters() &&
+                mustNot("不可改field") { isFinal }
     }
 
     @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("getterMethodName"))

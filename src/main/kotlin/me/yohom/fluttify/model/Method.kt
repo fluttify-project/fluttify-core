@@ -50,7 +50,9 @@ data class Method(
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
 
     fun filter(): Boolean {
-        return must("公开方法") { isPublic } &&
+        return returnType.findType().filter() && // 返回类型必须先通过类型的过滤
+                formalParams.all { it.variable.type().filter() } && // 参数类型必须先通过类型的过滤
+                must("公开方法") { isPublic } &&
                 mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } } &&
                 mustNot("废弃方法") { isDeprecated } &&
                 // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
