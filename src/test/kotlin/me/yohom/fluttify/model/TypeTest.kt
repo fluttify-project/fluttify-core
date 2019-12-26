@@ -74,4 +74,24 @@ class TypeTest {
                 println("结果: $this")
             }
     }
+
+    @Test
+    fun ancestorTypes() {
+//        iosMapSDK
+//            .libs[1]
+//            .types
+//            .find { it.name == "MAAnnotation" }
+//            ?.firstConcretSubtype()
+//            ?.run {
+//                println("结果: $this")
+//            }
+        Amap.iosMapSDK
+            .libs[0]
+            .types
+            .find { it.name == "MAGroundOverlay" }
+            ?.ancestorTypes()
+            ?.run {
+                println("结果: $this")
+            }
+    }
 }

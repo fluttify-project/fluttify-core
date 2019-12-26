@@ -25,7 +25,7 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.must("公开方法") { isPublic } }
         .filter { it.mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } } }
         .filter { it.mustNot("废弃方法") { isDeprecated } }
-        .filter { it.mustNot("父类已有的方法") { name in className.superType().flatMap { it.methods }.map { it.name } } } // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
+        .filter { it.mustNot("父类已有的方法") { name in className.superTypes().flatMap { it.methods }.map { it.name } } } // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
         .filter { it.must("所在类是公开类") { className.findType().isPublic } }
         .filter { it.must("所在类是静态类型") { className.findType().isStaticType } }
         .filter { it.must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } }
@@ -40,13 +40,13 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter {
             it.mustNot("形参父类含有未知类型") {
                 formalParams
-                    .map { it.variable.typeName.findType().superType }
+                    .map { it.variable.typeName.findType().superClass }
                     .any { it.findType() == Type.UNKNOWN_TYPE }
             }
         }
         .filter {
             it.mustNot("形参父类是混淆类") {
-                formalParams.any { it.variable.typeName.findType().superType.isObfuscated() }
+                formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
             }
         }
         // 类似float*返回这样的类型的方法都暂时不处理
@@ -60,26 +60,9 @@ fun List<Method>.filterMethod(): List<Method> {
         .filter { it.mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } }
         .filter { it.mustNot("返回类型是嵌套数组/列表") { returnType.run { genericLevel() > 1 || (isList() && genericType().isArray()) } } }
         .filter { it.mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } }
-        .filter { it.must("返回类型的父类是已知类") { returnType.findType().superType().all { it != Type.UNKNOWN_TYPE } } }
+        .filter { it.must("返回类型的父类是已知类") { returnType.findType().superTypes().all { it != Type.UNKNOWN_TYPE } } }
         .distinctBy { it.nameWithClass() }
         .filter { println("Method::${it.name}通过Method过滤"); true }
-        .toList()
-}
-
-/**
- * 从field中过滤出getter
- */
-fun List<Field>.filterGetters(): List<Field> {
-    return asSequence()
-        .filter { it.must("公开field") { isPublic } }
-        .filter { it.mustNot("静态field") { isStatic } }
-        .filter { it.variable.must("已知类型") { isKnownType() } }
-        .filter { it.variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } }
-        .filter { it.variable.must("公开类型") { isPublicType() } }
-        .filter { it.variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() } }
-        .filter { it.variable.must("返回类型的父类是已知类") { typeName.findType().superType().all { it != Type.UNKNOWN_TYPE } } }
-        .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
-        .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
         .toList()
 }
 
@@ -99,6 +82,23 @@ fun List<Field>.filterConstants(): List<Field> {
 }
 
 /**
+ * 从field中过滤出getter
+ */
+fun List<Field>.filterGetters(): List<Field> {
+    return asSequence()
+        .filter { it.must("公开field") { isPublic } }
+        .filter { it.mustNot("静态field") { isStatic } }
+        .filter { it.variable.must("已知类型") { isKnownType() } }
+        .filter { it.variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } }
+        .filter { it.variable.must("公开类型") { isPublicType() } }
+        .filter { it.variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() } }
+        .filter { it.variable.must("返回类型的祖宗类是已知类") { typeName.findType().ancestorTypes.all { it.findType().isKnownType() } } }
+        .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
+        .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
+        .toList()
+}
+
+/**
  * 从field中过滤出setter
  */
 fun List<Field>.filterSetters(): List<Field> {
@@ -109,7 +109,7 @@ fun List<Field>.filterSetters(): List<Field> {
         .filter { it.variable.must("已知类型") { isKnownType() } }
         .filter { it.variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } }
         .filter { it.variable.must("公开类型") { typeName.findType().isPublic } }
-        .filter { it.variable.must("返回类型的父类是已知类") { typeName.findType().superType().all { it != Type.UNKNOWN_TYPE } } }
+        .filter { it.variable.must("返回类型的祖宗类是已知类") { typeName.findType().ancestorTypes.all { it.findType().isKnownType() } } }
         .filter { it.variable.mustNot("混淆类") { typeName.isObfuscated() } }
         .filter { println("Field::${it.variable.name}通过Setter过滤"); true }
         .toList()
@@ -122,12 +122,12 @@ fun List<Type>.filterType(): List<Type> {
     return asSequence()
         .filter { it.must("已知类型") { this != Type.UNKNOWN_TYPE } }
         .filter { it.must("公开类型") { isPublic } }
-        .filter { it.must("父类是已知类型") { superType.findType() != Type.UNKNOWN_TYPE } }
+        .filter { it.must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != Type.UNKNOWN_TYPE } } }
         .filter { it.mustNot("含有泛型") { genericTypes.isNotEmpty() } }
         .filter { it.mustNot("混淆类型") { isObfuscated() } }
         .filter { it.mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } }
-        .filter { it.mustNot("父类是忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(superType) } } }
-        .filter { it.mustNot("父类是混淆类型") { superType.isObfuscated() } }
+        .filter { it.mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } }
+        .filter { it.mustNot("祖宗类含有混淆类型") { ancestorTypes.any { it.isObfuscated() } } }
         .filter {
             (it.isEnum() or !it.isInnerType or (it.constructors.any { it.isPublic } or it.constructors.isEmpty())).apply {
                 if (!this) println("filterType: ${it.name} 由于构造器不是全公开且是内部类 被过滤")

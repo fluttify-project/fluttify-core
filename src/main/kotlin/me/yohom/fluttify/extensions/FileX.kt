@@ -45,7 +45,7 @@ fun JAVA_FILE.javaType(): Type {
     val interfaces = mutableListOf<String>()
     var isPublic = false
     var isAbstract = false
-    var isInnerClass = false
+    var isInnerType = false
     var isStaticType = true
 
     source.walkTree(object : JavaParserBaseListener() {
@@ -56,7 +56,7 @@ fun JAVA_FILE.javaType(): Type {
         override fun enterClassDeclaration(ctx: ClassDeclarationContext) {
             isPublic = ctx.isPublic()
             simpleName = ctx.IDENTIFIER()?.text ?: ""
-            isInnerClass = simpleName.contains("$")
+            isInnerType = simpleName.contains("$")
             typeType = TypeType.Class
             genericTypes = ctx.genericTypes()
             isAbstract = ctx.isAbstract()
@@ -98,7 +98,7 @@ fun JAVA_FILE.javaType(): Type {
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {
             isPublic = ctx.isPublic()
             simpleName = ctx.IDENTIFIER().text
-            isInnerClass = simpleName.contains("$")
+            isInnerType = simpleName.contains("$")
             typeType = TypeType.Interface
             genericTypes = ctx.genericTypes()
             interfaces.addAll(ctx.superInterfaces())
@@ -108,7 +108,7 @@ fun JAVA_FILE.javaType(): Type {
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
             isPublic = ctx.isPublic() == true
             simpleName = ctx.IDENTIFIER().text
-            isInnerClass = simpleName.contains("$")
+            isInnerType = simpleName.contains("$")
             isStaticType = true
             typeType = TypeType.Enum
             isAbstract = false
@@ -202,13 +202,13 @@ fun JAVA_FILE.javaType(): Type {
         it.typeType = typeType
         it.isPublic = isPublic
         it.isAbstract = isAbstract
-        it.isInnerType = isInnerClass
+        it.isInnerType = isInnerType
         it.isStaticType = isStaticType
         it.genericTypes.addAll(genericTypes)
         it.constructors = constructors
         it.interfaces = interfaces
         it.name = "$packageName.$simpleName"
-        it.superType = superClass
+        it.superClass = superClass
         it.fields.addAll(fields)
         it.methods.addAll(methods)
         it.constants.addAll(enumConstants)
@@ -254,7 +254,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isAbstract = isAbstract
                         it.name = name
                         it.isStaticType = true
-                        it.superType = superClass
+                        it.superClass = superClass
                         it.interfaces = interfaces
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)
@@ -287,7 +287,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isPublic = true
                         it.isAbstract = isAbstract
                         it.name = name
-                        it.superType = superClass
+                        it.superClass = superClass
                         it.isStaticType = true
                         it.interfaces = interfaces
                         it.fields.addAll(fields)
@@ -342,7 +342,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                     it.isPublic = true
                     it.isAbstract = isAbstract
                     it.name = name
-                    it.superType = superClass
+                    it.superClass = superClass
                     it.isStaticType = true
                     it.fields.addAll(fields)
                     it.methods.addAll(methods)
@@ -409,7 +409,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                         it.isPublic = true
                         it.isAbstract = isAbstract
                         it.name = name
-                        it.superType = superClass
+                        it.superClass = superClass
                         it.isStaticType = true
                         it.fields.addAll(fields)
                         it.methods.addAll(methods)

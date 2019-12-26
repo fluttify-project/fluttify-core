@@ -36,7 +36,7 @@ class TypeInterfaceTmpl(
 
         val constants = type.fields.filterConstants()
 
-        val allSuperType = type.interfaces.union(listOf(type.superType))
+        val allSuperType = type.interfaces.union(listOf(type.superClass))
             .filter { it.isNotBlank() }
             .filter { it.findType() != Type.UNKNOWN_TYPE }
             .filter { !it.isObfuscated() }

@@ -149,8 +149,8 @@ fun TYPE_NAME.simpleName(): String {
 /**
  * 父类类型
  */
-fun TYPE_NAME.superType(): List<Type> {
-    return findType().superType()
+fun TYPE_NAME.superTypes(): List<Type> {
+    return findType().superTypes()
 }
 
 /**

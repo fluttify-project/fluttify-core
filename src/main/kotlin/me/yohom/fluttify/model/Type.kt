@@ -54,12 +54,7 @@ open class Type : IPlatform, IScope {
     /**
      * 父类全名
      */
-    var superType: String = ""
-
-    /**
-     * 祖宗们
-     */
-    var ancestorTypes: List<String> = listOf()
+    var superClass: String = ""
 
     /**
      * 实现的接口全名
@@ -102,6 +97,38 @@ open class Type : IPlatform, IScope {
     var deprecated: Boolean = false
 
     /**
+     * 祖宗类型
+     *
+     * 包括类和接口, 因为需要递归, 而且结果是不变的, 所以这里用lazy计算, 提高性能
+     */
+    val ancestorTypes by lazy {
+        val result = mutableListOf<String>()
+
+        fun findAncestorClasses(clazz: String) {
+            val superClass = clazz.findType().superClass
+            if (superClass.isNotEmpty()) {
+                result.add(superClass)
+                findAncestorClasses(superClass)
+            }
+        }
+
+        fun findAncestorInterfaces(interfaze: String) {
+            val interfaces = interfaze.findType().interfaces
+            if (interfaces.isNotEmpty()) {
+                interfaces.forEach {
+                    result.add(it)
+                    findAncestorInterfaces(it)
+                }
+            }
+        }
+
+        findAncestorClasses(name)
+        findAncestorInterfaces(name)
+
+        result.distinct()
+    }
+
+    /**
      * 是否是回调
      *
      * 查找sdk中所有的类, 如果没有一个类是当前类的子类, 且当前类是接口类型, 那么就认为这个类是回调类
@@ -113,7 +140,7 @@ open class Type : IPlatform, IScope {
                 // 不能有泛型
                 && genericTypes.isEmpty()
                 // 回调类不能有超类
-                && superType == ""
+                && superClass == ""
                 && (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 // 必须没有子类
                 && !hasSubtype()
@@ -134,7 +161,7 @@ open class Type : IPlatform, IScope {
             .sdks
             .flatMap { it.libs }
             .flatMap { it.types }
-            .filter { (it.superType == name || name in it.interfaces) && !it.name.isObfuscated() }
+            .filter { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
     }
 
     fun hasConcretSubtype(): Boolean {
@@ -149,13 +176,13 @@ open class Type : IPlatform, IScope {
                 .sdks
                 .flatMap { it.libs }
                 .flatMap { it.types }
-                .firstOrNull { (it.superType == name || name in it.interfaces) && !it.name.isObfuscated() }
+                .firstOrNull { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
                 ?.firstConcretSubtype()
         }
     }
 
-    fun superType() : List<Type> {
-        return listOf(superType.findType()).union(interfaces.map { it.findType() }).toList()
+    fun superTypes() : List<Type> {
+        return listOf(superClass.findType()).union(interfaces.map { it.findType() }).toList()
     }
 
     fun isAlias(): Boolean {
@@ -176,7 +203,7 @@ open class Type : IPlatform, IScope {
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
                 && ((isInnerType && isStaticType) || !isInnerType)
                 && (constructors.any { it.isPublic } || constructors.isEmpty())
-                && (superType.findType() != UNKNOWN_TYPE || superType == "")
+                && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
                 && (constructors.any { it.formalParams.isEmpty() || it.formalParams.all { it.variable.constructable() } && it.isPublic } || constructors.isEmpty() || isJsonable)
                 // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
                 && ((platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false) || platform != Platform.iOS)
@@ -227,7 +254,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun isView(): Boolean {
-        return superType in listOf(
+        return superClass in listOf(
             "android.view.View",
             "android.view.ViewGroup",
             "android.widget.FrameLayout",
@@ -257,8 +284,26 @@ open class Type : IPlatform, IScope {
         )
     }
 
+    /**
+     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的类
+     */
+    fun ancestorClasses(): List<String> {
+        return ancestorTypes.filter { it.findType().typeType == TypeType.Class }
+    }
+
+    /**
+     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的接口
+     */
+    fun ancestorInterfaces(): List<String> {
+        return ancestorTypes.filter { it.findType().typeType == TypeType.Interface }
+    }
+
+    fun isKnownType(): Boolean {
+        return this != UNKNOWN_TYPE
+    }
+
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superType', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {
