@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
@@ -129,6 +130,20 @@ open class Type : IPlatform, IScope {
         result.distinct()
     }
 
+    fun filter(): Boolean {
+        return must("已知类型") { this != Type.UNKNOWN_TYPE } &&
+                must("公开类型") { isPublic } &&
+                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != Type.UNKNOWN_TYPE } } &&
+                mustNot("含有泛型") { genericTypes.isNotEmpty() } &&
+                mustNot("混淆类型") { isObfuscated() } &&
+                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&
+                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } &&
+                mustNot("祖宗类含有混淆类型") { ancestorTypes.any { it.isObfuscated() } } &&
+                (isEnum() or !isInnerType or (constructors.any { isPublic } or constructors.isEmpty())).apply {
+                    if (!this) println("filterType: ${name} 由于构造器不是全公开且是内部类 被过滤")
+                }
+    }
+
     /**
      * 是否是回调
      *
@@ -182,7 +197,7 @@ open class Type : IPlatform, IScope {
         }
     }
 
-    fun superTypes() : List<Type> {
+    fun superTypes(): List<Type> {
         return listOf(superClass.findType()).union(interfaces.map { it.findType() }).toList()
     }
 
@@ -194,7 +209,11 @@ open class Type : IPlatform, IScope {
         return !isAbstract
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
-                && !(constructors.any { it.formalParams.any { it.variable.type().constructors.any { it.formalParams.any { it.variable.typeName == name } } } })
+                && !(constructors.any {
+            it.formalParams.any {
+                it.variable.type().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+            }
+        })
                 && (this != UNKNOWN_TYPE || jsonable())
                 && !isEnum()
                 && !isLambda()

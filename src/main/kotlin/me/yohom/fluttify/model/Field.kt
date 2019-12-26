@@ -1,7 +1,7 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.toUnderscore
+import me.yohom.fluttify.EXCLUDE_TYPES
+import me.yohom.fluttify.extensions.*
 
 data class Field(
     /**
@@ -45,6 +45,36 @@ data class Field(
      */
     var isDeprecated: Boolean = false
 ) : IPlatform, IScope {
+
+    fun filterConstants(): Boolean {
+        return must("公开field") { isPublic } &&
+                must("静态field") { isStatic == true } &&
+                must("不可变变量") { isFinal == true } &&
+                variable.must("数字或字符串类型") { typeName in listOf("int", "double", "String") } &&
+                must("有值") { value.isNotEmpty() } &&
+                mustNot("包含new关键字") { value.startsWith("new") }
+    }
+
+    fun filterGetters(): Boolean {
+        return must("公开field") { isPublic } &&
+                mustNot("静态field") { isStatic } &&
+                variable.must("已知类型") { isKnownType() } &&
+                variable.mustNot("lambda类型") { Regex("""\(\^\w+\)\(\)""").matches(name) } &&
+                variable.must("公开类型") { isPublicType() } &&
+                variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() } &&
+                variable.must("返回类型的祖宗类是已知类") {
+                    typeName.findType().ancestorTypes.all {
+                        it.findType().isKnownType()
+                    }
+                } &&
+                variable.mustNot("混淆类") { typeName.isObfuscated() } &&
+                variable.mustNot("类型是排除类") { EXCLUDE_TYPES.any { it.matches(typeName) } }
+    }
+
+    fun filterSetter(): Boolean {
+        return filterGetters() && mustNot("不可改field") { isFinal }
+    }
+
     @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("getterMethodName"))
     fun nativeHandleGetterMethodName(): String {
         return "handle${className.toUnderscore()}_get_${getterName.depointer()}"
