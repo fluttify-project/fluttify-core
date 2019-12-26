@@ -41,7 +41,7 @@ class TypeSdkTmpl(private val type: Type) {
             type.superClass.toDartType()
 
         val mixins = if (type.ancestorInterfaces().isNotEmpty()) {
-            "with ${type.ancestorInterfaces().joinToString { it.toDartType() }}"
+            "with ${type.ancestorInterfaces().reversed().joinToString { it.toDartType() }}"
         } else {
             ""
         }
