@@ -291,7 +291,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
 fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
     return methodType()
         .typeName()
-        .specifierQualifierList()
+//        .specifierQualifierList() // 加上这句 指针类型会失去`*`
         .text
         .run {
             if (this == "instancetype") {
