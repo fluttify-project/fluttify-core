@@ -33,7 +33,7 @@ class CreatorTmpl(private val type: Type) {
                         )
                         .replace(
                             "#__creator_name__#",
-                            "${type.name.toUnderscore()}${it.formalParams.joinToString("__") {
+                            "${type.name.toUnderscore()}${it.formalParams.joinToString("__", "__") {
                                 it.variable.typeName.toUnderscore().replace("[]", "Array")
                             }}"
                         )
