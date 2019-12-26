@@ -1,11 +1,14 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.creator
 
 import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.filterConstructor
+import me.yohom.fluttify.extensions.jsonable
+import me.yohom.fluttify.extensions.toDartMap
+import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
-//static Future<#__class_name__#> __create__#__signature__#(#__formal_params__#) async {
+//static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
 //  final int refId = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
 //  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
 //
@@ -24,7 +27,7 @@ class CreatorTmpl(private val type: Type) {
                         .replace("#__class_name__#", type.name.toUnderscore())
                         .replace(
                             "#__signature__#",
-                            it.formalParams.joinToStringX("__", prefix = "__") {
+                            it.formalParams.joinToString("__") {
                                 it.variable.typeName.toUnderscore().replace("[]", "Array")
                             }
                         )
