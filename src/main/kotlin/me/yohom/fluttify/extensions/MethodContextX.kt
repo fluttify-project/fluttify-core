@@ -289,18 +289,22 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
 
 //region Objc Method
 fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
-    return methodType().typeName().text.run {
-        if (this == "instancetype") {
-            val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
-            if (instancetype != null) {
-                "$instancetype*"
+    return methodType()
+        .typeName()
+        .specifierQualifierList()
+        .text
+        .run {
+            if (this == "instancetype") {
+                val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
+                if (instancetype != null) {
+                    "$instancetype*"
+                } else {
+                    ""
+                }
             } else {
-                ""
+                this
             }
-        } else {
-            this
         }
-    }
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isStatic(): Boolean {
