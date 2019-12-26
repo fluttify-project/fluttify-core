@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
-//static Future<#__class_name__#> create#__signature__#(#__formal_params__#) async {
+//static Future<#__class_name__#> __create__#__signature__#(#__formal_params__#) async {
 //  final int refId = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
 //  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
 //
@@ -30,7 +30,7 @@ class CreatorTmpl(private val type: Type) {
                         )
                         .replace(
                             "#__creator_name__#",
-                            "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__") {
+                            "${type.name.toUnderscore()}${it.formalParams.joinToString("__") {
                                 it.variable.typeName.toUnderscore().replace("[]", "Array")
                             }}"
                         )
