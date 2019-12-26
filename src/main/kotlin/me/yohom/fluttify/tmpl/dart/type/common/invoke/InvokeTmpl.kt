@@ -34,7 +34,14 @@ class InvokeTmpl(private val method: Method) {
             .map { it.variable }
             .toDartMap {
                 when {
-                    it.typeName.findType().isEnum() -> "${it.name.depointer()}.index"
+                    it.typeName.findType().isEnum() -> {
+                        // 枚举列表
+                        if (it.isList) {
+                            "${it.name.depointer()}.map((it) => it.index).toList()"
+                        } else {
+                            "${it.name.depointer()}.index"
+                        }
+                    }
                     it.typeName.jsonable() -> it.name.depointer()
                     (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}.map((it) => it.refId).toList()"
                     it.genericLevel > 1 -> "[]" // 多维数组暂不处理
