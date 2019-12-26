@@ -72,7 +72,7 @@ fun TYPE_NAME.isNumber(): Boolean {
  * 是否是字符串
  */
 fun TYPE_NAME.isString(): Boolean {
-    return Regex("\"*\"").matches(this)
+    return Regex("\".*\"").matches(this)
 }
 
 /**
