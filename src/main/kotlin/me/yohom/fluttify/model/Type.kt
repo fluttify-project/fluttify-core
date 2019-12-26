@@ -303,6 +303,10 @@ open class Type : IPlatform, IScope {
         return this != UNKNOWN_TYPE
     }
 
+    fun isUnknownType(): Boolean {
+        return this == UNKNOWN_TYPE
+    }
+
     override fun toString(): String {
         return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
