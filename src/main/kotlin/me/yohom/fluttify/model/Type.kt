@@ -140,8 +140,8 @@ open class Type : IPlatform, IScope {
                 mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&
                 mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } &&
                 mustNot("祖宗类含有混淆类型") { ancestorTypes.any { it.isObfuscated() } } &&
-                (isEnum() or !isInnerType or (constructors.any { isPublic } or constructors.isEmpty())).apply {
-                    if (!this) println("filterType: ${name} 由于构造器不是全公开且是内部类 被过滤")
+                (isEnum() || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
+                    if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
                 }
     }
 
