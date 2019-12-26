@@ -1,9 +1,6 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.extensions.file
-import me.yohom.fluttify.extensions.filterType
-import me.yohom.fluttify.extensions.fromJson
-import me.yohom.fluttify.extensions.simpleName
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
 import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
@@ -75,7 +72,7 @@ open class AndroidDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
             }
 
-        val utilTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
+        val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
             .flatMap { it.types }
@@ -87,13 +84,13 @@ open class AndroidDartInterface : FluttifyTask() {
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() }
         // 类型检查
-        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it, me.yohom.fluttify.ext).dartTypeCheck() }
+        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it).dartTypeCheck() }
         // 类型造型
-        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it, me.yohom.fluttify.ext).dartTypeCast() }
-        utilTmpl
+        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it).dartTypeCast() }
+        typeOpTmpl
             .replace("#__current_package__#", ext.projectName)
-            .replace("#__type_check__#", typeChecks)
-            .replace("#__type_cast__#", typeCasts)
+            .replaceParagraph("#__type_check__#", typeChecks)
+            .replaceParagraph("#__type_cast__#", typeCasts)
             .run { "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/type_op.g.dart".file().writeText(this) }
     }
 
@@ -160,7 +157,7 @@ open class IOSDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
             }
 
-        val utilTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
+        val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
             .flatMap { it.types }
@@ -172,13 +169,13 @@ open class IOSDartInterface : FluttifyTask() {
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() }
         // 类型检查
-        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it, me.yohom.fluttify.ext).dartTypeCheck() }
+        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it).dartTypeCheck() }
         // 类型造型
-        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it, me.yohom.fluttify.ext).dartTypeCast() }
-        utilTmpl
+        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it).dartTypeCast() }
+        typeOpTmpl
             .replace("#__current_package__#", ext.projectName)
-            .replace("#__type_check__#", typeChecks)
-            .replace("#__type_cast__#", typeCasts)
+            .replaceParagraph("#__type_check__#", typeChecks)
+            .replaceParagraph("#__type_cast__#", typeCasts)
             .run { "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/type_op.g.dart".file().writeText(this) }
     }
 }
