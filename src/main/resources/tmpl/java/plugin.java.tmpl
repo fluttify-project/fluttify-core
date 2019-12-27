@@ -13,33 +13,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
-import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
+import io.flutter.plugin.platform.PlatformViewRegistry;
+
 import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableLog;
-import androidx.annotation.NonNull;
+import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
 
-// todo 启用新的embedding
 @SuppressWarnings("ALL")
-public class #__plugin_name__#Plugin implements MethodChannel.MethodCallHandler {
+public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.MethodCallHandler {
 
-    private #__plugin_name__#Plugin(Registrar registrar) {
-        this.registrar = registrar;
+    private #__plugin_name__#Plugin(BinaryMessenger messenger) {
+        this.messenger = messenger;
     }
 
-    private Registrar registrar;
+    private BinaryMessenger messenger;
 
     private final Map<String, Handler> handlerMap = new HashMap<String, Handler>() {{
         #__handlers__#
     }};
 
+    // v1 android embedding for compatible
     public static void registerWith(Registrar registrar) {
-        MethodChannel channel = new MethodChannel(registrar.messenger(), "#__method_channel__#");
-        channel.setMethodCallHandler(new #__plugin_name__#Plugin(registrar));
+        initPlugin(registrar.messenger(), registrar.platformViewRegistry());
+    }
 
-        // register platform view
-        #__register_platform_views__#
+    // v2 android embedding
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        initPlugin(binding.getBinaryMessenger(), binding.getPlatformViewRegistry());
+    }
+
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+
     }
 
     @Override
@@ -56,6 +67,14 @@ public class #__plugin_name__#Plugin implements MethodChannel.MethodCallHandler 
         } else {
             methodResult.notImplemented();
         }
+    }
+
+    private static void initPlugin(BinaryMessenger messenger, PlatformViewRegistry platformViewRegistry) {
+        MethodChannel channel = new MethodChannel(messenger, "#__method_channel__#");
+        channel.setMethodCallHandler(new #__plugin_name__#Plugin(messenger));
+
+        // register platform view
+        #__register_platform_views__#
     }
 
     @FunctionalInterface
