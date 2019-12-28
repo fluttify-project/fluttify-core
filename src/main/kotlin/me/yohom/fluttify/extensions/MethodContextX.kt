@@ -305,7 +305,7 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
             }
         }
         // 有些方法在返回类型后面会跟一些宏, 去掉这些宏
-        .run { removeSuffix(substringAfterLast("*")) }
+        .run { removeSuffix(substringAfterLast("*", "")) }
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isStatic(): Boolean {

@@ -85,6 +85,7 @@ class ObjcPluginTmpl(
         // method channel
         val methodChannel = "${ext.org}/${ext.projectName}"
 
+        // PlatformView的头文件
         val platformViewHeader = mutableListOf<String>()
         // 注册PlatformView
         val registerPlatformViews = libs
@@ -94,6 +95,39 @@ class ObjcPluginTmpl(
             .joinToString("\n") {
                 RegisterPlatformViewTmpl(it).objcRegisterPlatformView()
             }
+
+        // 如果不是framework, 只有.h+.a的话, 把这些.h提取出来
+        val directHeader = ext.ios.libDir
+            .file()
+            .listFiles()
+            ?.filter { it.extension == "h" }
+            // todo 如果是远程依赖, 那么可以用pod的名字, 如果是直接下载的呢?
+            ?.map { "#import <${ext.ios.remote.name}/${it.name}>" }
+            ?: listOf()
+
+        // 提取所有framework内的头文件
+        val imports = ext.ios.libDir
+            .file()
+            .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+            ?.flatMap { framework ->
+                "${framework}/Headers/"
+                    .file()
+                    .listFiles { _, name -> name.endsWith(".h") }
+                    ?.map { framework to it }
+                    ?: listOf()
+            }
+            ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
+            ?.union(platformViewHeader)
+            ?.union(directHeader)
+            ?.joinToString("\n")
+            ?: ""
+
+        val protocols = libs
+            .flatMap { it.types }
+            .filter { it.isCallback() }
+            .map { it.name }
+            .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
+            .joinToString(", ")
 
         val getterHandlers = libs
             .flatMap { it.types }
@@ -169,27 +203,9 @@ class ObjcPluginTmpl(
 
         return listOf(
             hTmpl
-                .replace("#__imports__#", ext.ios.libDir
-                    .file()
-                    .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
-                    ?.flatMap { framework ->
-                        "${framework}/Headers/"
-                            .file()
-                            .listFiles { _, name -> name.endsWith(".h") }
-                            ?.map { framework to it }
-                            ?: listOf()
-                    }
-                    ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
-                    ?.union(platformViewHeader)
-                    ?.joinToString("\n")
-                    ?: "")
+                .replace("#__imports__#", imports)
                 .replace("#__plugin_name__#", pluginClassName)
-                .replace("#__protocols__#", libs
-                    .flatMap { it.types }
-                    .filter { it.isCallback() }
-                    .map { it.name }
-                    .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
-                    .joinToString(", ")),
+                .replace("#__protocols__#", protocols),
             mTmpl
                 .replace("#__plugin_name__#", pluginClassName)
                 .replace("#__method_channel__#", methodChannel)
@@ -206,10 +222,7 @@ class ObjcPluginTmpl(
                         .union(functionHandlers)
                         .joinToString("\n")
                 )
-                .replaceParagraph(
-                    "#__delegate_methods__#",
-                    callbackMethods.joinToString("\n")
-                )
+                .replaceParagraph("#__delegate_methods__#", callbackMethods.joinToString("\n"))
 
         )
     }

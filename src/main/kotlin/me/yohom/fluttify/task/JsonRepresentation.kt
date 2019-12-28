@@ -64,15 +64,27 @@ open class IOSJsonRepresentation : FluttifyTask() {
 
         sdk.platform = Platform.iOS
 
-        frameworkDir
-            .listFiles()
-            ?.filter { it.isDirectory }
-            ?.forEach {
-                val lib = Lib().apply { name = it.nameWithoutExtension }
-                it.iterate("h") { objcFile ->
-                    lib.types.addAll(objcFile.objcType())
+        frameworkDir.listFiles()
+            ?.run {
+                // 如果下载来解压后发现没有framework文件, 那么就认为是.h+.a的组合, 直接解析
+                if (none { it.extension == "framework" }) {
+                    val lib = Lib().apply { name = ext.projectName }
+                    frameworkDir.iterate("h") { objcFile ->
+                        lib.types.addAll(objcFile.objcType())
+                    }
+                    sdk.libs.add(lib)
                 }
-                sdk.libs.add(lib)
+                // 如果有framework文件, 那么就遍历framework, 生成Lib
+                else {
+                    filter { it.isDirectory }
+                        .forEach {
+                            val lib = Lib().apply { name = it.nameWithoutExtension }
+                            it.iterate("h") { objcFile ->
+                                lib.types.addAll(objcFile.objcType())
+                            }
+                            sdk.libs.add(lib)
+                        }
+                }
             }
 
         // 把依赖插件的libs都添加到当前插件的jr文件中去, 并标注为依赖

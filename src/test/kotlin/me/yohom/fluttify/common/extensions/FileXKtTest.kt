@@ -9,6 +9,7 @@ class FileXKtTest {
 
     @Test
     fun javaType() {
+        println("void".run { removeSuffix(substringAfterLast("*", "")) })
     }
 
     @Test
