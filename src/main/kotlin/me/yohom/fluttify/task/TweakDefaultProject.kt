@@ -30,7 +30,7 @@ open class TweakDefaultProject : FluttifyTask() {
                 buildGradleTmpl
                     .replace("#__project_id__#", "${ext.org}.${ext.projectName}")
                     .replace("#__sdk_dependency__#", ext.android.remote.androidCoordinate.run {
-                        if (isNotBlank()) "implementation '$this'" else ""
+                        if (ext.android.remote.androidConfigured) "implementation '$this'" else ""
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
@@ -54,7 +54,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
                     .replace("#__sdk_dependency__#", ext.ios.remote.iosCoordinate.run {
-                        if (isNotBlank()) "s.dependency $this" else ""
+                        if (ext.ios.remote.iosConfigured) "s.dependency $this" else ""
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",

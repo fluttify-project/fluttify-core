@@ -171,9 +171,19 @@ open class Remote {
     val androidCoordinate get() = "$org:$name:$version"
 
     /**
+     * android是否已配置
+     */
+    val androidConfigured get() = org.isNotEmpty() && name.isNotEmpty() && version.isNotEmpty()
+
+    /**
      * ios pod 坐标
      */
     val iosCoordinate get() = "'$name', '$version'"
+
+    /**
+     * ios是否已配置
+     */
+    val iosConfigured get() = name.isNotEmpty() && version.isNotEmpty()
 
     override fun toString(): String {
         return "Remote(org='$org', name='$name', version='$version')"
