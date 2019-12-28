@@ -38,11 +38,13 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "#__method_channel__#");
 
         #__plugin_name__#Plugin plugin = new #__plugin_name__#Plugin();
-        plugin.messenger = registrar.messenger();
+        BinaryMessenger messenger = registrar.messenger();
+        plugin.messenger = messenger;
 
         channel.setMethodCallHandler(plugin);
 
         // register platform view
+        PlatformViewRegistry platformViewRegistry = registrar.platformViewRegistry();
         #__register_platform_views__#
     }
 
@@ -55,7 +57,9 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
         channel.setMethodCallHandler(this);
 
+
         // register platform view
+        PlatformViewRegistry platformViewRegistry = binding.getPlatformViewRegistry();
         #__register_platform_views__#
     }
 
