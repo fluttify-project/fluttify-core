@@ -27,10 +27,6 @@ import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
 @SuppressWarnings("ALL")
 public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.MethodCallHandler {
 
-    private #__plugin_name__#Plugin(BinaryMessenger messenger) {
-        this.messenger = messenger;
-    }
-
     private BinaryMessenger messenger;
 
     private final Map<String, Handler> handlerMap = new HashMap<String, Handler>() {{
@@ -39,13 +35,28 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
     // v1 android embedding for compatible
     public static void registerWith(Registrar registrar) {
-        initPlugin(registrar.messenger(), registrar.platformViewRegistry());
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), "#__method_channel__#");
+
+        #__plugin_name__#Plugin plugin = new #__plugin_name__#Plugin();
+        plugin.messenger = registrar.messenger();
+
+        channel.setMethodCallHandler(plugin);
+
+        // register platform view
+        #__register_platform_views__#
     }
 
     // v2 android embedding
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
-        initPlugin(binding.getBinaryMessenger(), binding.getPlatformViewRegistry());
+        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "#__method_channel__#");
+
+        messenger = binding.getBinaryMessenger();
+
+        channel.setMethodCallHandler(this);
+
+        // register platform view
+        #__register_platform_views__#
     }
 
     @Override
@@ -67,14 +78,6 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
         } else {
             methodResult.notImplemented();
         }
-    }
-
-    private static void initPlugin(BinaryMessenger messenger, PlatformViewRegistry platformViewRegistry) {
-        MethodChannel channel = new MethodChannel(messenger, "#__method_channel__#");
-        channel.setMethodCallHandler(new #__plugin_name__#Plugin(messenger));
-
-        // register platform view
-        #__register_platform_views__#
     }
 
     @FunctionalInterface
