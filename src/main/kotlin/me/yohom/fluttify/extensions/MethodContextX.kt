@@ -291,7 +291,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
 fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
     return methodType()
         .typeName()
-//        .specifierQualifierList() // 加上这句 指针类型会失去`*`
         .text
         .run {
             if (this == "instancetype") {
@@ -305,6 +304,8 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
                 this
             }
         }
+        // 有些方法在返回类型后面会跟一些宏, 去掉这些宏
+        .run { removeSuffix(substringAfterLast("*")) }
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isStatic(): Boolean {
