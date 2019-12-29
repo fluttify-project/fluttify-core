@@ -16,12 +16,12 @@ inline fun <reified T> String.fromJson(): T {
  * 是否可序列化
  */
 fun TYPE_NAME.jsonable(): Boolean {
-    return toDartType() in listOf(
+    return toDartType().pack() in listOf(
         "bool",
         "int",
         "double",
         "String",
-        "Map<String,dynamic>",
+        "Map<String,String>",
         "Map",
         "null",
         "List<int>",
@@ -122,6 +122,13 @@ fun TYPE_NAME.enArray(): TYPE_NAME {
  */
 fun TYPE_NAME.isArray(): Boolean {
     return endsWith("[]")
+}
+
+/**
+ * 是否是Map类型
+ */
+fun TYPE_NAME.isMap(): Boolean {
+    return Regex("\\w*Map(<*)\\w*(,*)\\w*(>*)").matches(this.pack()) || Regex("NSDictionary(<*)\\w*(,*)\\w*(>*)").matches(this.pack())
 }
 
 /**
@@ -306,6 +313,11 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             else -> when {
                 Regex("ArrayList<.+>").matches(this) -> removePrefix("Array")
                 Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
+                Regex("NSDictionary<.+,.+>").matches(this) -> {
+                    val keyType = substringAfter("<").substringBefore(",").toDartType()
+                    val valueType = substringAfter(",").substringBefore(">").toDartType()
+                    "Map<$keyType, $valueType>"
+                }
                 startsWith("NSArray") -> "List<${genericType().depointer()}>"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
                 else -> this

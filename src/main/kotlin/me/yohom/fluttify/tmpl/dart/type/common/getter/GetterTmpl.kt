@@ -18,7 +18,7 @@ class GetterTmpl(private val field: Field) {
             var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
             if (isStructPointer()) {
                 result = "List<$result>"
-            } else {
+            } else if (isCollection()) {
                 for (i in 0 until genericLevel) {
                     result = "List<$result>"
                 }

@@ -498,7 +498,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 || ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)
             ) {
                 val variable = Variable(
-                    ctx.type().genericType(),
+                    ctx.type().run { if (isCollection()) genericType() else this },
                     ctx.name(),
                     Platform.iOS,
                     ctx.type().run {

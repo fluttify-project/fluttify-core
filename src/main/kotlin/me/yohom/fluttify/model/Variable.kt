@@ -154,6 +154,10 @@ data class Variable(
     fun isStringArray(): Boolean = typeName.isStringArray()
 
     fun isArray(): Boolean = typeName.isArray()
+
+    fun isCollection(): Boolean = typeName.isCollection()
+
+    fun isMap(): Boolean = typeName.isMap()
 }
 
 enum class ListType {
