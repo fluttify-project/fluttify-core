@@ -30,7 +30,7 @@ open class TweakDefaultProject : FluttifyTask() {
                 buildGradleTmpl
                     .replace("#__project_id__#", "${ext.org}.${ext.projectName}")
                     .replace("#__sdk_dependency__#", ext.android.remote.androidCoordinate.run {
-                        if (ext.android.remote.androidConfigured) "implementation '$this'" else ""
+                        if (ext.android.remote.androidConfigured) "api '$this'" else ""
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
