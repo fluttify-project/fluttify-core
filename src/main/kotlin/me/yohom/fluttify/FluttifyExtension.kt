@@ -178,7 +178,7 @@ open class Remote {
     /**
      * ios pod 坐标
      */
-    val iosCoordinate get() = "'$name', '$version'"
+    val iosCoordinate get() = "'$name', '~> $version'"
 
     /**
      * ios是否已配置
