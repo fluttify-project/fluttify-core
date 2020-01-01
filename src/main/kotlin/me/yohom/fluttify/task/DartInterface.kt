@@ -30,7 +30,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .flatMap { it.types }
             .filter { it.isView() && !it.isObfuscated() }
             .forEach {
-                val dartAndroidView = AndroidViewTmpl(it).dartAndroidView()
+                val dartAndroidView = AndroidViewTmpl(it)
                 val viewName = it.name.replace("$", ".").simpleName()
                 val androidViewFile =
                     "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/platformview/${viewName}.g.dart"
@@ -44,9 +44,9 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it).dartClass()
-                    TypeType.Enum -> TypeEnumTmpl(it).dartEnum()
-                    TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
+                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
+                    TypeType.Enum -> TypeEnumTmpl(it)
+                    TypeType.Interface -> TypeInterfaceTmpl(it)
                     TypeType.Lambda -> ""
                     TypeType.Function -> ""
                     TypeType.Alias -> ""
@@ -55,7 +55,8 @@ open class AndroidDartInterface : FluttifyTask() {
 
                 if (resultDart.isNotBlank()) {
                     val fileName = it.name.replace("$", ".").replace(".", "/")
-                    val resultFile = "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/${fileName}.g.dart"
+                    val resultFile =
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/${fileName}.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }
@@ -84,16 +85,19 @@ open class AndroidDartInterface : FluttifyTask() {
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() }
         // 类型检查
-        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it).dartTypeCheck() }
+        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
-        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it).dartTypeCast() }
+        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__current_package__#", ext.projectName)
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "Android")
             .replaceParagraph("#__type_check__#", typeChecks)
             .replaceParagraph("#__type_cast__#", typeCasts)
-            .run { "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/type_op.g.dart".file().writeText(this) }
+            .run {
+                "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/type_op.g.dart".file()
+                    .writeText(this)
+            }
     }
 
 }
@@ -115,7 +119,7 @@ open class IOSDartInterface : FluttifyTask() {
             .flatMap { it.types }
             .filter { it.isView() && !it.isObfuscated() }
             .forEach {
-                val dartUiKitView = UiKitViewTmpl(it).dartUiKitView()
+                val dartUiKitView = UiKitViewTmpl(it)
                 val uiKitViewFile =
                     "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/platformview/${it.name.simpleName()}.g.dart"
 
@@ -128,9 +132,9 @@ open class IOSDartInterface : FluttifyTask() {
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
-                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it).dartClass()
-                    TypeType.Enum -> TypeEnumTmpl(it).dartEnum()
-                    TypeType.Interface -> TypeInterfaceTmpl(it, ext).dartInterface()
+                    TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
+                    TypeType.Enum -> TypeEnumTmpl(it)
+                    TypeType.Interface -> TypeInterfaceTmpl(it)
                     TypeType.Lambda -> ""
                     TypeType.Function -> "" // 函数要单独处理, 全部放到一个文件里去
                     TypeType.Alias -> ""
@@ -171,15 +175,18 @@ open class IOSDartInterface : FluttifyTask() {
             .distinctBy { it.name }
             .filter { !it.isInterface() && !it.isEnum() }
         // 类型检查
-        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it).dartTypeCheck() }
+        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
-        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it).dartTypeCast() }
+        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__current_package__#", ext.projectName)
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "IOS")
             .replaceParagraph("#__type_check__#", typeChecks)
             .replaceParagraph("#__type_cast__#", typeCasts)
-            .run { "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/type_op.g.dart".file().writeText(this) }
+            .run {
+                "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/type_op.g.dart".file()
+                    .writeText(this)
+            }
     }
 }

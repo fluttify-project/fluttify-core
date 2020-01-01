@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_interface
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
@@ -24,43 +24,40 @@ import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.Interfac
 //
 //  #__interface_methods__#
 //}
-class TypeInterfaceTmpl(
-    private val type: Type,
-    private val ext: FluttifyExtension
-) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/interface_type.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/interface_type.dart.tmpl").readText()
 
-    fun dartInterface(): String {
-        val currentPackage = ext.projectName
-        val className = type.name.toDartType()
+fun TypeInterfaceTmpl(type: Type): String {
+    val currentPackage = ext.projectName
+    val className = type.name.toDartType()
 
-        val constants = type.fields.filterConstants()
+    val constants = type.fields.filterConstants()
 
-        val allSuperType = type.interfaces.union(listOf(type.superClass))
-            .filter { it.isNotBlank() }
-            .filter { it.findType() != Type.UNKNOWN_TYPE }
-            .filter { !it.isObfuscated() }
-        val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
+    val allSuperType = type.interfaces.union(listOf(type.superClass))
+        .filter { it.isNotBlank() }
+        .filter { it.findType() != Type.UNKNOWN_TYPE }
+        .filter { !it.isObfuscated() }
+    val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
 
-        val methods = type.methods
-            .filterMethod()
-            .map { InterfaceMethodTmpl(it).dartInterfaceMethod() }
+    val methods = type.methods
+        .filterMethod()
+        .map { InterfaceMethodTmpl(it) }
 
-        val getters = type.fields
-            .filterGetters()
-            .map { GetterTmpl(it).dartGetter() }
+    val getters = type.fields
+        .filterGetters()
+        .map { GetterTmpl(it) }
 
-        val setters = type.fields
-            .filterSetters()
-            .map { SetterTmpl(it).dartSetter() }
+    val setters = type.fields
+        .filterSetters()
+        .map { SetterTmpl(it) }
 
-        return tmpl
-            .replace("#__current_package__#", currentPackage)
-            .replace("#__interface_type__#", className)
-            .replace("#__super_mixins__#", superClass.toDartType())
-            .replaceParagraph("#__constants__#", constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value};" })
-            .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
-            .replaceParagraph("#__getters__#", getters.joinToString("\n"))
-            .replaceParagraph("#__setters__#", setters.joinToString("\n"))
-    }
+    return tmpl
+        .replace("#__current_package__#", currentPackage)
+        .replace("#__interface_type__#", className)
+        .replace("#__super_mixins__#", superClass.toDartType())
+        .replaceParagraph(
+            "#__constants__#",
+            constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value};" })
+        .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
+        .replaceParagraph("#__getters__#", getters.joinToString("\n"))
+        .replaceParagraph("#__setters__#", setters.joinToString("\n"))
 }

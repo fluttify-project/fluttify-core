@@ -1,8 +1,10 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result
 
-//result
-class ResultVoidTmpl {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/result_void.stmt.dart.tmpl").readText()
+import me.yohom.fluttify.extensions.getResource
 
-    fun dartResultVoid() = tmpl
+//result
+private val tmpl = getResource("/tmpl/dart/result_void.stmt.dart.tmpl").readText()
+
+fun ResultVoidTmpl(): String {
+    return tmpl
 }

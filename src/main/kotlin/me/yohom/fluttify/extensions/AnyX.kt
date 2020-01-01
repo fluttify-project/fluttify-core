@@ -1,10 +1,12 @@
 package me.yohom.fluttify.extensions
 
 import com.google.gson.GsonBuilder
+import me.yohom.fluttify.FluttifyCorePlugin
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.Variable
+import java.net.URL
 
 fun Any.id(): Int {
     return hashCode()
@@ -42,4 +44,8 @@ fun <T> T.mustNot(message: String = "", mapper: T.() -> Boolean?): Boolean {
     } else {
         true
     }
+}
+
+fun getResource(name: String): URL {
+    return FluttifyCorePlugin::class.java.getResource(name)
 }

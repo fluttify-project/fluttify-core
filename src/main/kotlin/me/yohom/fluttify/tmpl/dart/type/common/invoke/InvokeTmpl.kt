@@ -8,12 +8,8 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable
 
 // todo 使用模板重构
-class InvokeTmpl(private val method: Method) {
-    fun dartMethodInvoke(): String {
-        return invokeString(method.isStatic, method.nameWithClass(), method.formalParams)
-    }
-
-    private fun invokeString(
+fun InvokeTmpl(method: Method): String {
+    fun invokeString(
         isStatic: Boolean,
         methodName: String,
         params: List<Parameter>
@@ -64,4 +60,6 @@ class InvokeTmpl(private val method: Method) {
         }
         return resultBuilder.toString()
     }
+
+    return invokeString(method.isStatic, method.nameWithClass(), method.formalParams)
 }

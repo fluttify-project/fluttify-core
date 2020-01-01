@@ -29,51 +29,51 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  // generate methods
 //  #__methods__#
 //}
-class TypeSdkTmpl(private val type: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
-    fun dartClass(): String {
-        val currentPackage = ext.projectName
-        val className = type.name.toDartType()
-        val superClass = if (type.superClass.isEmpty())
-            type.platform.objectType()
-        else
-            type.superClass.toDartType()
+fun TypeSdkTmpl(type: Type): String {
+    val currentPackage = ext.projectName
+    val className = type.name.toDartType()
+    val superClass = if (type.superClass.isEmpty())
+        type.platform.objectType()
+    else
+        type.superClass.toDartType()
 
-        val mixins = if (type.ancestorInterfaces().isNotEmpty()) {
-            "with ${type.ancestorInterfaces().reversed().joinToString { it.toDartType() }}"
-        } else {
-            ""
-        }
-
-        val constants = type.fields.filterConstants()
-
-        val creators = if (type.constructable()) {
-            CreatorTmpl(type).dartCreator()
-        } else {
-            listOf()
-        }
-        val getters = type.fields
-            .filterGetters()
-            .map { GetterTmpl(it).dartGetter() }
-
-        val setters = type.fields
-            .filterSetters()
-            .map { SetterTmpl(it).dartSetter() }
-
-        val methods = type.methods
-            .filterMethod()
-            .map { MethodTmpl(it).dartMethod() }
-
-        return tmpl
-            .replace("#__current_package__#", currentPackage)
-            .replace("#__class_name__#", className)
-            .replace("#__super_class__#", superClass)
-            .replace("#__mixins__#", mixins)
-            .replaceParagraph("#__constants__#", constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" })
-            .replaceParagraph("#__creators__#", creators.joinToString("\n"))
-            .replaceParagraph("#__getters__#", getters.joinToString("\n"))
-            .replaceParagraph("#__setters__#", setters.joinToString("\n"))
-            .replaceParagraph("#__methods__#", methods.joinToString("\n"))
+    val mixins = if (type.ancestorInterfaces().isNotEmpty()) {
+        "with ${type.ancestorInterfaces().reversed().joinToString { it.toDartType() }}"
+    } else {
+        ""
     }
+
+    val constants = type.fields.filterConstants()
+
+    val creators = if (type.constructable()) {
+        CreatorTmpl(type).dartCreator()
+    } else {
+        listOf()
+    }
+    val getters = type.fields
+        .filterGetters()
+        .map { GetterTmpl(it) }
+
+    val setters = type.fields
+        .filterSetters()
+        .map { SetterTmpl(it) }
+
+    val methods = type.methods
+        .filterMethod()
+        .map { MethodTmpl(it).dartMethod() }
+
+    return tmpl
+        .replace("#__current_package__#", currentPackage)
+        .replace("#__class_name__#", className)
+        .replace("#__super_class__#", superClass)
+        .replace("#__mixins__#", mixins)
+        .replaceParagraph(
+            "#__constants__#",
+            constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" })
+        .replaceParagraph("#__creators__#", creators.joinToString("\n"))
+        .replaceParagraph("#__getters__#", getters.joinToString("\n"))
+        .replaceParagraph("#__setters__#", setters.joinToString("\n"))
+        .replaceParagraph("#__methods__#", methods.joinToString("\n"))
 }

@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.view.uikit_view
 
 import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Type
@@ -62,21 +63,19 @@ import me.yohom.fluttify.model.Type
 //    super.dispose();
 //  }
 //}
-class UiKitViewTmpl(private val viewClass: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/uikit_view.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/uikit_view.dart.tmpl").readText()
 
-    fun dartUiKitView(): String {
-        val currentPackage = ext.projectName
-        val viewSimpleName = viewClass.name.simpleName()
-        val view = viewClass.name
-        val org = ext.org
-        val viewType = viewClass.name
+fun UiKitViewTmpl(viewClass: Type): String {
+    val currentPackage = ext.projectName
+    val viewSimpleName = viewClass.name.simpleName()
+    val view = viewClass.name
+    val org = ext.org
+    val viewType = viewClass.name
 
-        return tmpl
-            .replace("#__current_package__#", currentPackage)
-            .replace("#__view_simple_name__#", viewSimpleName)
-            .replace("#__view__#", view.toDartType())
-            .replace("#__org__#", org)
-            .replace("#__view_type__#", viewType)
-    }
+    return tmpl
+        .replace("#__current_package__#", currentPackage)
+        .replace("#__view_simple_name__#", viewSimpleName)
+        .replace("#__view__#", view.toDartType())
+        .replace("#__org__#", org)
+        .replace("#__view_type__#", viewType)
 }

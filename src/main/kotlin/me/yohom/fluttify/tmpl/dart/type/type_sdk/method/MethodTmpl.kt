@@ -52,10 +52,10 @@ class MethodTmpl(private val method: Method) {
                     this
                 }
             }
-        val log = LogTmpl(method).dartMethodLog()
-        val invoke = InvokeTmpl(method).dartMethodInvoke()
-        val callback = CallbackMethodTmpl(method).dartCallback()
-        val returnStatement = ReturnTmpl(method).dartReturn()
+        val log = LogTmpl(method)
+        val invoke = InvokeTmpl(method)
+        val callback = CallbackMethodTmpl(method)
+        val returnStatement = ReturnTmpl(method)
         val nativeObjectPool = method.returnType.run {
             when {
                 jsonable() or findType().isEnum() or isVoid() -> ""
