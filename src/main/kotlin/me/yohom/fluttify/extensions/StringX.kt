@@ -301,7 +301,6 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "long[]", "Long[]" -> "Int64List"
             "double[]", "Double[]", "float[]", "Float[]" -> "Float64List"
             "Map" -> "Map"
-            "java.lang.Object" -> "Object"
             // objc
             "NSString", "NSString*" -> "String"
             "NSArray<NSString*>", "NSArray<NSString*>*" -> "List<String>"
