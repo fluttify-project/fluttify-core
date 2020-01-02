@@ -32,7 +32,11 @@ fun TYPE_NAME.jsonable(): Boolean {
         "Uint64List",
         "Int32List",
         "Int64List",
-        "Float64List"
+        "Float64List",
+        // 把Object列为jsonable, 解决参数为Object时的情况, 因为jsonable类型会自动在平台间进行转换,
+        // 所以兼容起jsonable和非jsonable的类型比较麻烦, 这里规定只要是java.lang.Object的参数,
+        // 一律断言为jsonable类型并且实际的类型也必须要是jsonable才能在Channel中传递
+        "Object"
     )
 }
 
@@ -301,6 +305,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "long[]", "Long[]" -> "Int64List"
             "double[]", "Double[]", "float[]", "Float[]" -> "Float64List"
             "Map" -> "Map"
+            "java.lang.Object" -> "Object" // 这里为什么要转为dart的Object在36行有说明
             // objc
             "NSString", "NSString*" -> "String"
             "NSArray<NSString*>", "NSArray<NSString*>*" -> "List<String>"
