@@ -56,8 +56,8 @@ class SDK : IPlatform {
                 allTypes.map { it.name.depointer() }.contains(fullName) -> allTypes.first { it.name.depointer() == fullName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName; isJsonable = true }
-                // 已支持的系统类
-                fullName in SYSTEM_TYPE.map { it.name } -> SYSTEM_TYPE.first { it.name == fullName }
+                // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
+                SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(fullName) } -> SYSTEM_TYPE.first { Regex(it.name).matches(fullName) }
                 // 是objc的id指针
                 fullName == "id" -> Type().apply { name = "id"; typeType == TypeType.Class }
                 // lambda

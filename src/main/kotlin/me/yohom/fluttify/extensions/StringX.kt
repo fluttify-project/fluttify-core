@@ -132,7 +132,9 @@ fun TYPE_NAME.isArray(): Boolean {
  * 是否是Map类型
  */
 fun TYPE_NAME.isMap(): Boolean {
-    return Regex("\\w*Map(<*)\\w*(,*)\\w*(>*)").matches(this.pack()) || Regex("NSDictionary(<*)\\w*(,*)\\w*(>*)").matches(this.pack())
+    return Regex("\\w*Map(<*)\\w*(,*)\\w*(>*)").matches(this.pack()) || Regex("NSDictionary(<*)\\w*(,*)\\w*(>*)").matches(
+        this.pack()
+    )
 }
 
 /**
@@ -316,7 +318,8 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "BOOL" -> "bool"
             "CGFloat" -> "double"
             else -> when {
-                Regex("ArrayList<.+>").matches(this) -> removePrefix("Array")
+                // 若是某种java的List, 那么去掉前缀
+                Regex("(\\w*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
                 Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
                 Regex("NSDictionary<.+,.+>").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
@@ -325,9 +328,13 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 }
                 startsWith("NSArray") -> "List<${genericType().depointer()}>"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
-                else -> this
+                // 其他情况需要去掉泛型
+                else -> this.substringBefore("<")
             }
-        }.replace("$", ".").replace(".", "_").depointer()
+        }
+            .replace("$", ".")
+            .replace(".", "_")
+            .depointer()
 }
 
 fun TYPE_NAME.toUnderscore(): String {

@@ -131,6 +131,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.widget.LinearLayout"; typeType = TypeType.Class },
     Type().apply { name = "android.widget.RelativeLayout"; typeType = TypeType.Class },
     Type().apply { name = "android.os.Parcelable"; typeType = TypeType.Interface },
+    Type().apply { name = "android.util.Pair<.+,.+>"; typeType = TypeType.Class },
 
     /////////////////////////////////////////iOS系统类/////////////////////////////////////////////
     Type().apply { name = "CLLocation"; typeType = TypeType.Class },
