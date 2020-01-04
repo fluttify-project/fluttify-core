@@ -34,6 +34,14 @@ class SDK : IPlatform {
     val directLibs: List<Lib>
         get() = libs.filterNot { it.isDependency }
 
+    /**
+     * 所有通过过滤的方法
+     */
+    @delegate:Transient
+    val allFilteredMethods: List<Method> by lazy {
+        directLibs.flatMap { it.types }.flatMap { it.methods }.filter { it.filter() }
+    }
+
     override fun toString(): String {
         return "SDK(version='$version', platform=$platform, libs=$libs)"
     }
@@ -57,7 +65,11 @@ class SDK : IPlatform {
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName; isJsonable = true }
                 // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
-                SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(fullName) } -> SYSTEM_TYPE.first { Regex(it.name).matches(fullName) }
+                SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(fullName) } -> SYSTEM_TYPE.first {
+                    Regex(it.name).matches(
+                        fullName
+                    )
+                }
                 // 是objc的id指针
                 fullName == "id" -> Type().apply { name = "id"; typeType == TypeType.Class }
                 // lambda

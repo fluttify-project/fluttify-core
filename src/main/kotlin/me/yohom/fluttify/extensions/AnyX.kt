@@ -2,10 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.GsonBuilder
 import me.yohom.fluttify.FluttifyCorePlugin
-import me.yohom.fluttify.model.Field
-import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.model.Variable
+import me.yohom.fluttify.model.*
 import java.net.URL
 
 fun Any.id(): Int {
@@ -23,6 +20,7 @@ fun <T> T.must(message: String = "", mapper: T.() -> Boolean?): Boolean {
             is Field -> println("${className}Field::${variable.typeName}::${variable.name}由于不是`$message`, 被过滤")
             is Type -> println("Type::${name}由于不是`$message`, 被过滤")
             is Method -> println("${className}::Method::${nameWithClass()}(${formalParams.joinToString { it.variable.typeName }})由于不是`$message`, 被过滤")
+            is Constructor -> println("Constructor::$name(${formalParams.joinToString { it.variable.typeName }})由于不是`$message`, 被过滤")
             else -> println("不支持的过滤类型")
         }
         false
@@ -38,6 +36,7 @@ fun <T> T.mustNot(message: String = "", mapper: T.() -> Boolean?): Boolean {
             is Field -> println("${className}::Field::${variable.typeName}::${variable.name}由于是`$message`, 被过滤")
             is Type -> println("Type::${name}由于是`$message`, 被过滤")
             is Method -> println("${className}::Method::${name}(${formalParams.joinToString { it.variable.typeName }})由于是`$message`, 被过滤")
+            is Constructor -> println("Constructor::$name(${formalParams.joinToString { it.variable.typeName }})由于是`$message`, 被过滤")
             else -> println("不支持的过滤类型")
         }
         false
