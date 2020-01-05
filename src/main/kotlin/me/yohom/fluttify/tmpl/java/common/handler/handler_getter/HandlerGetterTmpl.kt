@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_getter
 
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Field
 
 //put("#__getter_name__#", (args, methodResult) -> {
@@ -13,22 +14,20 @@ import me.yohom.fluttify.model.Field
 //
 //    methodResult.success(#__result__#);
 //});
-internal class HandlerGetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readText()
 
-    fun javaGetter(): String {
-        return tmpl
-            .replace("#__getter_name__#", field.getterMethodName())
-            .replace("#__class_name__#", field.className.replace("$", "."))
-            .replace("#__field_type__#", field.variable.typeName.replace("$", "."))
-            .replace("#__field_name__#", field.variable.name)
-            .replace(
-                "#__put_map__#",
-                if (field.variable.jsonable()) "" else "getHEAP().put(result.hashCode(), result);"
-            )
-            .replace(
-                "#__result__#",
-                if (field.variable.jsonable()) "result" else "result.hashCode()"
-            )
-    }
+fun HandlerGetterTmpl(field: Field): String {
+    return tmpl
+        .replace("#__getter_name__#", field.getterMethodName())
+        .replace("#__class_name__#", field.className.replace("$", "."))
+        .replace("#__field_type__#", field.variable.typeName.replace("$", "."))
+        .replace("#__field_name__#", field.variable.name)
+        .replace(
+            "#__put_map__#",
+            if (field.variable.jsonable()) "" else "getHEAP().put(result.hashCode(), result);"
+        )
+        .replace(
+            "#__result__#",
+            if (field.variable.jsonable()) "result" else "result.hashCode()"
+        )
 }

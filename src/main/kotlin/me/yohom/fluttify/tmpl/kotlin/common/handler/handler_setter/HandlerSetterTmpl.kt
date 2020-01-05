@@ -2,10 +2,10 @@ package me.yohom.fluttify.tmpl.kotlin.common.handler.handler_setter
 
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgListTmpl
+import me.yohom.fluttify.tmpl.kotlin.common.handler.common.arg.ArgRefTmpl
 
 //"#__setter_name__#" to { registrar, args, methodResult ->
 //    #__arg__#
@@ -23,10 +23,10 @@ internal class HandlerSetterTmpl(private val field: Field) {
         val setterName = field.setterMethodName()
         val fieldName = field.variable.name
         val arg = when {
-            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).javaArgJsonable()
-            field.variable.isEnum() -> ArgEnumTmpl(field.variable).javaArgEnum()
-            field.variable.isList -> ArgListTmpl(field.variable).javaArgList()
-            else -> ArgRefTmpl(field.variable).javaArgRef()
+            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).kotlinArgJsonable()
+            field.variable.isEnum() -> ArgEnumTmpl(field.variable).kotlinArgEnum()
+            field.variable.isList -> ArgListTmpl(field.variable).kotlinArgList()
+            else -> ArgRefTmpl(field.variable).kotlinArgRef()
         }
         val className = field.className
 

@@ -134,7 +134,7 @@ data class Variable(
 
     fun var2Args(hostMethod: Method? = null): String {
         return if (typeName.findType().isCallback() && hostMethod != null) {
-            CallbackTmpl(hostMethod, typeName.findType()).javaCallback()
+            CallbackTmpl(hostMethod, typeName.findType())
         } else {
             when {
                 isList -> when {

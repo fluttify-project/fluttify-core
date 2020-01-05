@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list
 
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.genericType
+import me.yohom.fluttify.extensions.getResource
 
 //if (result != null) {
 //    List<Integer> refIdList = new ArrayList<>();
@@ -13,13 +14,9 @@ import me.yohom.fluttify.extensions.genericType
 //} else {
 //    methodResult.success(null);
 //}
-internal class ResultListTmpl(private val returnType: TYPE_NAME) {
+private val tmpl = getResource("/tmpl/java/result_list.stmt.java.tmpl").readText()
 
-    private val tmpl = this::class.java.getResource("/tmpl/java/result_list.stmt.java.tmpl").readText()
-
-    fun javaListResult(): String {
-        return tmpl
-            .replace("#__type_name__#", returnType.genericType().replace("$", "."))
-    }
-
+fun ResultListTmpl(returnType: TYPE_NAME): String {
+    return tmpl
+        .replace("#__type_name__#", returnType.genericType().replace("$", "."))
 }

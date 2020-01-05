@@ -2,16 +2,14 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.model.Method
 
-class CallbackReturnTmpl(private val method: Method) {
-    fun javaCallbackReturn(): String {
-        return when (method.returnType) {
-            "boolean" -> "return true;"
-            "int" -> "return 0;"
-            "long" -> "return 0L;"
-            "float" -> "return 0f;"
-            "double" -> "return 0.0;"
-            "void" -> ""
-            else -> "return null;"
-        }
+fun CallbackReturnTmpl(method: Method): String {
+    return when (method.returnType) {
+        "boolean" -> "return true;"
+        "int" -> "return 0;"
+        "long" -> "return 0L;"
+        "float" -> "return 0f;"
+        "double" -> "return 0.0;"
+        "void" -> ""
+        else -> "return null;"
     }
 }

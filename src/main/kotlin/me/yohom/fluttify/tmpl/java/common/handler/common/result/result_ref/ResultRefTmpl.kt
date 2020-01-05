@@ -1,5 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref
 
+import me.yohom.fluttify.extensions.getResource
+
 //if (result != null) {
 //    int returnRefId = result.hashCode();
 //    getHEAP().put(returnRefId, result);
@@ -8,12 +10,8 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref
 //} else {
 //    methodResult.success(null);
 //}
-internal class ResultRefTmpl {
+private val tmpl = getResource("/tmpl/java/result_ref.stmt.java.tmpl").readText()
 
-    private val tmpl = this::class.java.getResource("/tmpl/java/result_ref.stmt.java.tmpl").readText()
-
-    fun javaRefResult(): String {
-        return tmpl
-    }
-
+fun ResultRefTmpl(): String {
+    return tmpl
 }

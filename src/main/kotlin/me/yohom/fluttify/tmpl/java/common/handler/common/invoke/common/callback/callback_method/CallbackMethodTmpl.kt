@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.extensions.enArrayList
 import me.yohom.fluttify.extensions.enList
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Method
@@ -32,57 +33,57 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //    // method result
 //    #__return_stmt__#
 //}
-internal class CallbackMethodTmpl(private val method: Method) {
-    private val tmpl = this::class.java.getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText()
 
-    fun javaCallbackMethod(): String {
-        val callbackMethod = method.name
-        val callbackMethodName = method.nameWithClass()
-        val methodChannel = "${method.className.replace("$", ".")}::Callback"
-        val formalParams = method
-            .formalParams
-            .map { it.variable }
-            .joinToString { "${when (it.listType) {
+fun CallbackMethodTmpl(method: Method): String {
+    val callbackMethod = method.name
+    val callbackMethodName = method.nameWithClass()
+    val methodChannel = "${method.className.replace("$", ".")}::Callback"
+    val formalParams = method
+        .formalParams
+        .map { it.variable }
+        .joinToString {
+            "${when (it.listType) {
                 ListType.ArrayList -> it.typeName.enArrayList()
                 ListType.List -> it.typeName.enList()
                 else -> it.typeName
-            }.replace("$", ".")} ${it.name}" }
-        val returnType = method.returnType.replace("$", ".")
-        val localArgs = method
-            .formalParams
-            .joinToString("\n") {
-                when {
-                    it.variable.jsonable() -> CallbackArgJsonableTmpl(it).javaCallbackArgJsonable()
-                    it.variable.isEnum() -> CallbackArgEnumTmpl(it).javaCallbackArgEnum()
-                    it.variable.isList -> CallbackArgListTmpl(it).javaCallbackArgList()
-                    else -> CallbackArgRefTmpl(it).javaCallbackArgRef()
-                }
+            }.replace("$", ".")} ${it.name}"
+        }
+    val returnType = method.returnType.replace("$", ".")
+    val localArgs = method
+        .formalParams
+        .joinToString("\n") {
+            when {
+                it.variable.jsonable() -> CallbackArgJsonableTmpl(it)
+                it.variable.isEnum() -> CallbackArgEnumTmpl(it)
+                it.variable.isList -> CallbackArgListTmpl(it)
+                else -> CallbackArgRefTmpl(it)
             }
-        val callbackArgs = method
-            .formalParams
-            .joinToString("\n") {
-                "put(\"${it.variable.name}\", arg${it.variable.name});"
-            }
-        // 打印日志
-        val logArgs = method
-            .formalParams
-            .filterNot { it.variable.isCallback() }
-            .filterNot { it.variable.isLambda() }
-            .joinToString(" + ") { it.variable.name }
-        val log =
-            """Log.d("java-callback", "fluttify-java-callback: ${method.name}(" + ${if (logArgs.isEmpty()) "\"\"" else logArgs} + ")");"""
-        // 返回语句
-        val returnStmt = CallbackReturnTmpl(method).javaCallbackReturn()
+        }
+    val callbackArgs = method
+        .formalParams
+        .joinToString("\n") {
+            "put(\"${it.variable.name}\", arg${it.variable.name});"
+        }
+    // 打印日志
+    val logArgs = method
+        .formalParams
+        .filterNot { it.variable.isCallback() }
+        .filterNot { it.variable.isLambda() }
+        .joinToString(" + ") { it.variable.name }
+    val log =
+        """Log.d("java-callback", "fluttify-java-callback: ${method.name}(" + ${if (logArgs.isEmpty()) "\"\"" else logArgs} + ")");"""
+    // 返回语句
+    val returnStmt = CallbackReturnTmpl(method)
 
-        return tmpl
-            .replace("#__callback_method__#", callbackMethod)
-            .replace("#__callback_method_name__#", callbackMethodName)
-            .replace("#__method_channel__#", methodChannel)
-            .replace("#__formal_params__#", formalParams)
-            .replace("#__return_type__#", returnType)
-            .replaceParagraph("#__local_args__#", localArgs)
-            .replaceParagraph("#__callback_args__#", callbackArgs)
-            .replaceParagraph("#__log__#", log)
-            .replaceParagraph("#__return_stmt__#", returnStmt)
-    }
+    return tmpl
+        .replace("#__callback_method__#", callbackMethod)
+        .replace("#__callback_method_name__#", callbackMethodName)
+        .replace("#__method_channel__#", methodChannel)
+        .replace("#__formal_params__#", formalParams)
+        .replace("#__return_type__#", returnType)
+        .replaceParagraph("#__local_args__#", localArgs)
+        .replaceParagraph("#__callback_args__#", callbackArgs)
+        .replaceParagraph("#__log__#", log)
+        .replaceParagraph("#__return_stmt__#", returnStmt)
 }

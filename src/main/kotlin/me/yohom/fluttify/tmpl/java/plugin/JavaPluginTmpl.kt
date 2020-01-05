@@ -59,58 +59,55 @@ import me.yohom.fluttify.tmpl.java.plugin.register_platform_view.RegisterPlatfor
 //        void call(Map<String, Object> args, MethodChannel.Result methodResult);
 //    }
 //}
-class JavaPluginTmpl(private val lib: Lib) {
-    private val tmpl = this::class.java.getResource("/tmpl/java/plugin.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/plugin.java.tmpl").readText()
 
-    fun javaPlugin(): String {
-        // 包名
-        val packageName = "${ext.org}.${ext.projectName}"
+fun JavaPluginTmpl(lib: Lib): String {
+    // 包名
+    val packageName = "${ext.org}.${ext.projectName}"
 
-        // 插件名称
-        val pluginClassName = ext.projectName.underscore2Camel(true)
+    // 插件名称
+    val pluginClassName = ext.projectName.underscore2Camel(true)
 
-        // method channel
-        val methodChannel = "${ext.org}/${ext.projectName}"
+    // method channel
+    val methodChannel = "${ext.org}/${ext.projectName}"
 
-        // 注册PlatformView
-        val registerPlatformViews = lib
-            .types
-            .filter { it.isView() && !it.isObfuscated() }
-            .joinToString("\n") { RegisterPlatformViewTmpl(it).javaRegisterPlatformView() }
+    // 注册PlatformView
+    val registerPlatformViews = lib
+        .types
+        .filter { it.isView() && !it.isObfuscated() }
+        .joinToString("\n") { RegisterPlatformViewTmpl(it) }
 
-        val getterHandlers = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterGetters()
-            .map { HandlerGetterTmpl(it).javaGetter() }
+    val getterHandlers = lib.types
+        .filterType()
+        .flatMap { it.fields }
+        .filterGetters()
+        .map { HandlerGetterTmpl(it) }
 
-        val setterHandlers = lib.types
-            .filterType()
-            .flatMap { it.fields }
-            .filterSetters()
-            .map { HandlerSetterTmpl(it).javaSetter() }
+    val setterHandlers = lib.types
+        .filterType()
+        .flatMap { it.fields }
+        .filterSetters()
+        .map { HandlerSetterTmpl(it) }
 
-        val methodHandlers = lib.types
-            .filterType()
-            .flatMap { it.methods }
-            .filterMethod()
-            .map { HandlerMethodTmpl(it).javaHandlerMethod() }
+    val methodHandlers = lib.types
+        .filterType()
+        .flatMap { it.methods }
+        .filterMethod()
+        .map { HandlerMethodTmpl(it) }
 
-        val objectFactoryHandlers = lib.types
-            .filterConstructable()
-            .flatMap { HandlerObjectFactoryTmpl(it).javaObjectFactory() }
+    val objectFactoryHandlers = lib.types
+        .filterConstructable()
+        .flatMap { HandlerObjectFactoryTmpl(it) }
 
-        return tmpl
-            .replace("#__package_name__#", packageName)
-            .replace("#__plugin_name__#", pluginClassName)
-            .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__getter_branches__#", "")
-            .replaceParagraph("#__setter_branches__#", "")
-            .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
-            .replaceParagraph(
-                "#__handlers__#",
-                getterHandlers.union(setterHandlers).union(methodHandlers).union(objectFactoryHandlers).joinToString("\n")
-            )
-
-    }
+    return tmpl
+        .replace("#__package_name__#", packageName)
+        .replace("#__plugin_name__#", pluginClassName)
+        .replace("#__method_channel__#", methodChannel)
+        .replaceParagraph("#__getter_branches__#", "")
+        .replaceParagraph("#__setter_branches__#", "")
+        .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
+        .replaceParagraph(
+            "#__handlers__#",
+            getterHandlers.union(setterHandlers).union(methodHandlers).union(objectFactoryHandlers).joinToString("\n")
+        )
 }

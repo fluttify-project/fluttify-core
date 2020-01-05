@@ -35,7 +35,6 @@ open class AndroidJavaInterface : FluttifyTask() {
         // 生成主plugin文件
         sdk.directLibs.forEach {
             JavaPluginTmpl(it)
-                .javaPlugin()
                 .run {
                     pluginOutputFile.file().writeText(this)
                 }
@@ -54,7 +53,6 @@ open class AndroidJavaInterface : FluttifyTask() {
                             )}/${ext.projectName}/${it.name.simpleName()}Factory.java".file()
 
                         JavaPlatformViewFactory(it)
-                            .javaPlatformViewFactory()
                             .run {
                                 factoryOutputFile.writeText(this)
                             }

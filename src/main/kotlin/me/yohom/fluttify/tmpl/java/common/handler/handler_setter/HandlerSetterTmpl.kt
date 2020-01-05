@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_setter
 
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
@@ -17,25 +18,23 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //    ref.#__field_name__# = #__field_value__#;
 //    methodResult.success("success");
 //});
-internal class HandlerSetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/java/handler_setter.stmt.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/handler_setter.stmt.java.tmpl").readText()
 
-    fun javaSetter(): String {
-        val setterName = field.setterMethodName()
-        val fieldName = field.variable.name
-        val arg = when {
-            field.variable.jsonable() -> ArgJsonableTmpl(field.variable).javaArgJsonable()
-            field.variable.isEnum() -> ArgEnumTmpl(field.variable).javaArgEnum()
-            field.variable.isList -> ArgListTmpl(field.variable).javaArgList()
-            else -> ArgRefTmpl(field.variable).javaArgRef()
-        }
-        val className = field.className.replace("$", ".")
-
-        return tmpl
-            .replace("#__setter_name__#", setterName)
-            .replace("#__field_name__#", fieldName)
-            .replaceParagraph("#__arg__#", arg)
-            .replace("#__class_name__#", className)
-            .replace("#__field_value__#", field.variable.var2Args())
+fun HandlerSetterTmpl(field: Field): String {
+    val setterName = field.setterMethodName()
+    val fieldName = field.variable.name
+    val arg = when {
+        field.variable.jsonable() -> ArgJsonableTmpl(field.variable)
+        field.variable.isEnum() -> ArgEnumTmpl(field.variable)
+        field.variable.isList -> ArgListTmpl(field.variable)
+        else -> ArgRefTmpl(field.variable)
     }
+    val className = field.className.replace("$", ".")
+
+    return tmpl
+        .replace("#__setter_name__#", setterName)
+        .replace("#__field_name__#", fieldName)
+        .replaceParagraph("#__arg__#", arg)
+        .replace("#__class_name__#", className)
+        .replace("#__field_value__#", field.variable.var2Args())
 }

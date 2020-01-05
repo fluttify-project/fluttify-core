@@ -77,59 +77,55 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //        };
 //    }
 //}
-class PlatformViewFactoryTmpl(private val viewType: Type) {
-    private val tmpl =
-        this::class.java.getResource("/tmpl/java/platform_view_factory.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/platform_view_factory.java.tmpl").readText()
 
-    fun javaPlatformViewFactory(): String {
-        val packageName = "${ext.org}.${ext.projectName}"
-        val factoryName = viewType.name.simpleName()
-        val pluginClass = "${ext.projectName.underscore2Camel()}Plugin"
-        val handlers =
-            viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it).javaHandlerMethod() }
-        val nativeView = viewType.name
-        val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
+fun PlatformViewFactoryTmpl(viewType: Type): String {
+    val packageName = "${ext.org}.${ext.projectName}"
+    val factoryName = viewType.name.simpleName()
+    val pluginClass = "${ext.projectName.underscore2Camel()}Plugin"
+    val handlers =
+        viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it) }
+    val nativeView = viewType.name
+    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
-        // 找出是否存在非Context, AttributeSet和int类型参数的构造器
-        // 如果存在, 那么以这个构造器进行初始化
-        val customConstructorList = viewType
-            .constructors
-            .filter {
-                it.formalParams.any { param ->
-                    param.variable.typeName !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+    // 找出是否存在非Context, AttributeSet和int类型参数的构造器
+    // 如果存在, 那么以这个构造器进行初始化
+    val customConstructorList = viewType
+        .constructors
+        .filter {
+            it.formalParams.any { param ->
+                param.variable.typeName !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+            }
+        }
+
+    return if (customConstructorList.isNotEmpty()) {
+        val constructor = customConstructorList[0]
+        // 去掉Context的参数列表, 不需要Context
+        val formalParamsExcludeContext = constructor
+            .formalParams
+            .filter { it.variable.typeName != "android.content.Context" }
+
+        // 反序列化参数
+        val args = formalParamsExcludeContext
+            .joinToString("\n") {
+                when {
+                    it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
+                    it.variable.isEnum() -> ArgEnumTmpl(it.variable)
+                    it.variable.isList -> ArgListTmpl(it.variable)
+                    else -> ArgRefTmpl(it.variable)
                 }
             }
-
-        return if (customConstructorList.isNotEmpty()) {
-            val constructor = customConstructorList[0]
-            // 去掉Context的参数列表, 不需要Context
-            val formalParamsExcludeContext = constructor
-                .formalParams
-                .filter { it.variable.typeName != "android.content.Context" }
-
-            // 反序列化参数
-            val args = formalParamsExcludeContext
-                .joinToString("\n") {
-                    when {
-                        it.variable.jsonable() -> ArgJsonableTmpl(it.variable).javaArgJsonable()
-                        it.variable.isEnum() -> ArgEnumTmpl(it.variable).javaArgEnum()
-                        it.variable.isList -> ArgListTmpl(it.variable).javaArgList()
-                        else -> ArgRefTmpl(it.variable).javaArgRef()
-                    }
-                }
-            // 传入参数
-            val creationArgs = formalParamsExcludeContext.joinToString(prefix = ", ") { it.variable.name }
-            tmpl.replaceParagraph("#__args__#", args)
-                .replace("#__creation_args__#", creationArgs)
-        } else {
-            tmpl.replace("#__args__#", "")
-                .replace("#__creation_args__#", "")
-        }.replace("#__package_name__#", packageName)
-            .replace("#__factory_name__#", factoryName)
-            .replace("#__plugin_class__#", pluginClass)
-            .replaceParagraph("#__handlers__#", handlers)
-            .replace("#__native_view__#", nativeView)
-            .replace("#__method_channel__#", methodChannel)
-
-    }
+        // 传入参数
+        val creationArgs = formalParamsExcludeContext.joinToString(prefix = ", ") { it.variable.name }
+        tmpl.replaceParagraph("#__args__#", args)
+            .replace("#__creation_args__#", creationArgs)
+    } else {
+        tmpl.replace("#__args__#", "")
+            .replace("#__creation_args__#", "")
+    }.replace("#__package_name__#", packageName)
+        .replace("#__factory_name__#", factoryName)
+        .replace("#__plugin_class__#", pluginClass)
+        .replaceParagraph("#__handlers__#", handlers)
+        .replace("#__native_view__#", nativeView)
+        .replace("#__method_channel__#", methodChannel)
 }

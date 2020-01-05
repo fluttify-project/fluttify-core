@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
@@ -12,15 +13,13 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //    // call dart method
 //    #__callback_methods__#
 //}
-internal class CallbackTmpl(private val callerMethod: Method, private val callbackType: Type) {
-    private val tmpl = this::class.java.getResource("/tmpl/java/callback.stmt.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/callback.stmt.java.tmpl").readText()
 
-    fun javaCallback(): String {
-        return tmpl
-            .replace("#__callback_class_name__#", callbackType.name.replace("$", "."))
-            .replace("#__callback_channel__#", callerMethod.nameWithClass())
-            .replaceParagraph("#__callback_methods__#", callbackType
-                .methods
-                .joinToString("\n") { CallbackMethodTmpl(it).javaCallbackMethod() })
-    }
+fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
+    return tmpl
+        .replace("#__callback_class_name__#", callbackType.name.replace("$", "."))
+        .replace("#__callback_channel__#", callerMethod.nameWithClass())
+        .replaceParagraph("#__callback_methods__#", callbackType
+            .methods
+            .joinToString("\n") { CallbackMethodTmpl(it) })
 }
