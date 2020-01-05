@@ -1,9 +1,10 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.result
 
+import me.yohom.fluttify.extensions.getResource
+
 //methodResult(@"success");
-internal class ResultVoidTmpl {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/result_void.stmt.m.tmpl").readText()
+private val tmpl = getResource("/tmpl/objc/result_void.stmt.m.tmpl").readText()
 
-    fun objcResultVoid() = tmpl
-
+fun ResultVoidTmpl(): String {
+    return tmpl
 }

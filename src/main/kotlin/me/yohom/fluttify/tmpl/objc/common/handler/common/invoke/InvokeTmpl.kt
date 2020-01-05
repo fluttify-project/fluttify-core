@@ -60,7 +60,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
 
     private fun param2arg(it: Parameter): String {
         return if (it.variable.isLambda() && method != null) {
-            "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType()).objcCallback()}"
+            "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
         } else {
             "${it.named}: ${if (it.variable.isCallback()) "self" else it.variable.name}"
         }

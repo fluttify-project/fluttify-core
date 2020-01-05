@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.plugin
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
@@ -71,159 +71,153 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 //#__delegate_methods__#
 //
 //@end
-class ObjcPluginTmpl(
-    private val libs: List<Lib>,
-    private val ext: FluttifyExtension
-) {
-    private val hTmpl = this::class.java.getResource("/tmpl/objc/plugin.h.tmpl").readText()
-    private val mTmpl = this::class.java.getResource("/tmpl/objc/plugin.m.tmpl").readText()
+private val hTmpl = getResource("/tmpl/objc/plugin.h.tmpl").readText()
+private val mTmpl = getResource("/tmpl/objc/plugin.m.tmpl").readText()
 
-    fun objcPlugin(): List<String> {
-        // 插件名称
-        val pluginClassName = ext.projectName.underscore2Camel(true)
+fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
+    // 插件名称
+    val pluginClassName = ext.projectName.underscore2Camel(true)
 
-        // method channel
-        val methodChannel = "${ext.org}/${ext.projectName}"
+    // method channel
+    val methodChannel = "${ext.org}/${ext.projectName}"
 
-        // PlatformView的头文件
-        val platformViewHeader = mutableListOf<String>()
-        // 注册PlatformView
-        val registerPlatformViews = libs
-            .flatMap { it.types }
-            .filter { it.isView() }
-            .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
-            .joinToString("\n") {
-                RegisterPlatformViewTmpl(it).objcRegisterPlatformView()
+    // PlatformView的头文件
+    val platformViewHeader = mutableListOf<String>()
+    // 注册PlatformView
+    val registerPlatformViews = libs
+        .flatMap { it.types }
+        .filter { it.isView() }
+        .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
+        .joinToString("\n") {
+            RegisterPlatformViewTmpl(it)
+        }
+
+    // 如果不是framework, 只有.h+.a的话, 把这些.h提取出来
+    val directHeader = ext.ios.libDir
+        .file()
+        .listFiles()
+        ?.filter { it.extension == "h" }
+        // todo 如果是远程依赖, 那么可以用pod的名字, 如果是直接下载的呢?
+        ?.map { "#import <${ext.ios.remote.name}/${it.name}>" }
+        ?: listOf()
+
+    // 提取所有framework内的头文件
+    val imports = ext.ios.libDir
+        .file()
+        .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+        ?.flatMap { framework ->
+            "${framework}/Headers/"
+                .file()
+                .listFiles { _, name -> name.endsWith(".h") }
+                ?.map { framework to it }
+                ?: listOf()
+        }
+        ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
+        ?.union(platformViewHeader)
+        ?.union(directHeader)
+        ?.joinToString("\n")
+        ?: ""
+
+    val protocols = libs
+        .flatMap { it.types }
+        .filter { it.isCallback() }
+        .map { it.name }
+        .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
+        .joinToString(", ")
+
+    val getterHandlers = libs
+        .flatMap { it.types }
+        .filterType()
+        .flatMap { it.fields }
+        .filterGetters()
+        .map { HandlerGetterTmpl(it) }
+
+    val setterHandlers = libs
+        .flatMap { it.types }
+        .filterType()
+        .flatMap { it.fields }
+        .filterSetters()
+        .map { HandlerSetterTmpl(it) }
+
+    val functionHandlers = libs
+        .flatMap { it.types }
+        // 暂时先不处理含有lambda的函数
+        .filter { it.isKnownFunction() && it.formalParams.all { !it.variable.isLambda() } }
+        .map { it.asMethod() }
+        .map { HandlerMethodTmpl(it) }
+
+    val methodHandlers = libs
+        .flatMap { it.types }
+        .filterType()
+        .flatMap { it.methods }
+        .filterMethod()
+        .map { HandlerMethodTmpl(it) }
+
+    val typeCastHandlers = libs
+        .flatMap { it.types }
+        .filterType()
+        .asSequence()
+        .filterNot { it.isLambda() }
+        .filterNot { it.isFunction() }
+        .filterNot { it.isAlias() }
+        .distinctBy { it.name }
+        .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
+        .map { HandlerTypeCastTmpl(it) }
+        .toList()
+
+    val typeCheckHandlers = libs
+        .flatMap { it.types }
+        .filterType()
+        .asSequence()
+        .filterNot { it.isLambda() }
+        .filterNot { it.isFunction() }
+        .filterNot { it.isAlias() }
+        .distinctBy { it.name }
+        .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
+        .map { HandlerTypeCheckTmpl(it) }
+        .toList()
+
+    val createObjectHandlers = libs
+        .flatMap { it.types }
+        .filterConstructable()
+        .distinctBy { it.name }
+        .map {
+            if (it.isStruct()) {
+                HandlerObjectFactoryStructTmpl(it)
+            } else {
+                HandlerObjectFactoryRefTmpl(it)
             }
+        }
 
-        // 如果不是framework, 只有.h+.a的话, 把这些.h提取出来
-        val directHeader = ext.ios.libDir
-            .file()
-            .listFiles()
-            ?.filter { it.extension == "h" }
-            // todo 如果是远程依赖, 那么可以用pod的名字, 如果是直接下载的呢?
-            ?.map { "#import <${ext.ios.remote.name}/${it.name}>" }
-            ?: listOf()
+    val callbackMethods = libs
+        .flatMap { it.types }
+        .filterType()
+        .filter { it.isCallback() }
+        .flatMap { it.methods }
+        .distinctBy { it.exactName }
+        .map { CallbackMethodTmpl(it) }
 
-        // 提取所有framework内的头文件
-        val imports = ext.ios.libDir
-            .file()
-            .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
-            ?.flatMap { framework ->
-                "${framework}/Headers/"
-                    .file()
-                    .listFiles { _, name -> name.endsWith(".h") }
-                    ?.map { framework to it }
-                    ?: listOf()
-            }
-            ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
-            ?.union(platformViewHeader)
-            ?.union(directHeader)
-            ?.joinToString("\n")
-            ?: ""
-
-        val protocols = libs
-            .flatMap { it.types }
-            .filter { it.isCallback() }
-            .map { it.name }
-            .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
-            .joinToString(", ")
-
-        val getterHandlers = libs
-            .flatMap { it.types }
-            .filterType()
-            .flatMap { it.fields }
-            .filterGetters()
-            .map { HandlerGetterTmpl(it).objcGetter() }
-
-        val setterHandlers = libs
-            .flatMap { it.types }
-            .filterType()
-            .flatMap { it.fields }
-            .filterSetters()
-            .map { HandlerSetterTmpl(it).objcSetter() }
-
-        val functionHandlers = libs
-            .flatMap { it.types }
-            // 暂时先不处理含有lambda的函数
-            .filter { it.isKnownFunction() && it.formalParams.all { !it.variable.isLambda() } }
-            .map { it.asMethod() }
-            .map { HandlerMethodTmpl(it).objcHandlerMethod() }
-
-        val methodHandlers = libs
-            .flatMap { it.types }
-            .filterType()
-            .flatMap { it.methods }
-            .filterMethod()
-            .map { HandlerMethodTmpl(it).objcHandlerMethod() }
-
-        val typeCastHandlers = libs
-            .flatMap { it.types }
-            .filterType()
-            .asSequence()
-            .filterNot { it.isLambda() }
-            .filterNot { it.isFunction() }
-            .filterNot { it.isAlias() }
-            .distinctBy { it.name }
-            .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
-            .map { HandlerTypeCastTmpl(it).objcTypeCast() }
-            .toList()
-
-        val typeCheckHandlers = libs
-            .flatMap { it.types }
-            .filterType()
-            .asSequence()
-            .filterNot { it.isLambda() }
-            .filterNot { it.isFunction() }
-            .filterNot { it.isAlias() }
-            .distinctBy { it.name }
-            .filter { !it.isInterface() && !it.isEnum() && !it.isStruct() }
-            .map { HandlerTypeCheckTmpl(it).objcTypeCheck() }
-            .toList()
-
-        val createObjectHandlers = libs
-            .flatMap { it.types }
-            .filterConstructable()
-            .distinctBy { it.name }
-            .map {
-                if (it.isStruct()) {
-                    HandlerObjectFactoryStructTmpl(it).objcObjectFactoryStruct()
-                } else {
-                    HandlerObjectFactoryRefTmpl(it).objcObjectFactoryRef()
-                }
-            }
-
-        val callbackMethods = libs
-            .flatMap { it.types }
-            .filterType()
-            .filter { it.isCallback() }
-            .flatMap { it.methods }
-            .distinctBy { it.exactName }
-            .map { CallbackMethodTmpl(it).objcDelegateMethod() }
-
-        return listOf(
-            hTmpl
-                .replace("#__imports__#", imports)
-                .replace("#__plugin_name__#", pluginClassName)
-                .replace("#__protocols__#", protocols),
-            mTmpl
-                .replace("#__plugin_name__#", pluginClassName)
-                .replace("#__method_channel__#", methodChannel)
-                .replaceParagraph("#__getter_branches__#", "")
-                .replaceParagraph("#__setter_branches__#", "")
-                .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
-                .replaceParagraph(
-                    "#__handlers__#",
-                    methodHandlers.union(getterHandlers)
-                        .union(setterHandlers)
-                        .union(typeCheckHandlers)
-                        .union(typeCastHandlers)
-                        .union(createObjectHandlers)
-                        .union(functionHandlers)
-                        .joinToString("\n")
-                )
-                .replaceParagraph("#__delegate_methods__#", callbackMethods.joinToString("\n"))
-
-        )
-    }
+    return listOf(
+        hTmpl
+            .replace("#__imports__#", imports)
+            .replace("#__plugin_name__#", pluginClassName)
+            .replace("#__protocols__#", protocols),
+        mTmpl
+            .replace("#__plugin_name__#", pluginClassName)
+            .replace("#__method_channel__#", methodChannel)
+            .replaceParagraph("#__getter_branches__#", "")
+            .replaceParagraph("#__setter_branches__#", "")
+            .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
+            .replaceParagraph(
+                "#__handlers__#",
+                methodHandlers.union(getterHandlers)
+                    .union(setterHandlers)
+                    .union(typeCheckHandlers)
+                    .union(typeCastHandlers)
+                    .union(createObjectHandlers)
+                    .union(functionHandlers)
+                    .joinToString("\n")
+            )
+            .replaceParagraph("#__delegate_methods__#", callbackMethods.joinToString("\n"))
+    )
 }

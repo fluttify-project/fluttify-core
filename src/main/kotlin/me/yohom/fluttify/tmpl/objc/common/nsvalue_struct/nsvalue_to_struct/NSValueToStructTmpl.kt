@@ -1,15 +1,14 @@
 package me.yohom.fluttify.tmpl.objc.common.nsvalue_struct.nsvalue_to_struct
 
 import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.extensions.getResource
 
 //#__struct_type__# _structValue;
 //[#__nsvalue_variable_name__# getValue:&_structValue];
-class NSValueToStructTmpl(private val structType: TYPE_NAME, private val nsvalueVar: String) {
-    private val hTmpl = this::class.java.getResource("/tmpl/objc/nsvalue_to_struct.stmt.m.tmpl").readText()
+private val hTmpl = getResource("/tmpl/objc/nsvalue_to_struct.stmt.m.tmpl").readText()
 
-    fun objcNSValueToStruct(): String {
-        return hTmpl
-            .replace("#__struct_type__#", structType)
-            .replace("#__nsvalue_variable_name__#", nsvalueVar)
-    }
+fun NSValueToStructTmpl(structType: TYPE_NAME, nsvalueVar: String): String {
+    return hTmpl
+        .replace("#__struct_type__#", structType)
+        .replace("#__nsvalue_variable_name__#", nsvalueVar)
 }

@@ -1,9 +1,8 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_list
 
-import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.enpointer
-import me.yohom.fluttify.extensions.underscore2Camel
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Variable
 
 //// 列表回调参数
@@ -15,13 +14,10 @@ import me.yohom.fluttify.model.Variable
 //    // 放到HEAP中的数据
 //    HEAP[@(item.hash)] = item;
 //}
-internal class CallbackArgListTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readText()
+private val tmpl = getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readText()
 
-    fun objcCallbackArgList(): String {
-        return tmpl
-            .replace("#__type_name__#", variable.typeName.enpointer())
-            .replace("#__arg_name__#", variable.name.depointer())
-
-    }
+fun CallbackArgListTmpl(variable: Variable): String {
+    return tmpl
+        .replace("#__type_name__#", variable.typeName.enpointer())
+        .replace("#__arg_name__#", variable.name.depointer())
 }

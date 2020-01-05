@@ -1,9 +1,10 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.result
 
+import me.yohom.fluttify.extensions.getResource
+
 //methodResult(@(result));
-internal class ResultValueTmpl {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/result_value.stmt.m.tmpl").readText()
+private val tmpl = getResource("/tmpl/objc/result_value.stmt.m.tmpl").readText()
 
-    fun objcResultValue() = tmpl
-
+fun ResultValueTmpl(): String {
+    return tmpl
 }

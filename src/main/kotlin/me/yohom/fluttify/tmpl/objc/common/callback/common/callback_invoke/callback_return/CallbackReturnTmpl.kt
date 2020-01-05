@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_return
 
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isValueType
-import me.yohom.fluttify.extensions.isVoid
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
 //// __block #__callback_result_type__# _callbackResult = nil;
@@ -26,12 +23,9 @@ import me.yohom.fluttify.model.Method
 //NSLog(@"暂不支持有返回值的回调方法");
 //
 //#__stub_return__#;
-internal class CallbackReturnTmpl(private val method: Method) {
+private val tmpl = getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText()
 
-    private val tmpl =
-        this::class.java.getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText()
-
-    fun objcCallbackReturn(): String {
+fun CallbackReturnTmpl(method: Method): String {
 //        val callbackResultType = method.returnType.run { if (findType().isStruct()) "NSValue*" else this }
 //        val callbackMethod =
 //            "Callback::${method.className}::${method.name}${method.formalParams.joinToString("") { it.named }.capitalize()}"
@@ -64,18 +58,17 @@ internal class CallbackReturnTmpl(private val method: Method) {
 //            .replace("#__struct_value__#", structValue)
 //            .replace("#__callback_result__#", callbackResult)
 
-        val stubReturn = method
-            .returnType
-            .run {
-                when {
-                    isVoid() -> ""
-                    isValueType() -> "return 0;"
-                    findType().isStruct() -> "${this} value; return value;"
-                    else -> "return nil;"
-                }
+    val stubReturn = method
+        .returnType
+        .run {
+            when {
+                isVoid() -> ""
+                isValueType() -> "return 0;"
+                findType().isStruct() -> "${this} value; return value;"
+                else -> "return nil;"
             }
+        }
 
-        return tmpl
-            .replaceParagraph("__stub_return__", stubReturn)
-    }
+    return tmpl
+        .replaceParagraph("__stub_return__", stubReturn)
 }

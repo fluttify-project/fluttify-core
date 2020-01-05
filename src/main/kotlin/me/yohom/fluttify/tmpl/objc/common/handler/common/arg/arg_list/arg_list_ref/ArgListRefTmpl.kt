@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.enpointer
 import me.yohom.fluttify.extensions.enprotocol
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Variable
 
 //// list arg
@@ -12,21 +13,18 @@ import me.yohom.fluttify.model.Variable
 //    #__type_name__# item = (#__type_name__#) HEAP[[#__arg_name__#RefArray objectAtIndex:i]];
 //    [#__arg_name__# addObject:item];
 //}
-internal class ArgListRefTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/arg_list_ref.stmt.m.tmpl").readText()
+private val tmpl = getResource("/tmpl/objc/arg_list_ref.stmt.m.tmpl").readText()
 
-    fun objcArgListRef(): String {
-        val typeName = variable.run {
-            if (isInterface()) {
-                typeName.enprotocol()
-            } else {
-                typeName.enpointer()
-            }
+fun ArgListRefTmpl(variable: Variable): String {
+    val typeName = variable.run {
+        if (isInterface()) {
+            typeName.enprotocol()
+        } else {
+            typeName.enpointer()
         }
-        val argName = variable.name.depointer()
-        return tmpl
-            .replace("#__type_name__#", typeName)
-            .replace("#__arg_name__#", argName)
-
     }
+    val argName = variable.name.depointer()
+    return tmpl
+        .replace("#__type_name__#", typeName)
+        .replace("#__arg_name__#", argName)
 }

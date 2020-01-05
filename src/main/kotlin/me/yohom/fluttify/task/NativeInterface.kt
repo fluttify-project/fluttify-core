@@ -130,8 +130,7 @@ open class IOSObjcInterface : FluttifyTask() {
         val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成主plugin文件
-        ObjcPluginTmpl(sdk.directLibs, ext)
-            .objcPlugin()
+        ObjcPluginTmpl(sdk.directLibs)
             .run {
                 pluginHFile.file().writeText(this[0])
                 pluginMFile.file().writeText(this[1])
@@ -148,8 +147,7 @@ open class IOSObjcInterface : FluttifyTask() {
                         val factoryMFile =
                             "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${it.name.simpleName()}Factory.m".file()
 
-                        ObjcPlatformViewFactory(it, lib, ext)
-                            .objcPlatformViewFactory()
+                        ObjcPlatformViewFactory(it, lib)
                             .run {
                                 factoryHFile.writeText(this[0])
                                 factoryMFile.writeText(this[1])

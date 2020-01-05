@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct
 
 import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Variable
 
 //// list arg
@@ -13,14 +14,12 @@ import me.yohom.fluttify.model.Variable
 //    [#__arg_name__#Value getValue:&#__arg_name__#Item];
 //    #__arg_name__#[i] = #__arg_name__#Item;
 //}
-internal class ArgListStructTmpl(private val variable: Variable) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/arg_list_struct.stmt.m.tmpl").readText()
+private val tmpl = getResource("/tmpl/objc/arg_list_struct.stmt.m.tmpl").readText()
 
-    fun objcArgListStruct(): String {
-        val typeName = variable.typeName.depointer()
-        val argName = variable.name.depointer()
-        return tmpl
-            .replace("#__type_name__#", typeName)
-            .replace("#__arg_name__#", argName)
-    }
+fun ArgListStructTmpl(variable: Variable): String {
+    val typeName = variable.typeName.depointer()
+    val argName = variable.name.depointer()
+    return tmpl
+        .replace("#__type_name__#", typeName)
+        .replace("#__arg_name__#", argName)
 }
