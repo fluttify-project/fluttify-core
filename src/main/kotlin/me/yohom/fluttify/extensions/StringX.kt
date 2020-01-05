@@ -418,7 +418,9 @@ fun TYPE_NAME.genericLevel(): Int {
  * 下划线风格转为驼峰风格, [capitalized]表示转换后首字母是否大写
  */
 fun String.underscore2Camel(capitalized: Boolean = true): String {
-    val raw = split("_").joinToString("") { it.capitalize() }
+    val raw = trim { it == '_' } // 先去掉收尾的下划线
+        .split("_")
+        .joinToString("") { it.capitalize() }
     return if (capitalized) raw else raw.decapitalize()
 }
 
@@ -441,24 +443,6 @@ fun String.camel2Underscore(): String {
         }
     }
     return sb.toString()
-}
-
-/**
- * 批量替换字符串 数组分为两部分, 前半部分为被替换的, 后半部分为替换的
- */
-fun String.replaceBatch(vararg sourcesAndDestination: String): String {
-    if (sourcesAndDestination.size % 2 != 0) throw IllegalArgumentException("参数个数应为偶数个")
-
-    val sources = sourcesAndDestination.asList().subList(0, sourcesAndDestination.size / 2)
-    val destinations =
-        sourcesAndDestination.asList().subList(sourcesAndDestination.size / 2, sourcesAndDestination.size)
-
-    var result = this
-    for (index in 0 until sources.size) {
-        result = result.replace(sources[index], destinations[index])
-    }
-
-    return result
 }
 
 /**

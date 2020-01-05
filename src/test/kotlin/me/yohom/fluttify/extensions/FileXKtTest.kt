@@ -1,16 +1,10 @@
-package me.yohom.fluttify.common.extensions
+package me.yohom.fluttify.extensions
 
-import me.yohom.fluttify.extensions.*
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
 
 class FileXKtTest {
-
-    @Test
-    fun javaType() {
-        println("void".run { removeSuffix(substringAfterLast("*", "")) })
-    }
 
     @Test
     fun objcType() {

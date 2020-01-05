@@ -1,9 +1,8 @@
-package me.yohom.fluttify.common.extensions
+package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.Amap
-import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ListXKtTest {
 

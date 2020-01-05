@@ -1,9 +1,9 @@
-package me.yohom.fluttify.common.tmpl.dart
+package me.yohom.fluttify.tmpl.dart
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
-
-internal class CallbackCaseDelegateTmplTest {
+// todo 测试优先级最高的应该是模板类和过滤方法
+class CallbackCaseDelegateTmplTest {
 
     @Test
     fun callbackCase() {

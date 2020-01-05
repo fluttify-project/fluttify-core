@@ -1,7 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.Amap
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ConstructorTest {
 

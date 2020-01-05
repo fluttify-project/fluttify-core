@@ -2,7 +2,7 @@ package me.yohom.fluttify.model
 
 import me.yohom.fluttify.Amap
 import me.yohom.fluttify.Bmap
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class TypeTest {
 

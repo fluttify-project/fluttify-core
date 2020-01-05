@@ -1,6 +1,6 @@
-package me.yohom.fluttify.common.tmpl.dart
+package me.yohom.fluttify.tmpl.dart
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 
 internal class MethodTmplTest {
