@@ -1,20 +1,9 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
-    }
-}
-
 plugins {
     id 'java'
+    id 'maven'
     id 'java-gradle-plugin'
     id 'org.jetbrains.kotlin.jvm' version '1.3.31'
 }
-apply plugin: "com.gradle.plugin-publish"
 
 group 'me.yohom'
 version '0.4.0'
@@ -43,27 +32,4 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:3.14.0"
     // zip https://github.com/zeroturnaround/zt-zip
     implementation 'org.zeroturnaround:zt-zip:1.13'
-}
-
-// 发布到gradle plugin网站 https://plugins.gradle.org/
-pluginBundle {
-    website = 'https://github.com/yohom/fluttify-core'
-    vcsUrl = 'https://github.com/yohom/fluttify-core.git'
-    description = 'A tool that generating dart interface for native SDK.'
-    tags = ['flutter', 'android', 'ios']
-
-    plugins {
-        greetingsPlugin {
-            id = 'me.yohom.fluttify'
-            displayName = 'fluttify'
-        }
-    }
-}
-
-uploadArchives {
-    repositories {
-        ivy {
-            url 'build/plugin'
-        }
-    }
 }
