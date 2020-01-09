@@ -34,13 +34,15 @@ private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 fun TypeSdkTmpl(type: Type): String {
     val currentPackage = ext.projectName
     val className = type.name.toDartType()
-    val superClass = if (type.superClass.isEmpty())
+    // 如果父类是混淆类, 那么直接继承Object类
+    val superClass = if (type.superClass.run { isEmpty() || isObfuscated() })
         type.platform.objectType()
     else
         type.superClass.toDartType()
 
-    val mixins = if (type.ancestorInterfaces().isNotEmpty()) {
-        "with ${type.ancestorInterfaces().reversed().joinToString { it.toDartType() }}"
+    // 如果含有非混淆类的接口, 再以mixin的方式集成
+    val mixins = if (type.ancestorInterfaces(false).isNotEmpty()) {
+        "with ${type.ancestorInterfaces(false).reversed().joinToString { it.toDartType() }}"
     } else {
         ""
     }

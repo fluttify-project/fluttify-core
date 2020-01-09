@@ -134,12 +134,10 @@ open class Type : IPlatform, IScope {
         return must("已知类型") { this != UNKNOWN_TYPE } &&
                 must("公开类型") { isPublic } &&
                 must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } } &&
-                must("祖宗类全部通过过滤") { ancestorTypes.all { it.findType().filter() } } &&
                 mustNot("含有泛型") { genericTypes.isNotEmpty() } &&
                 mustNot("混淆类型") { isObfuscated() } &&
                 mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&
                 mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } &&
-                mustNot("祖宗类含有混淆类型") { ancestorTypes.any { it.isObfuscated() } } &&
                 (isEnum() || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
                     if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
                 }
@@ -313,10 +311,12 @@ open class Type : IPlatform, IScope {
     }
 
     /**
-     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的接口
+     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的接口, [includeObfuscated]区分是否包含混淆的接口类
      */
-    fun ancestorInterfaces(): List<String> {
-        return ancestorTypes.filter { it.findType().typeType == TypeType.Interface }
+    fun ancestorInterfaces(includeObfuscated: Boolean = true): List<String> {
+        return ancestorTypes
+            .filter { it.findType().typeType == TypeType.Interface }
+            .filter { if (!includeObfuscated) !it.isObfuscated() else true }
     }
 
     fun isKnownType(): Boolean {
