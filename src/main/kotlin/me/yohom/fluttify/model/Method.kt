@@ -57,7 +57,13 @@ data class Method(
                 mustNot("废弃方法") { isDeprecated } &&
                 // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
                 mustNot("祖宗类已有的方法") {
-                    name in className.findType().ancestorTypes.flatMap { it.findType().methods }.map { it.name }
+                    name in
+                            className
+                                .findType()
+                                .ancestorTypes
+                                .filter { !it.isObfuscated() }
+                                .flatMap { it.findType().methods }
+                                .map { it.name }
                 } &&
                 must("所在类是公开类") { className.findType().isPublic } &&
                 must("所在类是静态类型") { className.findType().isStaticType } &&
