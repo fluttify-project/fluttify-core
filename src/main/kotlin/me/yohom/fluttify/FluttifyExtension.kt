@@ -166,6 +166,11 @@ open class Remote {
     var version: String = ""
 
     /**
+     * 间接远程依赖
+     */
+    var transitiveDependencies: List<String> = listOf()
+
+    /**
      * android maven 坐标
      */
     val androidCoordinate get() = "$org:$name:$version"

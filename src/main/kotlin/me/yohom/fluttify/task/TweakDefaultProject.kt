@@ -29,8 +29,14 @@ open class TweakDefaultProject : FluttifyTask() {
             .writeText(
                 buildGradleTmpl
                     .replace("#__project_id__#", "${ext.org}.${ext.projectName}")
-                    .replace("#__sdk_dependency__#", ext.android.remote.androidCoordinate.run {
-                        if (ext.android.remote.androidConfigured) "api '$this'" else ""
+                    .replaceParagraph("#__sdk_dependency__#", ext.android.remote.run {
+                        if (androidConfigured) {
+                            setOf(androidCoordinate)
+                                .union(transitiveDependencies)
+                                .joinToString("\n") { "api '$it'" }
+                        } else {
+                            ""
+                        }
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
@@ -53,8 +59,14 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
-                    .replace("#__sdk_dependency__#", ext.ios.remote.iosCoordinate.run {
-                        if (ext.ios.remote.iosConfigured) "s.dependency $this" else ""
+                    .replace("#__sdk_dependency__#", ext.ios.remote.run {
+                        if (iosConfigured) {
+                            setOf(iosCoordinate)
+                                .union(transitiveDependencies)
+                                .joinToString("\n") { "s.dependency $it" }
+                        } else {
+                            ""
+                        }
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
