@@ -4,6 +4,7 @@ import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
+// todo 优化配置类
 open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 项目名称

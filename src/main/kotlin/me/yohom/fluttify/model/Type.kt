@@ -176,7 +176,13 @@ open class Type : IPlatform, IScope {
             .sdks
             .flatMap { it.libs }
             .flatMap { it.types }
-            .filter { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
+            .asSequence()
+            // 计算子类的时候, 去除掉忽略的类
+            .filter { type -> EXCLUDE_TYPES.none { it.matches(type.name) } }
+            .filter { it.isPublic }
+            .filterNot { it.name.isObfuscated() }
+            .filter { (it.superClass == name || name in it.interfaces) }
+            .toList()
     }
 
     fun hasConcretSubtype(): Boolean {
@@ -197,7 +203,9 @@ open class Type : IPlatform, IScope {
     }
 
     fun superTypes(): List<Type> {
-        return listOf(superClass.findType()).union(interfaces.map { it.findType() }).toList()
+        return listOf(superClass.findType())
+            .union(interfaces.map { it.findType() })
+            .toList()
     }
 
     fun isAlias(): Boolean {

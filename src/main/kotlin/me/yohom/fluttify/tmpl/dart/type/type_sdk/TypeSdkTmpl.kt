@@ -31,6 +31,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //}
 private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
+// todo 可以生成一个常量类, 保存关于这个插件的一些常量, 比如名字
 fun TypeSdkTmpl(type: Type): String {
     val currentPackage = ext.projectName
     val className = type.name.toDartType()
