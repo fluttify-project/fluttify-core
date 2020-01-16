@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'maven'
     id 'java-gradle-plugin'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.31'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
 }
 
 group 'me.yohom'
@@ -32,4 +32,5 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:3.14.0"
     // zip https://github.com/zeroturnaround/zt-zip
     implementation 'org.zeroturnaround:zt-zip:1.13'
+    implementation project(':security')
 }
