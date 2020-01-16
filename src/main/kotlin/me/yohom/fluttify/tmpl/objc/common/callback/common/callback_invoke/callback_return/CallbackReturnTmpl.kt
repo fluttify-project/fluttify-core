@@ -3,20 +3,9 @@ package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callb
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
-//// __block #__callback_result_type__# _callbackResult = nil;
-//// [channel invokeMethod:@"#__callback_method__#"
-////             arguments:@{#__callback_args__#}
-////                result:^(id result) {
-////                  #__raw_callback_result__#
-////                }];
-////
-//// while (_callbackResult == nil) {
-////   // _callbackResult有值前, 空转
-//// }
-////
-//// #__struct_value__#
-////
-//// return #__callback_result__#;
+//[channel invokeMethod:@"#__callback_method__#"
+//            arguments:@{#__callback_args__#}
+//               result:^(id result) {}]; // 由于结果是异步返回, 这里用不上, 所以就不生成代码了
 //
 //// 由于flutter无法同步调用method channel, 所以暂不支持有返回值的回调方法
 //// 相关issue https://github.com/flutter/flutter/issues/28310
@@ -26,37 +15,13 @@ import me.yohom.fluttify.model.Method
 private val tmpl = getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText()
 
 fun CallbackReturnTmpl(method: Method): String {
-//        val callbackResultType = method.returnType.run { if (findType().isStruct()) "NSValue*" else this }
-//        val callbackMethod =
-//            "Callback::${method.className}::${method.name}${method.formalParams.joinToString("") { it.named }.capitalize()}"
-//        val callbackArgs = method.formalParams.joinToString {
-//            when {
-//                it.variable.isStruct() -> "@\"${it.variable.name}\": @(${StructToNSValueTmpl(it.variable).objcStructToNSValue()}.hash)"
-//                it.variable.isRefType() -> "@\"${it.variable.name}\": @(${it.variable.name}.hash)"
-//                else -> "@\"${it.variable.name}\": @(${it.variable.name})"
-//            }
-//        }
-//        val rawCallbackResult = method.returnType.run {
-//            when {
-//                jsonable() -> CallbackReturnJsonableTmpl(method).objcReturnJsonable()
-//                findType().isRefType() -> CallbackReturnRefTmpl(method).objcReturnRef()
-//                findType().isStruct() -> CallbackReturnStructTmpl(method).objcReturnStruct()
-//                else -> this
-//            }
-//        }
-//        val structValue = if (method.returnType.findType().isStruct())
-//            NSValueToStructTmpl(method.returnType, "_callbackResult").objcNSValueToStruct()
-//        else
-//            ""
-//        val callbackResult = if (method.returnType.findType().isStruct()) "_structValue" else "_callbackResult"
-//
-//        return tmpl
-//            .replace("#__callback_result_type__#", callbackResultType)
-//            .replace("#__callback_method__#", callbackMethod)
-//            .replace("#__callback_args__#", callbackArgs)
-//            .replaceParagraph("#__raw_callback_result__#", rawCallbackResult)
-//            .replace("#__struct_value__#", structValue)
-//            .replace("#__callback_result__#", callbackResult)
+    val callbackMethod = method.run {
+        "Callback::${className}::${name}${formalParams.joinToString("") { it.named }.capitalize()}"
+    }
+
+    val callbackArgs = method
+        .formalParams
+        .joinToString { "@\"${it.variable.name.depointer()}\": arg${it.variable.name.depointer()}" }
 
     val stubReturn = method
         .returnType
@@ -70,5 +35,7 @@ fun CallbackReturnTmpl(method: Method): String {
         }
 
     return tmpl
+        .replace("#__callback_method__#", callbackMethod)
+        .replace("#__callback_args__#", callbackArgs)
         .replaceParagraph("__stub_return__", stubReturn)
 }

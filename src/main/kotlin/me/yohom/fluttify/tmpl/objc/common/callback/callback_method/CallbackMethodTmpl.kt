@@ -36,25 +36,20 @@ fun CallbackMethodTmpl(method: Method): String {
     val methodChannel = "${method.className}::Callback"
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.paramType()})${it.variable.name}" }}"
-    val localArgs = if (method.returnType == "void") {
-        // 只有没有返回值的方法需要设置, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
-        method
-            .formalParams
-            .map { it.variable }
-            .joinToString("\n") {
-                when {
-                    // !顺序很重要
-                    it.isEnum() -> CallbackArgEnumTmpl(it)
-                    it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
-                    it.jsonable() -> CallbackArgJsonableTmpl(it)
-                    it.isList -> CallbackArgListTmpl(it)
-                    it.isStruct() -> CallbackArgStructTmpl(it)
-                    else -> CallbackArgRefTmpl(it)
-                }
+    val localArgs = method
+        .formalParams
+        .map { it.variable }
+        .joinToString("\n") {
+            when {
+                // !顺序很重要
+                it.isEnum() -> CallbackArgEnumTmpl(it)
+                it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
+                it.jsonable() -> CallbackArgJsonableTmpl(it)
+                it.isList -> CallbackArgListTmpl(it)
+                it.isStruct() -> CallbackArgStructTmpl(it)
+                else -> CallbackArgRefTmpl(it)
             }
-    } else {
-        ""
-    }
+        }
     val callback = when {
         method.returnType == "void" -> CallbackVoidTmpl(method)
         else -> CallbackReturnTmpl(method)
