@@ -25,12 +25,6 @@ repositories {
     mavenCentral()
 }
 
-jar {
-    from('src/main/java') {
-        include 'resources/tmpl/**/*.tmpl'
-    }
-}
-
 dependencies {
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0-M1'
@@ -47,7 +41,7 @@ dependencies {
 }
 
 // 混淆任务
-task proguard(type: ProGuardTask, dependsOn: compileJava) {
+task proguard(type: ProGuardTask, dependsOn: install) {
     // 输出混淆前->混淆后的映射
     printmapping "$buildDir/mapping.txt"
     // 混淆规则文件
@@ -59,7 +53,7 @@ task proguard(type: ProGuardTask, dependsOn: compileJava) {
     libraryjars "${System.getProperty('java.home')}/lib/jce.jar"
 
     // 混淆输入
-    injars sourceSets.main.output
+    injars "/Users/yohom/.m2/repository/me/yohom/fluttify-core/$version/fluttify-core-${version}.jar"
     // 混淆输出
-    outjars "$buildDir/classes-pro"
+    outjars "/Users/yohom/.m2/repository/me/yohom/fluttify-core/$version/fluttify-core-${version}-pro.jar"
 }
