@@ -32,13 +32,14 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val iOSObjcInterface = project.tasks.create("iOSObjcInterface", IOSObjcInterface::class.java)
         val iOSSwiftInterface = project.tasks.create("iOSSwiftInterface", IOSSwiftInterface::class.java) // 暂时不用
         val export = project.tasks.create("export", Export::class.java)
+        val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
         // 可选任务
         val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
         // assembly
-        project.task("fluttify").apply { group = "fluttify" }.dependsOn(export)
+        fluttify.dependsOn(export)
 
         // 导出
         export.dependsOn(iOSObjcInterface, androidJavaInterface)
