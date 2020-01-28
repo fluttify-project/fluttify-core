@@ -93,11 +93,6 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
 
 open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
     /**
-     * 实现语言
-     */
-    var language: String = ""
-
-    /**
      * library所在路径
      */
     var libDir: String = ""
@@ -130,7 +125,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
     }
 
     override fun toString(): String {
-        return "PlatformSpec(language='$language', libDir='$libDir', remote=$remote, local=$local, exclude=$exclude)"
+        return "PlatformSpec(libDir='$libDir', remote=$remote, local=$local, exclude=$exclude)"
     }
 }
 
