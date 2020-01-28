@@ -10,12 +10,7 @@ import org.gradle.api.tasks.TaskAction
  */
 open class TweakDefaultProject : FluttifyTask() {
 
-    private val buildGradleTmpl
-        get() = when (ext.android.language) {
-            "kotlin" -> this::class.java.getResource("/tmpl/project/build.gradle.kotlin.tmpl").readText()
-            "java" -> this::class.java.getResource("/tmpl/project/build.gradle.java.tmpl").readText()
-            else -> "INVALID LANGUAGE"
-        }
+    private val buildGradleTmpl = this::class.java.getResource("/tmpl/project/build.gradle.java.tmpl").readText()
     private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
     private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
     private val pubSpecTmpl = this::class.java.getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
