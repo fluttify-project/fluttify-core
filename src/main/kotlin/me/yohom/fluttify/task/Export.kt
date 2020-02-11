@@ -28,9 +28,6 @@ open class Export : FluttifyTask() {
             if (relativePath.isNotBlank()) iosResult.appendln("export '${relativePath}';")
         }
 
-        androidResult.appendln("export 'package:foundation_fluttify/foundation_fluttify.dart';")
-        iosResult.appendln("export 'package:foundation_fluttify/foundation_fluttify.dart';")
-
         ext.pluginDependencies.forEach { (name, _) ->
             androidResult.appendln("export 'package:$name/$name.dart';")
             iosResult.appendln("export 'package:$name/$name.dart';")
