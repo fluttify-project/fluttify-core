@@ -38,25 +38,11 @@ open class DownloadIOSSDK : FluttifyTask() {
                 val archiveVersion = ext.ios.remote.version                // 找出目标pod所在的文件
                 // cocoapods的Specs文件夹分为三层0x0-0xf的文件夹, 最后一层文件夹下的分别存放着所有的pod, 找到目标pod后再根据版本号找到目标podspec.json
                 // 解析出下载地址后进行下载
-                val l0Files = specDir.listFiles()
-                out@ for (i in 0..0xf) {
-                    val l0 = l0Files?.get(i)
-                    val l1Files = l0?.listFiles()
-                    for (j in 0..0xf) {
-                        val l1 = l1Files?.get(j)
-                        val l2Files = l1?.listFiles()
-                        for (k in 0..0xf) {
-                            val l2 = l2Files?.get(k)
-                            for (l3 in l2?.listFiles() ?: arrayOf()) {
-                                if (l3.name == archiveName) {
-                                    iosArchiveSpec = l3
-                                    println("iosArchiveSpec: $iosArchiveSpec")
-                                    break@out
-                                }
-                            }
-                        }
-                    }
-                }
+                iosArchiveSpec = specDir.listFiles()
+                    ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
+                    ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
+                    ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
+                    ?.first { it.nameWithoutExtension == archiveName }
 
                 // 找出目标版本所在文件夹
                 val targetVersion: File? = iosArchiveSpec?.listFiles()?.firstOrNull { it.name.contains(archiveVersion) }
