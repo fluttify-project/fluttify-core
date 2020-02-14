@@ -8,12 +8,17 @@ import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.TaskAction
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
+import java.net.URI
 
 open class DownloadAndroidSDK : FluttifyTask() {
     @TaskAction
     fun process() {
         if (ext.android.remote.run { "$org$name$version" }.isNotEmpty()) {
-            project.repositories.jcenter()
+            project.repositories.run {
+                maven { it.url = URI("http://maven.aliyun.com/nexus/content/groups/public/") }
+                jcenter()
+                mavenCentral()
+            }
             val config = project.configurations.create("targetJar")
             val dep = project.dependencies.create(ext.android.remote.run { "$org:$name:$version" })
             config.dependencies.add(dep)
