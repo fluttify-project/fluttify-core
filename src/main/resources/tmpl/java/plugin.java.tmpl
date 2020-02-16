@@ -21,6 +21,8 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.platform.PlatformViewRegistry;
 
+import #__package_name__#.sub_handler.*;
+
 import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableLog;
 import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
 
@@ -29,9 +31,7 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
     private BinaryMessenger messenger;
 
-    private final Map<String, Handler> handlerMap = new HashMap<String, Handler>() {{
-        #__handlers__#
-    }};
+    private static final List<Map<String, Handler>> handlerMapList = new ArrayList<>();
 
     // v1 android embedding for compatible
     public static void registerWith(Registrar registrar) {
@@ -40,6 +40,8 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
         #__plugin_name__#Plugin plugin = new #__plugin_name__#Plugin();
         BinaryMessenger messenger = registrar.messenger();
         plugin.messenger = messenger;
+
+        #__register_handler__#
 
         channel.setMethodCallHandler(plugin);
 
@@ -55,8 +57,9 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
         messenger = binding.getBinaryMessenger();
 
-        channel.setMethodCallHandler(this);
+        #__register_handler__#
 
+        channel.setMethodCallHandler(this);
 
         // register platform view
         PlatformViewRegistry platformViewRegistry = binding.getPlatformViewRegistry();
@@ -71,7 +74,14 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
     @Override
     public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result methodResult) {
         Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
-        Handler handler = handlerMap.get(methodCall.method);
+
+        Handler handler = null;
+        for (Map<String, Handler> handlerMap : handlerMapList) {
+            if (handlerMap.containsKey(methodCall.method)) {
+                handler = handlerMap.get(methodCall.method);
+                break;
+            }
+        }
         if (handler != null) {
             try {
                 handler.call(args, methodResult);
@@ -85,7 +95,7 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
     }
 
     @FunctionalInterface
-    interface Handler {
+    public static interface Handler {
         void call(Map<String, Object> args, MethodChannel.Result methodResult) throws Exception;
     }
 }

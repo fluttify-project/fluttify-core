@@ -1,11 +1,13 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.extensions.file
-import me.yohom.fluttify.extensions.fromJson
-import me.yohom.fluttify.extensions.simpleName
-import me.yohom.fluttify.extensions.underscore2Camel
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_object_factory.HandlerObjectFactoryTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
+import me.yohom.fluttify.tmpl.java.plugin.sub_handler.SubHandlerTmpl
 import me.yohom.fluttify.tmpl.kotlin.plugin.KotlinPluginTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.ObjcPluginTmpl
 import org.gradle.api.tasks.TaskAction
@@ -23,18 +25,55 @@ open class AndroidJavaInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
-        val pluginOutputFile =
-            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/java/${ext.org.replace(
-                ".",
-                "/"
-            )}/${ext.projectName}/${ext.projectName.underscore2Camel()}Plugin.java"
+        val projectDir = project.projectDir
+        val projectName = ext.projectName
+        val packageSubDir = ext.org.replace(".", "/")
+
+        val jrFile = "$projectDir/jr/$projectName.android.json".file()
+        val packageDir = "$projectDir/output-project/$projectName/android/src/main/java/$packageSubDir/$projectName"
+        val pluginOutputFile = "$packageDir/${ext.projectName.underscore2Camel()}Plugin.java"
+        val subHandlerOutputDir = "$packageDir/sub_handler"
+        val subHandlerOutputFile = "$subHandlerOutputDir/SubHandler#__number__#.java"
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成主plugin文件
-        sdk.directLibs.forEach {
-            JavaPluginTmpl(it)
+        sdk.directLibs.forEach { lib ->
+            val getterHandlers = lib.types
+                .filterType()
+                .flatMap { it.fields }
+                .filterGetters()
+                .map { HandlerGetterTmpl(it) }
+
+            val setterHandlers = lib.types
+                .filterType()
+                .flatMap { it.fields }
+                .filterSetters()
+                .map { HandlerSetterTmpl(it) }
+
+            val methodHandlers = lib.types
+                .filterType()
+                .flatMap { it.methods }
+                .filterMethod()
+                .map { HandlerMethodTmpl(it) }
+
+            val objectFactoryHandlers = lib.types
+                .filterConstructable()
+                .flatMap { HandlerObjectFactoryTmpl(it) }
+
+            getterHandlers
+                .union(setterHandlers)
+                .union(methodHandlers)
+                .union(objectFactoryHandlers)
+                .toObservable()
+                .buffer(200)
+                .blockingIterable()
+                .mapIndexed { index, subHandler -> SubHandlerTmpl(index, subHandler) }
+                .forEachIndexed { index, content ->
+                    subHandlerOutputFile.replace("#__number__#", index.toString()).file().writeText(content)
+                }
+
+            JavaPluginTmpl(lib, subHandlerOutputDir)
                 .run {
                     pluginOutputFile.file().writeText(this)
                 }

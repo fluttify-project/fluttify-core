@@ -41,6 +41,8 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:3.14.0"
     // zip https://github.com/zeroturnaround/zt-zip
     implementation 'org.zeroturnaround:zt-zip:1.13'
+    // https://github.com/ReactiveX/RxJava
+    implementation "io.reactivex.rxjava3:rxjava:3.0.0"
 }
 
 publishing {

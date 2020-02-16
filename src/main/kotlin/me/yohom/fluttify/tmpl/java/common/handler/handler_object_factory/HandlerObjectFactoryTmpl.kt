@@ -7,21 +7,24 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 
-//"ObjectFactory::create#__creator_name__#" to { registrar, args, methodResult ->
-//    Log.d("ObjectFactory", "创建对象: #__creator_name__#")
+//// factory
+//put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
+//    Log.d("ObjectFactory", "创建对象: #__creator_name__#");
 //
-//    // 参数
-//    #__args__#
+//    // args
+//    #__args__#;
 //
-//    // 创建对象
-//    val obj = #__class_name__#(#__args_value__#)
-//    HEAP[obj.hashCode()] = obj
+//    // create target object
+//    #__class_name__# obj = new #__class_name__#(#__args_value__#);
+//    getHEAP().put(obj.hashCode(), obj);
 //
-//    // 打印当前HEAP
-//    Log.d("ObjectFactory", "HEAP: $HEAP")
+//    // print current HEAP
+//    if (getEnableLog()) {
+//        Log.d("ObjectFactory", "HEAP: " + getHEAP());
+//    }
 //
-//    methodResult.success(obj.hashCode())
-//}
+//    methodResult.success(obj.hashCode());
+//});
 private val tmpl = getResource("/tmpl/java/handler_object_factory.stmt.java.tmpl").readText()
 
 fun HandlerObjectFactoryTmpl(type: Type): List<String> {

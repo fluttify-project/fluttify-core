@@ -1,5 +1,6 @@
 package me.yohom.fluttify.extensions
 
+import io.reactivex.rxjava3.core.Observable
 import me.yohom.fluttify.model.*
 
 
@@ -106,4 +107,8 @@ fun <T> List<T>.joinToStringX(
     } else {
         joinToString(separator, prefix, suffix, transform = transform)
     }
+}
+
+fun <T> Iterable<T>.toObservable(): Observable<T> {
+    return Observable.fromIterable(this)
 }

@@ -5,9 +5,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.model.Type
 
-//registrar
-//        .platformViewRegistry()
-//        .registerViewFactory("#__view_type__#", new #__factory_name__#Factory(registrar));
+//platformViewRegistry.registerViewFactory("#__view_type__#", new #__factory_name__#Factory(messenger));
 private val tmpl = getResource("/tmpl/java/register_platform_view.stmt.java.tmpl").readText()
 
 fun RegisterPlatformViewTmpl(viewType: Type): String {
