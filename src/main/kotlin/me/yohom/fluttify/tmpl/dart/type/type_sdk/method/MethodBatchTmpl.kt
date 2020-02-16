@@ -3,46 +3,48 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.method
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
-import me.yohom.fluttify.tmpl.dart.type.common.invoke.InvokeTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.invoke.InvokeBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
 
-//#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+//Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  // print log
-//  if (fluttifyLogEnabled) {
-//    #__log__#
-//  }
+//  // if (fluttifyLogEnabled) {
+//  //   #__log__#
+//  // }
 //
 //  // invoke native method
 //  #__invoke__#
 //
-//  // handle native call
-//  #__callback__#
-//
 //  // convert native result to dart side object
-//  if (result == null) {
+//  if (resultBatch == null) {
 //    return null;
 //  } else {
+//    final typedResult = #__return_statement__#;
 //    #__native_object_pool__#
-//    return #__return_statement__#;
+//    return typedResult;
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText()
 
-fun MethodTmpl(method: Method): String {
-    val static = if (method.isStatic) "static " else ""
+/**
+ * 方法批处理
+ *
+ * 不接受有回调的方法
+ */
+fun MethodBatchTmpl(method: Method): String {
     val returnType = if (method.returnType.findType().isStructPointer()) {
         // 返回类型是结构体指针
-        method.returnType.toDartType().enList()
+        method.returnType.toDartType().enList().enList()
     } else {
-        method.returnType.toDartType()
+        val dartType = method.returnType.toDartType()
+        if (dartType == "void") "void" else dartType.enList()
     }
-    val methodName = method.signature()
+    val methodName = "${method.signature()}_batch"
 
     // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
     val formalParams = method
         .formalParams
-        .joinToString { it.variable.toDartString() }
+        .joinToString { it.variable.toDartStringBatch() }
         .run {
             // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
             if (method.className.findType().isView()) {
@@ -52,25 +54,22 @@ fun MethodTmpl(method: Method): String {
             }
         }
     val log = LogTmpl(method)
-    val invoke = InvokeTmpl(method)
-    val callback = CallbackMethodTmpl(method)
-    val returnStatement = ReturnTmpl(method)
+    val invoke = InvokeBatchTmpl(method)
+    val returnStatement = "(resultBatch as List).map((result) => ${ReturnTmpl(method)}).toList()"
     val nativeObjectPool = method.returnType.run {
         when {
             jsonable() or findType().isEnum() or isVoid() -> ""
-            isCollection() -> "kNativeObjectPool.addAll($returnStatement);"
-            else -> "kNativeObjectPool.add($returnStatement);"
+            isCollection() || findType().isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
+            else -> "kNativeObjectPool.addAll(typedResult);"
         }
     }
 
     return tmpl
-        .replace("#__static__#", static)
         .replace("#__return_type__#", returnType)
         .replace("#__method_name__#", methodName)
         .replace("#__formal_params__#", formalParams)
-        .replaceParagraph("#__log__#", log)
+//        .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
-        .replaceParagraph("#__callback__#", callback)
         .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)
 }

@@ -97,6 +97,10 @@ data class Method(
                 must("返回类型的祖宗类是已知类") { returnType.findType().ancestorTypes.all { it.findType().isKnownType() } }
     }
 
+    fun filterBatch(): Boolean {
+        return filter() && mustNot("含有回调参数") { formalParams.any { it.variable.run { isCallback() || isLambda() } } }
+    }
+
     @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("methodName"))
     fun handleMethodName(): String {
         return "handle${className.toDartType()}_$name"

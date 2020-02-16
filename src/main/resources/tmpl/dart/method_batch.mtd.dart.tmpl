@@ -1,0 +1,18 @@
+Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+  // print log
+  // if (fluttifyLogEnabled) {
+  //   #__log__#
+  // }
+
+  // invoke native method
+  #__invoke__#
+
+  // convert native result to dart side object
+  if (resultBatch == null) {
+    return null;
+  } else {
+    final typedResult = #__return_statement__#;
+    #__native_object_pool__#
+    return typedResult;
+  }
+}

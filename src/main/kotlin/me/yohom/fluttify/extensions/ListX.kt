@@ -17,6 +17,21 @@ fun List<Variable>.toDartMap(
 }
 
 /**
+ * 键值对转成dart的map字面量字符串 批处理版本
+ */
+fun List<Variable>.toDartMapBatch(
+    prefix: String = "[for (int i = 0; i < this.length; i++) {",
+    suffix: String = "}]",
+    valueBuilder: ((Variable) -> String) = { it.name }
+): String {
+    if (isEmpty()) return ""
+    return joinToStringX(
+        prefix = prefix,
+        suffix = suffix
+    ) { "\"${if (it.name == "this") "refId" else it.name.depointer()}\": ${valueBuilder(it)}" }
+}
+
+/**
  * 过滤出可以自动生成的类
  */
 fun List<Type>.filterType(): List<Type> {
@@ -39,9 +54,9 @@ fun List<Field>.filterConstants(): List<Field> {
 /**
  * 过滤出可以自动生成的方法
  */
-fun List<Method>.filterMethod(): List<Method> {
+fun List<Method>.filterMethod(batch: Boolean = false): List<Method> {
     return asSequence()
-        .filter { it.filter() }
+        .filter { if (batch) it.filterBatch() else it.filter() }
         .distinctBy { it.nameWithClass() }
         .filter { println("Method::${it.name}通过Method过滤"); true }
         .toList()

@@ -3,9 +3,12 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
+import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
 //import 'dart:typed_data';
@@ -16,18 +19,35 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //import 'package:flutter/services.dart';
 //
 //class #__class_name__# extends #__super_class__# #__mixins__# {
+//  //region constants
 //  #__constants__#
+//  //endregion
 //
+//  //region creators
 //  #__creators__#
+//  //endregion
 //
-//  // generate getters
+//  //region getters
 //  #__getters__#
+//  //endregion
 //
-//  // generate setters
+//  //region setters
 //  #__setters__#
+//  //endregion
 //
-//  // generate methods
+//  //region methods
 //  #__methods__#
+//  //endregion
+//}
+//
+//extension #__class_name__#_Batch on List<#__class_name__#> {
+//  //region getters
+//  #__getters_batch__#
+//  //endregion
+//
+//  //region methods
+//  #__methods_batch__#
+//  //endregion
 //}
 private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
@@ -48,13 +68,19 @@ fun TypeSdkTmpl(type: Type): String {
         ""
     }
 
-    val constants = type.fields.filterConstants()
+    // 常量
+    val constants = type.fields
+        .filterConstants()
+        .joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" }
 
+    // todo 批量构造器
+    // 构造器
     val creators = if (type.constructable()) {
-        CreatorTmpl(type).dartCreator()
+        CreatorTmpl(type).union(CreatorBatchTmpl(type)).toList()
     } else {
         listOf()
     }
+
     val getters = type.fields
         .filterGetters()
         .map { GetterTmpl(it) }
@@ -65,18 +91,26 @@ fun TypeSdkTmpl(type: Type): String {
 
     val methods = type.methods
         .filterMethod()
-        .map { MethodTmpl(it).dartMethod() }
+        .map { MethodTmpl(it) }
+
+    val gettersBatch = type.fields
+        .filterGetters()
+        .map { GetterBatchTmpl(it) }
+
+    val methodsBatch = type.methods
+        .filterMethod(true)
+        .map { MethodBatchTmpl(it) }
 
     return tmpl
         .replace("#__current_package__#", currentPackage)
         .replace("#__class_name__#", className)
         .replace("#__super_class__#", superClass)
         .replace("#__mixins__#", mixins)
-        .replaceParagraph(
-            "#__constants__#",
-            constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" })
+        .replaceParagraph("#__constants__#", constants)
         .replaceParagraph("#__creators__#", creators.joinToString("\n"))
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))
         .replaceParagraph("#__methods__#", methods.joinToString("\n"))
+        .replaceParagraph("#__getters_batch__#", gettersBatch.joinToString("\n"))
+        .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
 }

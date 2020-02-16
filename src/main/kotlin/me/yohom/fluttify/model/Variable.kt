@@ -132,6 +132,24 @@ data class Variable(
         }
     }
 
+    fun toDartStringBatch(): String {
+        // 结构体指针认为是列表类型
+        var type = (if (isAliasType()) typeName.findType().aliasOf!! else typeName).toDartType()
+        if (isList) {
+            when {
+                // 数组类型
+                typeName.isArray() -> typeName.removeSuffix("[]")
+                // 如果是列表, 却没有指定泛型, 那么就认为泛型是Object
+                genericLevel == 0 -> type = "List<${platform.objectType()}>"
+                // 根据List嵌套层次生成类型
+                else -> for (i in 0 until genericLevel) type = "List<$type>"
+            }
+        } else if (isStructPointer()) {
+            type = "List<$type>"
+        }
+        return "${type.enList()} ${name.depointer()}"
+    }
+
     fun var2Args(hostMethod: Method? = null): String {
         return if (typeName.findType().isCallback() && hostMethod != null) {
             CallbackTmpl(hostMethod, typeName.findType())
