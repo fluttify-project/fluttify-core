@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.java.common.handler.handler_getter
+package me.yohom.fluttify.tmpl.java.common.handler.handler_getter_batch
 
 import me.yohom.fluttify.extensions.boxedType
 import me.yohom.fluttify.extensions.getResource

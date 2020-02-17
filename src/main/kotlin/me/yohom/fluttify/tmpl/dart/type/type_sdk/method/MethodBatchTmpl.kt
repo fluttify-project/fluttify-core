@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.method
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
-import me.yohom.fluttify.tmpl.dart.type.common.invoke.InvokeBatchTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
 
 //Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {

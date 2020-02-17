@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterBatchTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.getter_batch.GetterBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorBatchTmpl

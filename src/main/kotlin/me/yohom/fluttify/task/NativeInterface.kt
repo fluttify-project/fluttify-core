@@ -2,12 +2,12 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
-import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodBatchTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_getter_batch.HandlerGetterBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator.HandlerObjectFactoryBatchTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_method_batch.HandlerMethodBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator.HandlerObjectFactoryTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator_batch.HandlerObjectFactoryBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
 import me.yohom.fluttify.tmpl.java.plugin.sub_handler.SubHandlerTmpl

@@ -6,8 +6,8 @@ import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.handler_object_factory_ref.HandlerObjectFactoryRefTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.handler_object_factory_struct.HandlerObjectFactoryStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref.HandlerObjectFactoryRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct.HandlerObjectFactoryStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_cast.HandlerTypeCastTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl

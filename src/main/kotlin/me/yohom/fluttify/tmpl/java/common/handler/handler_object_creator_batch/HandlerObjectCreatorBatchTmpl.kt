@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator
+package me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator_batch
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type

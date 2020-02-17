@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.handler.handler_object_factory.handler_object_factory_ref
+package me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref
 
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Type

@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.dart.type.common.getter
+package me.yohom.fluttify.tmpl.dart.type.common.getter_batch
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*

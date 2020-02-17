@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.java.common.handler.handler_method
+package me.yohom.fluttify.tmpl.java.common.handler.handler_method_batch
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method

@@ -1,8 +1,9 @@
-package me.yohom.fluttify.tmpl.dart.type.common.invoke
+package me.yohom.fluttify.tmpl.dart.type.common.invoke_batch
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.model.*
+import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Parameter
 
 // todo 使用模板重构
 fun InvokeBatchTmpl(method: Method): String {
@@ -11,15 +12,7 @@ fun InvokeBatchTmpl(method: Method): String {
 
         val actualParams = params
             .filterFormalParams()
-            .toMutableList()
-            .apply {
-                add(
-                    Parameter(
-                        variable = Variable(method.className, "this", Platform.General, ListType.NonList, 0),
-                        platform = Platform.General
-                    )
-                )
-            }
+            .addParameter(Parameter.simpleParameter(method.className, "this"))
             .map { it.variable }
             .toDartMapBatch {
                 when {
