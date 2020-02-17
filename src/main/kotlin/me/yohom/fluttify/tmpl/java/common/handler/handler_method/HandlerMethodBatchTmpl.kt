@@ -8,8 +8,6 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_return.InvokeReturnTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_void.InvokeVoidTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogInstanceTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogStaticTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.ref.RefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
@@ -17,30 +15,39 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.Resul
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.ResultVoidTmpl
 
 //// method
-//put("#__method_name__#", (args, methodResult) -> {
-//    // args
-//    #__args__#
+//put("#__method_name__#_batch", (argsBatch, methodResult) -> {
+//    List<#__result_type__#> resultList = new ArrayList<>();
 //
-//    // ref
-//    #__ref__#
+//    for (int i = 0; i < (List<(Map<String, Object>>) argsBatch.size(); i++) {
+//        Map<String, Object> args = ((List<Map<String, Object>>) argsBatch).get(i);
 //
-//    // print log
-//    if (getEnableLog()) {
-//        #__log__#
+//        // args
+//        #__args__#
+//
+//        // ref
+//        #__ref__#
+//
+//        // invoke native method
+//        #__invoke__#
+//
+//        // convert result to jsonable result
+//        #__result__#
+//
+//        resultList.add(jsonableResult);
 //    }
 //
-//    // invoke native method
-//    #__invoke__#
-//
-//    // convert result to jsonable result
-//    #__result__#
-//
-//    methodResult.success(jsonableResult);
+//    methodResult.success(resultList);
 //});
-private val tmpl = getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/handler_method_batch.stmt.java.tmpl").readText()
 
-fun HandlerMethodTmpl(method: Method): String {
+fun HandlerMethodBatchTmpl(method: Method): String {
     val methodName = method.nameWithClass()
+    val resultType = when {
+        method.returnType.jsonable() -> method.returnType.boxedType()
+        method.returnType.isVoid() -> "String"
+        method.returnType.isCollection() -> "List<Integer>"
+        else -> "Integer"
+    }
     val args = method.formalParams
         .filter { !it.variable.typeName.findType().isCallback() }
         .joinToString("\n") {
@@ -51,11 +58,6 @@ fun HandlerMethodTmpl(method: Method): String {
                 else -> ArgRefTmpl(it.variable)
             }
         }
-    val log = if (method.isStatic) {
-        LogStaticTmpl(method)
-    } else {
-        LogInstanceTmpl(method)
-    }
 
     // 获取当前调用方法的对象引用
     val ref = RefTmpl(method)
@@ -85,9 +87,9 @@ fun HandlerMethodTmpl(method: Method): String {
     }
     return tmpl
         .replace("#__method_name__#", methodName)
+        .replace("#__result_type__#", resultType)
         .replaceParagraph("#__args__#", args)
         .replaceParagraph("#__ref__#", ref)
-        .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
         .replaceParagraph("#__result__#", result)
 }

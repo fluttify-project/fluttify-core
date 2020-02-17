@@ -14,6 +14,8 @@ put("#__method_name__#", (args, methodResult) -> {
     // invoke native method
     #__invoke__#
 
-    // result
+    // convert result to jsonable result
     #__result__#
+
+    methodResult.success(jsonableResult);
 });

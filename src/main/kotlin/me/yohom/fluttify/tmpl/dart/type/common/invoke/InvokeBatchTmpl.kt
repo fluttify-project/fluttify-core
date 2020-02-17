@@ -54,5 +54,5 @@ fun InvokeBatchTmpl(method: Method): String {
         return resultBuilder.toString()
     }
 
-    return invokeString(method.nameWithClass(), method.formalParams)
+    return invokeString("${method.nameWithClass()}_batch", method.formalParams)
 }

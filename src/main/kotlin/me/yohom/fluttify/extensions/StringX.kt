@@ -155,6 +155,7 @@ fun TYPE_NAME.boxedType(): TYPE_NAME {
         "long" -> "Long"
         "float" -> "Float"
         "double" -> "Double"
+        "boolean" -> "Boolean"
         else -> this
     }
 }

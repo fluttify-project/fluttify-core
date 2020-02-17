@@ -2,9 +2,12 @@ package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.handler_object_factory.HandlerObjectFactoryTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator.HandlerObjectFactoryBatchTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator.HandlerObjectFactoryTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
 import me.yohom.fluttify.tmpl.java.plugin.sub_handler.SubHandlerTmpl
@@ -39,32 +42,51 @@ open class AndroidJavaInterface : FluttifyTask() {
 
         // 生成主plugin文件
         sdk.directLibs.forEach { lib ->
-            val getterHandlers = lib.types
+            val getters = lib.types
                 .filterType()
                 .flatMap { it.fields }
                 .filterGetters()
                 .map { HandlerGetterTmpl(it) }
 
-            val setterHandlers = lib.types
+            val gettersBatch = lib.types
+                .filterType()
+                .flatMap { it.fields }
+                .filterGetters()
+                .map { HandlerGetterBatchTmpl(it) }
+
+            val setters = lib.types
                 .filterType()
                 .flatMap { it.fields }
                 .filterSetters()
                 .map { HandlerSetterTmpl(it) }
 
-            val methodHandlers = lib.types
+            val methods = lib.types
                 .filterType()
                 .flatMap { it.methods }
                 .filterMethod()
                 .map { HandlerMethodTmpl(it) }
 
-            val objectFactoryHandlers = lib.types
+            val methodsBatch = lib.types
+                .filterType()
+                .flatMap { it.methods }
+                .filterMethod(true)
+                .map { HandlerMethodBatchTmpl(it) }
+
+            val objectCreators = lib.types
                 .filterConstructable()
                 .flatMap { HandlerObjectFactoryTmpl(it) }
 
-            getterHandlers
-                .union(setterHandlers)
-                .union(methodHandlers)
-                .union(objectFactoryHandlers)
+            val objectCreatorsBatch = lib.types
+                .filterConstructable()
+                .flatMap { HandlerObjectFactoryBatchTmpl(it) }
+
+            getters
+                .union(gettersBatch)
+                .union(setters)
+                .union(methods)
+                .union(methodsBatch)
+                .union(objectCreators)
+                .union(objectCreatorsBatch)
                 .toObservable()
                 .buffer(200)
                 .blockingIterable()

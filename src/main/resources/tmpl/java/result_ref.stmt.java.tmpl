@@ -1,8 +1,5 @@
+Integer jsonableResult = null;
 if (result != null) {
-    int returnRefId = result.hashCode();
-    getHEAP().put(returnRefId, result);
-
-    methodResult.success(returnRefId);
-} else {
-    methodResult.success(null);
+    jsonableResult = result.hashCode();
+    getHEAP().put(jsonableResult, result);
 }

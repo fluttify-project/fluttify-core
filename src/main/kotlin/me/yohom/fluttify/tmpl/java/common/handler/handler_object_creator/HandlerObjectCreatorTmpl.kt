@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.java.common.handler.handler_object_factory
+package me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
@@ -25,7 +25,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //
 //    methodResult.success(obj.hashCode());
 //});
-private val tmpl = getResource("/tmpl/java/handler_object_factory.stmt.java.tmpl").readText()
+private val tmpl = getResource("/tmpl/java/handler_object_creator.stmt.java.tmpl").readText()
 
 fun HandlerObjectFactoryTmpl(type: Type): List<String> {
     return type.constructors

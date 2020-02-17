@@ -1,10 +1,8 @@
+List<Integer> jsonableResult = null;
 if (result != null) {
-    List<Integer> resultRefIdList = new ArrayList<>();
+    jsonableResult = new ArrayList<>();
     for (#__type_name__# item : result) {
         getHEAP().put(item.hashCode(), item);
-        resultRefIdList.add(item.hashCode());
+        jsonableResult.add(item.hashCode());
     }
-    methodResult.success(resultRefIdList);
-} else {
-    methodResult.success(null);
 }

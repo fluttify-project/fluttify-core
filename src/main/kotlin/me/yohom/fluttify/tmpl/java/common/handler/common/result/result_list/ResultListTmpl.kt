@@ -4,15 +4,13 @@ import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.genericType
 import me.yohom.fluttify.extensions.getResource
 
+//List<Integer> jsonableResult = null;
 //if (result != null) {
-//    List<Integer> refIdList = new ArrayList<>();
+//    jsonableResult = new ArrayList<>();
 //    for (#__type_name__# item : result) {
 //        getHEAP().put(item.hashCode(), item);
-//        refIdList.add(item.hashCode());
+//        jsonableResult.add(item.hashCode());
 //    }
-//    methodResult.success(refIdList);
-//} else {
-//    methodResult.success(null);
 //}
 private val tmpl = getResource("/tmpl/java/result_list.stmt.java.tmpl").readText()
 
