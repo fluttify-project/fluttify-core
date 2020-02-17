@@ -73,8 +73,6 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
     @Override
     public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result methodResult) {
-        Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
-
         Handler handler = null;
         for (Map<String, Handler> handlerMap : handlerMapList) {
             if (handlerMap.containsKey(methodCall.method)) {
@@ -84,7 +82,7 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
         }
         if (handler != null) {
             try {
-                handler.call(args, methodResult);
+                handler.call(methodCall.arguments, methodResult);
             } catch (Exception e) {
                 e.printStackTrace();
                 methodResult.error(e.getMessage(), null, null);
@@ -96,6 +94,6 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
     @FunctionalInterface
     public static interface Handler {
-        void call(Map<String, Object> args, MethodChannel.Result methodResult) throws Exception;
+        void call(Object args, MethodChannel.Result methodResult) throws Exception;
     }
 }
