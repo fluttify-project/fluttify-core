@@ -18,4 +18,13 @@ data class Parameter(
                 variable.mustNot("Callback") { isCallback() } && // 回调类不参与传递(但是接口类型参与传递)
                 variable.mustNot("未知类型") { typeName.findType() == Type.UNKNOWN_TYPE }
     }
+
+    companion object {
+        fun simpleParameter(typeName: String, name: String): Parameter {
+            return Parameter(
+                variable = Variable(typeName, name, Platform.General),
+                platform = Platform.General
+            )
+        }
+    }
 }

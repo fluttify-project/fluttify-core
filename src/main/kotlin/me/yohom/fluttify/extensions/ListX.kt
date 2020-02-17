@@ -127,3 +127,8 @@ fun <T> List<T>.joinToStringX(
 fun <T> Iterable<T>.toObservable(): Observable<T> {
     return Observable.fromIterable(this)
 }
+
+fun List<Parameter>.addParameter(param: Parameter): List<Parameter> {
+    toMutableList().add(param)
+    return this
+}
