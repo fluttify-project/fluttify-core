@@ -129,6 +129,5 @@ fun <T> Iterable<T>.toObservable(): Observable<T> {
 }
 
 fun List<Parameter>.addParameter(param: Parameter): List<Parameter> {
-    toMutableList().add(param)
-    return this
+    return toMutableList().apply { add(param) }
 }
