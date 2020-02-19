@@ -5,47 +5,38 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
-// todo 使用模板重构
+//final resultBatch = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
+private val tmpl = getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText()
+
 fun InvokeBatchTmpl(method: Method): String {
-    fun invokeString(methodName: String, params: List<Parameter>): String {
-        val resultBuilder = StringBuilder("")
-
-        val actualParams = params
-            .filterFormalParams()
-            .addParameter(Parameter.simpleParameter(method.className, "this"))
-            .map { it.variable }
-            .toDartMapBatch {
-                when {
-                    it.typeName.findType().isEnum() -> {
-                        // 枚举列表
-                        if (it.isList) {
-                            "${it.name.depointer()}[i].map((it) => it.index).toList()"
-                        } else {
-                            "${it.name.depointer()}[i].index"
-                        }
-                    }
-                    it.typeName.jsonable() -> "${it.name.depointer()}[i]"
-                    (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}[i].map((it) => it.refId).toList()"
-                    it.genericLevel > 1 -> "[]" // 多维数组暂不处理
-                    else -> "${it.name.depointer()}[i].refId"
-                }
-            }
-
-        val viewMethodChannel = "${ext.methodChannelName}/${method.className.toUnderscore()}"
-        val methodChannel = ext.methodChannelName
-
-        // 只有当前类是View的时候, 才需要区分普通channel和View channel
-        if (method.className.findType().isView()) {
-            resultBuilder.append(
-                "final resultBatch = await MethodChannel(viewChannel ? '$viewMethodChannel' : '$methodChannel').invokeMethod('$methodName', $actualParams);\n"
-            )
-        } else {
-            resultBuilder.append(
-                "final resultBatch = await MethodChannel('$methodChannel').invokeMethod('$methodName', $actualParams);\n"
-            )
-        }
-        return resultBuilder.toString()
+    val channel = if (method.className.findType().isView()) {
+        "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+    } else {
+        "'${ext.methodChannelName}'"
     }
-
-    return invokeString("${method.nameWithClass()}_batch", method.formalParams)
+    val methodName = "${method.nameWithClass()}_batch"
+    val actualParams = method.formalParams
+        .filterFormalParams()
+        .addParameter(Parameter.simpleParameter(method.className, "this"))
+        .map { it.variable }
+        .toDartMapBatch {
+            when {
+                it.typeName.findType().isEnum() -> {
+                    // 枚举列表
+                    if (it.isList) {
+                        "${it.name.depointer()}[i].map((it) => it.index).toList()"
+                    } else {
+                        "${it.name.depointer()}[i].index"
+                    }
+                }
+                it.typeName.jsonable() -> "${it.name.depointer()}[i]"
+                (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}[i].map((it) => it.refId).toList()"
+                it.genericLevel > 1 -> "[]" // 多维数组暂不处理
+                else -> "${it.name.depointer()}[i].refId"
+            }
+        }
+    return tmpl
+        .replace("#__channel__#", channel)
+        .replace("#__method_name__#", methodName)
+        .replace("#__args__#", actualParams)
 }
