@@ -11,7 +11,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStruc
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 
-//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
 //    // print log
 //    if (enableLog) {
 //        NSLog(@"#__method_name__#");
@@ -30,14 +30,16 @@ private val tmpl = getResource("/tmpl/objc/handler_setter.stmt.m.tmpl").readText
 
 fun HandlerSetterTmpl(field: Field): String {
     val setter = field.setterName.depointer()
-    val args = when {
-        field.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(field.variable)
-        field.variable.isList -> ArgListRefTmpl(field.variable)
-        field.variable.isEnum() -> ArgEnumTmpl(field.variable)
-        field.variable.isStructPointer() -> ArgListStructTmpl(field.variable)
-        field.variable.isCallback() -> ""
-        field.variable.isStruct() -> ArgStructTmpl(field.variable)
-        else -> ArgRefTmpl(field.variable)
+    val args = field.variable.run {
+        when {
+            jsonable() || isAliasType() -> ArgJsonableTmpl(field.variable)
+            isList -> ArgListRefTmpl(field.variable)
+            isEnum() -> ArgEnumTmpl(field.variable)
+            isStructPointer() -> ArgListStructTmpl(field.variable)
+            isCallback() -> ""
+            isStruct() -> ArgStructTmpl(field.variable)
+            else -> ArgRefTmpl(field.variable)
+        }
     }
     val fieldName = field.variable.name
 

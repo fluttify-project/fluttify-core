@@ -161,6 +161,13 @@ fun TYPE_NAME.boxedType(): TYPE_NAME {
 }
 
 /**
+ * 数组转为列表
+ */
+fun TYPE_NAME.stringArray2List(): TYPE_NAME {
+    return if (this == "String[]") "List<${removeSuffix("[]")}>" else this
+}
+
+/**
  * 去掉[]
  */
 fun TYPE_NAME.dearray(): TYPE_NAME {

@@ -1,9 +1,7 @@
 // 返回值: 列表
-NSMutableArray* refIdList = [NSMutableArray array];
+NSMutableArray* jsonableResult = [NSMutableArray array];
 for (int i = 0; i < result.count; i++) {
     NSObject* object = [result objectAtIndex:i];
-    [refIdList addObject: @(object.hash)];
+    [jsonableResult addObject: @(object.hash)];
     HEAP[@([object hash])] = object;
 }
-
-methodResult(refIdList);

@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.handler.handler_method
+package me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
@@ -13,29 +13,32 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
-//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-//    // args
-//    #__args__#
+//@"#__method_name__#_batch": ^(NSObject <FlutterPluginRegistrar> * registrar, id argsBatch, FlutterResult methodResult) {
+//    NSMutableArray* resultList = [NSMutableArray array];
 //
-//    // ref
-//    #__ref__#
+//    for (int i = 0; i < ((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch).count; i++) {
+//        NSDictionary<NSString*, NSObject*>* args = [((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch) objectAtIndex:i];
 //
-//    // print log
-//    if (enableLog) {
-//        #__log__#
+//        // args
+//        #__args__#
+//
+//        // ref
+//        #__ref__#
+//
+//        // invoke native method
+//        #__invoke__#
+//
+//        // result
+//        #__result__#
+//
+//        resultList.add(jsonableResult);
 //    }
-//
-//    // invoke native method
-//    #__invoke__#
-//
-//    // result
-//    #__result__#
 //
 //    methodResult(jsonableResult);
 //},
-private val tmpl = getResource("/tmpl/objc/handler_method.stmt.m.tmpl").readText()
+private val tmpl = getResource("/tmpl/objc/handler_method_batch.stmt.m.tmpl").readText()
 
-fun HandlerMethodTmpl(method: Method): String {
+fun HandlerMethodBatchTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams
         .joinToString("\n") {
@@ -49,11 +52,6 @@ fun HandlerMethodTmpl(method: Method): String {
                 else -> ArgRefTmpl(it.variable)
             }
         }
-    val log = if (method.isStatic) {
-        "NSLog(@\"fluttify-objc: ${method.className}::${method.name}(暂未实现参数打印)\");"
-    } else {
-        "NSLog(@\"fluttify-objc: ${method.className}@%@::${method.name}(暂未实现参数打印)\", args[@\"refId\"]);"
-    }
 
     // 获取当前调用方法的对象引用
     val ref = if (method.className.findType().isStruct()) {
@@ -75,10 +73,10 @@ fun HandlerMethodTmpl(method: Method): String {
     }
 
     return tmpl
+        .replace("#__result_type__#", methodName)
         .replace("#__method_name__#", methodName)
         .replaceParagraph("#__args__#", args)
         .replaceParagraph("#__ref__#", ref)
-        .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
         .replaceParagraph("#__result__#", result)
 }

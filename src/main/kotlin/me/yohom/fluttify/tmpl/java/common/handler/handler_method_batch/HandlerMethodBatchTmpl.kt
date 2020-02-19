@@ -74,14 +74,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
     val result = when {
         method.returnType.jsonable() -> ResultJsonableTmpl(method.returnType)
         // jsonable已经把List<String>类似的类型挡掉了, 所以到这里的肯定是List<? extends Object>类型
-        method.returnType.isCollection() -> {
-            // 多维列表不处理
-            if (method.returnType.genericLevel() > 1) {
-                "List jsonableResult = new ArrayList());"
-            } else {
-                ResultListTmpl(method.returnType)
-            }
-        }
+        method.returnType.isCollection() -> ResultListTmpl(method)
         method.returnType == "void" -> ResultVoidTmpl()
         else -> ResultRefTmpl()
     }

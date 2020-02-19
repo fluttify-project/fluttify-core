@@ -8,14 +8,16 @@ import me.yohom.fluttify.extensions.isStringArray
 private val tmpl = getResource("/tmpl/java/result_jsonable.stmt.java.tmpl").readText()
 
 fun ResultJsonableTmpl(returnType: String): String {
-    val typeName = if (returnType.isStringArray())
+    val typeName = if (returnType.isStringArray()) {
         "List<String>"
-    else
+    } else {
         returnType
-    val result = if (returnType.isStringArray())
+    }
+    val result = if (returnType.isStringArray()) {
         "new ArrayList<${returnType.dearray()}>(java.util.Arrays.asList(result))"
-    else
+    } else {
         "result"
+    }
     return tmpl
         .replace("#__type_name__#", typeName)
         .replace("#__result__#", result)

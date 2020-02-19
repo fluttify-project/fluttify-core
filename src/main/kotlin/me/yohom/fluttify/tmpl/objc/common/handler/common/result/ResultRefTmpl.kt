@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.getResource
 
 //// return a ref
 //HEAP[@((#__cast_nsobject__#result).hash)] = result;
-//methodResult(@((#__cast_nsobject__#result).hash));
+//NSNumber* jsonableResult = @((#__cast_nsobject__#result).hash);
 private val tmpl = getResource("/tmpl/objc/result_ref.stmt.m.tmpl").readText()
 
 fun ResultRefTmpl(returnType: TYPE_NAME): String {

@@ -5,9 +5,13 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter_batch.HandlerGetterBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref.HandlerObjectFactoryRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref_batch.HandlerObjectFactoryRefBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct.HandlerObjectFactoryStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct_batch.HandlerObjectFactoryStructBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_cast.HandlerTypeCastTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl
@@ -125,35 +129,49 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
         .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
         .joinToString(", ")
 
-    val getterHandlers = libs
+    val getters = libs
         .flatMap { it.types }
         .filterType()
         .flatMap { it.fields }
         .filterGetters()
         .map { HandlerGetterTmpl(it) }
 
-    val setterHandlers = libs
+    val gettersBatch = libs
+        .flatMap { it.types }
+        .filterType()
+        .flatMap { it.fields }
+        .filterGetters()
+        .map { HandlerGetterBatchTmpl(it) }
+
+    val setters = libs
         .flatMap { it.types }
         .filterType()
         .flatMap { it.fields }
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
 
-    val functionHandlers = libs
+    val functions = libs
         .flatMap { it.types }
         // 暂时先不处理含有lambda的函数
         .filter { it.isKnownFunction() && it.formalParams.all { !it.variable.isLambda() } }
         .map { it.asMethod() }
         .map { HandlerMethodTmpl(it) }
 
-    val methodHandlers = libs
+    val methods = libs
         .flatMap { it.types }
         .filterType()
         .flatMap { it.methods }
         .filterMethod()
         .map { HandlerMethodTmpl(it) }
 
-    val typeCastHandlers = libs
+    val methodsBatch = libs
+        .flatMap { it.types }
+        .filterType()
+        .flatMap { it.methods }
+        .filterMethod()
+        .map { HandlerMethodBatchTmpl(it) }
+
+    val typeCasts = libs
         .flatMap { it.types }
         .filterType()
         .asSequence()
@@ -165,7 +183,7 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
         .map { HandlerTypeCastTmpl(it) }
         .toList()
 
-    val typeCheckHandlers = libs
+    val typeChecks = libs
         .flatMap { it.types }
         .filterType()
         .asSequence()
@@ -177,7 +195,7 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
         .map { HandlerTypeCheckTmpl(it) }
         .toList()
 
-    val createObjectHandlers = libs
+    val objectCreators = libs
         .flatMap { it.types }
         .filterConstructable()
         .distinctBy { it.name }
@@ -186,6 +204,18 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
                 HandlerObjectFactoryStructTmpl(it)
             } else {
                 HandlerObjectFactoryRefTmpl(it)
+            }
+        }
+
+    val objectCreatorsBatch = libs
+        .flatMap { it.types }
+        .filterConstructable()
+        .distinctBy { it.name }
+        .map {
+            if (it.isStruct()) {
+                HandlerObjectFactoryStructBatchTmpl(it)
+            } else {
+                HandlerObjectFactoryRefBatchTmpl(it)
             }
         }
 
@@ -205,17 +235,19 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
         mTmpl
             .replace("#__plugin_name__#", pluginClassName)
             .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__getter_branches__#", "")
-            .replaceParagraph("#__setter_branches__#", "")
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
             .replaceParagraph(
                 "#__handlers__#",
-                methodHandlers.union(getterHandlers)
-                    .union(setterHandlers)
-                    .union(typeCheckHandlers)
-                    .union(typeCastHandlers)
-                    .union(createObjectHandlers)
-                    .union(functionHandlers)
+                methods
+                    .union(methodsBatch)
+                    .union(getters)
+                    .union(gettersBatch)
+                    .union(setters)
+                    .union(typeChecks)
+                    .union(typeCasts)
+                    .union(objectCreators)
+                    .union(objectCreatorsBatch)
+                    .union(functions)
                     .joinToString("\n")
             )
             .replaceParagraph("#__delegate_methods__#", callbackMethods.joinToString("\n"))

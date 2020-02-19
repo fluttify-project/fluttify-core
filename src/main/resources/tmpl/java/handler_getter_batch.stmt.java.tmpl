@@ -6,14 +6,13 @@ put("#__getter_name__#_batch", (argsBatch, methodResult) -> {
         Map<String, Object> args = ((List<Map<String, Object>>) argsBatch).get(i);
 
         // ref object
-        int refId = (int) args.get("refId");
-        #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
+        #__class_name__# ref = (#__class_name__#) getHEAP().get((int) args.get("refId"));
 
         #__field_type__# result = ref.#__field_name__#;
 
-        #__put_map__#
+        #__result__#
 
-        resultList.add(#__result__#);
+        resultList.add(jsonableResult);
     }
 
     methodResult.success(resultList);

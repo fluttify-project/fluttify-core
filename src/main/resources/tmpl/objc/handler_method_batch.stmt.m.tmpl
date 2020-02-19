@@ -1,18 +1,23 @@
-@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-    // args
-    #__args__#
+@"#__method_name__#_batch": ^(NSObject <FlutterPluginRegistrar> * registrar, id argsBatch, FlutterResult methodResult) {
+    NSMutableArray* resultList = [NSMutableArray array];
 
-    // ref
-    #__ref__#
+    for (int i = 0; i < ((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch).count; i++) {
+        NSDictionary<NSString*, id>* args = [((NSArray<NSDictionary<NSString*, id>*>*) argsBatch) objectAtIndex:i];
 
-    // print log
-    if (enableLog) {
-        #__log__#
+        // args
+        #__args__#
+
+        // ref
+        #__ref__#
+
+        // invoke native method
+        #__invoke__#
+
+        // result
+        #__result__#
+
+        [resultList addObject:jsonableResult];
     }
 
-    // invoke native method
-    #__invoke__#
-
-    // result
-    #__result__#
+    methodResult(resultList);
 },
