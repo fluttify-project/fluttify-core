@@ -238,14 +238,14 @@ fun OBJC_FILE.objcType(): List<Type> {
         //region 类
         override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
             typeType = TypeType.Class
-            name = ctx.className.text.apply { println("类名: $this 开始") }
+            name = ctx.className.text
             superClass = ctx.superclassName.text
             interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
             isAbstract = false
         }
 
         override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
-            name = ctx.className.text.apply { println("类名: $this 结束 方法们: $methods") }
+            name = ctx.className.text
             if (name.isNotEmpty()) {
                 result.add(
                     Type().also {
@@ -441,18 +441,16 @@ fun OBJC_FILE.objcType(): List<Type> {
                 ?.directDeclarator()
                 ?.blockParameters()
                 ?.typeVariableDeclaratorOrName()
+                ?.mapNotNull { it.typeVariableDeclarator() }
                 ?.map {
-                    it.typeVariableDeclarator()
-                        .run {
-                            Parameter(
-                                variable = Variable(
-                                    declarationSpecifiers().text,
-                                    declarator().text,
-                                    Platform.iOS
-                                ),
-                                platform = Platform.iOS
-                            )
-                        }
+                    Parameter(
+                        variable = Variable(
+                            it.declarationSpecifiers()?.text ?: "Unknown",
+                            it.declarator().text,
+                            Platform.iOS
+                        ),
+                        platform = Platform.iOS
+                    )
                 }
 
             if (returnType != null && typeName != null) {
