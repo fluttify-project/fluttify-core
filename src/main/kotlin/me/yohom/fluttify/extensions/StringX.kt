@@ -94,6 +94,13 @@ fun TYPE_NAME.isVoid(): Boolean {
 }
 
 /**
+ * 是否是布尔类型
+ */
+fun TYPE_NAME.isBoolean(): Boolean {
+    return toLowerCase() == "boolean" || toLowerCase() == "bool"
+}
+
+/**
  * 套上List<>
  */
 fun TYPE_NAME.enList(): TYPE_NAME {
@@ -245,6 +252,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "int",
         "float",
         "double",
+        "int64_t",
         "BOOL",
         "NSUInteger",
         "NSInteger",
