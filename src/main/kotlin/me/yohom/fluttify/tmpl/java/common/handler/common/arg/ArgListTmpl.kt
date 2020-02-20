@@ -13,11 +13,10 @@ import me.yohom.fluttify.model.Variable
 private val tmpl = getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText()
 
 fun ArgListTmpl(variable: Variable): String {
-    return if (variable.genericLevel <= 1) {
+    return if (variable.genericLevel == 0) {
         tmpl
             .replace("#__type_name__#", variable.typeName.replace("$", "."))
             .replace("#__arg_name__#", variable.name)
-
     } else {
         var typeName = variable.typeName.replace("$", ".")
         for (i in 0 until (variable.genericLevel - 1)) {

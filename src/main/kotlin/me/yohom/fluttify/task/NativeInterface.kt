@@ -88,7 +88,7 @@ open class AndroidJavaInterface : FluttifyTask() {
                 .union(objectCreators)
                 .union(objectCreatorsBatch)
                 .toObservable()
-                .buffer(200)
+                .buffer(100)
                 .blockingIterable()
                 .mapIndexed { index, subHandler -> SubHandlerTmpl(index, subHandler) }
                 .forEachIndexed { index, content ->

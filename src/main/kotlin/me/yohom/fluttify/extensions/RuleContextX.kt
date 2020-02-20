@@ -26,6 +26,8 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
         typeSimpleName
     } else if (typeSimpleName == "Object") {
         "java.lang.Object"
+    } else if (typeSimpleName == "Throwable") {
+        "java.lang.Throwable"
     } else {
         ancestorOf(JavaParser.CompilationUnitContext::class)
             ?.importDeclaration()

@@ -43,7 +43,7 @@ private val tmpl = getResource("/tmpl/java/handler_method_batch.stmt.java.tmpl")
 fun HandlerMethodBatchTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val resultType = when {
-        method.returnType.jsonable() -> method.returnType.boxedType()
+        method.returnType.jsonable() -> method.returnType.boxedType().stringArray2List()
         method.returnType.isVoid() -> "String"
         method.returnType.isCollection() -> "List<Integer>"
         else -> "Integer"
