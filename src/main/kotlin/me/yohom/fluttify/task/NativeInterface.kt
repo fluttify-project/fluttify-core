@@ -38,6 +38,9 @@ open class AndroidJavaInterface : FluttifyTask() {
         val subHandlerOutputDir = "$packageDir/sub_handler"
         val subHandlerOutputFile = "$subHandlerOutputDir/SubHandler#__number__#.java"
 
+        // 生成前先删除之前的文件
+        packageDir.file().deleteRecursively()
+
         val sdk = jrFile.readText().fromJson<SDK>()
 
         // 生成主plugin文件
@@ -107,11 +110,7 @@ open class AndroidJavaInterface : FluttifyTask() {
                 lib.types
                     .filter { it.isView() && !it.isObfuscated() }
                     .forEach {
-                        val factoryOutputFile =
-                            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/java/${ext.org.replace(
-                                ".",
-                                "/"
-                            )}/${ext.projectName}/${it.name.simpleName()}Factory.java".file()
+                        val factoryOutputFile = "$packageDir/${it.name.simpleName()}Factory.java".file()
 
                         JavaPlatformViewFactory(it)
                             .run {
@@ -183,10 +182,12 @@ open class IOSObjcInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
-        val pluginHFile =
-            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${ext.projectName.underscore2Camel()}Plugin.h"
-        val pluginMFile =
-            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${ext.projectName.underscore2Camel()}Plugin.m"
+        val projectRootDir = "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/"
+        val pluginHFile = "$projectRootDir/${ext.projectName.underscore2Camel()}Plugin.h"
+        val pluginMFile = "$projectRootDir/${ext.projectName.underscore2Camel()}Plugin.m"
+
+        // 生成前先删除之前的文件
+        projectRootDir.file().deleteRecursively()
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
@@ -203,10 +204,8 @@ open class IOSObjcInterface : FluttifyTask() {
                 lib.types
                     .filter { it.isView() && !it.isObfuscated() }
                     .forEach {
-                        val factoryHFile =
-                            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${it.name.simpleName()}Factory.h".file()
-                        val factoryMFile =
-                            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${it.name.simpleName()}Factory.m".file()
+                        val factoryHFile = "$projectRootDir/${it.name.simpleName()}Factory.h".file()
+                        val factoryMFile = "$projectRootDir/${it.name.simpleName()}Factory.m".file()
 
                         ObjcPlatformViewFactory(it, lib)
                             .run {

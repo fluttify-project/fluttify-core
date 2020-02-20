@@ -33,10 +33,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val iOSJsonRepresentation = project.tasks.create("iOSJsonRepresentation", IOSJsonRepresentation::class.java)
         val androidDartInterface = project.tasks.create("androidDartInterface", AndroidDartInterface::class.java)
         val iOSDartInterface = project.tasks.create("iOSDartInterface", IOSDartInterface::class.java)
-        val androidKotlinInterface = project.tasks.create("androidKotlinInterface", AndroidKotlinInterface::class.java)
         val androidJavaInterface = project.tasks.create("androidJavaInterface", AndroidJavaInterface::class.java)
         val iOSObjcInterface = project.tasks.create("iOSObjcInterface", IOSObjcInterface::class.java)
-        val iOSSwiftInterface = project.tasks.create("iOSSwiftInterface", IOSSwiftInterface::class.java) // 暂时不用
         val export = project.tasks.create("export", Export::class.java)
         val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
