@@ -443,11 +443,23 @@ fun OBJC_FILE.objcType(): List<Type> {
                 ?.typeVariableDeclaratorOrName()
                 ?.mapNotNull { it.typeVariableDeclarator() }
                 ?.map {
+                    val rawTypeName = it.declarationSpecifiers().text
+                    val paramListType = rawTypeName.run {
+                        when {
+                            isArray() -> ListType.Array
+                            isArrayList() -> ListType.ArrayList
+                            isLinkedList() -> ListType.LinkedList
+                            isCollection() -> ListType.List
+                            else -> ListType.NonList
+                        }
+                    }
                     Parameter(
                         variable = Variable(
-                            it.declarationSpecifiers()?.text ?: "Unknown",
+                            rawTypeName.genericType(),
                             it.declarator().text,
-                            Platform.iOS
+                            Platform.iOS,
+                            paramListType,
+                            rawTypeName.genericLevel()
                         ),
                         platform = Platform.iOS
                     )
