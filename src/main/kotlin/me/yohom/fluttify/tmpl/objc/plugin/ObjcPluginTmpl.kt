@@ -168,7 +168,7 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
         .flatMap { it.types }
         .filterType()
         .flatMap { it.methods }
-        .filterMethod()
+        .filterMethod(true)
         .map { HandlerMethodBatchTmpl(it) }
 
     val typeCasts = libs
