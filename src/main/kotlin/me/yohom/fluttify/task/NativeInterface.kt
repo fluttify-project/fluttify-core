@@ -38,10 +38,12 @@ open class AndroidJavaInterface : FluttifyTask() {
         val subHandlerOutputDir = "$packageDir/sub_handler"
         val subHandlerOutputFile = "$subHandlerOutputDir/SubHandler#__number__#.java"
 
-        // 生成前先删除之前的文件
-        packageDir.file().deleteRecursively()
-
         val sdk = jrFile.readText().fromJson<SDK>()
+
+        // 生成前先删除之前的文件
+        // 只有有直接的依赖时, 才删除, 有时候只对一个平台生成, 那么其他平台就会没有直接依赖, 导致主Plugin文件被删除, 但是下面的逻辑又没有给
+        // 它重新生成
+        if (sdk.directLibs.isNotEmpty()) packageDir.file().deleteRecursively()
 
         // 生成主plugin文件
         sdk.directLibs.forEach { lib ->
@@ -186,10 +188,10 @@ open class IOSObjcInterface : FluttifyTask() {
         val pluginHFile = "$projectRootDir/${ext.projectName.underscore2Camel()}Plugin.h"
         val pluginMFile = "$projectRootDir/${ext.projectName.underscore2Camel()}Plugin.m"
 
-        // 生成前先删除之前的文件
-        projectRootDir.file().deleteRecursively()
-
         val sdk = jrFile.readText().fromJson<SDK>()
+
+        // 生成前先删除之前的文件
+        if (sdk.directLibs.isNotEmpty()) projectRootDir.file().deleteRecursively()
 
         // 生成主plugin文件
         ObjcPluginTmpl(sdk.directLibs)

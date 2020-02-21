@@ -36,7 +36,7 @@ open class DownloadIOSSDK : FluttifyTask() {
     fun process() {
         ext.ios.libDir.file().run {
             if (list()?.none { it.isIOSArchive() } == true && ext.ios.remote.run { "$name$version" }.isNotEmpty()) {
-                var iosArchiveSpec: File? = null
+                val iosArchiveSpec: File?
 
                 val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
                 val archiveName = ext.ios.remote.name
@@ -47,7 +47,7 @@ open class DownloadIOSSDK : FluttifyTask() {
                     ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
                     ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
                     ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
-                    ?.first { it.nameWithoutExtension == archiveName }
+                    ?.firstOrNull { it.nameWithoutExtension == archiveName }
 
                 // 找出目标版本所在文件夹
                 val targetVersion: File? = iosArchiveSpec?.listFiles()?.firstOrNull { it.name.contains(archiveVersion) }
