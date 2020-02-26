@@ -27,6 +27,7 @@ fun TYPE_NAME.jsonable(): Boolean {
         "null",
         "List<int>",
         "List<double>",
+        "List<num>",
         "List<String>",
         "Uint8List",
         "Uint32List",
@@ -400,7 +401,7 @@ fun String.enpointer(): String {
  * 获取泛型类型名称
  */
 fun TYPE_NAME.genericType(): TYPE_NAME {
-    var result = this.pack()
+    var result = this
     while (result.contains("<") && result.contains(">")) {
         // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
         if (Regex("NS(Mutable)?Dictionary<(\\w|\\*)+,(\\w|\\*)+>").matches(this) || Regex("\\w*Map<\\w+,\\w+>").matches(this)) {
