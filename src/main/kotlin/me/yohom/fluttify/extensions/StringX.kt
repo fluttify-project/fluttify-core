@@ -20,6 +20,7 @@ fun TYPE_NAME.jsonable(): Boolean {
         "bool",
         "int",
         "double",
+        "num",
         "String",
         "Map<String,String>",
         "Map",
@@ -327,11 +328,13 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
             "java.lang.Object" -> "Object" // 这里为什么要转为dart的Object在36行有说明
             // objc
             "NSString", "NSString*" -> "String"
-            "NSArray<NSString*>", "NSArray<NSString*>*" -> "List<String>"
+            "NSArray<NSString*>", "NSArray<NSString*>*", "NSMutableArray<NSString*>", "NSMutableArray<NSString*>*" -> "List<String>"
             "nil" -> "null"
             "id" -> "NSObject"
-            "NSArray", "NSArray*" -> "List"
+            "NSArray", "NSArray*", "NSMutableArray", "NSMutableArray*" -> "List"
             "NSInteger", "NSUInteger" -> "int"
+            "NSNumber", "NSNumber*" -> "num"
+            "int64_t" -> "int"
             "BOOL" -> "bool"
             "CGFloat" -> "double"
             else -> when {

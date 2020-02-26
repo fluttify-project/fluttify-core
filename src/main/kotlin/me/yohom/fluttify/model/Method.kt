@@ -70,6 +70,7 @@ data class Method(
                 must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } &&
                 must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } &&
                 must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } &&
+                must("形参中的lambda类型的所有参数是已知类型") { formalParams.filter { it.variable.isLambda() }.run { isEmpty() || all { it.variable.isKnownLambda() } } } &&
                 mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } } &&
                 mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } } &&
                 // 不处理c指针类型参数的方法

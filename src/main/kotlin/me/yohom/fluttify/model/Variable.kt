@@ -176,6 +176,17 @@ data class Variable(
     fun isCollection(): Boolean = typeName.isCollection()
 
     fun isMap(): Boolean = typeName.isMap()
+
+    /**
+     * 是否是Lambda以及组成部分是否都是已知元素
+     */
+    fun isKnownLambda(): Boolean {
+        return if (!isLambda()) {
+            false
+        } else {
+            type().formalParams.all { it.variable.type().isKnownType() }
+        }
+    }
 }
 
 enum class ListType {
