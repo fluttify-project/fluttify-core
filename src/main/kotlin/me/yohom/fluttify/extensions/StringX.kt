@@ -48,6 +48,7 @@ fun TYPE_NAME.isCollection(): Boolean {
             || Regex("Iterable<(\\w*|.*)>").matches(this)
             || Regex("Collection<(\\w*|.*)>").matches(this)
             || Regex("NSArray.*\\*?").matches(this)
+            || Regex("NSMutableArray.*\\*?").matches(this)
             || Regex("""\w+\[]""").matches(this)
 }
 
@@ -396,9 +397,14 @@ fun String.enpointer(): String {
  * 获取泛型类型名称
  */
 fun TYPE_NAME.genericType(): TYPE_NAME {
-    var result = this
+    var result = this.pack()
     while (result.contains("<") && result.contains(">")) {
-        result = result.substringAfter("<").substringBeforeLast(">")
+        // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
+        if (Regex("NS(Mutable)?Dictionary<(\\w|\\*)+,(\\w|\\*)+>").matches(this) || Regex("\\w*Map<\\w+,\\w+>").matches(this)) {
+            break
+        } else {
+            result = result.substringAfter("<").substringBeforeLast(">")
+        }
     }
     return result
 }
