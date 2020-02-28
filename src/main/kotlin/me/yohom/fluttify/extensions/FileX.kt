@@ -396,7 +396,14 @@ fun OBJC_FILE.objcType(): List<Type> {
             // @end
             if (!ctx.isChildOf(ObjectiveCParser.ClassInterfaceContext::class)) {
                 typeType = TypeType.Struct
-                name = ctx.identifier()?.text ?: ""
+                // 当struct由typedef定义时, 形如:
+                // typedef struct {
+                //    double x; /// 横坐标
+                //    double y; /// 纵坐标
+                // } BMKMapPoint;
+                // 到这个方法时, 在ObjectiveCParser.TypedefDeclarationContext上下文下, 可能会已经读取到结构体的名称
+                // 所以这里先判断下name是否为空, 如果不为空的话就直接使用了
+                name = if (name.isEmpty()) ctx.identifier()?.text ?: "" else name
             }
         }
 
