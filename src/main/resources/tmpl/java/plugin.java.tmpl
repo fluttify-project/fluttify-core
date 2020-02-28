@@ -6,6 +6,7 @@ package #__package_name__#;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.app.Activity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,8 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -27,9 +30,7 @@ import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableL
 import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
 
 @SuppressWarnings("ALL")
-public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.MethodCallHandler {
-
-    private BinaryMessenger messenger;
+public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
 
     private static final List<Map<String, Handler>> handlerMapList = new ArrayList<>();
 
@@ -38,17 +39,24 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "#__method_channel__#");
 
         #__plugin_name__#Plugin plugin = new #__plugin_name__#Plugin();
+
         BinaryMessenger messenger = registrar.messenger();
+        PlatformViewRegistry platformViewRegistry = registrar.platformViewRegistry();
+        Activity activity = registrar.activity();
+
         plugin.messenger = messenger;
+        plugin.platformViewRegistry = platformViewRegistry;
 
         #__register_handler__#
 
         channel.setMethodCallHandler(plugin);
 
         // register platform view
-        PlatformViewRegistry platformViewRegistry = registrar.platformViewRegistry();
         #__register_platform_views__#
     }
+
+    private BinaryMessenger messenger;
+    private PlatformViewRegistry platformViewRegistry;
 
     // v2 android embedding
     @Override
@@ -56,20 +64,34 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
         final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "#__method_channel__#");
 
         messenger = binding.getBinaryMessenger();
+        platformViewRegistry = binding.getPlatformViewRegistry();
 
         #__register_handler__#
 
         channel.setMethodCallHandler(this);
-
-        // register platform view
-        PlatformViewRegistry platformViewRegistry = binding.getPlatformViewRegistry();
-        #__register_platform_views__#
     }
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
 
     }
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding binding) {
+        Activity activity = binding.getActivity();
+
+        // register platform view
+        #__register_platform_views__#
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() { }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) { }
+
+    @Override
+    public void onDetachedFromActivity() { }
 
     @Override
     public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result methodResult) {
