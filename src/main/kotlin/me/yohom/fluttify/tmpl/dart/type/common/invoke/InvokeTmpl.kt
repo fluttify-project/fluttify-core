@@ -15,13 +15,14 @@ fun InvokeTmpl(method: Method): String {
         "'${ext.methodChannelName}'"
     }
     val methodName = method.nameWithClass()
-    val actualParams = method.formalParams
+    val args = method.formalParams
         .filterFormalParams()
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter("int", "refId")) else this }
         .map { it.variable }
         .toDartMap {
+            val type = if (it.isAliasType()) it.typeName.findType().aliasOf!! else it.typeName
             when {
-                it.typeName.findType().isEnum() -> {
+                type.findType().isEnum() -> {
                     // 枚举列表
                     if (it.isList) {
                         "${it.name.depointer()}.map((it) => it.index).toList()"
@@ -29,7 +30,7 @@ fun InvokeTmpl(method: Method): String {
                         "${it.name.depointer()}.index"
                     }
                 }
-                it.typeName.jsonable() -> it.name.depointer()
+                type.jsonable() -> it.name.depointer()
                 (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}.map((it) => it.refId).toList()"
                 it.genericLevel > 1 -> "[]" // 多维数组暂不处理
                 else -> "${it.name.depointer()}.refId"
@@ -38,5 +39,5 @@ fun InvokeTmpl(method: Method): String {
     return tmpl
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
-        .replace("#__args__#", actualParams)
+        .replace("#__args__#", args)
 }

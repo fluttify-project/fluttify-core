@@ -20,8 +20,9 @@ fun InvokeBatchTmpl(method: Method): String {
         .addParameter(Parameter.simpleParameter(method.className, "this"))
         .map { it.variable }
         .toDartMapBatch {
+            val type = if (it.isAliasType()) it.typeName.findType().aliasOf!! else it.typeName
             when {
-                it.typeName.findType().isEnum() -> {
+                type.findType().isEnum() -> {
                     // 枚举列表
                     if (it.isList) {
                         "${it.name.depointer()}[i].map((it) => it.index).toList()"
@@ -29,7 +30,7 @@ fun InvokeBatchTmpl(method: Method): String {
                         "${it.name.depointer()}[i].index"
                     }
                 }
-                it.typeName.jsonable() -> "${it.name.depointer()}[i]"
+                type.jsonable() -> "${it.name.depointer()}[i]"
                 (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}[i].map((it) => it.refId).toList()"
                 it.genericLevel > 1 -> "[]" // 多维数组暂不处理
                 else -> "${it.name.depointer()}[i].refId"
