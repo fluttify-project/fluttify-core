@@ -24,6 +24,9 @@ fun ArgJsonableTmpl(variable: Variable): String {
         if (variable.typeName == "NSUInteger" || variable.typeName.findType().aliasOf == "NSUInteger") {
             methodPrefix = "unsignedInteger"
         }
+        if (variable.typeName == "long long") {
+            methodPrefix = "longLongInteger"
+        }
         "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value]"
     } else {
         // 理论上, 这里目前应该只有NSString会走到这里

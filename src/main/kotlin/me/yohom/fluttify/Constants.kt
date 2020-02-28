@@ -38,7 +38,8 @@ val SYSTEM_TYPEDEF = mapOf(
     "CLLocationAccuracy" to "double",
     "CLLocationDegrees" to "double",
     "CFTimeInterval" to "double",
-    "NSTimeInterval" to "double"
+    "NSTimeInterval" to "double",
+    "int64_t" to "long long"
 )
 
 /**
