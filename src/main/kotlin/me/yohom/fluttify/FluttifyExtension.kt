@@ -74,7 +74,7 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     val iOSTransitiveTbd: List<String>
         get() {
             return ios.local.transitiveDependencies
-                .filter { it.startsWith("lib") && it.endsWith(".tbd") }
+                .filter { Regex("lib.+\\.tbd").matches(it) }
                 .map { it.removePrefix("lib").removeSuffix(".tbd") }
         }
 
