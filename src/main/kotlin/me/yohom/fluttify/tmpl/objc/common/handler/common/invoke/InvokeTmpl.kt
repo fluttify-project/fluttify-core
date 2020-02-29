@@ -35,9 +35,13 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                 val call = if (method.isFunction) {
                     "${method.name}(${method.formalParams.joinToString { it.variable.name.depointer() }})"
                 }
-                // 方法
-                else {
+                // 类静态方法
+                else if (!method.className.findType().isInterface()) {
                     "[${method.className} ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
+                }
+                // 协议静态方法
+                else {
+                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
                 }
 
                 if (method.returnType == "void") {
