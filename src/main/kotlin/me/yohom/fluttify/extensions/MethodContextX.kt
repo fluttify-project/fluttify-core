@@ -295,6 +295,7 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
         .run {
             if (this == "instancetype") {
                 val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
+                    ?: ancestorOf(ObjectiveCParser.ProtocolDeclarationContext::class)?.protocolName()?.text
                 if (instancetype != null) {
                     "$instancetype*"
                 } else {
@@ -337,7 +338,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                             .run {
                                 // lambda类型的参数处理
                                 blockType()?.run { "${returnType()}|${parameters()}" }
-                                    // 非lambda参数处理 如果有__kindof限定词就空格分隔一下
+                                // 非lambda参数处理 如果有__kindof限定词就空格分隔一下
                                     ?: text.objcSpecifierExpand()
                             }
                             .genericType(),
