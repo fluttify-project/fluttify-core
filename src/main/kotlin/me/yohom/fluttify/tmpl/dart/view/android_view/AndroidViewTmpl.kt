@@ -14,18 +14,23 @@ import me.yohom.fluttify.model.Type
 //import 'package:flutter/rendering.dart';
 //import 'package:flutter/services.dart';
 //
-//typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
+//import 'package:foundation_fluttify/foundation_fluttify.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
+//typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
+//typedef Future<void> _OnAndroidViewDispose();
+//
 //class #__view__#_Android extends StatefulWidget {
 //  const #__view__#_Android({
 //    Key key,
 //    this.onViewCreated,
+//    this.onDispose,
 //    #__creation_params__#
 //  }) : super(key: key);
 //
 //  final #__view_simple_name__#CreatedCallback onViewCreated;
-//  #__creation_field__#
+//  final _OnAndroidViewDispose onDispose;
+//
+//  #__creation_fields__#
 //
 //  @override
 //  _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
@@ -59,7 +64,9 @@ import me.yohom.fluttify.model.Type
 //
 //  @override
 //  void dispose() {
-//    PlatformFactory_Android.release(_controller);
+//    if (widget.onDispose != null) {
+//      widget.onDispose().then((_) => _controller.release());
+//    }
 //    super.dispose();
 //  }
 //}
@@ -105,7 +112,7 @@ fun AndroidViewTmpl(viewType: Type): String {
             .toDartMap("creationParams: {", "},") {
                 when {
                     it.typeName.findType().isEnum() -> "widget.${it.name.depointer()}?.index"
-                    it.typeName.jsonable() -> "widget.${it.name}?.depointer()"
+                    it.typeName.jsonable() -> "widget.${it.name.depointer()}"
                     (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
                     it.genericLevel > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
                     else -> "widget.${it.name.depointer()}?.refId ?? -1"
