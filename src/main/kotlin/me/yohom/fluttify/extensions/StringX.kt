@@ -548,3 +548,22 @@ fun String.isAndroidArchive(): Boolean {
 fun String.isIOSArchive(): Boolean {
     return endsWith("framework")
 }
+
+/**
+ * 为一些类限定词增加前后的空格, 这么做的原因是类限定词会跟类名粘在一起, 所以要加下空格
+ */
+fun String.objcSpecifierExpand(): String {
+    return replace("__kindof", " __kindof ")
+        .replace("_Nullable", " _Nullable ")
+        .replace("_Nonnull", " _Nonnull ")
+}
+
+/**
+ * 为一些类限定词增加前后的空格, 这么做的原因是类限定词会跟类名粘在一起, 所以要加下空格
+ */
+fun String.removeObjcSpecifier(): String {
+    return replace("__kindof", "")
+        .replace("_Nullable", "")
+        .replace("_Nonnull", "")
+        .pack()
+}

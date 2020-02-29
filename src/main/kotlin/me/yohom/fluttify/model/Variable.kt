@@ -105,7 +105,7 @@ data class Variable(
             isValueType() or isStruct() -> typeName
             isInterface() -> typeName.enprotocol()
             isList && genericLevel > 0 -> "NSArray<$typeName>*"
-            else -> typeName.enpointer()
+            else -> typeName.removeObjcSpecifier().enpointer() // 要先去除一下objc里的限定词
         }
     }
 

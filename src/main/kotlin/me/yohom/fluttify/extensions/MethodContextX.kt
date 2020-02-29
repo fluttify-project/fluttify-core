@@ -332,9 +332,15 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                 Parameter(
                     if (index == 0) "" else it.selector().text ?: "",
                     Variable(
-                        it.methodType()[0].typeName().run {
-                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
-                        }.genericType(),
+                        it.methodType()[0]
+                            .typeName()
+                            .run {
+                                // lambda类型的参数处理
+                                blockType()?.run { "${returnType()}|${parameters()}" }
+                                    // 非lambda参数处理 如果有__kindof限定词就空格分隔一下
+                                    ?: text.objcSpecifierExpand()
+                            }
+                            .genericType(),
                         it.identifier().text,
                         Platform.iOS,
                         it.methodType()[0].typeName().text.run {
