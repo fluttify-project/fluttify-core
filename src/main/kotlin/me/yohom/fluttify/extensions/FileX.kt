@@ -574,8 +574,8 @@ fun OBJC_FILE.objcType(): List<Type> {
                 ?.text
             val formalParams = ctx
                 .parameterList()
-                .parameterDeclarationList()
-                .parameterDeclaration()
+                ?.parameterDeclarationList()
+                ?.parameterDeclaration()
                 ?.takeIf { it.all { it.declarationSpecifiers() != null && it.declarator() != null } }
                 ?.map {
                     Parameter(
