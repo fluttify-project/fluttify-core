@@ -96,31 +96,27 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
             RegisterPlatformViewTmpl(it)
         }
 
-    // 如果不是framework, 只有.h+.a的话, 把这些.h提取出来
-    val directHeader = ext.ios.libDir
-        .file()
-        .listFiles()
-        ?.filter { it.extension == "h" }
-        // todo 如果是远程依赖, 那么可以用pod的名字, 如果是直接下载的呢?
-        ?.map { "#import <${ext.ios.remote.name}/${it.name}>" }
-        ?: listOf()
-
     // 提取所有framework内的头文件
     val imports = ext.ios.libDir
         .file()
-        .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
-        ?.flatMap { framework ->
-            "${framework}/Headers/"
-                .file()
-                .listFiles { _, name -> name.endsWith(".h") }
-                ?.map { framework to it }
+        .run {
+            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+                ?.flatMap { framework ->
+                    "$framework/Headers/"
+                        .file()
+                        .listFiles { _, name -> name.endsWith(".h") }
+                        ?.map { framework to it }
+                        ?: listOf()
+                }
+                ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
                 ?: listOf()
+            val directHeaders = listFiles { _, name -> name.endsWith(".h") } // 所有的.h
+                ?.map { "#import \"${it.name}\"" }
+                ?: listOf()
+            frameworkHeaders.union(directHeaders)
         }
-        ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
-        ?.union(platformViewHeader)
-        ?.union(directHeader)
-        ?.joinToString("\n")
-        ?: ""
+        .union(platformViewHeader)
+        .joinToString("\n")
 
     val protocols = libs
         .flatMap { it.types }

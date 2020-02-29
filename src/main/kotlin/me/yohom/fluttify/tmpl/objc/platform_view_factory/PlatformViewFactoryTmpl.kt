@@ -79,19 +79,29 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //@end
 private val hTmpl = getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText()
 private val mTmpl = getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
+
 fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
+    // 先尝试导入framework里的头文件, 如果没有framework而是.h+.a的情况, 那么就导入所有的.h文件
     val imports = ext.ios.libDir
         .file()
-        .listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
-        ?.flatMap { framework ->
-            "${framework}/Headers/"
-                .file()
-                .listFiles { _, name -> name.endsWith(".h") }
-                ?.map { framework to it }
+        .run {
+            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+                ?.flatMap { framework ->
+                    "$framework/Headers/"
+                        .file()
+                        .listFiles { _, name -> name.endsWith(".h") }
+                        ?.map { framework to it }
+                        ?: listOf()
+                }
+                ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
                 ?: listOf()
+            val directHeaders = listFiles { _, name -> name.endsWith(".h") } // 所有的.h
+                ?.map { "#import \"${it.name}\"" }
+                ?: listOf()
+            frameworkHeaders.union(directHeaders)
         }
-        ?.joinToString("\n") { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
-        ?: ""
+        .joinToString("\n")
+
     val nativeView = viewType.name
     val protocols = lib
         .types
