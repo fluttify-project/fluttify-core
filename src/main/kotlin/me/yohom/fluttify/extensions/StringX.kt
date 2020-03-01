@@ -311,34 +311,33 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  */
 fun TYPE_NAME.toDartType(): TYPE_NAME {
     return SYSTEM_TYPEDEF[this.depointer()]
-        ?: when (this.pack()) {
-            // android
-            "String" -> "String"
-            "boolean", "Boolean" -> "bool"
-            "byte", "Byte", "int", "Integer", "long", "Long" -> "int"
-            "double", "Double", "float", "Float" -> "double"
-            "Collection<Byte>", "Collection<Integer>", "Collection<Long>", "List<Byte>", "List<Integer>", "List<Long>", "ArrayList<Byte>", "ArrayList<Integer>", "ArrayList<Long>" -> "List<int>"
-            "ArrayList<String>", "String[]" -> "List<String>"
-            "Collection<String>", "List<String>" -> "List<String>"
-            "Collection<Float>", "Collection<Double>", "List<Float>", "List<Double>", "List<float>", "List<double>" -> "List<double>"
-            "byte[]", "Byte[]" -> "Uint8List"
-            "int[]", "Integer[]" -> "Int32List"
-            "long[]", "Long[]" -> "Int64List"
-            "double[]", "Double[]", "float[]", "Float[]" -> "Float64List"
-            "Map" -> "Map"
-            "java.lang.Object" -> "Object" // 这里为什么要转为dart的Object在36行有说明
-            // objc
-            "NSString", "NSString*" -> "String"
-            "NSArray<NSString*>", "NSArray<NSString*>*", "NSMutableArray<NSString*>", "NSMutableArray<NSString*>*" -> "List<String>"
-            "nil" -> "null"
-            "id" -> "NSObject"
-            "NSArray", "NSArray*", "NSMutableArray", "NSMutableArray*" -> "List"
-            "NSInteger", "NSUInteger" -> "int"
-            "NSNumber", "NSNumber*" -> "num"
-            "int64_t" -> "int"
-            "BOOL" -> "bool"
-            "CGFloat" -> "double"
-            else -> when {
+        ?: pack().run {
+            when {
+                // java/kotlin
+                Regex("String").matches(this) -> "String"
+                Regex("[Bb]oolean").matches(this) -> "bool"
+                Regex("[Bb]yte|[Ii]nt|Integer|[Ll]ong").matches(this) -> "int"
+                Regex("[Dd]ouble|[Ff]loat").matches(this) -> "double"
+                Regex("(Collection|(Array)?List)<(Byte|Integer|Long)>").matches(this) -> "List<int>"
+                Regex("(Collection|(Array)?List)<(Float|Double)>").matches(this) -> "List<double>"
+                Regex("(Collection|(Array)?List)<String>|String\\[]").matches(this) -> "List<String>"
+                Regex("[Bb]yte\\[]").matches(this) -> "Uint8List"
+                Regex("(int|Integer)\\[]").matches(this) -> "Int32List"
+                Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
+                Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
+                Regex("(Hash)?Map").matches(this) -> "Map"
+                Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
+                // objc
+                Regex("NSString\\*?").matches(this) -> "String"
+                Regex("NS(Mutable)?Array<NSString\\*?>\\*?").matches(this) -> "List<String>"
+                Regex("nil").matches(this) -> "null"
+                Regex("id").matches(this) -> "NSObject"
+                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List"
+                Regex("NS(U)?Integer").matches(this) -> "int"
+                Regex("NSNumber\\*?").matches(this) -> "num"
+                Regex("int64_t").matches(this) -> "int"
+                Regex("BOOL").matches(this) -> "bool"
+                Regex("CGFloat").matches(this) -> "double"
                 // 若是某种java的List, 那么去掉前缀
                 Regex("(\\w*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
                 Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
@@ -404,7 +403,10 @@ fun TYPE_NAME.genericType(): TYPE_NAME {
     var result = this
     while (result.contains("<") && result.contains(">")) {
         // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-        if (Regex("NS(Mutable)?Dictionary<(\\w|\\*)+,(\\w|\\*)+>").matches(this) || Regex("\\w*Map<\\w+,\\w+>").matches(this)) {
+        if (Regex("NS(Mutable)?Dictionary<(\\w|\\*)+,(\\w|\\*)+>").matches(this) || Regex("\\w*Map<\\w+,\\w+>").matches(
+                this
+            )
+        ) {
             break
         } else {
             result = result.substringAfter("<").substringBeforeLast(">")
