@@ -1,5 +1,6 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.Regexes
 import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
@@ -57,7 +58,17 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
         ?.formalParameter()
         ?.forEach { formalParam ->
             val paramType = formalParam.typeType().text.genericType()
-            val typeFullName = typeFullName(paramType)
+            // 由于Map/Dictionary类作为普通类处理, 之类需要为其专门处理一下
+            val typeFullName = if (Regexes.MAP.matches(paramType)) {
+                val containerType = typeFullName(paramType.substringBefore("<"))
+                val genericTypeList = paramType
+                    .substringAfter("<")
+                    .substringBeforeLast(">").split(",")
+                    .joinToString(",") { typeFullName(it) }
+                "$containerType<$genericTypeList>"
+            } else {
+                typeFullName(paramType)
+            }
             result.add(
                 Parameter(
                     variable = Variable(
@@ -85,7 +96,16 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
         ?.lastFormalParameter()
         ?.run {
             val paramType = typeType().text.genericType()
-            val typeFullName = typeFullName(paramType)
+            val typeFullName = if (Regexes.MAP.matches(paramType)) {
+                val containerType = typeFullName(paramType.substringBefore("<"))
+                val genericTypeList = paramType
+                    .substringAfter("<")
+                    .substringBeforeLast(">").split(",")
+                    .joinToString(",") { typeFullName(it) }
+                "$containerType<$genericTypeList>"
+            } else {
+                typeFullName(paramType)
+            }
             result.add(
                 Parameter(
                     variable = Variable(

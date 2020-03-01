@@ -100,6 +100,11 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum }
 )
 
+// TODO 集中一下目前的正则表达式, 统一管理
+object Regexes {
+    val MAP = Regex("(\\w*Map|NS(Mutable)?Dictionary)<.+,.+>")
+}
+
 /**
  * 类型名 包括类名和接口名
  */

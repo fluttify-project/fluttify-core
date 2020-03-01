@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.view.android_view
 
+import me.yohom.fluttify.Regexes
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
@@ -111,10 +112,11 @@ fun AndroidViewTmpl(viewType: Type): String {
             .map { it.variable }
             .toDartMap("creationParams: {", "},") {
                 when {
-                    it.typeName.findType().isEnum() -> "widget.${it.name.depointer()}?.index"
-                    it.typeName.jsonable() -> "widget.${it.name.depointer()}"
+                    it.isEnum() -> "widget.${it.name.depointer()}?.index"
+                    it.jsonable() -> "widget.${it.name.depointer()}"
                     (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
                     it.genericLevel > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
+                    Regexes.MAP.matches(it.typeName) -> "{} /* Map类型暂不处理 */" // 多维数组暂不处理
                     else -> "widget.${it.name.depointer()}?.refId ?? -1"
                 }
             }

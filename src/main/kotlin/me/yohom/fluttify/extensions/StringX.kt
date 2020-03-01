@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.PATH
+import me.yohom.fluttify.Regexes
 import me.yohom.fluttify.SYSTEM_TYPEDEF
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.model.SDK
@@ -111,6 +112,13 @@ fun TYPE_NAME.enList(): TYPE_NAME {
 }
 
 /**
+ * 套上Map<>
+ */
+fun TYPE_NAME.enMap(): TYPE_NAME {
+    return "Map<$this>"
+}
+
+/**
  * 套上Collection<>
  */
 fun TYPE_NAME.enCollection(): TYPE_NAME {
@@ -142,9 +150,7 @@ fun TYPE_NAME.isArray(): Boolean {
  * 是否是Map类型
  */
 fun TYPE_NAME.isMap(): Boolean {
-    return Regex("\\w*Map(<*)\\w*(,*)\\w*(>*)").matches(this.pack()) || Regex("NSDictionary(<*)\\w*(,*)\\w*(>*)").matches(
-        this.pack()
-    )
+    return Regex("(\\w*Map|NS(Mutable)?Dictionary)(<.*,.*>)?").matches(pack())
 }
 
 /**
@@ -341,7 +347,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 // 若是某种java的List, 那么去掉前缀
                 Regex("(\\w*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
                 Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
-                Regex("NSDictionary<.+,.+>").matches(this) -> {
+                Regex("((Hash)?Map|NSDictionary)<.+,.+>").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
                     "Map<$keyType, $valueType>"
@@ -402,11 +408,8 @@ fun String.enpointer(): String {
 fun TYPE_NAME.genericType(): TYPE_NAME {
     var result = this
     while (result.contains("<") && result.contains(">")) {
-        // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-        if (Regex("NS(Mutable)?Dictionary<(\\w|\\*)+,(\\w|\\*)+>").matches(this) || Regex("\\w*Map<\\w+,\\w+>").matches(
-                this
-            )
-        ) {
+//         NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
+        if (Regexes.MAP.matches(this)) {
             break
         } else {
             result = result.substringAfter("<").substringBeforeLast(">")
