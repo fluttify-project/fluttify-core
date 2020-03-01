@@ -142,7 +142,8 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isPublic(),
                     "$packageName.$simpleName",
                     Platform.Android,
-                    ctx.isDeprecated()
+                    ctx.isDeprecated(),
+                    isGenericMethod = ctx.isGenericMethod()
                 )
             )
         }
@@ -158,7 +159,8 @@ fun JAVA_FILE.javaType(): Type {
                     true,
                     "$packageName.$simpleName",
                     Platform.Android,
-                    ctx.isDeprecated()
+                    ctx.isDeprecated(),
+                    isGenericMethod = ctx.isGenericMethod()
                 )
             )
         }

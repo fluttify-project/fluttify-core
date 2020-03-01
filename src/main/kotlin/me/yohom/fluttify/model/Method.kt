@@ -34,17 +34,21 @@ data class Method(
      * 所在类名称
      */
     var className: TYPE_NAME,
-
     override var platform: Platform,
 
     /**
      * 是否过时
      */
     var isDeprecated: Boolean = false,
+
     /**
      * 是否是函数
      */
-    var isFunction: Boolean = false
+    var isFunction: Boolean = false,
+    /**
+     * 是否是泛型方法
+     */
+    var isGenericMethod: Boolean = false
 ) : IPlatform, IScope {
 
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"

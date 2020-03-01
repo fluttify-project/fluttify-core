@@ -90,6 +90,10 @@ fun JavaParser.MethodDeclarationContext.name(): String {
     return IDENTIFIER().text
 }
 
+fun JavaParser.MethodDeclarationContext.isGenericMethod(): Boolean {
+    return isChildOf(JavaParser.GenericMethodDeclarationContext::class)
+}
+
 fun JavaParser.MethodDeclarationContext.isAbstract(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
@@ -99,6 +103,11 @@ fun JavaParser.MethodDeclarationContext.isAbstract(): Boolean {
 
 fun JavaParser.InterfaceMethodDeclarationContext.name(): String {
     return IDENTIFIER().text
+}
+
+fun JavaParser.InterfaceMethodDeclarationContext.isGenericMethod(): Boolean {
+    println("text: $text, parent: ${parent::class}")
+    return typeParameters() != null
 }
 
 fun JavaParser.MethodDeclarationContext.isPrivate(): Boolean {

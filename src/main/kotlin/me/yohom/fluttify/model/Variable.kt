@@ -98,7 +98,7 @@ data class Variable(
         return typeName.findType()
     }
 
-// TODO 重命名为objcType
+    // TODO 重命名为objcType
     fun paramType(): String {
         return when {
             typeName == "id" -> "id"
@@ -161,10 +161,10 @@ data class Variable(
 
     fun var2Args(hostMethod: Method? = null): String {
         return if (typeName.findType().isCallback() && hostMethod != null) {
-            if (isList) {
-                "new ArrayList() /* 暂不支持列表回调 */"
-            } else {
-                CallbackTmpl(hostMethod, typeName.findType())
+            when {
+                isList -> "new ArrayList() /* 暂不支持列表回调 */"
+                type().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
+                else -> CallbackTmpl(hostMethod, typeName.findType())
             }
         } else {
             when {
