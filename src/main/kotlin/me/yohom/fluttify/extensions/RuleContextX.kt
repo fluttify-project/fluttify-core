@@ -28,6 +28,8 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
         "java.lang.Object"
     } else if (typeSimpleName == "Throwable") {
         "java.lang.Throwable"
+    } else if (typeSimpleName == "Exception") {
+        "java.lang.Exception"
     } else {
         ancestorOf(JavaParser.CompilationUnitContext::class)
             ?.importDeclaration()
