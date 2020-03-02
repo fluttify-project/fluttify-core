@@ -104,6 +104,7 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
         val formalParamsExcludeContext = constructor
             .formalParams
             .filter { it.variable.typeName != "android.content.Context" }
+            .filter { it.variable.typeName != "android.app.Activity" }
 
         // 反序列化参数
         val args = formalParamsExcludeContext
@@ -116,12 +117,19 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
                 }
             }
         // 传入参数
-        val creationArgs = formalParamsExcludeContext.joinToString(prefix = ", ") { it.variable.name }
+        val creationArgs = constructor.formalParams.joinToString {
+            // 如果是Context或者Activity直接传入activity变量
+            if (it.variable.typeName.run { this == "android.content.Context" || this == "android.app.Activity" }) {
+                "activity"
+            } else {
+                it.variable.name
+            }
+        }
         tmpl.replaceParagraph("#__args__#", args)
             .replace("#__creation_args__#", creationArgs)
     } else {
         tmpl.replace("#__args__#", "")
-            .replace("#__creation_args__#", "")
+            .replace("#__creation_args__#", "activity")
     }.replace("#__package_name__#", packageName)
         .replace("#__factory_name__#", factoryName)
         .replace("#__plugin_class__#", pluginClass)
