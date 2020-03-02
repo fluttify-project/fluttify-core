@@ -3,8 +3,8 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.dart.type.common.getter_batch.GetterBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.getter_batch.GetterBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorTmpl
@@ -73,7 +73,6 @@ fun TypeSdkTmpl(type: Type): String {
         .filterConstants()
         .joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" }
 
-    // todo 批量构造器
     // 构造器
     val creators = if (type.constructable()) {
         CreatorTmpl(type).union(CreatorBatchTmpl(type)).toList()
