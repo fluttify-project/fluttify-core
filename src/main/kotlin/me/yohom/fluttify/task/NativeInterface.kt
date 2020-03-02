@@ -11,11 +11,9 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator_batch.H
 import me.yohom.fluttify.tmpl.java.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
 import me.yohom.fluttify.tmpl.java.plugin.sub_handler.SubHandlerTmpl
-import me.yohom.fluttify.tmpl.kotlin.plugin.KotlinPluginTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.ObjcPluginTmpl
 import org.gradle.api.tasks.TaskAction
 import me.yohom.fluttify.tmpl.java.platform_view_factory.PlatformViewFactoryTmpl as JavaPlatformViewFactory
-import me.yohom.fluttify.tmpl.kotlin.platform_view_factory.PlatformViewFactoryTmpl as KotlinPlatformViewFactory
 import me.yohom.fluttify.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
 
 /**
@@ -124,56 +122,6 @@ open class AndroidJavaInterface : FluttifyTask() {
 }
 
 /**
- * Android端接口生成
- *
- * 输入: java文件
- * 输出: 对应的method channel文件
- */
-open class AndroidKotlinInterface : FluttifyTask() {
-
-    @TaskAction
-    fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
-        val pluginOutputFile =
-            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/kotlin/${ext.org.replace(
-                ".",
-                "/"
-            )}/${ext.projectName}/${ext.projectName.underscore2Camel()}Plugin.kt"
-
-        val sdk = jrFile.readText().fromJson<SDK>()
-
-        // 生成主plugin文件
-        sdk.directLibs.forEach {
-            KotlinPluginTmpl(it)
-                .kotlinPlugin()
-                .run {
-                    pluginOutputFile.file().writeText(this)
-                }
-        }
-
-        // 生成PlatformViewFactory文件
-        sdk.directLibs
-            .forEach { lib ->
-                lib.types
-                    .filter { it.isView() && !it.isObfuscated() }
-                    .forEach {
-                        val factoryOutputFile =
-                            "${project.projectDir}/output-project/${ext.projectName}/android/src/main/kotlin/${ext.org.replace(
-                                ".",
-                                "/"
-                            )}/${ext.projectName}/${it.name.simpleName()}Factory.kt".file()
-
-                        KotlinPlatformViewFactory(it)
-                            .kotlinPlatformViewFactory()
-                            .run {
-                                factoryOutputFile.writeText(this)
-                            }
-                    }
-            }
-    }
-}
-
-/**
  * iOS端接口生成
  *
  * 输入: framework文件夹
@@ -216,46 +164,5 @@ open class IOSObjcInterface : FluttifyTask() {
                             }
                     }
             }
-    }
-}
-
-/**
- * iOS端swift接口生成
- *
- * 输入: framework文件夹
- * 输出: 对应的method channel文件
- */
-open class IOSSwiftInterface : FluttifyTask() {
-
-    @TaskAction
-    fun process() {
-//        val pluginOutputFile =
-//            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/Swift${ext.projectName.underscore2Camel()}Plugin.swift"
-//
-//        val sdk = "${project.projectDir}/ir/ios/json_representation.json".file().readText().fromJson<SDK>()
-//
-//        // 生成主plugin文件
-//        SwiftPluginTmpl(sdk.libs, ext)
-//            .swiftPlugin()
-//            .run {
-//                pluginOutputFile.file().writeText(this)
-//            }
-//
-//        // 生成PlatformViewFactory文件
-//        sdk.libs
-//            .forEach { lib ->
-//                lib.types
-//                    .filter { it.isView() }
-//                    .forEach {
-//                        val factoryOutputFile =
-//                            "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/${it.name.simpleName()}Factory.swift".file()
-//
-//                        SwiftPlatformViewFactoryTmpl(it, lib)
-//                            .swiftPlatformViewFactory()
-//                            .run {
-//                                factoryOutputFile.writeText(this)
-//                            }
-//                    }
-//            }
     }
 }

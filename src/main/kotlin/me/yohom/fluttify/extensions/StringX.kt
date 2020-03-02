@@ -198,13 +198,6 @@ fun TYPE_NAME.simpleName(): String {
 }
 
 /**
- * 父类类型
- */
-fun TYPE_NAME.superTypes(): List<Type> {
-    return findType().superTypes()
-}
-
-/**
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
@@ -218,39 +211,6 @@ fun TYPE_NAME.findType(): Type {
             }
         }
     return SDK.findType(type)
-}
-
-/**
- * 转kotlin类型
- */
-fun TYPE_NAME.toKotlinType(): String {
-    return when {
-        this == "void" -> "Unit"
-        this == "Integer" -> "Int"
-//        this == "float" -> "Double" // 到kotlin的时候, 一律是Double
-        jsonable() -> capitalize()
-        else -> this
-    }.replace("[]", "Array")
-}
-
-/**
- * 转swift类型
- */
-fun TYPE_NAME.toSwiftType(): String {
-    var depointed = depointer()
-    // 如果是形如id<XXX>的protocol的话, 那么去掉id<>
-    if (contains("id<")) {
-        depointed = depointed.removePrefix("id<").removeSuffix(">")
-    }
-    return when {
-        depointed == "void" -> "Void"
-        depointed == "NSInteger" -> "Int"
-        depointed == "NSString" -> "String"
-        depointed == "BOOL" -> "Bool"
-        depointed in listOf("NSArray", "NSArray*") -> "[Any]"
-        depointed.jsonable() -> capitalize()
-        else -> depointed
-    }
 }
 
 /**
@@ -283,21 +243,6 @@ fun TYPE_NAME.isCPointerType(): Boolean {
  */
 fun String.pack(): String {
     return replace(" ", "")
-}
-
-/**
- * objc方法名转swift名
- */
-fun String.toSwiftMethod(): String {
-    return if (!contains("with", true)) {
-        // 如果不包含`with`的话, 那么就直接使用原来的方法名, 不需要转换
-        "$this("
-    } else {
-        // 形如`xxWithXxx: (XXX)xx` 的方法, swift会转换为`xx(xxx: xx)`方法
-        val methodNameBeforeWith = substringBefore("With")
-        val methodNameAfterWith = substringAfter("With").decapitalize()
-        "$methodNameBeforeWith($methodNameAfterWith: "
-    }
 }
 
 /**
@@ -372,13 +317,6 @@ fun TYPE_NAME.toUnderscore(): String {
  */
 fun String.depointer(): String {
     return removePrefix("*").removeSuffix("*")
-}
-
-/**
- * 取出指针变量的值 也就是前面加`*`
- */
-fun String.pointerValue(): String {
-    return "* $this"
 }
 
 /**
@@ -477,15 +415,6 @@ fun String.camel2Underscore(): String {
 }
 
 /**
- * objc命名规范改为swift命名规范, 这个没什么办法, 目前先枚举替换
- *
- * 比如 URL->url
- */
-fun String.objc2SwiftSpec(): String {
-    return replace("URL", "url")
-}
-
-/**
  * 路径字符串转为文件
  *
  * 如果文件不存在:
@@ -511,10 +440,6 @@ fun PATH.file(): File {
         }
     }
     return file
-}
-
-fun String.builder(): StringBuilder {
-    return StringBuilder(this)
 }
 
 fun String.replaceParagraph(oldValue: String, newValue: String): String {

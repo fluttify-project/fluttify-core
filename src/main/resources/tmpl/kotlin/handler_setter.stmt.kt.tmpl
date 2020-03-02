@@ -1,9 +1,0 @@
-"#__setter_name__#" to { registrar, args, methodResult ->
-    #__arg__#
-
-    val refId = args["refId"] as Int
-    val ref = HEAP[refId] as #__class_name__#
-
-    ref.#__field_name__# = #__field_value__#
-    methodResult.success("success")
-}

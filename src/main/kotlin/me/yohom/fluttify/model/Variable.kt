@@ -109,14 +109,6 @@ data class Variable(
             else -> typeName.removeObjcSpecifier().enpointer() // 要先去除一下objc里的限定词
         }
     }
-//
-//    fun dartType(): String {
-//        return when {
-//            isMap() -> typeName.split(",").joinToString(",") { it.toDartType() }.enMap()
-//            isList -> typeName.toDartType().enList()
-//            else -> typeName.toDartType()
-//        }
-//    }
 
     fun toDartString(): String {
         return if (typeName.findType().isLambda()) {

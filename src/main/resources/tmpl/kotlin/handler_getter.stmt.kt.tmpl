@@ -1,7 +1,0 @@
-"#__getter_name__#" to { registrar, args, methodResult ->
-    // ref object
-    val refId = args["refId"] as Int
-    val ref = HEAP[refId] as #__class_name__#
-
-    methodResult.success(ref.#__field_name__#)
-}

@@ -39,7 +39,6 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
         // 可选任务
-        val cleanEmpty = project.tasks.create("cleanEmpty", CleanEmpty::class.java)
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
         // assembly
