@@ -403,9 +403,18 @@ fun OBJC_FILE.objcType(): List<Type> {
                 //    double x; /// 横坐标
                 //    double y; /// 纵坐标
                 // } BMKMapPoint;
+                //
+                // 另外一种结构体定义
+                // ///经度、纬度定义的经纬度跨度范围
+                // struct MACoordinateSpan{
+                //     CLLocationDegrees latitudeDelta;  ///< 纬度跨度
+                //     CLLocationDegrees longitudeDelta; ///< 经度跨度
+                // };
+                // typedef struct MACoordinateSpan MACoordinateSpan;
+                //
                 // 到这个方法时, 在ObjectiveCParser.TypedefDeclarationContext上下文下, 可能会已经读取到结构体的名称
-                // 所以这里先判断下name是否为空, 如果不为空的话就直接使用了
-                name = if (name.isEmpty()) ctx.identifier()?.text ?: "" else name
+                // 这里优先使用identifier的值, 如果有说明是第二种定义方式, 如果没有说明是第一种, 采用已经获取到的name
+                name = ctx.identifier()?.text ?: name
             }
         }
 
