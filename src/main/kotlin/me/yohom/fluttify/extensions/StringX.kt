@@ -303,13 +303,12 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 else -> this.substringBefore("<")
             }
         }
-            .replace("$", ".")
-            .replace(".", "_")
+            .toUnderscore()
             .depointer()
 }
 
 fun TYPE_NAME.toUnderscore(): String {
-    return replace("$", ".").replace(".", "_")
+    return replace(Regex("[$.<>,]"), "_")
 }
 
 /**
