@@ -559,7 +559,6 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
-            ctx.name().apply { println("类名: $name, 方法名: $this") }
             methods.add(
                 Method(
                     ctx.returnType(),

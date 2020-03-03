@@ -112,6 +112,14 @@ open class Type : IPlatform, IScope {
                 result.add(superClass)
                 findAncestorClasses(superClass)
             }
+            // 从父类搜索祖先类时, 不能缺了父类实现的接口
+            val interfaces = clazz.findType().interfaces
+            if (interfaces.isNotEmpty()) {
+                interfaces.forEach {
+                    result.add(it)
+                    findAncestorClasses(it)
+                }
+            }
         }
 
         fun findAncestorInterfaces(interfaze: String) {

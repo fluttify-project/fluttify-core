@@ -106,7 +106,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.name(): String {
 }
 
 fun JavaParser.InterfaceMethodDeclarationContext.isGenericMethod(): Boolean {
-    println("text: $text, parent: ${parent::class}")
     return typeParameters() != null
 }
 
