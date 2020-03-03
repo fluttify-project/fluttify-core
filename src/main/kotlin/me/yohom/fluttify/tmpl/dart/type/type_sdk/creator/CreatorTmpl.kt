@@ -27,12 +27,7 @@ fun CreatorTmpl(type: Type): List<String> {
                             it.variable.typeName.toUnderscore().replace("[]", "Array")
                         }
                     )
-                    .replace(
-                        "#__creator_name__#",
-                        "${type.name.toUnderscore()}${it.formalParams.joinToString("__", "__") {
-                            it.variable.typeName.toUnderscore().replace("[]", "Array")
-                        }}"
-                    )
+                    .replace("#__creator_name__#", type.creatorName())
                     .replace("#__formal_params__#", it.formalParams.joinToString { it.variable.toDartString() })
                     .replace("#__channel_name__#", ext.methodChannelName)
                     .replace("#__separator__#", if (it.formalParams.isEmpty()) "" else ", ")

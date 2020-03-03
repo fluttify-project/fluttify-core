@@ -1,6 +1,9 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator
 
-import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.extensions.filterConstructor
+import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
@@ -41,9 +44,7 @@ fun HandlerObjectFactoryTmpl(type: Type): List<String> {
                         else -> ArgRefTmpl(it.variable)
                     }
                 }
-            val creatorName = "${type.name.toUnderscore()}${it.formalParams.joinToString("__", prefix = "__") {
-                it.variable.typeName.toUnderscore().replace("[]", "Array")
-            }}"
+            val creatorName = type.creatorName()
             val argsValue = it.formalParams.joinToString { it.variable.var2Args() }
 
             tmpl
