@@ -44,7 +44,7 @@ fun HandlerObjectFactoryTmpl(type: Type): List<String> {
                         else -> ArgRefTmpl(it.variable)
                     }
                 }
-            val creatorName = type.creatorName()
+            val creatorName = it.creatorName(type.name)
             val argsValue = it.formalParams.joinToString { it.variable.var2Args() }
 
             tmpl

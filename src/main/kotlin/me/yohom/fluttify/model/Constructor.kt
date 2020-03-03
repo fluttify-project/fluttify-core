@@ -1,7 +1,9 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.must
+import me.yohom.fluttify.extensions.toUnderscore
 
 data class Constructor(
     /**
@@ -33,5 +35,11 @@ data class Constructor(
                                     // 构造器的参数类型也是可构造的
                                     it.variable.typeName.findType().constructable()
                         })
+    }
+
+    fun creatorName(typeName: TYPE_NAME): String {
+        return "${typeName.toUnderscore()}${formalParams.joinToString("__", "__") {
+            it.variable.typeName.toUnderscore().replace("[]", "Array")
+        }}"
     }
 }

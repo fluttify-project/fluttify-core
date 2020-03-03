@@ -343,13 +343,6 @@ open class Type : IPlatform, IScope {
         return this == UNKNOWN_TYPE
     }
 
-    fun creatorName(): String {
-        return "${name.toUnderscore()}${formalParams.joinToString("__", "__") {
-            it.variable.typeName.toUnderscore().replace("[]", "Array")
-        }}"
-
-    }
-
     override fun toString(): String {
         return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }

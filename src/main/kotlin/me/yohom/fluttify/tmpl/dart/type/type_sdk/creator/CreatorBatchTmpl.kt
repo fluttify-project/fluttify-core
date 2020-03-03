@@ -31,7 +31,7 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                             it.variable.typeName.toUnderscore().replace("[]", "Array")
                         }
                     )
-                    .replace("#__creator_name__#", type.creatorName())
+                    .replace("#__creator_name__#", it.creatorName(type.name))
                     .replace("#__formal_params__#", it
                         .formalParams
                         .run {
