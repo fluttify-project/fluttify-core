@@ -4,13 +4,11 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
-import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
 
 //Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
-//  // print log
-//  // if (fluttifyLogEnabled) {
-//  //   #__log__#
-//  // }
+//  if (#__check_param_size__#) {
+//    return Future.error('all args must has same length!');
+//  }
 //
 //  // invoke native method
 //  #__invoke__#
@@ -53,7 +51,8 @@ fun MethodBatchTmpl(method: Method): String {
                 this
             }
         }
-    val log = LogTmpl(method)
+
+    val checkParamSize = method.formalParams.checkParamSize()
     val invoke = InvokeBatchTmpl(method)
     val returnStatement = "(resultBatch as List).map((result) => ${ReturnTmpl(method)}).toList()"
     val nativeObjectPool = method.returnType.run {
@@ -68,7 +67,7 @@ fun MethodBatchTmpl(method: Method): String {
         .replace("#__return_type__#", returnType)
         .replace("#__method_name__#", methodName)
         .replace("#__formal_params__#", formalParams)
-//        .replaceParagraph("#__log__#", log)
+        .replace("#__check_param_size__#", checkParamSize)
         .replaceParagraph("#__invoke__#", invoke)
         .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)

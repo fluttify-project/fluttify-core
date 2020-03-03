@@ -1,8 +1,7 @@
 Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
-  // print log
-  // if (fluttifyLogEnabled) {
-  //   #__log__#
-  // }
+  if (#__check_param_size__#) {
+    return Future.error('all args must has same length!');
+  }
 
   // invoke native method
   #__invoke__#

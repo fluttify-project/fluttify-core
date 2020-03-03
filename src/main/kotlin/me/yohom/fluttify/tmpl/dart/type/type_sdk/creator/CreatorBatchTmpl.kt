@@ -6,10 +6,10 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
 //static Future<List<#__class_name__#>> create_batch__#__signature__#(#__formal_params__#) async {
-//  // if (#__check_param_size__#) {
-//  //   return Future.error('all args must has same length!');
-//  // }
-//  final List<int> resultBatch = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create_batch#__creator_name__#', #__args__#);
+//  if (#__check_param_size__#) {
+//    return Future.error('all args must has same length!');
+//  }
+//  final List resultBatch = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create_batch#__creator_name__#', #__args__#);
 //
 //  final List<#__class_name__#> typedResult = resultBatch.map((result) => #__class_name__#()..refId = result..tag = '#__tag__#').toList();
 //  kNativeObjectPool.addAll(typedResult);
@@ -24,17 +24,7 @@ fun CreatorBatchTmpl(type: Type): List<String> {
             .map {
                 tmpl
                     .replace("#__class_name__#", type.name.toUnderscore())
-                    // todo 比对参数长度, 如果有一个不对的就返回错误
-//                    .replace(
-//                        "#__check_param_size__#",
-//                        if (it.formalParams.isEmpty())
-//                            "false"
-//                        else
-//                            it.formalParams.joinToString(
-//                                prefix = "[",
-//                                postfix = "]"
-//                            ) { it.variable.name } + ".reduce((value, element) => value.length == element.length)"
-//                    )
+                    .replace("#__check_param_size__#", it.formalParams.checkParamSize())
                     .replace(
                         "#__signature__#",
                         it.formalParams.joinToString("__") {
@@ -86,6 +76,7 @@ fun CreatorBatchTmpl(type: Type): List<String> {
         Platform.iOS -> listOf(
             tmpl
                 .replace("#__class_name__#", type.name.toUnderscore())
+                .replace("#__check_param_size__#", "false")
                 .replace("#__signature__#", "")
                 .replace("#__creator_name__#", type.name.toUnderscore())
                 .replace("#__formal_params__#", "int length")
