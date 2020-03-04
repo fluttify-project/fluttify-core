@@ -15,7 +15,7 @@ fun InvokeBatchTmpl(method: Method): String {
         "'${ext.methodChannelName}'"
     }
     val methodName = "${method.nameWithClass()}_batch"
-    val actualParams = method.formalParams
+    val args = method.formalParams
         .filterFormalParams()
         .addParameter(Parameter.simpleParameter(method.className, "this"))
         .map { it.variable }
@@ -39,5 +39,5 @@ fun InvokeBatchTmpl(method: Method): String {
     return tmpl
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
-        .replace("#__args__#", actualParams)
+        .replace("#__args__#", args)
 }

@@ -75,9 +75,9 @@ fun List<Field>.filterGetters(): List<Field> {
 /**
  * 从field中过滤出setter
  */
-fun List<Field>.filterSetters(): List<Field> {
+fun List<Field>.filterSetters(batch: Boolean = false): List<Field> {
     return asSequence()
-        .filter { it.filterSetter() }
+        .filter { if (batch) it.filterSetterBatch() else it.filterSetter() }
         .filter { println("Field::${it.variable.name}通过Setter过滤"); true }
         .toList()
 }

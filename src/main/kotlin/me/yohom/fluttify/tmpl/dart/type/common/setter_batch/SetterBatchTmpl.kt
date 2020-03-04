@@ -1,18 +1,18 @@
-package me.yohom.fluttify.tmpl.dart.type.common.setter
+package me.yohom.fluttify.tmpl.dart.type.common.setter_batch
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
 
-//Future<void> set_#__name__#(#__type__# #__name__##__view_channel__#) async {
-//  await MethodChannel(#__method_channel__#).invokeMethod('#__setter_method__#', {'refId': refId, "#__name__#": #__arg_value__#});
+//Future<void> set_batch_#__name__#(List<#__type__#> #__name__##__view_channel__#) async {
+//  await MethodChannel(#__method_channel__#).invokeMethod('#__setter_method__#', [for (int i = 0; i < this.length; i++) {'refId': this[i].refId, "#__name__#": #__arg_value__#}]);
 //
 //  #__callback__#
 //}
-private val tmpl = getResource("/tmpl/dart/setter.mtd.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/setter_batch.mtd.dart.tmpl").readText()
 
-fun SetterTmpl(field: Field): String {
+fun SetterBatchTmpl(field: Field): String {
     return field.variable.run {
         val typeName = field.variable.run {
             var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
@@ -36,16 +36,14 @@ fun SetterTmpl(field: Field): String {
             "'$normalMethodChannel'"
         }
 
-        val argValue = name.depointer().run {
-            when {
-                isEnum() -> "${name}.index"
-                typeName.jsonable() -> name
-                (isList && genericLevel <= 1) || isStructPointer() -> "${name}.map((it) => it.refId).toList()"
-                genericLevel > 1 -> "[]" // 多维数组暂不处理
-                else -> "${name}.refId"
-            }
+        val argValue = when {
+            isEnum() -> "$name[i].index"
+            typeName.jsonable() -> "$name[i]"
+            (isList && genericLevel <= 1) || isStructPointer() -> "$name[i].map((it) => it.refId).toList()"
+            genericLevel > 1 -> "[]" // 多维数组暂不处理
+            else -> "$name[i].refId"
         }
-        val setterMethodName = field.setterMethodName()
+        val setterMethodName = "${field.setterMethodName()}_batch"
         val viewChannel = if (field.className.findType().isView()) ", {bool viewChannel = true}" else ""
 
         val callback = CallbackSetterTmpl(field)

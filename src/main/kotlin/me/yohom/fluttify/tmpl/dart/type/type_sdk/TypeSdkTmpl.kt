@@ -6,6 +6,7 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.getter_batch.GetterBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.setter_batch.SetterBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodBatchTmpl
@@ -17,6 +18,8 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //import 'package:#__current_package__#/src/android/android.export.g.dart';
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
+//
+//import 'package:foundation_fluttify/foundation_fluttify.dart';
 //
 //class #__class_name__# extends #__super_class__# #__mixins__# {
 //  //region constants
@@ -45,13 +48,16 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  #__getters_batch__#
 //  //endregion
 //
+//  //region setters
+//  #__setters_batch__#
+//  //endregion
+//
 //  //region methods
 //  #__methods_batch__#
 //  //endregion
 //}
 private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
-// todo 可以生成一个常量类, 保存关于这个插件的一些常量, 比如名字
 fun TypeSdkTmpl(type: Type): String {
     val currentPackage = ext.projectName
     val className = type.name.toDartType()
@@ -96,6 +102,10 @@ fun TypeSdkTmpl(type: Type): String {
         .filterGetters()
         .map { GetterBatchTmpl(it) }
 
+    val settersBatch = type.fields
+        .filterSetters(true)
+        .map { SetterBatchTmpl(it) }
+
     val methodsBatch = type.methods
         .filterMethod(true)
         .map { MethodBatchTmpl(it) }
@@ -111,5 +121,6 @@ fun TypeSdkTmpl(type: Type): String {
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))
         .replaceParagraph("#__methods__#", methods.joinToString("\n"))
         .replaceParagraph("#__getters_batch__#", gettersBatch.joinToString("\n"))
+        .replaceParagraph("#__setters_batch__#", settersBatch.joinToString("\n"))
         .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
 }

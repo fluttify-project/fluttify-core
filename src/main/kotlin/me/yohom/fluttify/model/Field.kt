@@ -90,14 +90,8 @@ data class Field(
                 variable.mustNot("混淆类") { typeName.isObfuscated() }
     }
 
-    @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("getterMethodName"))
-    fun nativeHandleGetterMethodName(): String {
-        return "handle${className.toUnderscore()}_get_${getterName.depointer()}"
-    }
-
-    @Deprecated("不再使用方法引用的方式, 而是使用匿名函数的方式放到handlerMap中去", ReplaceWith("setterMethodName"))
-    fun nativeHandleSetterMethodName(): String {
-        return "handle${className.toUnderscore()}_set_${setterName.depointer()}"
+    fun filterSetterBatch(): Boolean {
+        return filterSetter() && !variable.type().isCallback()
     }
 
     fun getterMethodName(): String {
