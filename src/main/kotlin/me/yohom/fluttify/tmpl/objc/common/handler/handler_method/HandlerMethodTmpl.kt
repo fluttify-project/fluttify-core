@@ -9,6 +9,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_s
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_ref.ArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_struct.ArgStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.log.LogTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
@@ -49,11 +50,7 @@ fun HandlerMethodTmpl(method: Method): String {
                 else -> ArgRefTmpl(it.variable)
             }
         }
-    val log = if (method.isStatic) {
-        "NSLog(@\"fluttify-objc: ${method.className}::${method.name}(暂未实现参数打印)\");"
-    } else {
-        "NSLog(@\"fluttify-objc: ${method.className}@%@::${method.name}(暂未实现参数打印)\", args[@\"refId\"]);"
-    }
+    val log = LogTmpl(method)
 
     // 获取当前调用方法的对象引用
     val ref = if (method.className.findType().isStruct()) {
