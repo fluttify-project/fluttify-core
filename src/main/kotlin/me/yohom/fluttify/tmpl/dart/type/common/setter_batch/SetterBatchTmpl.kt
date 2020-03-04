@@ -5,8 +5,8 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
 
-//Future<void> set_batch_#__name__#(List<#__type__#> #__name__##__view_channel__#) async {
-//  await MethodChannel(#__method_channel__#).invokeMethod('#__setter_method__#', [for (int i = 0; i < this.length; i++) {'refId': this[i].refId, "#__name__#": #__arg_value__#}]);
+//Future<void> set_#__name__#_batch(List<#__type__#> #__name__##__view_channel__#) async {
+//  await MethodChannel(#__method_channel__#).invokeMethod('#__setter_method__#_batch', [for (int i = 0; i < this.length; i++) {'refId': this[i].refId, "#__name__#": #__arg_value__#}]);
 //
 //  #__callback__#
 //}
