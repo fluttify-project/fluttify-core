@@ -9,6 +9,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method_batch.HandlerMe
 import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator.HandlerObjectFactoryTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator_batch.HandlerObjectFactoryBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_setter.HandlerSetterTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_setter_batch.HandlerSetterBatchTmpl
 import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
 import me.yohom.fluttify.tmpl.java.plugin.sub_handler.SubHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.ObjcPluginTmpl
@@ -63,6 +64,12 @@ open class AndroidJavaInterface : FluttifyTask() {
                 .filterSetters()
                 .map { HandlerSetterTmpl(it) }
 
+            val settersBatch = lib.types
+                .filterType()
+                .flatMap { it.fields }
+                .filterSetters(true)
+                .map { HandlerSetterBatchTmpl(it) }
+
             val methods = lib.types
                 .filterType()
                 .flatMap { it.methods }
@@ -86,6 +93,7 @@ open class AndroidJavaInterface : FluttifyTask() {
             getters
                 .union(gettersBatch)
                 .union(setters)
+                .union(settersBatch)
                 .union(methods)
                 .union(methodsBatch)
                 .union(objectCreators)
