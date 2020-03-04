@@ -111,12 +111,13 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .joinToString(", ")
 
     val plugin = ext.projectName.underscore2Camel()
-    val getterHandlers = viewType
+
+    val getters = viewType
         .fields
         .filterGetters()
         .map { HandlerGetterTmpl(it) }
 
-    val setterHandlers = viewType
+    val setters = viewType
         .fields
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
@@ -146,7 +147,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
             .replace("#__plugin__#", plugin)
             .replaceParagraph(
                 "#__handlers__#",
-                methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
+                methodHandlers.union(getters).union(setters).joinToString("\n")
             )
             .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__delegate_methods__#", delegateMethods)

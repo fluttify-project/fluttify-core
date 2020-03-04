@@ -13,6 +13,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct.HandlerObjectFactoryStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct_batch.HandlerObjectFactoryStructBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter_batch.HandlerSetterBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_cast.HandlerTypeCastTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
@@ -146,6 +147,13 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
 
+    val settersBatch = libs
+        .flatMap { it.types }
+        .filterType()
+        .flatMap { it.fields }
+        .filterSetters(true)
+        .map { HandlerSetterBatchTmpl(it) }
+
     val functions = libs
         .flatMap { it.types }
         // 暂时先不处理含有lambda的函数
@@ -239,6 +247,7 @@ fun ObjcPluginTmpl(libs: List<Lib>): List<String> {
                     .union(getters)
                     .union(gettersBatch)
                     .union(setters)
+                    .union(settersBatch)
                     .union(typeChecks)
                     .union(typeCasts)
                     .union(objectCreators)
