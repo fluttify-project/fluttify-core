@@ -1,8 +1,8 @@
 ^(#__formal_params__#) {
     FlutterMethodChannel *channel = [FlutterMethodChannel
         methodChannelWithName:@"#__method_channel__#"
-              binaryMessenger:[self->_registrar messenger]];
-    
+              binaryMessenger:[[self registrar] messenger]];
+
     // print log
     if (enableLog) {
         NSLog(@"#__log__#");

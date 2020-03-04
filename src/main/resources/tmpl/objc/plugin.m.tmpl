@@ -4,8 +4,7 @@
 
 #import "#__plugin_name__#Plugin.h"
 #import <objc/runtime.h>
-
-typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, id, FlutterResult);
+#__import_sub_handlers__#
 
 // Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
 extern NSMutableDictionary<NSString*, NSObject*>* STACK;
@@ -15,8 +14,7 @@ extern NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
 extern BOOL enableLog;
 
 @implementation #__plugin_name__#Plugin {
-  NSObject <FlutterPluginRegistrar> * _registrar;
-  NSDictionary<NSString *, Handler> *_handlerMap;
+  NSMutableDictionary<NSString*, Handler>* _handlerMap;
 }
 
 - (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar {
@@ -24,9 +22,9 @@ extern BOOL enableLog;
   if (self) {
     _registrar = registrar;
     // 处理方法们
-    _handlerMap = @{
-      #__handlers__#
-    };
+    _handlerMap = @{}.mutableCopy;
+
+    #__register_handler__#
   }
 
   return self;
