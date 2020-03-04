@@ -11,6 +11,7 @@ private val tmpl = getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
 fun ArgJsonableTmpl(variable: Variable): String {
     val typeName = when {
         variable.typeName.isValueType() -> variable.typeName.depointer()
+        variable.isList -> variable.typeName.enpointer().enNSArray(variable.genericLevel)
         else -> variable.typeName.enpointer()
     }
     val rightValue = if (variable.typeName.isValueType() || variable.isAliasType()) {
@@ -29,8 +30,7 @@ fun ArgJsonableTmpl(variable: Variable): String {
         }
         "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value]"
     } else {
-        // 理论上, 这里目前应该只有NSString会走到这里
-        "(${variable.typeName.enpointer()}) args[@\"${variable.name.depointer()}\"]"
+        "($typeName) args[@\"${variable.name.depointer()}\"]"
     }
     val argName = variable.name.depointer()
 

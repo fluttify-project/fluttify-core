@@ -140,6 +140,17 @@ fun TYPE_NAME.enArray(): TYPE_NAME {
 }
 
 /**
+ * 套上NSArray
+ */
+fun TYPE_NAME.enNSArray(level: Int = 1): TYPE_NAME {
+    var result: String = this
+    for (index in 0 until level) {
+        result = "NSArray<$result>*"
+    }
+    return result
+}
+
+/**
  * 是否是数组
  */
 fun TYPE_NAME.isArray(): Boolean {
