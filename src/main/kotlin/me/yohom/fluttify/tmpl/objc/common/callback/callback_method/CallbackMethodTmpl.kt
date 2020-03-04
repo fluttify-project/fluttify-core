@@ -35,7 +35,7 @@ fun CallbackMethodTmpl(method: Method): String {
     val log = method.nameWithClass()
     val methodChannel = "${method.className}::Callback"
     val formalParams =
-        " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.paramType()})${it.variable.name}" }}"
+        " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
     val localArgs = method
         .formalParams
         .map { it.variable }

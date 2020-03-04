@@ -98,8 +98,7 @@ data class Variable(
         return typeName.findType()
     }
 
-    // TODO 重命名为objcType
-    fun paramType(): String {
+    fun objcType(): String {
         return when {
             typeName == "id" -> "id"
             typeName == "constvoid*" -> "const void*"

@@ -31,7 +31,7 @@ private val tmpl = getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readTex
 fun CallbackLambdaTmpl(callerMethod: Method, callbackLambda: Type): String {
     val methodChannel = "${callerMethod.nameWithClass()}::Callback"
     val formalParams =
-        callbackLambda.formalParams.joinToString { "${it.variable.paramType()} ${it.variable.name.depointer()}" }
+        callbackLambda.formalParams.joinToString { "${it.variable.objcType()} ${it.variable.name.depointer()}" }
     val localArgs = if (callbackLambda.returnType == "void") {
         // 只有没有返回值的方法需要设置, 因为目前有返回值的回调方法是不实现的, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
         callbackLambda
