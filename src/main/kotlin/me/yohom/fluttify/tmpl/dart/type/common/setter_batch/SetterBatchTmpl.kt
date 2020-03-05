@@ -43,7 +43,7 @@ fun SetterBatchTmpl(field: Field): String {
             genericLevel > 1 -> "[]" // 多维数组暂不处理
             else -> "$name[i].refId"
         }
-        val setterMethodName = "${field.setterMethodName()}_batch"
+        val setterMethodName = field.setterMethodName()
         val viewChannel = if (field.className.findType().isView()) ", {bool viewChannel = true}" else ""
 
         val callback = CallbackSetterTmpl(field)
