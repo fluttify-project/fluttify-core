@@ -7,7 +7,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 
 //Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  if (#__check_param_size__#) {
-//    return Future.error('all args must has same length!');
+//    return Future.error('all args must have same length!');
 //  }
 //
 //  // invoke native method

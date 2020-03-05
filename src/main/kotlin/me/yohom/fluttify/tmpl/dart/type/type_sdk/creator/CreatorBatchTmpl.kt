@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Type
 
 //static Future<List<#__class_name__#>> create_batch__#__signature__#(#__formal_params__#) async {
 //  if (#__check_param_size__#) {
-//    return Future.error('all args must has same length!');
+//    return Future.error('all args must have same length!');
 //  }
 //  final List resultBatch = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create_batch#__creator_name__#', #__args__#);
 //
