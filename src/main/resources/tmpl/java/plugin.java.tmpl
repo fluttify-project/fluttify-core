@@ -85,13 +85,13 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
     }
 
     @Override
-    public void onDetachedFromActivityForConfigChanges() { }
+    public void onDetachedFromActivity() { }
 
     @Override
     public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) { }
 
     @Override
-    public void onDetachedFromActivity() { }
+    public void onDetachedFromActivityForConfigChanges() { }
 
     @Override
     public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result methodResult) {
