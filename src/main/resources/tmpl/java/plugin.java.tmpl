@@ -61,6 +61,10 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
     // v2 android embedding
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
+        if (getEnableLog()) {
+            Log.d("fluttify-java", "#__plugin_name__#Plugin::onAttachedToEngine@" + binding);
+        }
+
         final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "#__method_channel__#");
 
         messenger = binding.getBinaryMessenger();
@@ -73,11 +77,17 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
-
+        if (getEnableLog()) {
+            Log.d("fluttify-java", "#__plugin_name__#Plugin::onDetachedFromEngine@" + binding);
+        }
+        handlerMapList.clear();
     }
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding binding) {
+        if (getEnableLog()) {
+            Log.d("fluttify-java", "#__plugin_name__#Plugin::onAttachedToActivity@" + binding);
+        }
         Activity activity = binding.getActivity();
 
         // register platform view
@@ -85,13 +95,25 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
     }
 
     @Override
-    public void onDetachedFromActivity() { }
+    public void onDetachedFromActivity() {
+        if (getEnableLog()) {
+            Log.d("fluttify-java", "#__plugin_name__#Plugin::onDetachedFromActivity");
+        }
+    }
 
     @Override
-    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) { }
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+        if (getEnableLog()) {
+            Log.d("fluttify-java", "#__plugin_name__#Plugin::onReattachedToActivityForConfigChanges@" + binding);
+        }
+    }
 
     @Override
-    public void onDetachedFromActivityForConfigChanges() { }
+    public void onDetachedFromActivityForConfigChanges() {
+        if (getEnableLog()) {
+            Log.d("fluttify-java", "#__plugin_name__#Plugin::onDetachedFromActivityForConfigChanges");
+        }
+    }
 
     @Override
     public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result methodResult) {
