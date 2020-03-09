@@ -36,13 +36,17 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val androidJavaInterface = project.tasks.create("androidJavaInterface", AndroidJavaInterface::class.java)
         val iOSObjcInterface = project.tasks.create("iOSObjcInterface", IOSObjcInterface::class.java)
         val export = project.tasks.create("export", Export::class.java)
+        val cost = project.tasks.create("cost", Cost::class.java)
         val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
         // 可选任务
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
         // assembly
-        fluttify.dependsOn(export)
+        fluttify.dependsOn(cost)
+
+        // 计算费用
+        cost.dependsOn(export)
 
         // 导出
         export.dependsOn(iOSObjcInterface, androidJavaInterface)

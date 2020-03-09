@@ -4,7 +4,6 @@ import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
-// todo 优化配置类
 open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 项目名称
@@ -35,6 +34,11 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
      * 主页
      */
     var homepage: String = ""
+
+    /**
+     * 单价 元/方法
+     */
+    var unitPrice: Double = 0.1
 
     /**
      * foundation版本
