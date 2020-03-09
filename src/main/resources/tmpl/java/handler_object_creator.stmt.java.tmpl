@@ -1,6 +1,8 @@
 // factory
 put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
-    Log.d("ObjectFactory", "创建对象: #__creator_name__#");
+    if (getEnableLog()) {
+        Log.d("ObjectFactory", "创建对象: #__creator_name__#");
+    }
 
     // args
     #__args__#;
