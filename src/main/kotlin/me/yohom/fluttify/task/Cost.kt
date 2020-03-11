@@ -3,10 +3,7 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.model.SDK
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
 
 /**
  * 计算价格
@@ -20,11 +17,20 @@ open class Cost : FluttifyTask() {
         val iosJrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
         val iosSDK = iosJrFile.readText().fromJson<SDK>()
 
-        val cost = androidSDK
+        val methodCount = androidSDK
             .allFilteredMethods
             .union(iosSDK.allFilteredMethods)
-            .count() * ext.unitPrice
+            .count()
+        val propertyCount = androidSDK
+            .allProperties
+            .union(iosSDK.allProperties)
+            .count()
+        val constantCount = androidSDK
+            .allConstants
+            .union(iosSDK.allConstants)
+            .count()
 
-        println("此次插件生成耗费 $cost 元.")
+        val cost = (methodCount + propertyCount + constantCount) * ext.unitPrice
+        println("此次编译共生成${methodCount}个方法, ${propertyCount}个属性, ${constantCount}个常量, 共计 $cost 元.")
     }
 }

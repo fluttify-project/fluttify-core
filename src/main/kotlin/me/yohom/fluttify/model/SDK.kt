@@ -42,6 +42,22 @@ class SDK : IPlatform {
         directLibs.flatMap { it.types }.flatMap { it.methods }.filter { it.filter() }
     }
 
+    /**
+     * 所有常量
+     */
+    @delegate:Transient
+    val allConstants: List<Field> by lazy {
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterConstants() }
+    }
+
+    /**
+     * 所有属性
+     */
+    @delegate:Transient
+    val allProperties: List<Field> by lazy {
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters() || it.filterSetter() }
+    }
+
     override fun toString(): String {
         return "SDK(version='$version', platform=$platform, libs=$libs)"
     }
