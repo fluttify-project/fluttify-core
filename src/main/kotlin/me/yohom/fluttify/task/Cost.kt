@@ -30,7 +30,7 @@ open class Cost : FluttifyTask() {
             .union(iosSDK.allConstants)
             .count()
 
-        val cost = (methodCount + propertyCount + constantCount) * ext.unitPrice
+        val cost = String.format("%.1f", (methodCount + propertyCount + constantCount) * ext.unitPrice)
         println("此次编译共生成${methodCount}个方法, ${propertyCount}个属性, ${constantCount}个常量, 共计 $cost 元.")
     }
 }
