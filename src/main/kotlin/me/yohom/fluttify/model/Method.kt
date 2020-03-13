@@ -96,7 +96,7 @@ data class Method(
                 } &&
                 mustNot("返回类型是混淆类") { returnType.isObfuscated() } &&
                 mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } &&
-                mustNot("返回类型是嵌套数组/列表") { returnType.run { genericLevel() > 1 || (isList() && genericType().isArray()) } } &&
+                mustNot("返回类型是嵌套数组/列表") { returnType.run { collectionLevel() > 1 || (isList() && genericType().isArray()) } } &&
                 mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } &&
                 mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } } &&
                 must("返回类型的祖宗类是已知类") { returnType.findType().ancestorTypes.all { it.findType().isKnownType() } }

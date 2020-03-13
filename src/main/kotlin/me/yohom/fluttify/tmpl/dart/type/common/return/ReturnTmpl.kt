@@ -10,14 +10,14 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultRefTmpl
 fun ReturnTmpl(method: Method): String {
     return method.run {
         // 如果是多维列表, 那么不处理, 直接返回空列表
-        if (returnType.isCollection() && returnType.genericLevel() > 1) {
+        if (returnType.isCollection() && returnType.collectionLevel() > 1) {
             return "[] /* 暂时不支持多维列表 */";
         }
 
         // 如果返回类型是抽象类, 那么先转换成它的子类
         var concretTypeWithContainer: String
         // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
-        if (returnType.isCollection() && returnType.genericLevel() != 0) {
+        if (returnType.isCollection() && returnType.collectionLevel() != 0) {
             val genericType = returnType.genericType()
             concretTypeWithContainer = genericType
             if (genericType.findType().isAbstract) {
@@ -40,7 +40,7 @@ fun ReturnTmpl(method: Method): String {
                 findType().isEnum() -> ResultEnumTmpl(concretTypeWithContainer)
                 // 返回列表类型
                 isCollection() -> {
-                    val type = if (concretTypeWithContainer.genericLevel() != 0) {
+                    val type = if (concretTypeWithContainer.collectionLevel() != 0) {
                         concretTypeWithContainer.genericType()
                     } else {
                         method.platform.objectType()

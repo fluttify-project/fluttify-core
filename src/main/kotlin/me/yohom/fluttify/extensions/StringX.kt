@@ -66,7 +66,7 @@ fun TYPE_NAME.isArrayList(): Boolean {
  * 是否是列表类型
  */
 fun TYPE_NAME.isList(): Boolean {
-    return Regex("List<(\\w*|.*)>").matches(this)
+    return Regex("(Array)?List<(\\w*|.*)>").matches(this)
 }
 
 /**
@@ -220,7 +220,7 @@ fun TYPE_NAME.findType(): Type {
         .deprotocol()
         .let {
             if (it.isCollection()) {
-                if (it.genericLevel() != 0) it.genericType() else ""
+                if (it.collectionLevel() != 0) it.genericType() else ""
             } else {
                 it
             }
@@ -399,12 +399,14 @@ fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
 /**
  * 获取泛型层数 用在List中 表示嵌套了几层
  */
-fun TYPE_NAME.genericLevel(): Int {
+fun TYPE_NAME.collectionLevel(): Int {
     var result = this
     var level = 0
-    while (result.contains("<") && result.contains(">")) {
-        result = result.substringAfter("<").substringBeforeLast(">")
-        level++
+    if (isCollection()) {
+        while (result.contains("<") && result.contains(">")) {
+            result = result.substringAfter("<").substringBeforeLast(">")
+            level++
+        }
     }
     return level
 }

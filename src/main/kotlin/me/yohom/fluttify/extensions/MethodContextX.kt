@@ -29,7 +29,7 @@ fun JavaParser.MethodDeclarationContext.returnType(): String {
     return when {
         typeTypeOrVoid().text.isCollection() -> {
             var result = fullGenericTypes[0]
-            for (i in 0 until typeTypeOrVoid().text.genericLevel()) {
+            for (i in 0 until typeTypeOrVoid().text.collectionLevel()) {
                 result = if (Regex("Collection<(\\w*|.*)>").matches(typeTypeOrVoid().text)) {
                     result.enCollection()
                 } else {
@@ -70,7 +70,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
     return when {
         typeTypeOrVoid().text.isCollection() -> {
             var result = fullGenericTypes[0]
-            for (i in 0 until typeTypeOrVoid().text.genericLevel()) {
+            for (i in 0 until typeTypeOrVoid().text.collectionLevel()) {
                 result = result.enList()
             }
             result
@@ -192,7 +192,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        formalParam.typeType().text.genericLevel()
+                        formalParam.typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -220,7 +220,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        typeType().text.genericLevel()
+                        typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -256,7 +256,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                                 else -> ListType.NonList
                             }
                         },
-                        formalParam.typeType().text.genericLevel()
+                        formalParam.typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -284,7 +284,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                                 else -> ListType.NonList
                             }
                         },
-                        typeType().text.genericLevel()
+                        typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -361,7 +361,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        it.methodType()[0].typeName().text.genericLevel()
+                        it.methodType()[0].typeName().text.collectionLevel()
                     ),
                     platform = Platform.iOS
                 )

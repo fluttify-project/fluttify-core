@@ -186,7 +186,7 @@ fun JAVA_FILE.javaType(): Type {
                                 else -> ListType.NonList
                             }
                         },
-                        ctx.type().genericLevel()
+                        ctx.type().collectionLevel()
                     ),
                     "$packageName.$simpleName",
                     platform = Platform.Android,
@@ -477,7 +477,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                             it.declarator().text,
                             Platform.iOS,
                             paramListType,
-                            rawTypeName.genericLevel()
+                            rawTypeName.collectionLevel()
                         ),
                         platform = Platform.iOS
                     )
@@ -538,7 +538,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                             else -> ListType.NonList
                         }
                     },
-                    ctx.type().genericLevel()
+                    ctx.type().collectionLevel()
                 )
                 // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
                 fields.add(

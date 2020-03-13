@@ -84,7 +84,7 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        formalParam.typeType().text.genericLevel()
+                        formalParam.typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -121,7 +121,7 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
                                 else -> ListType.NonList
                             }
                         },
-                        typeType().text.genericLevel()
+                        typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
