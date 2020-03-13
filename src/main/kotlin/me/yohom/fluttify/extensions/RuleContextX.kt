@@ -35,14 +35,14 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
             ?.importDeclaration()
             ?.find {
                 !typeSimpleName.jsonable()
-                        && it.qualifiedName().text.length >= typeSimpleName.length
-                        && it.qualifiedName().text.run { substringAfterLast(".") } == typeSimpleName
+                        && it.qualifiedName().text.length >= typeSimpleName.dearray().length
+                        && it.qualifiedName().text.run { substringAfterLast(".") } == typeSimpleName.dearray()
             }
             ?.qualifiedName()
             ?.text
         // 如果不是import进来的说明这个类是当前文件的主类或者相同包下的类, 直接拼接package和类名
             ?: ancestorOf(JavaParser.CompilationUnitContext::class)
                 ?.packageDeclaration()
-                ?.qualifiedName()?.text + "." + typeSimpleName
+                ?.qualifiedName()?.text + "." + typeSimpleName.dearray()
     }
 }
