@@ -4,9 +4,10 @@ import me.yohom.fluttify.extensions.enList
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Field
 
+//// getter
 //put("#__getter_name__#", (args, methodResult) -> {
 //    // ref object
-//    int refId = (int) args.get("refId");
+//    int refId = (int) ((Map<String, Object>) args).get("refId");
 //    #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
 //
 //    #__field_type__# result = ref.#__field_name__#;

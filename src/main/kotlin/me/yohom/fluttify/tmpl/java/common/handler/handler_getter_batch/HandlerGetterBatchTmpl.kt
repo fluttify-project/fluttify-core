@@ -31,16 +31,18 @@ private val tmpl = getResource("/tmpl/java/handler_getter_batch.stmt.java.tmpl")
 fun HandlerGetterBatchTmpl(field: Field): String {
     val getterName = field.getterMethodName()
     val className = field.className.replace("$", ".")
-    val resultType = when {
-        field.variable.jsonable() -> field.variable.typeName.boxedType().stringArray2List()
-        field.variable.typeName.isVoid() -> "String"
-        field.variable.isCollection() -> "List<Integer>"
-        else -> "Integer"
+    val resultType = field.variable.run {
+        when {
+            jsonable() -> typeName.boxedType().enList(genericLevel).stringArray2List()
+            typeName.isVoid() -> "String"
+            isList -> "Integer".enList(genericLevel)
+            else -> "Integer"
+        }
     }
     val fieldType = field.variable.typeName.replace("$", ".").enList(field.variable.genericLevel)
     val fieldName = field.variable.name
     val result = when {
-        field.variable.jsonable() -> ResultJsonableTmpl(field.variable.typeName)
+        field.variable.jsonable() -> ResultJsonableTmpl(fieldType)
         field.variable.isList -> ResultListTmpl(field.asGetterMethod())
         field.variable.typeName.isVoid() -> ResultVoidTmpl()
         else -> ResultRefTmpl()
