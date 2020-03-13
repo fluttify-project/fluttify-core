@@ -365,11 +365,7 @@ fun TYPE_NAME.genericType(): TYPE_NAME {
         if (Regexes.MAP.matches(this)) {
             break
         } else {
-            // 数组也作为泛型来处理
-            result = result
-                .substringAfter("<")
-                .substringBeforeLast(">")
-                .dearray()
+            result = result.substringAfter("<").substringBeforeLast(">")
         }
     }
     return result
