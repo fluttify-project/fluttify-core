@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_getter
 
+import me.yohom.fluttify.extensions.enList
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Field
 
@@ -17,17 +18,17 @@ import me.yohom.fluttify.model.Field
 private val tmpl = getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readText()
 
 fun HandlerGetterTmpl(field: Field): String {
+    val getterName = field.getterMethodName()
+    val className = field.className.replace("$", ".")
+    val fieldType = field.variable.typeName.replace("$", ".").enList(field.variable.genericLevel)
+    val fieldName = field.variable.name
+    val putMap = if (field.variable.jsonable()) "" else "getHEAP().put(result.hashCode(), result);"
+    val result = if (field.variable.jsonable()) "result" else "result.hashCode()"
     return tmpl
-        .replace("#__getter_name__#", field.getterMethodName())
-        .replace("#__class_name__#", field.className.replace("$", "."))
-        .replace("#__field_type__#", field.variable.typeName.replace("$", "."))
-        .replace("#__field_name__#", field.variable.name)
-        .replace(
-            "#__put_map__#",
-            if (field.variable.jsonable()) "" else "getHEAP().put(result.hashCode(), result);"
-        )
-        .replace(
-            "#__result__#",
-            if (field.variable.jsonable()) "result" else "result.hashCode()"
-        )
+        .replace("#__getter_name__#", getterName)
+        .replace("#__class_name__#", className)
+        .replace("#__field_type__#", fieldType)
+        .replace("#__field_name__#", fieldName)
+        .replace("#__put_map__#", putMap)
+        .replace("#__result__#", result)
 }

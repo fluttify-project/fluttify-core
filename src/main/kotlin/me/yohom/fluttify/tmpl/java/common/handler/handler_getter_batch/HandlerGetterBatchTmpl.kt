@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_getter_batch
 
-import me.yohom.fluttify.extensions.boxedType
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.isVoid
-import me.yohom.fluttify.extensions.stringArray2List
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
@@ -40,7 +37,7 @@ fun HandlerGetterBatchTmpl(field: Field): String {
         field.variable.isCollection() -> "List<Integer>"
         else -> "Integer"
     }
-    val fieldType = field.variable.typeName.replace("$", ".")
+    val fieldType = field.variable.typeName.replace("$", ".").enList(field.variable.genericLevel)
     val fieldName = field.variable.name
     val result = when {
         field.variable.jsonable() -> ResultJsonableTmpl(field.variable.typeName)
