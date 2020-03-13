@@ -33,7 +33,7 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 主页
      */
-    var homepage: String = ""
+    var homepage: String = "https://fluttify.com"
 
     /**
      * 单价 元/方法
