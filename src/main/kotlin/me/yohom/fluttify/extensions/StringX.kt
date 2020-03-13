@@ -358,14 +358,25 @@ fun String.enpointer(): String {
 /**
  * 获取泛型类型名称
  */
-fun TYPE_NAME.genericType(): TYPE_NAME {
+fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
     var result = this
-    while (result.contains("<") && result.contains(">")) {
-//         NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-        if (Regexes.MAP.matches(this)) {
-            break
-        } else {
-            result = result.substringAfter("<").substringBeforeLast(">")
+    if (level != null) {
+        for (i in 0 until level) {
+            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
+            if (Regexes.MAP.matches(this)) {
+                break
+            } else {
+                result = result.substringAfter("<").substringBeforeLast(">")
+            }
+        }
+    } else {
+        while (result.contains("<") && result.contains(">")) {
+            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
+            if (Regexes.MAP.matches(this)) {
+                break
+            } else {
+                result = result.substringAfter("<").substringBeforeLast(">")
+            }
         }
     }
     return result
