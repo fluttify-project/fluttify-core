@@ -43,7 +43,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
         // assembly
-        fluttify.dependsOn(cost)
+//        fluttify.dependsOn(cost)
+        fluttify.dependsOn(export)
 
         // 计算费用
         cost.dependsOn(export)

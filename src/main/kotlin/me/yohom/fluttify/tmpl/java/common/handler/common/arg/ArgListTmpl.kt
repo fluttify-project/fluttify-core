@@ -19,10 +19,7 @@ fun ArgListTmpl(variable: Variable): String {
             .replace("#__type_name__#", variable.typeName.replace("$", "."))
             .replace("#__arg_name__#", variable.name)
     } else {
-        var typeName = variable.typeName.replace("$", ".")
-        for (i in 0 until (variable.genericLevel - 1)) {
-            typeName = typeName.enList()
-        }
+        val typeName = variable.typeName.replace("$", ".").enList(variable.genericLevel)
         "$typeName ${variable.name} = new ArrayList<>();"
     }
 }

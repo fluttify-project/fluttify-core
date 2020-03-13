@@ -107,7 +107,7 @@ fun TYPE_NAME.isBoolean(): Boolean {
 /**
  * 套上List<>
  */
-fun TYPE_NAME.enList(level: Int = 0): TYPE_NAME {
+fun TYPE_NAME.enList(level: Int = 1): TYPE_NAME {
     var result = this
     for (i in 0 until level) {
         result = "List<$result>"
