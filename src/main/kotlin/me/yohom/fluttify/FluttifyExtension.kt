@@ -13,22 +13,22 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 组织名称
      */
-    var org: String = ""
+    var org: String = "com.fluttify"
 
     /**
      * 描述
      */
-    var desc: String = ""
+    var desc: String = "A Fluttify Project"
 
     /**
      * 作者
      */
-    var author: String = ""
+    var author: String = "yohom"
 
     /**
      * 邮箱地址
      */
-    var email: String = ""
+    var email: String = "yohombao@qq.com"
 
     /**
      * 主页
