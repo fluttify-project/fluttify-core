@@ -250,7 +250,7 @@ fun TYPE_NAME.isValueType(): Boolean {
  * 先判断是否是c类型, 然后判断是不是`*`结尾
  */
 fun TYPE_NAME.isCPointerType(): Boolean {
-    return (depointer().isValueType() && endsWith("*")) || pack() == "constvoid*"
+    return (depointer().isValueType() && endsWith("*")) || Regex("(const)?void\\*").matches(pack())
 }
 
 /**
@@ -313,7 +313,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                         "Map<$keyType, $valueType>"
                     }
                     startsWith("NSArray") -> "List<${genericType().depointer()}>"
-                    pack() == "void*" -> "NSObject"
+                    this == "void*" -> "NSValue"
                     Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
                     // 其他情况需要去掉泛型
                     else -> this.substringBefore("<")
@@ -332,7 +332,12 @@ fun TYPE_NAME.toUnderscore(): String {
  * 去除指针类型的`*`号
  */
 fun String.depointer(): String {
-    return removePrefix("*").removeSuffix("*")
+    // 如果是void*类型, 不允许被去除*
+    return if (this.pack() == "void*") {
+        this
+    } else {
+        removePrefix("*").removeSuffix("*")
+    }
 }
 
 /**

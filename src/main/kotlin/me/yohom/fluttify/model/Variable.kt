@@ -115,7 +115,7 @@ data class Variable(
             "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
             // 结构体指针认为是列表类型
-            var type = (if (isAliasType()) typeName.findType().aliasOf!! else typeName).toDartType()
+            var type = (if (isAliasType()) pointedType().findType().aliasOf!! else pointedType()).toDartType()
             if (isList) {
                 when {
                     // 数组类型
@@ -190,6 +190,13 @@ data class Variable(
         } else {
             type().formalParams.all { it.variable.type().isKnownType() }
         }
+    }
+
+    fun pointedType(): TYPE_NAME {
+        // 由于变量类型的*号可能被合并到变量名上了, 所以这里判断一下
+        // 碰到了void *mData这种情况, 导致被识别为void类型
+        val pointedTypeName = if (name.startsWith("*")) typeName.enpointer() else typeName
+        return pointedTypeName.findType().run { if (isAlias()) aliasOf!! else pointedTypeName }.toDartType()
     }
 }
 

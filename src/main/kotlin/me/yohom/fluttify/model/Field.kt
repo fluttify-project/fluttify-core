@@ -1,6 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.EXCLUDE_TYPES
+import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
 data class Field(

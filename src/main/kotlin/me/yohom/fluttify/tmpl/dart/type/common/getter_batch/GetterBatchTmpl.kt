@@ -15,7 +15,7 @@ private val tmpl = getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").readText
 
 fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
     val typeNameWithContainer = field.variable.run {
-        var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
+        var result = pointedType().findType().run { if (isAlias()) aliasOf!! else pointedType() }.toDartType()
         if (isStructPointer()) {
             result = "List<$result>"
         } else if (isList) {

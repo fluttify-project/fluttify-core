@@ -14,7 +14,9 @@ private val tmpl = getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
 
 fun GetterTmpl(field: Field): String {
     val typeNameWithContainer = field.variable.run {
-        var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
+        // 由于变量类型的*号可能被合并到变量名上了, 所以这里判断一下
+        // 碰到了void *mData这种情况, 导致被识别为void类型
+        var result = pointedType().findType().run { if (isAlias()) aliasOf!! else pointedType() }.toDartType()
         if (isStructPointer()) {
             result = "List<$result>"
         } else if (isList) {
