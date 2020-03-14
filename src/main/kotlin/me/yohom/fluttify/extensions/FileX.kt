@@ -171,7 +171,8 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     ctx.getValue(),
                     Variable(
-                        ctx.type().run { if (isCollection()) genericType() else this }, // 如果是集合类型, 那么抽取出泛型类型作为类型, 其他直接使用原始类名
+                        ctx.type()
+                            .run { if (isCollection()) genericType() else this }, // 如果是集合类型, 那么抽取出泛型类型作为类型, 其他直接使用原始类名
                         ctx.name(),
                         Platform.Android,
                         ctx.type().run {
@@ -327,7 +328,10 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
-            if (result.map { it.name }.contains(ctx.ancestorOf(ObjectiveCParser.EnumDeclarationContext::class)?.identifier()?.text)) return
+            if (result.map { it.name }.contains(
+                    ctx.ancestorOf(ObjectiveCParser.EnumDeclarationContext::class)?.identifier()?.text
+                )
+            ) return
 
             enumConstants.add(ctx.identifier().text)
         }
@@ -523,8 +527,14 @@ fun OBJC_FILE.objcType(): List<Type> {
                 || ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)
             ) {
                 val variable = Variable(
-                    ctx.type().run { if (isCollection()) genericType() else this },
-                    ctx.name(),
+                    ctx.type().run {
+                        when {
+                            isCollection() -> genericType()
+                            ctx.name().startsWith("*") -> enpointer()
+                            else -> this
+                        }
+                    },
+                    ctx.name().depointer(), // 统一把*号加到类名上去
                     Platform.iOS,
                     ctx.type().run {
                         when {

@@ -15,7 +15,7 @@ private val tmpl = getResource("/tmpl/dart/setter.mtd.dart.tmpl").readText()
 fun SetterTmpl(field: Field): String {
     return field.variable.run {
         val typeName = field.variable.run {
-            var result = pointedType().findType().run { if (isAlias()) aliasOf!! else pointedType() }.toDartType()
+            var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
             if (isStructPointer()) {
                 result = "List<$result>"
             } else if (isList) {

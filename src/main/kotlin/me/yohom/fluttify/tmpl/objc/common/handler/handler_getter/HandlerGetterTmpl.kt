@@ -7,7 +7,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
-//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
 //    // print log
 //    if (enableLog) {
 //        NSLog(@"#__method_name__#");
@@ -20,6 +20,8 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //    #__invoke__#
 //
 //    #__result__#
+//
+//    methodResult(jsonableResult);
 //},
 private val tmpl = getResource("/tmpl/objc/handler_getter.stmt.m.tmpl").readText()
 
@@ -44,6 +46,7 @@ fun HandlerGetterTmpl(field: Field): String {
         field.variable.typeName.isValueType() -> ResultValueTmpl()
         field.variable.jsonable() -> ResultJsonableTmpl()
         field.variable.isList -> ResultListTmpl()
+        field.variable.isVoidPointer() -> ResultValuePointerTmpl()
         field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName)
         else -> ResultRefTmpl(field.variable.typeName)
     }

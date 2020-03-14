@@ -349,8 +349,16 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 // 非lambda参数处理 如果有__kindof限定词就空格分隔一下
                                     ?: text.objcSpecifierExpand()
                             }
-                            .genericType(),
-                        it.identifier().text,
+                            .genericType()
+                            .run {
+                                // 如果变量名以*号开始, 说明类名上的*号被移动到变量名上了, 需要加回来
+                                if (it.identifier().text.startsWith("*")) {
+                                    enpointer()
+                                } else {
+                                    this
+                                }
+                            },
+                        it.identifier().text.depointer(), // 统一把*号加到类名上去
                         Platform.iOS,
                         it.methodType()[0].typeName().text.run {
                             when {

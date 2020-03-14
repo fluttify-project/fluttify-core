@@ -313,7 +313,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                         "Map<$keyType, $valueType>"
                     }
                     startsWith("NSArray") -> "List<${genericType().depointer()}>"
-                    this == "void*" -> "NSValue"
+                    Regex("(float|double|int|void)\\*").matches(this) -> "NSValue"
                     Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
                     // 其他情况需要去掉泛型
                     else -> this.substringBefore("<")
@@ -332,12 +332,7 @@ fun TYPE_NAME.toUnderscore(): String {
  * 去除指针类型的`*`号
  */
 fun String.depointer(): String {
-    // 如果是void*类型, 不允许被去除*
-    return if (this.pack() == "void*") {
-        this
-    } else {
-        removePrefix("*").removeSuffix("*")
-    }
+    return removePrefix("*").removeSuffix("*")
 }
 
 /**
