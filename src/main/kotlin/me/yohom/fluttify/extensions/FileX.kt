@@ -13,10 +13,7 @@ import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.cert.CertificateException

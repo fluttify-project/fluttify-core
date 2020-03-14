@@ -313,6 +313,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                         "Map<$keyType, $valueType>"
                     }
                     startsWith("NSArray") -> "List<${genericType().depointer()}>"
+                    pack() == "void*" -> "NSObject"
                     Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
                     // 其他情况需要去掉泛型
                     else -> this.substringBefore("<")

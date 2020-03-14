@@ -7,6 +7,20 @@ import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMetho
 import me.yohom.fluttify.tmpl.objc.plugin.register_handler.RegisterHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 import java.io.File
+import java.io.FilenameFilter
+
+//#import <Flutter/Flutter.h>
+//#__imports__#
+//
+//typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, id, FlutterResult);
+//
+//@interface #__plugin_name__#Plugin : NSObject<#__protocols__#>
+//
+//- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar;
+//
+//@property(nonatomic) NSObject<FlutterPluginRegistrar>* registrar;
+//
+//@end
 
 //#import "#__plugin_name__#Plugin.h"
 //
@@ -87,7 +101,8 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     val imports = ext.ios.libDir
         .file()
         .run {
-            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+            // 所有的Framework
+            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
                 ?.flatMap { framework ->
                     "$framework/Headers/"
                         .file()
@@ -97,9 +112,17 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
                 }
                 ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
                 ?: listOf()
-            val directHeaders = listFiles { _, name -> name.endsWith(".h") } // 所有的.h
-                ?.map { "#import \"${it.name}\"" }
-                ?: listOf()
+            // 如果没有framework, 那么就遍历出所有的.h文件
+            val directHeaders = mutableListOf<String>()
+            if (list()?.none { it.endsWith(".framework") } == true) {
+                // 所有的.h
+                iterate("h") {
+                    // 不导入隐藏文件
+                    if (!it.name.startsWith(".")) {
+                        directHeaders.add("#import \"${it.name}\"")
+                    }
+                }
+            }
             frameworkHeaders.union(directHeaders)
         }
         .union(platformViewHeader)
