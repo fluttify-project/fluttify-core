@@ -1,19 +1,15 @@
-: ^(#__formal_params__#) {
-    // method channel
-    FlutterMethodChannel *callbackChannel = [FlutterMethodChannel
-          methodChannelWithName:@"#__caller_class_name__#::#__caller_method_name__#_Callback"
-                binaryMessenger:[registrar messenger]];
+^(#__formal_params__#) {
+    FlutterMethodChannel *channel = [FlutterMethodChannel
+        methodChannelWithName:@"#__method_channel__#"
+              binaryMessenger:[[self registrar] messenger]];
 
-    // 日志打印
-    #__log__#
+    // print log
+    if (enableLog) {
+        NSLog(@"#__log__#");
+    }
 
-    // 开始回调
-    [callbackChannel invokeMethod:@"#__caller_class_name__#::#__caller_method_name__#_Callback::#__callback_method__#"
-                        arguments:@{
-                             #__callback_params__#
-                             @"refId": @(refId)
-                        }];
-
-    // 方法返回值
-    #__return_stmt__#
+    // 构造可以直接传输的参数
+    #__local_args__#
+    
+    #__callback__#
 }

@@ -1,4 +1,4 @@
-// 结构体参数
-NSValue* #__arg_name__#Value = (NSValue*) REF_MAP[@([args[@"#__arg_name__#"] integerValue])];
+// struct arg
+NSValue* #__arg_name__#Value = (NSValue*) HEAP[@([args[@"#__arg_name__#"] integerValue])];
 #__type_name__# #__arg_name__#;
 [#__arg_name__#Value getValue:&#__arg_name__#];

@@ -1,0 +1,19 @@
+// getter
+put("#__getter_name__#_batch", (argsBatch, methodResult) -> {
+    List<#__result_type__#> resultList = new ArrayList<>();
+
+    for (int i = 0; i < ((List<Map<String, Object>>) argsBatch).size(); i++) {
+        Map<String, Object> args = ((List<Map<String, Object>>) argsBatch).get(i);
+
+        // ref object
+        #__class_name__# ref = (#__class_name__#) getHEAP().get((int) args.get("refId"));
+
+        #__field_type__# result = ref.#__field_name__#;
+
+        #__result__#
+
+        resultList.add(jsonableResult);
+    }
+
+    methodResult.success(resultList);
+});

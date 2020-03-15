@@ -1,16 +1,20 @@
-@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-    // 参数
+@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
+    // args
     #__args__#
 
-    // 调用对象引用
+    // ref
     #__ref__#
 
-    // 日志打印
-    #__log__#
+    // print log
+    if (enableLog) {
+        #__log__#
+    }
 
-    // 开始调用
+    // invoke native method
     #__invoke__#
 
-    // 调用结果
+    // result
     #__result__#
+
+    methodResult(jsonableResult);
 },

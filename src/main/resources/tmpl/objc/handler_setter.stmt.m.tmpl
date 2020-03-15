@@ -1,11 +1,14 @@
-@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-    NSLog(@"#__method_name__#");
+@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
+    // print log
+    if (enableLog) {
+        NSLog(@"#__method_name__#");
+    }
 
-    // 参数
+    // args
     #__args__#
 
-    NSInteger refId = [args[@"refId"] integerValue];
-    #__class_name__# ref = (#__class_name__#) REF_MAP[@(refId)];
+    // ref
+    #__ref__#
 
     ref.#__setter__# = #__field_value__#;
     methodResult(@"success");

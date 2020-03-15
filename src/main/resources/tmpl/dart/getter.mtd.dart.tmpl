@@ -1,4 +1,5 @@
-Future<#__type__#> get_#__name__#() async {
-  final result = await _channel.invokeMethod("#__getter_method__#", {'refId': refId});
-  return result;
+Future<#__type__#> get_#__name__#(#__view_channel__#) async {
+  final result = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#", {'refId': refId});
+  #__native_object_pool__#
+  return #__result__#;
 }

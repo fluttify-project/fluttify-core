@@ -13,13 +13,6 @@ fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
 }
 
 /**
- * 获取父类名称
- */
-fun JavaParser.ClassDeclarationContext.superClass(): String? {
-    return typeType()?.text
-}
-
-/**
  * 获取泛型类型
  */
 fun JavaParser.ClassDeclarationContext.genericTypes(): List<String> {
@@ -49,6 +42,16 @@ fun JavaParser.ClassDeclarationContext.isPublic(): Boolean {
 }
 
 /**
+ * 是否public
+ */
+fun JavaParser.EnumDeclarationContext.isPublic(): Boolean {
+    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+        ?.classOrInterfaceModifier()
+        ?.map { it.text }
+        ?.contains("public") == true
+}
+
+/**
  * 全名
  */
 fun JavaParser.ClassDeclarationContext.fullName(): String {
@@ -56,7 +59,7 @@ fun JavaParser.ClassDeclarationContext.fullName(): String {
         ?.packageDeclaration()
         ?.qualifiedName()
         ?.text ?: ""
-    return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
+    return "$packageName.${IDENTIFIER().text}"
 }
 
 /**
@@ -67,7 +70,7 @@ fun JavaParser.EnumDeclarationContext.fullName(): String {
         ?.packageDeclaration()
         ?.qualifiedName()
         ?.text ?: ""
-    return "$packageName.${IDENTIFIER().text.replace("$", ".")}"
+    return "$packageName.${IDENTIFIER().text}"
 }
 
 /**
@@ -84,6 +87,16 @@ fun JavaParser.InterfaceDeclarationContext.genericTypes(): List<String> {
  */
 fun JavaParser.InterfaceDeclarationContext.superInterfaces(): List<String> {
     return typeList()?.typeType()?.map { it.text?.run { typeFullName(this) } ?: "" } ?: listOf()
+}
+
+/**
+ * 是否public
+ */
+fun JavaParser.InterfaceDeclarationContext.isPublic(): Boolean {
+    return ancestorOf(JavaParser.TypeDeclarationContext::class)
+        ?.classOrInterfaceModifier()
+        ?.map { it.text }
+        ?.contains("public") == true
 }
 //endregion
 

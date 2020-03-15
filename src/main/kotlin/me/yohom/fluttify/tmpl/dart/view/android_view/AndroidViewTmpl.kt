@@ -1,76 +1,135 @@
 package me.yohom.fluttify.tmpl.dart.view.android_view
 
-import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.extensions.simpleName
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.Regexes
+import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 
 //import 'dart:convert';
 //import 'dart:typed_data';
 //
+//import 'package:#__current_package__#/src/android/android.export.g.dart';
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/gestures.dart';
 //import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 //import 'package:flutter/services.dart';
-//import 'package:#__current_package__#/#__current_package__#.dart';
+//
+//import 'package:foundation_fluttify/foundation_fluttify.dart';
 //
 //typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
+//typedef Future<void> _OnAndroidViewDispose();
 //
-//class #__view__#_Android extends StatelessWidget {
-//    const #__view__#_Android({
-//        Key key,
-//        this.onViewCreated,
-//    }) : super(key: key);
+//class #__view__#_Android extends StatefulWidget {
+//  const #__view__#_Android({
+//    Key key,
+//    this.onViewCreated,
+//    this.onDispose,
+//    #__creation_params__#
+//  }) : super(key: key);
 //
-//    final #__view_simple_name__#CreatedCallback onViewCreated;
+//  final #__view_simple_name__#CreatedCallback onViewCreated;
+//  final _OnAndroidViewDispose onDispose;
 //
-//    @override
-//    Widget build(BuildContext context) {
-//        final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
-//                Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-//        ].toSet();
+//  #__creation_fields__#
 //
-//        final messageCodec = StandardMessageCodec();
-//        return AndroidView(
-//            viewType: '#__org__#/#__view_type__#',
-//        gestureRecognizers: gestureRecognizers,
-//        onPlatformViewCreated: _onViewCreated,
-//        creationParamsCodec: messageCodec,
-//        );
-//    }
-//
-//    void _onViewCreated(int id) {
-//        final controller = #__view__#.withRefId(id);
-//        if (onViewCreated != null) {
-//            onViewCreated(controller);
-//        }
-//    }
+//  @override
+//  _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
 //}
-/**
- * 一个Android的View类, 需要生成两个类
- *
- * 1: 控制器类, 即这个View类的dart接口
- * 2: AndroidView类
- */
-class AndroidViewTmpl(
-    private val viewClass: Type,
-    private val ext: FluttifyExtension
-) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/android_view.dart.tmpl").readText()
+//
+//class _#__view__#_AndroidState extends State<#__view__#_Android> {
+//  #__view__# _controller;
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
+//      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+//    ].toSet();
+//
+//    final messageCodec = StandardMessageCodec();
+//    return AndroidView(
+//      viewType: '#__org__#/#__view_type__#',
+//      gestureRecognizers: gestureRecognizers,
+//      onPlatformViewCreated: _onViewCreated,
+//      creationParamsCodec: messageCodec,
+//      #__creation_args__#
+//    );
+//  }
+//
+//  void _onViewCreated(int id) {
+//    _controller = #__view__#()..refId = id;
+//    if (widget.onViewCreated != null) {
+//      widget.onViewCreated(_controller);
+//    }
+//  }
+//
+//  @override
+//  void dispose() {
+//    if (widget.onDispose != null) {
+//      widget.onDispose().then((_) => _controller.release());
+//    }
+//    super.dispose();
+//  }
+//}
+private val tmpl = getResource("/tmpl/dart/android_view.dart.tmpl").readText()
 
-    fun dartAndroidView(): String {
-        val currentPackage = ext.outputProjectName
-        val viewSimpleName = viewClass.name.simpleName()
-        val view = viewClass.name
-        val org = ext.outputOrg
-        val viewType = viewClass.name
+fun AndroidViewTmpl(viewType: Type): String {
+    val currentPackage = ext.projectName
+    val viewSimpleName = viewType.name.simpleName()
+    val view = viewType.name
+    val org = ext.org
+    val nativeView = viewType.name
 
-        return tmpl
-            .replace("#__current_package__#", currentPackage)
-            .replace("#__view_simple_name__#", viewSimpleName)
-            .replace("#__view__#", view.toDartType())
-            .replace("#__org__#", org)
-            .replace("#__view_type__#", viewType)
-    }
+    // 找出是否存在非Context, AttributeSet和int类型参数的构造器
+    // 如果存在, 那么以这个构造器进行初始化
+    val customConstructorList = viewType
+        .constructors
+        .filter {
+            it.formalParams.any { param ->
+                param.variable.typeName !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+            }
+        }
+
+    return if (customConstructorList.isNotEmpty()) {
+        val constructor = customConstructorList[0]
+        // 去掉Context的参数列表, 不需要Context
+        val formalParamsExcludeContext = constructor
+            .formalParams
+            .filter { it.variable.typeName != "android.content.Context" }
+
+        // 参数
+        val params = formalParamsExcludeContext
+            .joinToString("\n") {
+                "this.${it.variable.name},"
+            }
+        // 属性
+        val fields = formalParamsExcludeContext
+            .joinToString("\n") {
+                "final ${it.variable.typeName.toDartType()} ${it.variable.name};"
+            }
+        // 传入参数
+        val creationArgs = formalParamsExcludeContext
+            .map { it.variable }
+            .toDartMap("creationParams: {", "},") {
+                when {
+                    it.isEnum() -> "widget.${it.name.depointer()}?.index"
+                    it.jsonable() -> "widget.${it.name.depointer()}"
+                    (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
+                    it.genericLevel > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
+                    Regexes.MAP.matches(it.typeName) -> "{} /* Map类型暂不处理 */" // 多维数组暂不处理
+                    else -> "widget.${it.name.depointer()}?.refId ?? -1"
+                }
+            }
+        tmpl.replaceParagraph("#__creation_params__#", params)
+            .replaceParagraph("#__creation_fields__#", fields)
+            .replace("#__creation_args__#", creationArgs)
+    } else {
+        tmpl.replace("#__creation_params__#", "")
+            .replace("#__creation_fields__#", "")
+            .replace("#__creation_args__#", "")
+    }.replace("#__current_package__#", currentPackage)
+        .replace("#__view_simple_name__#", viewSimpleName)
+        .replace("#__view__#", view.toDartType())
+        .replace("#__org__#", org)
+        .replace("#__view_type__#", nativeView)
 }

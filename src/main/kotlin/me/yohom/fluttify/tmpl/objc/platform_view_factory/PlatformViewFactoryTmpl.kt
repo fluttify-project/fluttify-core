@@ -1,19 +1,20 @@
 package me.yohom.fluttify.tmpl.objc.platform_view_factory
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.objc.common.delegate_method.DelegateMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
 
 //#import <Foundation/Foundation.h>
 //#import <Flutter/Flutter.h>
-//#import #__import__#
+//#__import__#
 //
-//extern NSMutableDictionary<NSNumber *, NSObject *> *REF_MAP;
+//extern NSMutableDictionary<NSString*, NSObject*> *STACK;
+//extern NSMutableDictionary<NSNumber*, NSObject*> *HEAP;
 //
 //@interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
 //- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar;
@@ -21,30 +22,6 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //
 //@interface #__native_view__#PlatformView : NSObject <#__protocols__#>
 //- (instancetype)initWithViewId:(NSInteger)viewId registrar:(NSObject <FlutterPluginRegistrar> *)registrar;
-//@end
-
-//#import "#__native_view__#Factory.h"
-//#import "#__plugin__#Plugin.h"
-//
-//typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
-//
-//@implementation #__native_view__#Factory {
-//  NSObject <FlutterPluginRegistrar> *_registrar;
-//}
-//
-//- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-//  self = [super init];
-//  if (self) {
-//    _registrar = registrar;
-//  }
-//
-//  return self;
-//}
-//
-//- (NSObject <FlutterPlatformView> *)createWithFrame:(CGRect)frame viewIdentifier:(int64_t)viewId arguments:(id _Nullable)args {
-//  return [[#__native_view__#PlatformView alloc] initWithViewId:viewId registrar:_registrar];
-//}
-//
 //@end
 //
 //@implementation #__native_view__#PlatformView {
@@ -65,7 +42,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //
 //- (UIView *)view {
 //  #__native_view__# *view = [[#__native_view__# alloc] init];
-//  REF_MAP[@(_viewId)] = view;
+//  HEAP[@(_viewId)] = view;
 //
 //  //region handlers
 //  _handlerMap = @{
@@ -91,7 +68,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //}
 //
 //- (void)dealloc {
-//  [REF_MAP removeObjectForKey:@(_viewId)];
+//  [HEAP removeObjectForKey:@(_viewId)];
 //}
 //
 //
@@ -100,69 +77,79 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 ////endregion
 //
 //@end
-class PlatformViewFactoryTmpl(
-    private val viewType: Type,
-    private val lib: Lib,
-    private val ext: FluttifyExtension
-) {
-    private val hTmpl =
-        this::class.java.getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText()
-    private val mTmpl =
-        this::class.java.getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
+private val hTmpl = getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText()
+private val mTmpl = getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
 
-    fun objcPlatformViewFactory(): List<String> {
-        val imports = "<${lib.name}/${lib.name}.h>"
-        val nativeView = viewType.name
-        val protocols = lib
-            .types
-            .filter { it.isCallback() }
-            .map { it.name }
-            .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
-            .joinToString(", ")
+fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
+    // 先尝试导入framework里的头文件, 如果没有framework而是.h+.a的情况, 那么就导入所有的.h文件
+    val imports = ext.ios.libDir
+        .file()
+        .run {
+            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
+                ?.flatMap { framework ->
+                    "$framework/Headers/"
+                        .file()
+                        .listFiles { _, name -> name.endsWith(".h") }
+                        ?.map { framework to it }
+                        ?: listOf()
+                }
+                ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
+                ?: listOf()
+            val directHeaders = listFiles { _, name -> name.endsWith(".h") } // 所有的.h
+                ?.map { "#import \"${it.name}\"" }
+                ?: listOf()
+            frameworkHeaders.union(directHeaders)
+        }
+        .joinToString("\n")
 
-        val plugin = ext.outputProjectName.underscore2Camel()
-        // 处理方法们 分三种
-        // 1. getter handler
-        // 2. setter handler
-        // 3. 普通方法 handler
-        val getterHandlers = viewType
-            .fields
-            .filterGetters()
-            .map { HandlerGetterTmpl(it).objcGetter() }
+    val nativeView = viewType.name
+    val protocols = lib
+        .types
+        .filter { it.isCallback() }
+        .map { it.name }
+        .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
+        .joinToString(", ")
 
-        val setterHandlers = viewType
-            .fields
-            .filterSetters()
-            .map { HandlerSetterTmpl(it).objcSetter() }
+    val plugin = ext.projectName.underscore2Camel()
 
-        val methodHandlers = viewType
-            .methods
-            .filterMethod()
-            .map { HandlerMethodTmpl(it).objcHandlerMethod() }
+    val getters = viewType
+        .fields
+        .filterGetters()
+        .map { HandlerGetterTmpl(it) }
 
-        val methodChannel = "${ext.outputOrg}/${ext.outputProjectName}/${viewType.name}"
+    val setters = viewType
+        .fields
+        .filterSetters()
+        .map { HandlerSetterTmpl(it) }
 
-        val delegateMethods = lib
-            .types
-            .filter { it.isCallback() }
-            .flatMap { it.methods }
-            .distinctBy { "${it.name}${it.formalParams.joinToString()}" }
-            .joinToString("\n") { DelegateMethodTmpl(it).objcDelegateMethod() }
+    val methodHandlers = viewType
+        .methods
+        .filterMethod()
+        .map { HandlerMethodTmpl(it) }
 
-        return listOf(
-            hTmpl
-                .replace("#__import__#", imports)
-                .replace("#__native_view__#", nativeView)
-                .replace("#__protocols__#", protocols),
-            mTmpl
-                .replace("#__native_view__#", nativeView)
-                .replace("#__plugin__#", plugin)
-                .replaceParagraph(
-                    "#__handlers__#",
-                    methodHandlers.union(getterHandlers).union(setterHandlers).joinToString("\n")
-                )
-                .replace("#__method_channel__#", methodChannel)
-                .replaceParagraph("#__delegate_methods__#", delegateMethods)
-        )
-    }
+    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
+
+    val delegateMethods = lib
+        .types
+        .filter { it.isCallback() }
+        .flatMap { it.methods }
+        .distinctBy { it.exactName }
+        .joinToString("\n") { CallbackMethodTmpl(it) }
+
+    return listOf(
+        hTmpl
+            .replace("#__import__#", imports)
+            .replace("#__native_view__#", nativeView)
+            .replace("#__protocols__#", protocols)
+        ,
+        mTmpl
+            .replace("#__native_view__#", nativeView)
+            .replace("#__plugin__#", plugin)
+            .replaceParagraph(
+                "#__handlers__#",
+                methodHandlers.union(getters).union(setters).joinToString("\n")
+            )
+            .replace("#__method_channel__#", methodChannel)
+            .replaceParagraph("#__delegate_methods__#", delegateMethods)
+    )
 }

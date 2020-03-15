@@ -22,22 +22,34 @@ fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
 }
 
 fun RuleContext.typeFullName(typeSimpleName: String): String {
-    return if (typeSimpleName.jsonable() || typeSimpleName == "Object") {
+    return if (typeSimpleName.jsonable() || typeSimpleName == "void") {
         typeSimpleName
+    } else if (typeSimpleName == "Object") {
+        "java.lang.Object"
+    } else if (typeSimpleName == "Throwable") {
+        "java.lang.Throwable"
+    } else if (typeSimpleName == "Exception") {
+        "java.lang.Exception"
     } else {
         ancestorOf(JavaParser.CompilationUnitContext::class)
             ?.importDeclaration()
             ?.find {
-                !typeSimpleName.jsonable()
-                        && it.qualifiedName().text.length >= typeSimpleName.length
-                        && it.qualifiedName().text.run { substringAfterLast(".") } == typeSimpleName
+                !typeSimpleName.jsonable() // 非jsonable类型
+                        && it.qualifiedName().text.length >= typeSimpleName.dearray().length // import的长度必须大于简称类名长度
+                        && it.qualifiedName().text.run { substringAfterLast(".") } == typeSimpleName.dearray() // 搜索全类名的时候需要去掉数组后缀
             }
             ?.qualifiedName()
-            ?.text
-            ?.replace("$", ".")
-        // 如果不是import进来的说明这个类是当前文件的主类, 直接拼接package和类名
+            ?.run {
+                // 如果是数组类型的话, 要加上[]
+                if (typeSimpleName.isArray()) {
+                    "$text[]"
+                } else {
+                    text
+                }
+            }
+        // 如果不是import进来的说明这个类是当前文件的主类或者相同包下的类, 直接拼接package和类名
             ?: ancestorOf(JavaParser.CompilationUnitContext::class)
                 ?.packageDeclaration()
-                ?.qualifiedName()?.text + "." + typeSimpleName.replace("$", ".")
+                ?.qualifiedName()?.text + "." + typeSimpleName
     }
 }

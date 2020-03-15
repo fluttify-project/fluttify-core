@@ -1,28 +1,14 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.common.result
 
 import me.yohom.fluttify.TYPE_NAME
-import me.yohom.fluttify.extensions.isObjcValueType
-import me.yohom.fluttify.extensions.jsonable
+import me.yohom.fluttify.extensions.getResource
 
-//NSInteger returnRefId = [result hashValue];
-//REF_MAP[@(returnRefId)] = result;
-//
-//methodResult(returnRefId);
-internal class ResultRefTmpl(val returnType: TYPE_NAME) {
+//// return a ref
+//HEAP[@((#__cast_nsobject__#result).hash)] = result;
+//NSNumber* jsonableResult = @((#__cast_nsobject__#result).hash);
+private val tmpl = getResource("/tmpl/objc/result_ref.stmt.m.tmpl").readText()
 
-    private val tmpl = this::class.java.getResource("/tmpl/objc/result_ref.stmt.m.tmpl").readText()
-
-    fun objcResultRef(): String {
-        val returnVoid = "methodResult(@\"success\");"
-        val returnValue = "methodResult(@\"success\");"
-        val returnJsonable = "methodResult(result);"
-
-        return when {
-            returnType == "void" -> returnVoid
-            returnType.isObjcValueType() -> returnValue
-            returnType.jsonable() -> returnJsonable
-            else -> tmpl
-        }
-    }
-
+fun ResultRefTmpl(returnType: TYPE_NAME): String {
+    // 如果返回的是id类型, 那么一律转为NSObject*
+    return tmpl.replace("#__cast_nsobject__#", if (returnType == "id") "(NSObject*) " else "")
 }

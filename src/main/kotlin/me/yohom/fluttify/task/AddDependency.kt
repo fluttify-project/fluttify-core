@@ -1,58 +1,39 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
 import me.yohom.fluttify.extensions.file
 import org.apache.commons.io.FileUtils
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 /**
- * 为生成android工程加入目标jar到libs文件夹
- * todo 避免拷贝unzip文件夹
+ * 为生成android工程加入目标jar/aar到libs文件夹
  */
-open class AndroidAddDependency : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class AndroidAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
+        // 只有当不是远程依赖时才需要拷贝
+        if (ext.android.remote.run { "$org$name$version" }.isBlank()) {
+            val archiveDir: File = ext.android.libDir.file()
+            val libDir: File = "${project.projectDir}/output-project/${ext.projectName}/android/libs/".file()
 
-        FileUtils.copyDirectory(
-            ext.jarDir.file(),
-            "${project.projectDir}/output-project/${ext.outputProjectName}/android/libs/".file()
-        )
+            FileUtils.copyDirectory(archiveDir, libDir) { it.name != "unzip" && it.length() > 0 }
+        }
     }
 }
 
 /**
  * 为生成ios工程加入目标framework到文件夹
- *
- * todo 加入引入资源的选项 在podspec文件中加
- *
- *  # 需要引入的资源文件
- *  s.resource = "MAMapKit.framework/AMap.bundle"
- *
  */
-open class IOSAddDependency : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class IOSAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
+        // 只有当不是远程依赖时才需要拷贝
+        if (ext.ios.remote.run { "$name$version" }.isBlank()) {
+            val libraryDir: File = ext.ios.libDir.file()
+            val vendorDir: File = "${project.projectDir}/output-project/${ext.projectName}/ios/Vendor/".file()
 
-        // 添加间接依赖到podspec中
-        val podspecFile = "${project.projectDir}/output-project/${ext.outputProjectName}/ios/${ext.outputProjectName}.podspec".file()
-        podspecFile.readText()
-            .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString(",\n\t\t") { "\"$it\"" })
-            .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString(",\n\t\t") { "\"$it\"" })
-            .run { podspecFile.writeText(this) }
-
-        // 添加framework到工程中
-        FileUtils.copyDirectory(
-            ext.frameworkDir.file(),
-            "${project.projectDir}/output-project/${ext.outputProjectName}/ios/".file()
-        )
+            // 添加.framework/.a到工程中
+            FileUtils.copyDirectory(libraryDir, vendorDir)
+        }
     }
 }

@@ -1,0 +1,28 @@
+name: #__project_name__#
+description: #__desc__#
+version: 0.0.1
+author: #__author__# <#__email__#>
+homepage: #__homepage__#
+
+environment:
+  sdk: ">=2.6.0 <3.0.0"
+  flutter: ">=1.12.13 <2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  #__plugin_dependency__#
+  #__foundation_version__#
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: #__android_identifier__#
+        pluginClass: #__plugin_class__#
+      ios:
+        pluginClass: #__plugin_class__#

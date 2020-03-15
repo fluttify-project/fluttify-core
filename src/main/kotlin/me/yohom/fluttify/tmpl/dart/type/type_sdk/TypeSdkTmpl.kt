@@ -1,79 +1,126 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
-import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.getter.GetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.getter_batch.GetterBatchTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.setter_batch.SetterBatchTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorBatchTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
-import me.yohom.fluttify.tmpl.dart.type.type_sdk.setter.SetterTmpl
 
 //import 'dart:typed_data';
 //
-//import 'package:#__current_package__#/#__current_package__#.dart';
+//import 'package:#__current_package__#/src/ios/ios.export.g.dart';
+//import 'package:#__current_package__#/src/android/android.export.g.dart';
+//import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types
+//import 'package:foundation_fluttify/foundation_fluttify.dart';
+//
 //class #__class_name__# extends #__super_class__# #__mixins__# {
-//  static final _channel = MethodChannel('#__method_channel__#');
+//  //region constants
+//  #__constants__#
+//  //endregion
 //
-//  // 生成getters
+//  //region creators
+//  #__creators__#
+//  //endregion
+//
+//  //region getters
 //  #__getters__#
+//  //endregion
 //
-//  // 生成setters
+//  //region setters
 //  #__setters__#
+//  //endregion
 //
-//  // 生成方法们
+//  //region methods
 //  #__methods__#
+//  //endregion
 //}
-/**
- * 生成普通类的dart接口
- */
-class TypeSdkTmpl(
-    private val type: Type,
-    private val ext: FluttifyExtension
-) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
+//
+//extension #__class_name__#_Batch on List<#__class_name__#> {
+//  //region getters
+//  #__getters_batch__#
+//  //endregion
+//
+//  //region setters
+//  #__setters_batch__#
+//  //endregion
+//
+//  //region methods
+//  #__methods_batch__#
+//  //endregion
+//}
+private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
-    fun dartClass(): String {
-        val currentPackage = ext.outputProjectName
-        val className = type.name.toDartType()
-        val superClass = if (type.superClass.isEmpty())
-            "Ref_${type.platform}"
-        else
-            type.superClass.toDartType()
+fun TypeSdkTmpl(type: Type): String {
+    val currentPackage = ext.projectName
+    val className = type.name.toDartType()
+    // 如果父类是混淆类, 那么直接继承Object类
+    val superClass = if (type.superClass.run { isEmpty() || isObfuscated() })
+        type.platform.objectType()
+    else
+        type.superClass.toDartType()
 
-        val mixins = if (type.interfaces.isNotEmpty() && type.interfaces.none { it.findType() == Type.UNKNOWN_TYPE }) {
-            // todo 使用递归处理完全, 现在只是写死了只处理了两层
-            "with ${type.interfaces.union(type.interfaces.flatMap { it.findType().interfaces }).filter { it.findType().isInterface() }.reversed().joinToString()}"
-        } else {
-            ""
-        }
-
-        val methodChannel = if (type.isView())
-            "${ext.outputOrg}/${ext.outputProjectName}/${type.name.toUnderscore()}"
-        else
-            "${ext.outputOrg}/${ext.outputProjectName}"
-
-        val getters = type.fields
-            .filterGetters()
-            .map { GetterTmpl(it).dartGetter() }
-
-        val setters = type.fields
-            .filterSetters()
-            .map { SetterTmpl(it).dartSetter() }
-
-        val methods = type.methods
-            .filterMethod()
-            .map { MethodTmpl(it).dartMethod() }
-
-        return tmpl
-            .replace("#__current_package__#", currentPackage)
-            .replace("#__class_name__#", className)
-            .replace("#__super_class__#", superClass)
-            .replace("#__mixins__#", mixins)
-            .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__getters__#", getters.joinToString("\n"))
-            .replaceParagraph("#__setters__#", setters.joinToString("\n"))
-            .replaceParagraph("#__methods__#", methods.joinToString("\n"))
+    // 如果含有非混淆类的接口, 再以mixin的方式集成
+    val mixins = if (type.ancestorInterfaces(false).isNotEmpty()) {
+        "with ${type.ancestorInterfaces(false).reversed().joinToString { it.toDartType() }}"
+    } else {
+        ""
     }
+
+    // 常量
+    val constants = type.fields
+        .filterConstants()
+        .joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" }
+
+    // 构造器
+    val creators = if (type.constructable()) {
+        CreatorTmpl(type).union(CreatorBatchTmpl(type)).toList()
+    } else {
+        listOf()
+    }
+
+    val getters = type.fields
+        .filterGetters()
+        .map { GetterTmpl(it) }
+
+    val setters = type.fields
+        .filterSetters()
+        .map { SetterTmpl(it) }
+
+    val methods = type.methods
+        .filterMethod()
+        .map { MethodTmpl(it) }
+
+    val gettersBatch = type.fields
+        .filterGetters()
+        .map { GetterBatchTmpl(it) }
+
+    val settersBatch = type.fields
+        .filterSetters(true)
+        .map { SetterBatchTmpl(it) }
+
+    val methodsBatch = type.methods
+        .filterMethod(true)
+        .map { MethodBatchTmpl(it) }
+
+    return tmpl
+        .replace("#__current_package__#", currentPackage)
+        .replace("#__class_name__#", className)
+        .replace("#__super_class__#", superClass)
+        .replace("#__mixins__#", mixins)
+        .replaceParagraph("#__constants__#", constants)
+        .replaceParagraph("#__creators__#", creators.joinToString("\n"))
+        .replaceParagraph("#__getters__#", getters.joinToString("\n"))
+        .replaceParagraph("#__setters__#", setters.joinToString("\n"))
+        .replaceParagraph("#__methods__#", methods.joinToString("\n"))
+        .replaceParagraph("#__getters_batch__#", gettersBatch.joinToString("\n"))
+        .replaceParagraph("#__setters_batch__#", settersBatch.joinToString("\n"))
+        .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
 }

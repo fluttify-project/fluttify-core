@@ -1,15 +1,21 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
-open class Type : PlatformAware {
+open class Type : IPlatform, IScope {
     override var platform: Platform = Platform.Unknown
 
     /**
      * 全名
      */
     var name: String = ""
+
+    /**
+     * 是谁的别名
+     */
+    var aliasOf: String? = null
 
     /**
      * 泛型类型
@@ -24,7 +30,7 @@ open class Type : PlatformAware {
     /**
      * 是否公开
      */
-    var isPublic: Boolean = true
+    override var isPublic: Boolean = true
 
     /**
      * 是否抽象
@@ -34,7 +40,12 @@ open class Type : PlatformAware {
     /**
      * 是否是内部类
      */
-    var isInnerClass: Boolean = false
+    var isInnerType: Boolean = false
+
+    /**
+     * 是否是静态(内部)类
+     */
+    var isStaticType: Boolean = true
 
     /**
      * 是否jsonable
@@ -72,12 +83,12 @@ open class Type : PlatformAware {
     var constants: MutableList<String> = mutableListOf()
 
     /**
-     * 返回值类型 Lambda专用
+     * 返回值类型 Lambda/Function专用
      */
     var returnType: String = ""
 
     /**
-     * 形参 Lambda专用
+     * 形参 Lambda/Function专用
      */
     var formalParams: List<Parameter> = listOf()
 
@@ -85,6 +96,60 @@ open class Type : PlatformAware {
      * 是否过时
      */
     var deprecated: Boolean = false
+
+    /**
+     * 祖宗类型
+     *
+     * 包括类和接口, 因为需要递归, 而且结果是不变的, 所以这里用lazy计算, 提高性能
+     */
+    @delegate:Transient
+    val ancestorTypes by lazy {
+        val result = mutableListOf<String>()
+
+        fun findAncestorClasses(clazz: String) {
+            val superClass = clazz.findType().superClass
+            if (superClass.isNotEmpty()) {
+                result.add(superClass)
+                findAncestorClasses(superClass)
+            }
+            // 从父类搜索祖先类时, 不能缺了父类实现的接口
+            val interfaces = clazz.findType().interfaces
+            if (interfaces.isNotEmpty()) {
+                interfaces.forEach {
+                    result.add(it)
+                    findAncestorClasses(it)
+                }
+            }
+        }
+
+        fun findAncestorInterfaces(interfaze: String) {
+            val interfaces = interfaze.findType().interfaces
+            if (interfaces.isNotEmpty()) {
+                interfaces.forEach {
+                    result.add(it)
+                    findAncestorInterfaces(it)
+                }
+            }
+        }
+
+        findAncestorClasses(name)
+        findAncestorInterfaces(name)
+
+        result.distinct()
+    }
+
+    fun filter(): Boolean {
+        return must("已知类型") { this != UNKNOWN_TYPE } &&
+                must("公开类型") { isPublic } &&
+                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } } &&
+                mustNot("含有泛型") { genericTypes.isNotEmpty() } &&
+                mustNot("混淆类型") { isObfuscated() } &&
+                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&
+                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } &&
+                (isEnum() || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
+                    if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
+                }
+    }
 
     /**
      * 是否是回调
@@ -101,23 +166,82 @@ open class Type : PlatformAware {
                 && superClass == ""
                 && (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 // 必须没有子类
-                && SDK.sdks.flatMap { it.libs }.flatMap { it.types }.none { it.interfaces.contains(this.name) || it.superClass == this.name }
+                && !hasSubtype()
     }
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda
 
+    fun isFunction(): Boolean = typeType == TypeType.Function
+
+    fun isKnownFunction(): Boolean {
+        return isFunction()
+                && returnType.findType() != UNKNOWN_TYPE
+                && formalParams.all { it.variable.isKnownType() }
+    }
+
     fun subtypes(): List<Type> {
-        return SDK.sdks.flatMap { it.libs }.flatMap { it.types }.filter { it.superClass == this.name }
+        return SDK
+            .sdks
+            .flatMap { it.libs }
+            .flatMap { it.types }
+            .asSequence()
+            // 计算子类的时候, 去除掉忽略的类
+            .filter { type -> EXCLUDE_TYPES.none { it.matches(type.name) } }
+            .filter { it.isPublic }
+            .filterNot { it.name.isObfuscated() }
+            .filter { (it.superClass == name || name in it.interfaces) }
+            .toList()
+    }
+
+    fun hasConcretSubtype(): Boolean {
+        return firstConcretSubtype() != null
+    }
+
+    fun firstConcretSubtype(): Type? {
+        return if (isConcret()) {
+            this
+        } else {
+            SDK
+                .sdks
+                .flatMap { it.libs }
+                .flatMap { it.types }
+                .firstOrNull { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
+                ?.firstConcretSubtype()
+        }
+    }
+
+    fun superTypes(): List<Type> {
+        return listOf(superClass.findType())
+            .union(interfaces.map { it.findType() })
+            .toList()
+    }
+
+    fun isAlias(): Boolean {
+        return typeType == TypeType.Alias
     }
 
     fun constructable(): Boolean {
         return !isAbstract
-                && this != UNKNOWN_TYPE
-                && !isList()
+                // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
+                // 这样的结构会造成死循环
+                && !(constructors.any {
+            it.formalParams.any {
+                it.variable.type().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+            }
+        })
+                && (this != UNKNOWN_TYPE || jsonable())
                 && !isEnum()
-                && (constructors.any { it.isPublic == true } || constructors.isEmpty())
+                && !isLambda()
+                && !isFunction()
+                && !isAlias()
+                && !isObfuscated()
+                // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
+                && ((isInnerType && isStaticType) || !isInnerType)
+                && (constructors.any { it.isPublic } || constructors.isEmpty())
                 && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
-                && (constructors.filterConstructor().isNotEmpty() || constructors.isEmpty() || isJsonable)
+                && (constructors.any { it.filter() } || constructors.isEmpty() || isJsonable)
+                // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
+                && ((platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false) || platform != Platform.iOS)
     }
 
     fun isEnum(): Boolean {
@@ -128,12 +252,24 @@ open class Type : PlatformAware {
         return typeType == TypeType.Struct
     }
 
+    fun isStructPointer(): Boolean {
+        return typeType == TypeType.Struct && name.pack().endsWith("*")
+    }
+
     fun isInterface(): Boolean {
         return typeType == TypeType.Interface
     }
 
+    fun isConcret(): Boolean {
+        return !isAbstract
+    }
+
+    fun hasSubtype(): Boolean {
+        return subtypes().isNotEmpty()
+    }
+
     fun isList(): Boolean {
-        return name.isList()
+        return name.isCollection()
     }
 
     fun jsonable(): Boolean {
@@ -165,15 +301,65 @@ open class Type : PlatformAware {
         return if (genericTypes.isEmpty()) name else "$name<${genericTypes.joinToString()}>"
     }
 
+    /**
+     * 如果是lambda或者function类型, 提供一个转为method的方法
+     */
+    fun asMethod(): Method {
+        return Method(
+            returnType,
+            name,
+            formalParams,
+            isFunction = true,
+            isStatic = true,
+            isAbstract = false,
+            isPublic = true,
+            className = name,
+            platform = platform,
+            isDeprecated = false
+        )
+    }
+
+    /**
+     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的类
+     */
+    fun ancestorClasses(): List<String> {
+        return ancestorTypes.filter { it.findType().typeType == TypeType.Class }
+    }
+
+    /**
+     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的接口, [includeObfuscated]区分是否包含混淆的接口类
+     */
+    fun ancestorInterfaces(includeObfuscated: Boolean = true): List<String> {
+        return ancestorTypes
+            .filter { it.findType().typeType == TypeType.Interface }
+            .filter { if (!includeObfuscated) !it.isObfuscated() else true }
+    }
+
+    fun isKnownType(): Boolean {
+        return this != UNKNOWN_TYPE
+    }
+
+    fun isUnknownType(): Boolean {
+        return this == UNKNOWN_TYPE
+    }
+
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerClass, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {
+        /**
+         * 未知的类
+         */
         val UNKNOWN_TYPE: Type = Type().apply { name = "unknown" }
+
+        /**
+         * 没有类
+         */
+        val NO_TYPE: Type = Type().apply { name = "" }
     }
 }
 
 enum class TypeType {
-    Class, Enum, Interface, Lambda, Struct
+    Class, Enum, Interface, Lambda, Struct, Function, Alias
 }

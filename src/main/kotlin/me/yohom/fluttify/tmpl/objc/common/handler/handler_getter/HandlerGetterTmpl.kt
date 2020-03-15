@@ -1,46 +1,61 @@
 package me.yohom.fluttify.tmpl.objc.common.handler.handler_getter
 
-import me.yohom.fluttify.extensions.enpointer
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.isObjcValueType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
-//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
-//    NSLog(@"#__method_name__#");
+//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
+//    // print log
+//    if (enableLog) {
+//        NSLog(@"#__method_name__#");
+//    }
 //
-//    // 引用对象
-//    NSInteger refId = [args[@"refId"] integerValue];
-//    #__class_name__# ref = (#__class_name__#) REF_MAP[@(refId)];
+//    // ref object
+//    #__ref__#
 //
-//    #__note__#
+//    // invoke native method
+//    #__invoke__#
 //
-//    methodResult(#__getter__#);
+//    #__result__#
+//
+//    methodResult(jsonableResult);
 //},
-internal class HandlerGetterTmpl(private val field: Field) {
-    private val tmpl = this::class.java.getResource("/tmpl/objc/handler_getter.stmt.m.tmpl").readText()
+private val tmpl = getResource("/tmpl/objc/handler_getter.stmt.m.tmpl").readText()
 
-    fun objcGetter(): String {
-        val methodName = field.getterMethodName()
-        val className = if (field.className.findType().isInterface()) {
-            "id<${field.className}>"
-        } else {
-            field.className.enpointer()
-        }
-        val getter = field.run {
-            when {
-                variable.typeName.isObjcValueType() -> "@(ref.$getterName)"
-                variable.typeName.findType().isStruct() -> {
-                    "nil/* 结构体getter暂时不支持 */"
-//                        "@(${StructToNSValueTmpl(field.variable).objcStructToNSValue()}.hash)"
-                }
-                else -> "@(ref.$getterName.hash)"
-            }
-        }
-        val note = if (field.variable.typeName.findType().isStruct()) "NSLog(@\"${methodName}:结构体getter暂时不支持\");" else ""
-        return tmpl
-            .replace("#__method_name__#", methodName)
-            .replace("#__class_name__#", className)
-            .replace("#__note__#", note)
-            .replace("#__getter__#", getter)
+fun HandlerGetterTmpl(field: Field): String {
+    val methodName = field.getterMethodName()
+    val className = when {
+        field.className == "id" -> "NSObject*" // 如果是id类型, 就强转成NSObject*
+        field.className.findType().isInterface() -> field.className.enprotocol()
+        else -> field.className.enpointer()
     }
+
+    // 获取当前调用方法的对象引用
+    val ref = if (field.className.findType().isStruct()) {
+        StructRefTmpl(field.asGetterMethod())
+    } else {
+        RefRefTmpl(field.asGetterMethod())
+    }
+
+    // 调用objc端对应的方法
+    val invoke = InvokeTmpl(field).objcInvoke()
+    val result = field.variable.run {
+        when {
+            typeName.isValueType() -> ResultValueTmpl()
+            jsonable() -> ResultJsonableTmpl()
+            isList -> ResultListTmpl()
+            isValuePointer() -> ResultValuePointerTmpl()
+            isStruct() -> ResultStructTmpl(typeName)
+            else -> ResultRefTmpl(typeName)
+        }
+    }
+    return tmpl
+        .replace("#__method_name__#", methodName)
+        .replace("#__class_name__#", className)
+        .replaceParagraph("#__ref__#", ref)
+        .replace("#__invoke__#", invoke)
+        .replaceParagraph("#__result__#", result)
 }

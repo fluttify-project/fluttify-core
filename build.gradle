@@ -1,65 +1,96 @@
 buildscript {
     repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+        jcenter()
     }
 }
 
 plugins {
     id 'java'
+    id 'maven'
+    id 'maven-publish'
     id 'java-gradle-plugin'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.31'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+    id "com.jfrog.artifactory" version "4.13.0"
 }
-apply plugin: "com.gradle.plugin-publish"
 
-group 'me.yohom'
-version '0.4.0'
+def GROUP_ID = 'me.yohom'
+def ARTIFACT_ID = 'fluttify-core'
+def VERSION_NAME = '0.4.2'
+
+group GROUP_ID
+version VERSION_NAME
 
 repositories {
-    jcenter()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     mavenCentral()
-}
-
-jar {
-    from('src/main/java') {
-        include 'resources/tmpl/**/*.tmpl'
-    }
+    jcenter()
 }
 
 dependencies {
-    implementation gradleApi()
-    implementation group: 'org.jboss.windup.decompiler', name: 'decompiler-fernflower', version: '4.2.1.Final'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0-M1'
+    implementation 'org.jboss.windup.decompiler:decompiler-fernflower:4.2.1.Final'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation 'org.antlr:antlr4-runtime:4.7.2'
     implementation 'commons-io:commons-io:2.6'
     implementation 'com.google.code.gson:gson:2.8.5'
-    testImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.31"
+    // okhttp
+    implementation "com.squareup.okhttp3:okhttp:3.14.0"
+    // zip https://github.com/zeroturnaround/zt-zip
+    implementation 'org.zeroturnaround:zt-zip:1.13'
+    // https://github.com/ReactiveX/RxJava
+    implementation "io.reactivex.rxjava3:rxjava:3.0.0"
 }
 
-// 发布到gradle plugin网站 https://plugins.gradle.org/
-pluginBundle {
-    website = 'https://github.com/yohom/fluttify-core'
-    vcsUrl = 'https://github.com/yohom/fluttify-core.git'
-    description = 'A tool that generating dart interface for native SDK.'
-    tags = ['flutter', 'android', 'ios']
+publishing {
+    publications {
+        fluttify(MavenPublication) {
+            groupId = GROUP_ID
+            artifactId = ARTIFACT_ID
+            version = VERSION_NAME
 
-    plugins {
-        greetingsPlugin {
-            id = 'me.yohom.fluttify'
-            displayName = 'fluttify'
+            artifact("/Users/yohom/.m2/repository/me/yohom/fluttify-core/${VERSION_NAME}/fluttify-core-${VERSION_NAME}.jar")
+
+            pom.withXml {
+                def dependencies = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    // 如果有compile fileTree()，group会为空，需要去除
+                    if (it.group != null) {
+                        def dependency = dependencies.appendNode('dependency')
+                        dependency.appendNode('groupId', it.group)
+                        dependency.appendNode('artifactId', it.name)
+                        dependency.appendNode('version', it.version)
+                    }
+                }
+            }
         }
     }
 }
 
-uploadArchives {
-    repositories {
-        ivy {
-            url 'build/plugin'
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        repository {
+            repoKey = 'gradle-dev-local'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+        }
+
+        defaults {
+            publications('fluttify')
+            publishArtifacts = true
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'gradle-release'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
         }
     }
 }

@@ -4,7 +4,7 @@ import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.jsonable
 
-class SDK : PlatformAware {
+class SDK : IPlatform {
 
     /**
      * 每构造一个sdk, 都记录到静态变量中去, 以供程序的其他地方调用
@@ -28,6 +28,36 @@ class SDK : PlatformAware {
      */
     var libs: MutableList<Lib> = mutableListOf()
 
+    /**
+     * 非间接依赖的库
+     */
+    val directLibs: List<Lib>
+        get() = libs.filterNot { it.isDependency }
+
+    /**
+     * 所有通过过滤的方法
+     */
+    @delegate:Transient
+    val allFilteredMethods: List<Method> by lazy {
+        directLibs.flatMap { it.types }.flatMap { it.methods }.filter { it.filter() }
+    }
+
+    /**
+     * 所有常量
+     */
+    @delegate:Transient
+    val allConstants: List<Field> by lazy {
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterConstants() }
+    }
+
+    /**
+     * 所有属性
+     */
+    @delegate:Transient
+    val allProperties: List<Field> by lazy {
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters() || it.filterSetter() }
+    }
+
     override fun toString(): String {
         return "SDK(version='$version', platform=$platform, libs=$libs)"
     }
@@ -44,12 +74,20 @@ class SDK : PlatformAware {
         fun findType(fullName: String): Type {
             val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
             return when {
+                // 如果是空字符串那么返回NO_TYPE
+                fullName.isEmpty() -> Type.NO_TYPE
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
                 allTypes.map { it.name.depointer() }.contains(fullName) -> allTypes.first { it.name.depointer() == fullName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
                 fullName.jsonable() -> Type().apply { name = fullName; isJsonable = true }
-                // 已支持的系统类
-                fullName in SYSTEM_TYPE.map { it.name } -> SYSTEM_TYPE.first { it.name == fullName }
+                // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
+                SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(fullName) } -> SYSTEM_TYPE.first {
+                    Regex(it.name).matches(
+                        fullName
+                    )
+                }
+                // 是objc的id指针
+                fullName == "id" -> Type().apply { name = "id"; typeType == TypeType.Class }
                 // lambda
                 fullName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda
@@ -58,14 +96,10 @@ class SDK : PlatformAware {
                     formalParams = fullName
                         .substringAfter("|")
                         .split(",")
-                        .map { it.split(" ") }
+                        .map { it.trim().split(" ") }
                         .map {
                             Parameter(
-                                variable = Variable(
-                                    it[0],
-                                    it[1],
-                                    platform = Platform.General
-                                ),
+                                variable = Variable(it[0], it[1], platform = Platform.General),
                                 platform = Platform.General
                             )
                         }
@@ -89,16 +123,24 @@ class Lib {
     var types: MutableList<Type> = mutableListOf()
 
     /**
-     * 回调类们
+     * 是否是依赖
      */
-    val callbacks: List<Type>
-        get() = types.filter { it.isCallback() }
+    var isDependency: Boolean = false
 
     override fun toString(): String {
-        return "Lib(name='$name', types=$types)"
+        return "Lib(name='$name', types=$types, isDependency=$isDependency)"
     }
 }
 
 enum class Platform {
-    General, iOS, Android, Unknown
+    General, iOS, Android, Unknown;
+
+    fun objectType(): String {
+        return when (this) {
+            General -> "Object"
+            iOS -> "NSObject"
+            Android -> "java_lang_Object"
+            Unknown -> "Object"
+        }
+    }
 }

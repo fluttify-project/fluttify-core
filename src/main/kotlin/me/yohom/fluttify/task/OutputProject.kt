@@ -1,30 +1,20 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.FluttifyExtension
-import me.yohom.fluttify.PATH
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 /**
  * 生成初始的输出项目
- *
- * 输入: 生成项目的规格
- * 输出: 项目路径[PATH]
  */
-open class OutputProject : DefaultTask() {
-
-    override fun getGroup() = "fluttify"
-
+open class OutputProject : FluttifyTask() {
     @TaskAction
     fun process() {
-        val ext = project.extensions.getByType(FluttifyExtension::class.java)
-        val outputProjectPath = "${project.projectDir}/output-project/${ext.outputProjectName}"
+        val outputProjectPath = "${project.projectDir}/output-project/${ext.projectName}"
 
         val process = Runtime
             .getRuntime()
-            .exec("flutter create --offline -a ${ext.androidLanguage} -i ${ext.iOSLanguage} --template plugin --org ${ext.outputOrg} $outputProjectPath")
+            .exec("flutter create --offline --no-pub -a java -i objc --androidx --verbose --template plugin --org ${ext.org} $outputProjectPath")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
     }

@@ -1,0 +1,20 @@
+// factory
+put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
+    if (getEnableLog()) {
+        Log.d("ObjectFactory", "创建对象: #__creator_name__#");
+    }
+
+    // args
+    #__args__#;
+
+    // create target object
+    #__class_name__# obj = new #__class_name__#(#__args_value__#);
+    getHEAP().put(obj.hashCode(), obj);
+
+    // print current HEAP
+    if (getEnableLog()) {
+        Log.d("ObjectFactory", "HEAP: " + getHEAP());
+    }
+
+    methodResult.success(obj.hashCode());
+});

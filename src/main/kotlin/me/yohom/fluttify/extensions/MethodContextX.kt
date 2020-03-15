@@ -1,5 +1,6 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable
@@ -8,38 +9,89 @@ import parser.objc.ObjectiveCParser
 
 //region Java Method
 fun JavaParser.MethodDeclarationContext.returnType(): String {
+    val containerType = typeTypeOrVoid().text.containerType()
     // 返回类型 简称
-    val paramType = typeTypeOrVoid().text.genericType()
+    val genericTypes = typeTypeOrVoid().text.genericType().split(",")
     // 返回类型 全称
-    var fullGenericType = typeFullName(paramType)
+    val fullGenericTypes = genericTypes.map { typeFullName(it) }.toMutableList()
+    // 返回容器类型 全称
+    val fullContainerType = typeFullName(containerType)
 
     // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
-    if (paramType == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
-        val `package` =
-            ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
-        fullGenericType = "$`package`.$paramType"
+    genericTypes.forEachIndexed { index, type ->
+        if (type.simpleName() == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
+            val `package` =
+                ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
+            fullGenericTypes[index] = "$`package`.${type.simpleName()}"
+        }
     }
 
-    return if (typeTypeOrVoid().text.isList()) {
-        "List<$fullGenericType>"
-    } else {
-        fullGenericType
+    return when {
+        typeTypeOrVoid().text.isCollection() -> {
+            var result = fullGenericTypes[0]
+            for (i in 0 until typeTypeOrVoid().text.collectionLevel()) {
+                result = if (Regex("Collection<(\\w*|.*)>").matches(typeTypeOrVoid().text)) {
+                    result.enCollection()
+                } else {
+                    result.enList()
+                }
+            }
+            result
+        }
+        // 容器类型和泛型类型不一样, 说明是泛型类型
+        fullContainerType != fullGenericTypes[0] -> {
+            "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
+        }
+        // 普通类型
+        else -> {
+            fullGenericTypes[0]
+        }
     }
 }
 
 fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
-    val paramType = typeTypeOrVoid().text.genericType()
-    val fullGenericType = typeFullName(paramType)
+    val containerType = typeTypeOrVoid().text.containerType()
+    // 返回类型 简称
+    val genericTypes = typeTypeOrVoid().text.genericType().split(",")
+    // 返回类型 全称
+    val fullGenericTypes = genericTypes.map { typeFullName(it) }.toMutableList()
+    // 返回容器类型 全称
+    val fullContainerType = typeFullName(containerType)
 
-    return if (typeTypeOrVoid().text.isList()) {
-        "List<$fullGenericType>"
-    } else {
-        fullGenericType
+    // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
+    genericTypes.forEachIndexed { index, type ->
+        if (type.simpleName() == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
+            val `package` =
+                ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
+            fullGenericTypes[index] = "$`package`.${type.simpleName()}"
+        }
+    }
+
+    return when {
+        typeTypeOrVoid().text.isCollection() -> {
+            var result = fullGenericTypes[0]
+            for (i in 0 until typeTypeOrVoid().text.collectionLevel()) {
+                result = result.enList()
+            }
+            result
+        }
+        // 容器类型和泛型类型不一样, 说明是泛型类型
+        fullContainerType != fullGenericTypes[0] -> {
+            "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
+        }
+        // 普通类型
+        else -> {
+            fullGenericTypes[0]
+        }
     }
 }
 
 fun JavaParser.MethodDeclarationContext.name(): String {
     return IDENTIFIER().text
+}
+
+fun JavaParser.MethodDeclarationContext.isGenericMethod(): Boolean {
+    return isChildOf(JavaParser.GenericMethodDeclarationContext::class)
 }
 
 fun JavaParser.MethodDeclarationContext.isAbstract(): Boolean {
@@ -51,6 +103,10 @@ fun JavaParser.MethodDeclarationContext.isAbstract(): Boolean {
 
 fun JavaParser.InterfaceMethodDeclarationContext.name(): String {
     return IDENTIFIER().text
+}
+
+fun JavaParser.InterfaceMethodDeclarationContext.isGenericMethod(): Boolean {
+    return typeParameters() != null
 }
 
 fun JavaParser.MethodDeclarationContext.isPrivate(): Boolean {
@@ -126,8 +182,17 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        formalParam.typeType().text.isList(),
-                        Platform.Android
+                        Platform.Android,
+                        formalParam.typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isCollection() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
+                        formalParam.typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -145,8 +210,17 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        typeType().text.isList(),
-                        Platform.Android
+                        Platform.Android,
+                        typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isCollection() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
+                        typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -172,8 +246,17 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        formalParam.typeType().text.isList(),
-                        Platform.Android
+                        Platform.Android,
+                        formalParam.typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isCollection() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
+                        formalParam.typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -191,8 +274,17 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        typeType().text.isList(),
-                        Platform.Android
+                        Platform.Android,
+                        typeType().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isCollection() -> ListType.List
+                                else -> ListType.NonList
+                            }
+                        },
+                        typeType().text.collectionLevel()
                     ),
                     platform = Platform.Android
                 )
@@ -205,18 +297,24 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
 
 //region Objc Method
 fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
-    return methodType().typeName().text.run {
-        if (this == "instancetype") {
-            val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
-            if (instancetype != null) {
-                "$instancetype*"
+    return methodType()
+        .typeName()
+        .text
+        .run {
+            if (this == "instancetype") {
+                val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
+                    ?: ancestorOf(ObjectiveCParser.ProtocolDeclarationContext::class)?.protocolName()?.text
+                if (instancetype != null) {
+                    "$instancetype*"
+                } else {
+                    ""
+                }
             } else {
-                ""
+                this
             }
-        } else {
-            this
         }
-    }
+        // 有些方法在返回类型后面会跟一些宏, 去掉这些宏
+        .run { removeSuffix(substringAfterLast("*", "")) }
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isStatic(): Boolean {
@@ -243,11 +341,35 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                 Parameter(
                     if (index == 0) "" else it.selector().text ?: "",
                     Variable(
-                        it.methodType()[0].typeName().run {
-                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
+                        it.methodType()[0]
+                            .typeName()
+                            .run {
+                                // lambda类型的参数处理
+                                blockType()?.run { "${returnType()}|${parameters()}" }
+                                // 非lambda参数处理 如果有__kindof限定词就空格分隔一下
+                                    ?: text.objcSpecifierExpand()
+                            }
+                            .genericType()
+                            .run {
+                                // 如果变量名以*号开始, 说明类名上的*号被移动到变量名上了, 需要加回来
+                                if (it.identifier().text.startsWith("*")) {
+                                    enpointer()
+                                } else {
+                                    this
+                                }
+                            },
+                        it.identifier().text.depointer(), // 统一把*号加到类名上去
+                        Platform.iOS,
+                        it.methodType()[0].typeName().text.run {
+                            when {
+                                isArray() -> ListType.Array
+                                isArrayList() -> ListType.ArrayList
+                                isLinkedList() -> ListType.LinkedList
+                                isCollection() -> ListType.List
+                                else -> ListType.NonList
+                            }
                         },
-                        it.identifier().text,
-                        platform = Platform.iOS
+                        it.methodType()[0].typeName().text.collectionLevel()
                     ),
                     platform = Platform.iOS
                 )
@@ -256,27 +378,14 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     return result
 }
 
-fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): List<Parameter> {
-    val result = mutableListOf<Parameter>()
+fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
+    return macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+            || attributeSpecifier()?.text?.contains("deprecated") == true
+}
 
-    methodSelector()
-        .keywordDeclarator()
-        ?.forEachIndexed { index, it ->
-            result.add(
-                Parameter(
-                    if (index == 0) "" else it.selector().text ?: "",
-                    Variable(
-                        it.methodType()[0].typeName().run {
-                            blockType()?.run { "${returnType()}|${parameters()}" } ?: text
-                        },
-                        it.identifier().text,
-                        platform = Platform.iOS
-                    ),
-                    platform = Platform.iOS
-                )
-            )
-        }
-    return result
+fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
+    return macro()?.primaryExpression()?.any { it.text.contains("unavailable") } == true
+            || attributeSpecifier()?.text?.contains("unavailable") == true
 }
 
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {

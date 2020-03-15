@@ -1,0 +1,10 @@
+// setter
+put("#__setter_name__#", (args, methodResult) -> {
+    #__arg__#;
+
+    int refId = (int) ((Map<String, Object>) args).get("refId");
+    #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
+
+    ref.#__field_name__# = #__field_value__#;
+    methodResult.success("success");
+});

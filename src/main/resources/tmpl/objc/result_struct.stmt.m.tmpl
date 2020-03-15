@@ -1,4 +1,4 @@
+// 返回值: 结构体
 NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
-REF_MAP[@(resultValue.hash)] = resultValue;
-
-methodResult(@(resultValue.hash));
+HEAP[@(resultValue.hash)] = resultValue;
+NSNumber* jsonableResult = @(resultValue.hash);

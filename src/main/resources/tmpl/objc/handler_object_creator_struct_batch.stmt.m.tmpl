@@ -1,0 +1,16 @@
+@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id argsBatch, FlutterResult methodResult) {
+    NSMutableArray<NSNumber*>* resultList = [NSMutableArray array];
+
+    for (int i = 0; i < [(NSNumber*) ((NSDictionary<NSString*, NSObject*>*) argsBatch)[@"length"] integerValue]; i++) {
+        #__type_name__# data;
+
+        NSValue* dataValue = [NSValue value:&data withObjCType:@encode(#__type_name__#)];
+        HEAP[@(dataValue.hash)] = dataValue;
+
+        [resultList addObject:@(dataValue.hash)];
+    }
+
+    methodResult(resultList);
+
+    if (enableLog) NSLog(@"HEAP: %@", HEAP);
+},
