@@ -112,10 +112,10 @@ data class Method(
     fun signature(): String {
         return if (className.findType().methods.map { it.signatureNamed() }.filter { it == this.signatureNamed() }.size > 1) {
             // 类内部含有相同方法名超过1个, 说明有重载, 这里需要给方法名加上类型
-            name + formalParams.joinToStringX("__", "__") { "${it.named}${it.variable.typeName.toUnderscore().toDartType()}" }
+            name + formalParams.joinToStringX("__", "__") { "${it.named}${it.variable.typeName.toDartType()}" }
         } else {
             signatureNamed()
-        }
+        }.toUnderscore()
     }
 
     /**
