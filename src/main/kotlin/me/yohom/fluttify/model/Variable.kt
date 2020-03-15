@@ -22,8 +22,8 @@ data class Variable(
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
     }
 
-    fun isVoidPointer(): Boolean {
-        return Regex("(const)?void\\*").matches(typeName.pack())
+    fun isValuePointer(): Boolean {
+        return typeName.isValuePointerType()
     }
 
     fun isStruct(): Boolean {

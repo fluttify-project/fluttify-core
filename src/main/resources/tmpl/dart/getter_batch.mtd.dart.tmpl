@@ -1,6 +1,6 @@
 Future<List<#__type__#>> get_#__name__#_batch(#__view_channel__#) async {
   final resultBatch = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#_batch", [for (final item in this) {'refId': item.refId}]);
-  final typedResult = (resultBatch as List).cast<#__type__#>().map((result) => #__result__#).toList();
+  final typedResult = (resultBatch as List).map((result) => #__result__#).toList();
   #__native_object_pool__#
   return typedResult;
 }

@@ -14,7 +14,7 @@ open class OutputProject : FluttifyTask() {
 
         val process = Runtime
             .getRuntime()
-            .exec("flutter create --offline --no-pub -a java -i objc --androidx --template plugin --org ${ext.org} $outputProjectPath")
+            .exec("flutter create --offline --no-pub -a java -i objc --androidx --verbose --template plugin --org ${ext.org} $outputProjectPath")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
     }

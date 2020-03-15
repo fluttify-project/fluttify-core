@@ -236,12 +236,9 @@ fun TYPE_NAME.isValueType(): Boolean {
         "int",
         "float",
         "double",
-        "int64_t",
         "BOOL",
-        "NSUInteger",
-        "NSInteger",
         "CGFloat"
-    )) or (this in SYSTEM_TYPEDEF) or findType().run { isEnum() or isAlias() }
+    )) || (this in SYSTEM_TYPEDEF.map { it.key }) or findType().run { isEnum() or isAlias() }
 }
 
 /**
@@ -250,7 +247,27 @@ fun TYPE_NAME.isValueType(): Boolean {
  * 先判断是否是c类型, 然后判断是不是`*`结尾
  */
 fun TYPE_NAME.isCPointerType(): Boolean {
-    return (depointer().isValueType() && endsWith("*")) || Regex("(const)?void\\*").matches(pack())
+    // 防止循环递归调用, 这里重复一下isValueType方法的实现
+    val isValueType = ((pack() in listOf(
+        "int*",
+        "float*",
+        "double*",
+        "BOOL*",
+        "CGFloat*"
+    )) || (this in SYSTEM_TYPEDEF.map { it.key.enpointer() }))
+    val isVoidPointer = Regex("(const)?void\\*").matches(pack())
+
+    return isVoidPointer || isValueType
+}
+
+/**
+ * 是否是值类型的指针类型(相对objc指针类型)
+ */
+fun TYPE_NAME.isValuePointerType(): Boolean {
+    val isVoidPointer = Regex("(const)?void\\*").matches(pack())
+    val isCPointer = isCPointerType()
+    val isSystemTypedefPointer = this in SYSTEM_TYPEDEF.map { it.key.enpointer() }
+    return isVoidPointer || isCPointer || isSystemTypedefPointer
 }
 
 /**

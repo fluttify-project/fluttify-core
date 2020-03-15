@@ -62,13 +62,16 @@ fun HandlerMethodTmpl(method: Method): String {
     // 调用objc端对应的方法
     val invoke = InvokeTmpl(method).objcInvoke()
 
-    val result = when {
-        method.returnType.isValueType() -> ResultValueTmpl()
-        method.returnType.jsonable() -> ResultJsonableTmpl()
-        method.returnType.isCollection() -> ResultListTmpl()
-        method.returnType.findType().isStruct() -> ResultStructTmpl(method.returnType)
-        method.returnType.isVoid() -> ResultVoidTmpl()
-        else -> ResultRefTmpl(method.returnType)
+    val result = method.returnType.run {
+        when {
+            isValueType() -> ResultValueTmpl()
+            jsonable() -> ResultJsonableTmpl()
+            isCollection() -> ResultListTmpl()
+            findType().isStruct() -> ResultStructTmpl(method.returnType)
+            isVoid() -> ResultVoidTmpl()
+            isValuePointerType() -> ResultValuePointerTmpl()
+            else -> ResultRefTmpl(method.returnType)
+        }
     }
 
     return tmpl

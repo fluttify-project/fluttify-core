@@ -77,8 +77,6 @@ data class Method(
                 must("形参中的lambda类型的所有参数是已知类型") { formalParams.filter { it.variable.isLambda() }.run { isEmpty() || all { it.variable.isKnownLambda() } } } &&
                 mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } } &&
                 mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } } &&
-                // 不处理c指针类型参数的方法
-                mustNot("形参含有是C指针类型") { formalParams.any { param -> param.variable.typeName.isCPointerType() } } &&
                 // 参数不能中含有排除的类
                 mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.typeName.depointer()) } } } &&
                 mustNot("形参祖宗类含有未知类型") {
@@ -89,8 +87,6 @@ data class Method(
                 mustNot("形参父类是混淆类") {
                     formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
                 } &&
-                // 类似float*返回这样的类型的方法都暂时不处理
-                mustNot("返回类型是C类型指针") { returnType.isCPointerType() } &&
                 must("返回类型是具体类型或者含有实体子类的抽象类") {
                     returnType.findType().run { isConcret() || hasConcretSubtype() }
                 } &&

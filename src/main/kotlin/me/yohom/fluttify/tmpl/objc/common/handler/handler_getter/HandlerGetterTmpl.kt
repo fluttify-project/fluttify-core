@@ -42,13 +42,15 @@ fun HandlerGetterTmpl(field: Field): String {
 
     // 调用objc端对应的方法
     val invoke = InvokeTmpl(field).objcInvoke()
-    val result = when {
-        field.variable.typeName.isValueType() -> ResultValueTmpl()
-        field.variable.jsonable() -> ResultJsonableTmpl()
-        field.variable.isList -> ResultListTmpl()
-        field.variable.isVoidPointer() -> ResultValuePointerTmpl()
-        field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName)
-        else -> ResultRefTmpl(field.variable.typeName)
+    val result = field.variable.run {
+        when {
+            typeName.isValueType() -> ResultValueTmpl()
+            jsonable() -> ResultJsonableTmpl()
+            isList -> ResultListTmpl()
+            isValuePointer() -> ResultValuePointerTmpl()
+            isStruct() -> ResultStructTmpl(typeName)
+            else -> ResultRefTmpl(typeName)
+        }
     }
     return tmpl
         .replace("#__method_name__#", methodName)

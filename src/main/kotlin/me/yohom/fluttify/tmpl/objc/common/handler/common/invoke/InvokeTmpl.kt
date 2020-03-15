@@ -33,7 +33,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
             if (method.isStatic) {
                 // 函数
                 val call = if (method.isFunction) {
-                    "${method.name}(${method.formalParams.joinToString { it.variable.name.depointer() }})"
+                    "${method.name}(${method.formalParams.joinToString { param2arg(it, true) }})"
                 }
                 // 类静态方法
                 else if (!method.className.findType().isInterface()) {
@@ -41,7 +41,9 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                 }
                 // 协议静态方法
                 else {
-                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
+                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") {
+                        param2arg(it)
+                    }}]"
                 }
 
                 if (method.returnType == "void") {
@@ -62,11 +64,27 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
         return (invokeGetter ?: invokeMethod)!!
     }
 
-    private fun param2arg(it: Parameter): String {
-        return if (it.variable.isLambda() && method != null) {
-            "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
+    private fun param2arg(it: Parameter, isFunction: Boolean = false): String {
+        return if (!isFunction) {
+            if (it.variable.isLambda() && method != null) {
+                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
+            } else {
+                "${it.named}: ${when {
+                    it.variable.isCallback() -> "self"
+                    it.variable.typeName.isValuePointerType() -> "[${it.variable.name} pointerValue]"
+                    else -> it.variable.name
+                }}"
+            }
         } else {
-            "${it.named}: ${if (it.variable.isCallback()) "self" else it.variable.name}"
+            if (it.variable.isLambda() && method != null) {
+                CallbackLambdaTmpl(method, it.variable.typeName.findType())
+            } else {
+                when {
+                    it.variable.isCallback() -> "self"
+                    it.variable.typeName.isValuePointerType() -> "[${it.variable.name} pointerValue]"
+                    else -> it.variable.name
+                }
+            }
         }
     }
 }

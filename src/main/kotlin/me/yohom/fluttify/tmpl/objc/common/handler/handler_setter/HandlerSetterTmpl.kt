@@ -51,7 +51,13 @@ fun HandlerSetterTmpl(field: Field): String {
     }
 
     // 如果setter的是一个delegate, 那么就认定是当前类作为delegate处理
-    val fieldValue = if (field.variable.typeName.findType().isCallback()) "self" else fieldName.depointer()
+    val fieldValue =field.variable.run {
+        when {
+            typeName.findType().isCallback() -> "self"
+            typeName.isCPointerType() -> "[${fieldName.depointer()} pointerValue];"
+            else -> fieldName.depointer()
+        }
+    }
     val className = if (field.className.findType().isInterface()) {
         "id<${field.className}>"
     } else {

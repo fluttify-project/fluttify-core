@@ -39,6 +39,8 @@ val SYSTEM_TYPEDEF = mapOf(
     "CLLocationDegrees" to "double",
     "CFTimeInterval" to "double",
     "NSTimeInterval" to "double",
+    "NSInteger" to "long",
+    "NSUInteger" to "unsigned long",
     "int64_t" to "long long"
 )
 

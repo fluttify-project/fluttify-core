@@ -597,9 +597,11 @@ fun OBJC_FILE.objcType(): List<Type> {
                 ?.map {
                     Parameter(
                         variable = Variable(
-                            typeName = it.declarationSpecifiers()?.text ?: it.VOID().text,
+                            typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
+                                if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
+                            },
                             platform = Platform.iOS,
-                            name = it.declarator()?.text ?: it.VOID().text
+                            name = (it.declarator()?.text ?: it.VOID().text).depointer()
                         ),
                         platform = Platform.iOS
                     )
