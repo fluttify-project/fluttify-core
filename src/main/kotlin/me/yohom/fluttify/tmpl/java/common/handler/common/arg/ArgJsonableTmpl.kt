@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Variable
 
 //// jsonable arg
-//#__type_name__# #__arg_name__# = (#__cast_type_name__#) ((Map<String, Object>) args).get("#__arg_name__#");
+//#__type_name__# #__arg_name__# = #__cast_type_name__# ((Map<String, Object>) args).get("#__arg_name__#");
 private val tmpl = getResource("/tmpl/java/arg_jsonable.stmt.java.tmpl").readText()
 
 fun ArgJsonableTmpl(variable: Variable): String {
@@ -33,14 +33,15 @@ fun ArgJsonableTmpl(variable: Variable): String {
             "#__cast_type_name__#",
             when {
                 // 如果是数组, 那么需要去掉`[]`, 再补成列表
-                variable.isStringArray() -> type.dearray().enList()
+                variable.isStringArray() -> "(${type.dearray().enList()})"
                 // 其他列表类型, 加上List<>
-                variable.listType == ListType.List -> type.enList()
+                variable.listType == ListType.List -> "(${type.enList()})"
                 // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.
                 // dart端只有int, 不区分32位和64位, java端具体类型由数值大小决定, 所以如果要精确处理这个问题的话会比较麻烦, 这里先一律转成int处理
                 // 后期如果真的碰到int无法满足的情况再想办法
-                variable.typeName == "Long" -> "Long) (long"
-                else -> type
+                variable.typeName == "Long" -> "(Long) (long) (int)"
+                variable.typeName == "long" -> "(long) (int)"
+                else -> "($type)"
             }
         )
         .replace("#__arg_name__#", variable.name)
