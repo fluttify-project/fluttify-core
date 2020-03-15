@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_functions
 
 import me.yohom.fluttify.ext
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_functions.function.TypeFunctionTmpl
@@ -14,12 +15,10 @@ import me.yohom.fluttify.tmpl.dart.type.type_functions.function.TypeFunctionTmpl
 //
 //// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 //#__functions__#
-class TypeFunctionsTmpl(private val functions: List<Type>) {
-    private val tmpl = this::class.java.getResource("/tmpl/dart/functions.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/functions.dart.tmpl").readText()
 
-    fun dartFunctions(): String {
-        return tmpl
-            .replace("#__current_package__#", ext.projectName)
-            .replaceParagraph("#__functions__#", functions.joinToString("\n") { TypeFunctionTmpl(it) })
-    }
+fun TypeFunctionsTmpl(functions: List<Type>): String {
+    return tmpl
+        .replace("#__current_package__#", ext.projectName)
+        .replaceParagraph("#__functions__#", functions.joinToString("\n") { TypeFunctionTmpl(it) })
 }

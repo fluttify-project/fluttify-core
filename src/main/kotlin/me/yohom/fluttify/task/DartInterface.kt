@@ -66,11 +66,12 @@ open class AndroidDartInterface : FluttifyTask() {
         sdk.directLibs
             .flatMap { it.types }
             .filter { it.isKnownFunction() }
+            .distinctBy { it.name }
             .run {
                 val functionsFile =
                     "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/functions.g.dart"
 
-                functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
+                functionsFile.file().writeText(TypeFunctionsTmpl(this))
             }
 
         // todo 增加打开Activity的函数
@@ -158,11 +159,12 @@ open class IOSDartInterface : FluttifyTask() {
         sdk.directLibs
             .flatMap { it.types }
             .filter { it.isKnownFunction() }
+            .distinctBy { it.name }
             .run {
                 val functionsFile =
                     "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/functions.g.dart"
 
-                functionsFile.file().writeText(TypeFunctionsTmpl(this).dartFunctions())
+                functionsFile.file().writeText(TypeFunctionsTmpl(this))
             }
 
         val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
