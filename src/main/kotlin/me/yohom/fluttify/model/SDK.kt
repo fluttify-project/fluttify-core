@@ -2,7 +2,6 @@ package me.yohom.fluttify.model
 
 import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.isValuePointerType
 import me.yohom.fluttify.extensions.jsonable
 
 class SDK : IPlatform {
