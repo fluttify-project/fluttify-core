@@ -16,7 +16,7 @@ data class Variable(
 ) : IPlatform {
 
     val isList: Boolean
-        get() = listType != ListType.NonList
+        get() = listType != ListType.NonList && listType != ListType.Array
 
     fun isStructPointer(): Boolean {
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
