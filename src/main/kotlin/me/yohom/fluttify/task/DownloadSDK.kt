@@ -35,7 +35,7 @@ open class DownloadIOSSDK : FluttifyTask() {
     @TaskAction
     fun process() {
         ext.ios.libDir.file().run {
-            if (list()?.none { it.isIOSArchive() } == true && ext.ios.remote.run { "$name$version" }.isNotEmpty()) {
+            if (list()?.isEmpty() == true && ext.ios.remote.run { "$name$version" }.isNotEmpty()) {
                 val iosArchiveSpec: File?
 
                 val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
