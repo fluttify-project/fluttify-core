@@ -266,8 +266,10 @@ fun TYPE_NAME.isCPointerType(): Boolean {
 fun TYPE_NAME.isValuePointerType(): Boolean {
     val isVoidPointer = Regex("(const)?void\\*").matches(pack())
     val isCPointer = isCPointerType()
+    val isStructPointer = findType().isStruct() && endsWith("*")
     val isSystemTypedefPointer = this in SYSTEM_TYPEDEF.map { it.key.enpointer() }
-    return isVoidPointer || isCPointer || isSystemTypedefPointer
+            || this == "CVPixelBufferRef" // CVPixelBufferRef(void*)本身是指针类型
+    return isVoidPointer || isCPointer || isSystemTypedefPointer || isStructPointer
 }
 
 /**

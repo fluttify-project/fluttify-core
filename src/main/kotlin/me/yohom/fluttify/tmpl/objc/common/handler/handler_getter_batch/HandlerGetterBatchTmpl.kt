@@ -49,7 +49,7 @@ fun HandlerGetterBatchTmpl(field: Field): String {
         field.variable.isValueType() -> ResultValueTmpl()
         field.variable.jsonable() -> ResultJsonableTmpl()
         field.variable.isList -> ResultListTmpl()
-        field.variable.isValuePointer() -> ResultValuePointerTmpl()
+        field.variable.isValuePointerType() -> ResultValuePointerTmpl()
         field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName)
         else -> ResultRefTmpl(field.variable.typeName)
     }

@@ -89,8 +89,8 @@ class SDK : IPlatform {
                 }
                 // 是objc的id指针
                 finalTypeName == "id" -> Type().apply { name = "id"; typeType == TypeType.Class }
-                // 值指针类型 包括(float*, double* CLLocationCoordinate*等)
-                finalTypeName.isValuePointerType() -> Type().apply { name = "NSValue"; typeType = TypeType.Class }
+                // void*类型
+                finalTypeName == "void*" -> Type().apply { name = "NSValue"; typeType = TypeType.Class }
                 // lambda
                 finalTypeName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda

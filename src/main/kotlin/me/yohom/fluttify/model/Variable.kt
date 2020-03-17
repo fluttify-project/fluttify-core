@@ -22,7 +22,7 @@ data class Variable(
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
     }
 
-    fun isValuePointer(): Boolean {
+    fun isValuePointerType(): Boolean {
         return typeName.isValuePointerType()
     }
 

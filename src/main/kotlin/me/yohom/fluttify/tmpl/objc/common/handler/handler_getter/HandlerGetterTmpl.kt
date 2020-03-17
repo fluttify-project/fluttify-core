@@ -47,7 +47,7 @@ fun HandlerGetterTmpl(field: Field): String {
             typeName.isValueType() -> ResultValueTmpl()
             jsonable() -> ResultJsonableTmpl()
             isList -> ResultListTmpl()
-            isValuePointer() -> ResultValuePointerTmpl()
+            isValuePointerType() -> ResultValuePointerTmpl()
             isStruct() -> ResultStructTmpl(typeName)
             else -> ResultRefTmpl(typeName)
         }
