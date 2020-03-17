@@ -1,10 +1,7 @@
 package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
-import me.yohom.fluttify.PATH
-import me.yohom.fluttify.Regexes
-import me.yohom.fluttify.SYSTEM_TYPEDEF
-import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.*
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -238,7 +235,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "double",
         "BOOL",
         "CGFloat"
-    )) or (this in SYSTEM_TYPEDEF.map { it.key }) or findType().run { isEnum() or isAlias() }
+    )) or (this in SYSTEM_TYPEDEF.keys && this !in SYSTEM_POINTER_TYPEDEF.keys) or findType().run { isEnum() or isAlias() }
 }
 
 /**
@@ -268,7 +265,7 @@ fun TYPE_NAME.isValuePointerType(): Boolean {
     val isCPointer = isCPointerType()
     val isStructPointer = findType().isStruct() && endsWith("*")
     val isSystemTypedefPointer = this in SYSTEM_TYPEDEF.map { it.key.enpointer() }
-            || this == "CVPixelBufferRef" // CVPixelBufferRef(void*)本身是指针类型
+            || this in SYSTEM_POINTER_TYPEDEF.keys
     return isVoidPointer || isCPointer || isSystemTypedefPointer || isStructPointer
 }
 

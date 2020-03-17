@@ -28,7 +28,6 @@ val EXCLUDE_TYPES
         .union(ext.android.exclude.classes)
         .map { Regex(it) }
 
-
 /**
  * 系统别名
  */
@@ -43,6 +42,13 @@ val SYSTEM_TYPEDEF = mapOf(
     "NSUInteger" to "unsigned long",
     "CVPixelBufferRef" to "void*",
     "int64_t" to "long long"
+)
+
+/**
+ * 系统指针类型别名
+ */
+val SYSTEM_POINTER_TYPEDEF = mapOf(
+    "CVPixelBufferRef" to "void*"
 )
 
 /**
