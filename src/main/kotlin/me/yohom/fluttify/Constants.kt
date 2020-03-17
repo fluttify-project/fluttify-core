@@ -41,6 +41,7 @@ val SYSTEM_TYPEDEF = mapOf(
     "NSTimeInterval" to "double",
     "NSInteger" to "long",
     "NSUInteger" to "unsigned long",
+    "CVPixelBufferRef" to "void*",
     "int64_t" to "long long"
 )
 
