@@ -261,12 +261,13 @@ fun TYPE_NAME.isCPointerType(): Boolean {
  * 是否是值类型的指针类型(相对objc指针类型)
  */
 fun TYPE_NAME.isValuePointerType(): Boolean {
+    // 原始类型的指针类型和结构体的指针类型还是有点区别, 比如说结构体在dart端是生成的类的, 而原始类型是没有类的, 所以这边还是区分对待好了
     val isVoidPointer = Regex("(const)?void\\*").matches(pack())
     val isCPointer = isCPointerType()
     val isStructPointer = findType().isStruct() && endsWith("*")
     val isSystemTypedefPointer = this in SYSTEM_TYPEDEF.map { it.key.enpointer() }
             || this in SYSTEM_POINTER_TYPEDEF.keys
-    return isVoidPointer || isCPointer || isSystemTypedefPointer || isStructPointer
+    return isVoidPointer || isCPointer || isSystemTypedefPointer/* || isStructPointer*/
 }
 
 /**
