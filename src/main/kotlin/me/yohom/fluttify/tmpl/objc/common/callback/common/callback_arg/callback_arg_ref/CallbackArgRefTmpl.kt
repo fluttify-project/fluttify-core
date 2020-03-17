@@ -2,7 +2,7 @@ package me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback
 
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.isCPointerType
+import me.yohom.fluttify.extensions.isPrimitivePointerType
 import me.yohom.fluttify.model.Variable
 
 //// ref callback arg
@@ -18,7 +18,7 @@ fun CallbackArgRefTmpl(variable: Variable): String {
             when (typeName) {
                 "id" -> "((NSObject*) $name)"
                 else -> when {
-                    typeName.isCPointerType() -> "[NSValue valueWithPointer:$name]"
+                    typeName.isPrimitivePointerType() -> "[NSValue valueWithPointer:$name]"
                     else -> name
                 }
             }

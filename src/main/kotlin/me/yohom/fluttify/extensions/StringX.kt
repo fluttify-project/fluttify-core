@@ -238,29 +238,30 @@ fun TYPE_NAME.isValueType(): Boolean {
     )) or (this in SYSTEM_TYPEDEF.keys && this !in SYSTEM_POINTER_TYPEDEF.keys) or findType().run { isEnum() or isAlias() }
 }
 
-/**
- * 是否是C的指针类型(相对objc指针类型)
- *
- * 先判断是否是c类型, 然后判断是不是`*`结尾
- */
-fun TYPE_NAME.isCPointerType(): Boolean {
-    // 防止循环递归调用, 这里重复一下isValueType方法的实现
-    val isValueType = ((pack() in listOf(
-        "int*",
-        "float*",
-        "double*",
-        "BOOL*",
-        "CGFloat*"
-    )) || (this in SYSTEM_TYPEDEF.map { it.key.enpointer() }))
-    val isVoidPointer = Regex("(const)?void\\*").matches(pack())
-
-    return isVoidPointer || isValueType
-}
 
 /**
  * 是否是值类型的指针类型(相对objc指针类型)
  */
-fun TYPE_NAME.isValuePointerType(): Boolean {
+fun TYPE_NAME.isPrimitivePointerType(): Boolean {
+    /**
+     * 是否是C的指针类型(相对objc指针类型)
+     *
+     * 先判断是否是c类型, 然后判断是不是`*`结尾
+     */
+    fun TYPE_NAME.isCPointerType(): Boolean {
+        // 防止循环递归调用, 这里重复一下isValueType方法的实现
+        val isValueType = ((pack() in listOf(
+            "int*",
+            "float*",
+            "double*",
+            "BOOL*",
+            "CGFloat*"
+        )) || (this in SYSTEM_TYPEDEF.map { it.key.enpointer() }))
+        val isVoidPointer = Regex("(const)?void\\*").matches(pack())
+
+        return isVoidPointer || isValueType
+    }
+
     // 原始类型的指针类型和结构体的指针类型还是有点区别, 比如说结构体在dart端是生成的类的, 而原始类型是没有类的, 所以这边还是区分对待好了
     val isVoidPointer = Regex("(const)?void\\*").matches(pack())
     val isCPointer = isCPointerType()

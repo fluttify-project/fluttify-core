@@ -55,7 +55,7 @@ fun HandlerSetterBatchTmpl(field: Field): String {
     val fieldValue = field.variable.run {
         when {
             typeName.findType().isCallback() -> "self"
-            typeName.isCPointerType() -> "[${fieldName.depointer()} pointerValue];"
+            typeName.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
             else -> fieldName.depointer()
         }
     }

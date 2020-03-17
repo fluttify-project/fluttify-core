@@ -2,16 +2,13 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result
 
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.isCPointerType
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 
 //#__type_name__#()..refId = result..tag = '#__tag__#'
 private val tmpl = getResource("/tmpl/dart/result_ref.stmt.dart.tmpl").readText()
 
 fun ResultRefTmpl(returnType: TYPE_NAME): String {
-    val typeName = if (returnType.isCPointerType()) {
+    val typeName = if (returnType.isPrimitivePointerType()) {
         returnType.toDartType()
     } else {
         returnType

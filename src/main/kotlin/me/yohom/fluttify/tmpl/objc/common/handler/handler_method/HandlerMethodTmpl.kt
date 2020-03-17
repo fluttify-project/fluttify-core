@@ -69,7 +69,7 @@ fun HandlerMethodTmpl(method: Method): String {
             isCollection() -> ResultListTmpl()
             findType().isStruct() -> ResultStructTmpl(method.returnType)
             isVoid() -> ResultVoidTmpl()
-            isValuePointerType() -> ResultValuePointerTmpl()
+            isPrimitivePointerType() -> ResultValuePointerTmpl()
             else -> ResultRefTmpl(method.returnType)
         }
     }

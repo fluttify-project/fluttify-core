@@ -71,7 +71,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
             } else {
                 "${it.named}: ${when {
                     it.variable.isCallback() -> "self"
-                    it.variable.typeName.isValuePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }}"
             }
@@ -81,7 +81,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
             } else {
                 when {
                     it.variable.isCallback() -> "self"
-                    it.variable.typeName.isValuePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }
             }

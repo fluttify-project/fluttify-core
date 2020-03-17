@@ -23,7 +23,7 @@ data class Variable(
     }
 
     fun isValuePointerType(): Boolean {
-        return typeName.isValuePointerType()
+        return typeName.isPrimitivePointerType()
     }
 
     fun isStruct(): Boolean {
