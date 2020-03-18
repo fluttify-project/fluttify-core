@@ -118,7 +118,7 @@ data class Method(
         return if (className.findType().methods.map { it.signatureNamed() }
                 .filter { it == this.signatureNamed() }.size > 1) {
             // 类内部含有相同方法名超过1个, 说明有重载, 这里需要给方法名加上类型
-            name + formalParams.joinToStringX("__", "__") { "${it.named}${it.variable.typeName.toDartType()}" }
+            name + formalParams.joinToStringX("__", "__") { "${it.named}_${it.variable.typeName.toDartType()}" }
         } else {
             signatureNamed()
         }.toUnderscore()
@@ -128,7 +128,8 @@ data class Method(
      * 只包含方法名和命名参数部分的签名
      */
     fun signatureNamed(): String {
-        return name + formalParams.joinToString("") { it.named }.capitalize()
+        return name + formalParams.joinToStringX("") { if (it.named.isNotBlank()) "_${it.named}" else it.named }
+            .capitalize()
     }
 
     override fun toString(): String {
