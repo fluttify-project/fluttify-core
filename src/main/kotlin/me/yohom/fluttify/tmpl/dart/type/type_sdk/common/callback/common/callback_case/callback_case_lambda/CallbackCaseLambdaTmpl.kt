@@ -9,13 +9,13 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_ref.CallbackCaseArgRefTmpl
 
 //case '#__callback_case__#':
-//  if (#__callback_handler__# != null) {
-//    // 日志打印
+//  // print log
+//  if (fluttifyLogEnabled) {
 //    #__log__#
-//
-//    // 调用回调方法
-//    #__callback_handler__#(#__callback_args__#);
 //  }
+//
+//  // handle the native call
+//  #__callback_handler__#(#__callback_args__#);
 //  break;
 private val tmpl = getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText()
 

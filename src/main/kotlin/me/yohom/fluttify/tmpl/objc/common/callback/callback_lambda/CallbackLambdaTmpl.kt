@@ -17,9 +17,12 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //^(#__formal_params__#) {
 //    FlutterMethodChannel *channel = [FlutterMethodChannel
 //        methodChannelWithName:@"#__method_channel__#"
-//              binaryMessenger:[self->_registrar messenger]];
+//              binaryMessenger:[[self registrar] messenger]];
 //
-//    NSLog(@"#__log__#");
+//    // print log
+//    if (enableLog) {
+//        NSLog(@"#__log__#");
+//    }
 //
 //    // 构造可以直接传输的参数
 //    #__local_args__#

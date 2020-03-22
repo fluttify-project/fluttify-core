@@ -9,23 +9,36 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTm
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
 
-//#import <Foundation/Foundation.h>
-//#import <Flutter/Flutter.h>
-//#__import__#
+//#import "#__native_view__#Factory.h"
+//#import "#__plugin__#Plugin.h"
+//#import <objc/runtime.h>
 //
-//extern NSMutableDictionary<NSString*, NSObject*> *STACK;
-//extern NSMutableDictionary<NSNumber*, NSObject*> *HEAP;
+//// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
+//extern NSMutableDictionary<NSString*, NSObject*>* STACK;
+//// Dart端随机存取对象的容器
+//extern NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
+//// 日志打印开关
+//extern BOOL enableLog;
 //
-//@interface #__native_view__#Factory : NSObject <FlutterPlatformViewFactory>
-//- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar;
-//@end
+//@implementation #__native_view__#Factory {
+//}
 //
-//@interface #__native_view__#PlatformView : NSObject <#__protocols__#>
-//- (instancetype)initWithViewId:(NSInteger)viewId registrar:(NSObject <FlutterPluginRegistrar> *)registrar;
+//- (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
+//  self = [super init];
+//  if (self) {
+//    _registrar = registrar;
+//  }
+//
+//  return self;
+//}
+//
+//- (NSObject <FlutterPlatformView> *)createWithFrame:(CGRect)frame viewIdentifier:(int64_t)viewId arguments:(id _Nullable)args {
+//  return [[#__native_view__#PlatformView alloc] initWithViewId:viewId registrar:_registrar];
+//}
+//
 //@end
 //
 //@implementation #__native_view__#PlatformView {
-//  NSObject <FlutterPluginRegistrar> *_registrar;
 //  NSInteger _viewId;
 //  NSDictionary<NSString *, Handler> *_handlerMap;
 //}
@@ -42,7 +55,8 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //
 //- (UIView *)view {
 //  #__native_view__# *view = [[#__native_view__# alloc] init];
-//  HEAP[@(_viewId)] = view;
+//  // 这里用一个magic number调整一下id
+//  HEAP[@(2147483647 - _viewId)] = view;
 //
 //  //region handlers
 //  _handlerMap = @{
@@ -55,10 +69,13 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //      methodChannelWithName:@"#__method_channel__#"
 //            binaryMessenger:[_registrar messenger]];
 //
+//  __weak __typeof(self)weakSelf = self;
 //  [channel setMethodCallHandler:^(FlutterMethodCall *methodCall, FlutterResult methodResult) {
 //    NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
-//    if (_handlerMap[methodCall.method] != nil) {
-//      _handlerMap[methodCall.method](_registrar, args, methodResult);
+//
+//    __strong __typeof(weakSelf)strongSelf = weakSelf;
+//    if (strongSelf->_handlerMap[methodCall.method] != nil) {
+//      strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
 //    } else {
 //      methodResult(FlutterMethodNotImplemented);
 //    }
@@ -66,11 +83,6 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //  //endregion
 //  return view;
 //}
-//
-//- (void)dealloc {
-//  [HEAP removeObjectForKey:@(_viewId)];
-//}
-//
 //
 ////region delegate
 //#__delegate_methods__#
