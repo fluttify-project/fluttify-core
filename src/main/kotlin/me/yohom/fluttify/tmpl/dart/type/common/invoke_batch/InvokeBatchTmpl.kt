@@ -25,15 +25,15 @@ fun InvokeBatchTmpl(method: Method): String {
                 type.findType().isEnum() -> {
                     // 枚举列表
                     if (it.isList) {
-                        "${it.name.depointer()}[i].map((it) => it.index).toList()"
+                        "${it.name.depointer()}[__i__].map((it) => it.index).toList()"
                     } else {
-                        "${it.name.depointer()}[i].index"
+                        "${it.name.depointer()}[__i__].index"
                     }
                 }
-                type.jsonable() -> "${it.name.depointer()}[i]"
-                (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}[i].map((it) => it.refId).toList()"
+                type.jsonable() -> "${it.name.depointer()}[__i__]"
+                (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
                 it.genericLevel > 1 -> "[]" // 多维数组暂不处理
-                else -> "${it.name.depointer()}[i].refId"
+                else -> "${it.name.depointer()}[__i__].refId"
             }
         }
     return tmpl

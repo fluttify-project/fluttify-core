@@ -2,8 +2,8 @@
 put("#__getter_name__#_batch", (argsBatch, methodResult) -> {
     List<#__result_type__#> resultList = new ArrayList<>();
 
-    for (int i = 0; i < ((List<Map<String, Object>>) argsBatch).size(); i++) {
-        Map<String, Object> args = ((List<Map<String, Object>>) argsBatch).get(i);
+    for (int __i__ = 0; __i__ < ((List<Map<String, Object>>) argsBatch).size(); __i__++) {
+        Map<String, Object> args = ((List<Map<String, Object>>) argsBatch).get(__i__);
 
         // ref object
         #__class_name__# ref = (#__class_name__#) getHEAP().get((int) args.get("refId"));

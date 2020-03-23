@@ -13,11 +13,11 @@ put("ObjectFactory::create_batch#__creator_name__#", (argsBatch, methodResult) -
         length = ((List<Map<String, Object>>) argsBatch).size();
     }
 
-    for (int i = 0; i < length; i++) {
+    for (int __i__ = 0; __i__ < length; __i__++) {
         Map<String, Object> args = new HashMap<>();
         // only when arg batch is not empty, java side needs to parse args;
         if (argsBatch instanceof List) {
-            args = ((List<Map<String, Object>>) argsBatch).get(i);
+            args = ((List<Map<String, Object>>) argsBatch).get(__i__);
         }
 
         // args
