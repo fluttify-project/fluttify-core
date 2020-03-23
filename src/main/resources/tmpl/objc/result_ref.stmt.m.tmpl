@@ -1,3 +1,4 @@
 // return a ref
-HEAP[@((#__cast_nsobject__#result).hash)] = result;
-NSNumber* jsonableResult = @((#__cast_nsobject__#result).hash);
+int seqNumber = getFluttifySequence();
+HEAP[@(seqNumber)] = result;
+NSNumber* jsonableResult = @(seqNumber);

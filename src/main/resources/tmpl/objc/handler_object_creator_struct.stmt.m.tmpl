@@ -7,9 +7,10 @@
     #__type_name__# data;
 
     NSValue* dataValue = [NSValue value:&data withObjCType:@encode(#__type_name__#)];
-    HEAP[@(dataValue.hash)] = dataValue;
+    int seqNumber = getFluttifySequence();
+    HEAP[@(seqNumber)] = dataValue;
 
-    methodResult(@(dataValue.hash));
+    methodResult(@(seqNumber));
 
     if (enableLog) NSLog(@"HEAP: %@", HEAP);
 },

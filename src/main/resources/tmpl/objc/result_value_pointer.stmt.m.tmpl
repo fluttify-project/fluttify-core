@@ -1,4 +1,5 @@
 // return a (value)*
 NSValue* resultValue = [NSValue valueWithPointer:result];
-HEAP[@((resultValue).hash)] = resultValue;
-NSNumber* jsonableResult = @((resultValue).hash);
+int seqNumber = getFluttifySequence();
+HEAP[@(seqNumber)] = resultValue;
+NSNumber* jsonableResult = @(seqNumber);

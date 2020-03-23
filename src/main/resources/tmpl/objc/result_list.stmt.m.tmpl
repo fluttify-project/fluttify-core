@@ -2,6 +2,7 @@
 NSMutableArray* jsonableResult = [NSMutableArray array];
 for (int i = 0; i < result.count; i++) {
     NSObject* object = [result objectAtIndex:i];
-    [jsonableResult addObject: @(object.hash)];
-    HEAP[@([object hash])] = object;
+    int seqNumber = getFluttifySequence();
+    [jsonableResult addObject: @(seqNumber)];
+    HEAP[@(seqNumber)] = object;
 }

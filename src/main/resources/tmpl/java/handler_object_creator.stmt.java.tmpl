@@ -9,12 +9,13 @@ put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
 
     // create target object
     #__class_name__# obj = new #__class_name__#(#__args_value__#);
-    getHEAP().put(obj.hashCode(), obj);
+    int seqNumber = getFluttifySequence();
+    getHEAP().put(seqNumber, obj);
 
     // print current HEAP
     if (getEnableLog()) {
         Log.d("ObjectFactory", "HEAP: " + getHEAP());
     }
 
-    methodResult.success(obj.hashCode());
+    methodResult.success(seqNumber);
 });

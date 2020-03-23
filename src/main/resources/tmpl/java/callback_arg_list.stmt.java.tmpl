@@ -1,6 +1,7 @@
 // list arg
 List<Integer> arg#__arg_name__# = new ArrayList<>();
 for (#__type_name__# item : #__arg_name__#) {
-    getHEAP().put(item.hashCode(), item);
-    arg#__arg_name__#.add(item.hashCode());
+    int seqNumber = getFluttifySequence();
+    getHEAP().put(seqNumber, item);
+    arg#__arg_name__#.add(seqNumber);
 }

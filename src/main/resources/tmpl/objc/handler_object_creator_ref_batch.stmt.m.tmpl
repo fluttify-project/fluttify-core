@@ -3,9 +3,10 @@
 
     for (int i = 0; i < [(NSNumber*) ((NSDictionary<NSString*, NSObject*>*) argsBatch)[@"length"] integerValue]; i++) {
         #__type_name__#* ref = [[#__type_name__# alloc] init];
-        HEAP[@(ref.hash)] = ref;
+        int seqNumber = getFluttifySequence();
+        HEAP[@(seqNumber)] = ref;
 
-        [resultList addObject:@(ref.hash)];
+        [resultList addObject:@(seqNumber)];
     }
 
     methodResult(resultList);
