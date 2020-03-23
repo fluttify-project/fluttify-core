@@ -1,7 +1,7 @@
 // ref arg
 final Integer arg#__arg_name__#;
 if (#__arg_name__# != null) {
-    arg#__arg_name__# = getFluttifySequence();
+    arg#__arg_name__# = #__arg_name__#.hashCode();
     getHEAP().put(arg#__arg_name__#, #__arg_name__#);
 } else {
     arg#__arg_name__# = null;

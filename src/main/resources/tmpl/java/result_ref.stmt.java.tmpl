@@ -1,5 +1,5 @@
 Integer jsonableResult = null;
 if (result != null) {
-    jsonableResult = getFluttifySequence();
+    jsonableResult = result.hashCode();
     getHEAP().put(jsonableResult, result);
 }

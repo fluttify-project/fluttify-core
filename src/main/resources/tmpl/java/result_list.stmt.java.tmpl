@@ -2,8 +2,7 @@ List<Integer> jsonableResult = null;
 if (result != null) {
     jsonableResult = new ArrayList<>();
     for (#__type_name__# item : result) {
-        int seqNumber = getFluttifySequence();
-        getHEAP().put(seqNumber, item);
-        jsonableResult.add(seqNumber);
+        getHEAP().put(item.hashCode(), item);
+        jsonableResult.add(item.hashCode());
     }
 }
