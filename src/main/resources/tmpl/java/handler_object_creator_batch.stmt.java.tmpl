@@ -25,14 +25,14 @@ put("ObjectFactory::create_batch#__creator_name__#", (argsBatch, methodResult) -
 
         // create target object
         #__class_name__# obj = new #__class_name__#(#__args_value__#);
-        getHEAP().put(obj.hashCode(), obj);
+        getHEAP().put(System.identityHashCode(obj), obj);
 
         // print current HEAP
         if (getEnableLog()) {
             Log.d("ObjectFactory", "HEAP: " + getHEAP());
         }
 
-        resultList.add(obj.hashCode());
+        resultList.add(System.identityHashCode(obj));
     }
 
     methodResult.success(resultList);
