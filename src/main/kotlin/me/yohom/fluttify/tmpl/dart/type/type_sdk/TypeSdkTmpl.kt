@@ -23,6 +23,8 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //
 //class #__class_name__# extends #__super_class__# #__mixins__# {
 //  //region constants
+//  static const String name = '#__origin_class_name__#';
+//
 //  #__constants__#
 //  //endregion
 //
@@ -61,6 +63,7 @@ private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 fun TypeSdkTmpl(type: Type): String {
     val currentPackage = ext.projectName
     val className = type.name.toDartType()
+    val originClassName = type.name.replace("$", ".")
     // 如果父类是混淆类, 那么直接继承Object类
     val superClass = if (type.superClass.run { isEmpty() || isObfuscated() })
         type.platform.objectType()
@@ -113,6 +116,7 @@ fun TypeSdkTmpl(type: Type): String {
     return tmpl
         .replace("#__current_package__#", currentPackage)
         .replace("#__class_name__#", className)
+        .replace("#__origin_class_name__#", originClassName)
         .replace("#__super_class__#", superClass)
         .replace("#__mixins__#", mixins)
         .replaceParagraph("#__constants__#", constants)
