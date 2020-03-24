@@ -4,11 +4,6 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-@Suppress("ObjectPropertyName")
-object X {
-    const val _batch = "_batch"
-}
-
 /**
  * 忽略的方法
  */
@@ -68,6 +63,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Binder"; typeType = TypeType.Class },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class },
     Type().apply { name = "android.view.View.OnApplyWindowInsetsListener"; typeType = TypeType.Interface },
+    Type().apply { name = "android.view.View.OnClickListener"; typeType = TypeType.Interface },
     Type().apply { name = "android.view.ViewGroup"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.Point"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.PointF"; typeType = TypeType.Class },
