@@ -96,6 +96,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "NSCoding"; typeType = TypeType.Interface },
     Type().apply { name = "NSCopying"; typeType = TypeType.Interface },
     Type().apply { name = "UIView"; typeType = TypeType.Class },
+    Type().apply { name = "UIViewController"; typeType = TypeType.Class },
     Type().apply { name = "UIControl"; typeType = TypeType.Class },
     Type().apply { name = "UIImage"; typeType = TypeType.Class },
     Type().apply { name = "NSObject"; typeType = TypeType.Class },
