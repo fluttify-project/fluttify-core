@@ -2,6 +2,7 @@ package me.yohom.fluttify.model
 
 import me.yohom.fluttify.EXCLUDE_METHODS
 import me.yohom.fluttify.EXCLUDE_TYPES
+import me.yohom.fluttify.SYSTEM_TYPEDEF
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
@@ -54,8 +55,9 @@ data class Method(
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
 
     fun filter(): Boolean {
-        return returnType.findType().filter() && // 返回类型必须先通过类型的过滤
-                formalParams.all { it.variable.type().filter() } && // 参数类型必须先通过类型的过滤
+        println("方法:${toString()}正在执行过滤")
+        return must("返回类型通过类型过滤") { returnType.findType().filter() } &&
+                must("参数类型全部通过类型过滤") { formalParams.all { it.variable.type().filter() } } &&
                 must("公开方法") { isPublic } &&
                 mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } } &&
                 mustNot("废弃方法") { isDeprecated } &&
@@ -74,7 +76,10 @@ data class Method(
                 must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } &&
                 must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } &&
                 must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } &&
-                must("形参中的lambda类型的所有参数是已知类型") { formalParams.filter { it.variable.isLambda() }.run { isEmpty() || all { it.variable.isKnownLambda() } } } &&
+                must("形参中的lambda类型的所有参数是已知类型") {
+                    formalParams.filter { it.variable.isLambda() }
+                        .run { isEmpty() || all { it.variable.isKnownLambda() } }
+                } &&
                 mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } } &&
                 mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } } &&
                 // 参数不能中含有排除的类
@@ -110,19 +115,25 @@ data class Method(
      * 包含方法名, 命名参数和参数类型的完整签名
      */
     fun signature(): String {
-        return if (className.findType().methods.map { it.signatureNamed() }.filter { it == this.signatureNamed() }.size > 1) {
+        val hasOverload = className
+            .findType()
+            .methods
+            .map { it.signatureNamed() }
+            .filter { it == this.signatureNamed() }.size > 1
+        return if (hasOverload) {
             // 类内部含有相同方法名超过1个, 说明有重载, 这里需要给方法名加上类型
-            name + formalParams.joinToStringX("__", "__") { "${it.named}${it.variable.typeName.toDartType()}" }
+            name + formalParams.joinToStringX("__", "__") { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.typeName.toDartType()}" }.toUnderscore()
         } else {
             signatureNamed()
-        }.toUnderscore()
+        }
     }
 
     /**
      * 只包含方法名和命名参数部分的签名
      */
     fun signatureNamed(): String {
-        return name + formalParams.joinToString("") { it.named }.capitalize()
+        return name + formalParams.joinToStringX("") { if (it.named.isNotBlank()) "_${it.named}" else "" }
+            .capitalize()
     }
 
     override fun toString(): String {

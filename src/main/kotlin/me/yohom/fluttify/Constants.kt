@@ -4,11 +4,6 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-@Suppress("ObjectPropertyName")
-object X {
-    const val _batch = "_batch"
-}
-
 /**
  * 忽略的方法
  */
@@ -28,7 +23,6 @@ val EXCLUDE_TYPES
         .union(ext.android.exclude.classes)
         .map { Regex(it) }
 
-
 /**
  * 系统别名
  */
@@ -41,7 +35,15 @@ val SYSTEM_TYPEDEF = mapOf(
     "NSTimeInterval" to "double",
     "NSInteger" to "long",
     "NSUInteger" to "unsigned long",
+    "CVPixelBufferRef" to "void*",
     "int64_t" to "long long"
+)
+
+/**
+ * 系统指针类型别名
+ */
+val SYSTEM_POINTER_TYPEDEF = mapOf(
+    "CVPixelBufferRef" to "void*"
 )
 
 /**
@@ -61,6 +63,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Binder"; typeType = TypeType.Class },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class },
     Type().apply { name = "android.view.View.OnApplyWindowInsetsListener"; typeType = TypeType.Interface },
+    Type().apply { name = "android.view.View.OnClickListener"; typeType = TypeType.Interface },
     Type().apply { name = "android.view.ViewGroup"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.Point"; typeType = TypeType.Class },
     Type().apply { name = "android.graphics.PointF"; typeType = TypeType.Class },
@@ -93,6 +96,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "NSCoding"; typeType = TypeType.Interface },
     Type().apply { name = "NSCopying"; typeType = TypeType.Interface },
     Type().apply { name = "UIView"; typeType = TypeType.Class },
+    Type().apply { name = "UIViewController"; typeType = TypeType.Class },
     Type().apply { name = "UIControl"; typeType = TypeType.Class },
     Type().apply { name = "UIImage"; typeType = TypeType.Class },
     Type().apply { name = "NSObject"; typeType = TypeType.Class },

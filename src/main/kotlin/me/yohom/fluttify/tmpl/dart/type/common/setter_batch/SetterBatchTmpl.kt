@@ -37,11 +37,11 @@ fun SetterBatchTmpl(field: Field): String {
         }
 
         val argValue = when {
-            isEnum() -> "$name[i].index"
-            typeName.jsonable() -> "$name[i]"
-            (isList && genericLevel <= 1) || isStructPointer() -> "$name[i].map((it) => it.refId).toList()"
+            isEnum() -> "$name[__i__].index"
+            typeName.jsonable() -> "$name[__i__]"
+            (isList && genericLevel <= 1) || isStructPointer() -> "$name[__i__].map((it) => it.refId).toList()"
             genericLevel > 1 -> "[]" // 多维数组暂不处理
-            else -> "$name[i].refId"
+            else -> "$name[__i__].refId"
         }
         val setterMethodName = field.setterMethodName()
         val viewChannel = if (field.className.findType().isView()) ", {bool viewChannel = true}" else ""

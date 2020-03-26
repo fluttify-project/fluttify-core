@@ -13,11 +13,11 @@ put("ObjectFactory::create_batch#__creator_name__#", (argsBatch, methodResult) -
         length = ((List<Map<String, Object>>) argsBatch).size();
     }
 
-    for (int i = 0; i < length; i++) {
+    for (int __i__ = 0; __i__ < length; __i__++) {
         Map<String, Object> args = new HashMap<>();
         // only when arg batch is not empty, java side needs to parse args;
         if (argsBatch instanceof List) {
-            args = ((List<Map<String, Object>>) argsBatch).get(i);
+            args = ((List<Map<String, Object>>) argsBatch).get(__i__);
         }
 
         // args
@@ -25,14 +25,14 @@ put("ObjectFactory::create_batch#__creator_name__#", (argsBatch, methodResult) -
 
         // create target object
         #__class_name__# obj = new #__class_name__#(#__args_value__#);
-        getHEAP().put(obj.hashCode(), obj);
+        getHEAP().put(System.identityHashCode(obj), obj);
 
         // print current HEAP
         if (getEnableLog()) {
             Log.d("ObjectFactory", "HEAP: " + getHEAP());
         }
 
-        resultList.add(obj.hashCode());
+        resultList.add(System.identityHashCode(obj));
     }
 
     methodResult.success(resultList);

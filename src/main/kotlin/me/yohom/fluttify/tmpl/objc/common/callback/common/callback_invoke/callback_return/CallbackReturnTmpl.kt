@@ -15,9 +15,7 @@ import me.yohom.fluttify.model.Method
 private val tmpl = getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText()
 
 fun CallbackReturnTmpl(method: Method): String {
-    val callbackMethod = method.run {
-        "Callback::${className}::${name}${formalParams.joinToString("") { it.named }.capitalize()}"
-    }
+    val callbackMethod = "Callback::${method.nameWithClass()}"
 
 // 由于目前有返回值的回调方法是开放出来的, 也就是会通知dart端回调被调用了, 但是不会要求dart端返回值, 原生端也不会传有效的参数过去, 所以这里先传一个空的字典过去
 //    val callbackArgs = method

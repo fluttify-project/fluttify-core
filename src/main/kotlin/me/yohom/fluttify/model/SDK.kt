@@ -1,6 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.SYSTEM_TYPE
+import me.yohom.fluttify.SYSTEM_TYPEDEF
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.jsonable
 
@@ -73,27 +74,28 @@ class SDK : IPlatform {
 
         fun findType(fullName: String): Type {
             val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
+            val finalTypeName = (SYSTEM_TYPEDEF[fullName] ?: fullName)
             return when {
                 // 如果是空字符串那么返回NO_TYPE
-                fullName.isEmpty() -> Type.NO_TYPE
+                finalTypeName.isEmpty() -> Type.NO_TYPE
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
-                allTypes.map { it.name.depointer() }.contains(fullName) -> allTypes.first { it.name.depointer() == fullName }
+                allTypes.map { it.name.depointer() }.contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
-                fullName.jsonable() -> Type().apply { name = fullName; isJsonable = true }
+                finalTypeName.jsonable() -> Type().apply { name = finalTypeName; isJsonable = true }
                 // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
-                SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(fullName) } -> SYSTEM_TYPE.first {
-                    Regex(it.name).matches(
-                        fullName
-                    )
+                SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(finalTypeName) } -> SYSTEM_TYPE.first {
+                    Regex(it.name).matches(finalTypeName)
                 }
                 // 是objc的id指针
-                fullName == "id" -> Type().apply { name = "id"; typeType == TypeType.Class }
+                finalTypeName == "id" -> Type().apply { name = "id"; typeType == TypeType.Class }
+                // void*类型
+                finalTypeName == "void*" -> Type().apply { name = "NSValue"; typeType = TypeType.Class }
                 // lambda
-                fullName.contains("|") -> Type().apply {
+                finalTypeName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda
-                    name = fullName
-                    returnType = fullName.substringBefore("|")
-                    formalParams = fullName
+                    name = finalTypeName
+                    returnType = finalTypeName.substringBefore("|")
+                    formalParams = finalTypeName
                         .substringAfter("|")
                         .split(",")
                         .map { it.trim().split(" ") }

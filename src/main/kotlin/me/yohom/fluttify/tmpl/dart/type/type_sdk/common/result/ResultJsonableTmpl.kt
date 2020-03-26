@@ -6,17 +6,22 @@ import me.yohom.fluttify.model.Platform
 
 //result
 fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
-    return if (returnType.isCollection()) {
-        val type = when {
-            // 说明List有指定泛型, 拿出泛型类
-            returnType.collectionLevel() != 0 -> returnType.genericType().toDartType()
-            // 数组类型
-            returnType.isArray() -> returnType.dearray()
-            // List没有指定泛型, 使用各个平台的Object类
-            else -> platform.objectType()
+    return when {
+        // 如果是原始类型数组, 那么就直接cast
+        Regex("Uint\\dList").matches(returnType.toDartType()) -> {
+            "result as ${returnType.toDartType()}"
         }
-        "(result as List).cast<${type.toDartType()}>()"
-    } else {
-        "result"
+        returnType.isCollection() -> {
+            val type = when {
+                // 说明List有指定泛型, 拿出泛型类
+                returnType.collectionLevel() != 0 -> returnType.genericType().toDartType()
+                // 数组类型
+                returnType.isArray() -> returnType.dearray()
+                // List没有指定泛型, 使用各个平台的Object类
+                else -> platform.objectType()
+            }
+            "(result as List).cast<${type.toDartType()}>()"
+        }
+        else -> "result"
     }
 }

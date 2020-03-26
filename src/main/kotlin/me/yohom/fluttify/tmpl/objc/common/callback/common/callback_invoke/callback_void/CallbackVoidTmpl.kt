@@ -8,9 +8,7 @@ import me.yohom.fluttify.model.Method
 private val tmpl = getResource("/tmpl/objc/callback_void.stmt.m.tmpl").readText()
 
 fun CallbackVoidTmpl(method: Method): String {
-    val callbackMethod = method.run {
-        "Callback::${className}::${name}${formalParams.joinToString("") { it.named }.capitalize()}"
-    }
+    val callbackMethod = "Callback::${method.nameWithClass()}"
 
     val callbackArgs = method
         .formalParams

@@ -47,6 +47,7 @@ fun CallbackMethodTmpl(callerMethod: Method): String {
                     CallbackCaseDelegateTmpl(it, param.variable.name)
                 }
         }
+    // 形参里的lambda类型参数
     val callbackLambdaCases = callbackLambdas
         .map { CallbackCaseLambdaTmpl(it) }
 

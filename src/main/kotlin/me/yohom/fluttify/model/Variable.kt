@@ -16,14 +16,14 @@ data class Variable(
 ) : IPlatform {
 
     val isList: Boolean
-        get() = listType != ListType.NonList
+        get() = listType != ListType.NonList && listType != ListType.Array
 
     fun isStructPointer(): Boolean {
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
     }
 
-    fun isValuePointer(): Boolean {
-        return typeName.isValuePointerType()
+    fun isValuePointerType(): Boolean {
+        return typeName.isPrimitivePointerType()
     }
 
     fun isStruct(): Boolean {
@@ -159,14 +159,12 @@ data class Variable(
             }
         } else {
             when {
-                isList -> when {
-                    // 字符串数组需要转换
-                    isStringArray() -> "$name.toArray(new ${typeName.dearray()}[$name.size()])"
-                    // 基本类型数组不需要转换, 直接使用
-                    isArray() -> name
-                    // 自定义类列表需要转换成ArrayList
-                    else -> "new ArrayList($name)"
-                }
+                // 字符串数组需要转换
+                isStringArray() -> "$name.toArray(new ${typeName.dearray()}[$name.size()])"
+                // 基本类型数组不需要转换, 直接使用
+                isArray() -> name
+                // 自定义类列表需要转换成ArrayList
+                isList -> "new ArrayList($name)"
                 typeName.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
                 else -> name
             }
