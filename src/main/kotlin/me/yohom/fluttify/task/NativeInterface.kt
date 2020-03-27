@@ -43,12 +43,12 @@ open class AndroidJavaInterface : FluttifyTask() {
         val pluginOutputFile = "$packageDir/${ext.projectName.underscore2Camel()}Plugin.java"
         val subHandlerOutputDir = "$packageDir/sub_handler"
         val subHandlerOutputFile = "$subHandlerOutputDir/SubHandler#__number__#.java"
+        val subHandlerCustomOutputFile = "$subHandlerOutputDir/SubHandlerCustom.java"
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
+        // TODO 跳过SubHandlerCustom
         // 生成前先删除之前的文件
-        // 只有有直接的依赖时, 才删除, 有时候只对一个平台生成, 那么其他平台就会没有直接依赖, 导致主Plugin文件被删除, 但是下面的逻辑又没有给
-        // 它重新生成
         if (sdk.directLibs.isNotEmpty()) packageDir.file().deleteRecursively()
 
         // 生成主plugin文件
@@ -113,6 +113,12 @@ open class AndroidJavaInterface : FluttifyTask() {
                     subHandlerOutputFile.replace("#__number__#", index.toString()).file().writeText(content)
                 }
 
+            val subHandlerCustomTmpl = getResource("/tmpl/java/sub_handler_custom.java.tmpl").readText()
+            subHandlerCustomTmpl
+                .replace("#__package_name__#", "${ext.org}.${ext.projectName}")
+                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+                .run { subHandlerCustomOutputFile.file().writeText(this) }
+
             JavaPluginTmpl(lib, subHandlerOutputDir)
                 .run {
                     pluginOutputFile.file().writeText(this)
@@ -154,8 +160,12 @@ open class IOSObjcInterface : FluttifyTask() {
         val subHandlerOutputHFile = "$subHandlerOutputDir/SubHandler#__number__#.h"
         val subHandlerOutputMFile = "$subHandlerOutputDir/SubHandler#__number__#.m"
 
+        val subHandlerCustomOutputHFile = "$subHandlerOutputDir/SubHandlerCustom.h"
+        val subHandlerCustomOutputMFile = "$subHandlerOutputDir/SubHandlerCustom.m"
+
         val sdk = jrFile.readText().fromJson<SDK>()
 
+        // TODO 跳过SubHandlerCustom
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) projectRootDir.file().deleteRecursively()
 
@@ -265,6 +275,15 @@ open class IOSObjcInterface : FluttifyTask() {
                     subHandlerOutputHFile.replace("#__number__#", index.toString()).file().writeText(content[0])
                     subHandlerOutputMFile.replace("#__number__#", index.toString()).file().writeText(content[1])
                 }
+
+            val subHandlerCustomHTmpl = getResource("/tmpl/objc/sub_handler_custom.h.tmpl").readText()
+            val subHandlerCustomMTmpl = getResource("/tmpl/objc/sub_handler_custom.m.tmpl").readText()
+            subHandlerCustomHTmpl
+                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+                .run { subHandlerCustomOutputHFile.file().writeText(this) }
+            subHandlerCustomMTmpl
+                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+                .run { subHandlerCustomOutputMFile.file().writeText(this) }
 
             // 生成主plugin文件
             ObjcPluginTmpl(sdk.directLibs, subHandlerOutputDir)

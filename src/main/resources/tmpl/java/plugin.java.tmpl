@@ -49,6 +49,7 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
         handlerMapList = new ArrayList<>();
         #__register_handler__#
+        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger));
 
         channel.setMethodCallHandler(plugin);
 
@@ -73,6 +74,7 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
         handlerMapList = new ArrayList<>();
         #__register_handler__#
+        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger));
 
         channel.setMethodCallHandler(this);
     }

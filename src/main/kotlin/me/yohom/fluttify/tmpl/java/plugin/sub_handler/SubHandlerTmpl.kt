@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.underscore2Camel
 
-//package #__package_name__#;
+//package #__package_name__#.sub_handler;
 //
 //import android.os.Bundle;
 //import android.util.Log;
@@ -24,19 +24,18 @@ import me.yohom.fluttify.extensions.underscore2Camel
 //import io.flutter.plugin.common.PluginRegistry.Registrar;
 //import io.flutter.plugin.platform.PlatformViewRegistry;
 //
+//import #__package_name__#.#__plugin_name__#Plugin.Handler;
+//
 //import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableLog;
 //import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
 //
 //@SuppressWarnings("ALL")
 //public class SubHandler#__number__# {
-//    public static final Map<String, Handler> subHandlerMap = new HashMap<String, Handler>() {{
-//        #__handlers__#
-//    }};
-//
-//    static {
-//        #__plugin_name__#Plugin.registerSubHandler(subHandlerMap);
+//    public static Map<String, Handler> getSubHandler(BinaryMessenger messenger) {
+//        return new HashMap<String, Handler>() {{
+//            #__handlers__#
+//        }};
 //    }
-//
 //}
 private val tmpl = getResource("/tmpl/java/sub_handler.java.tmpl").readText()
 
