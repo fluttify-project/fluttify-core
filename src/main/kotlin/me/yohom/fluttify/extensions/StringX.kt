@@ -330,7 +330,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("((Hash)?Map|NSDictionary)<.+,.+>").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
-                    "Map<$keyType, $valueType>"
+                    "Map<$keyType,$valueType>"
                 }
                 startsWith("NSArray") -> "List<${genericType().depointer()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"

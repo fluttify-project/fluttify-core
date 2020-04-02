@@ -8,8 +8,8 @@ import me.yohom.fluttify.model.Platform
 fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
     return when {
         // 如果是原始类型数组, 那么就直接cast
-        Regex("Uint\\dList").matches(returnType.toDartType()) -> {
-            "result as ${returnType.toDartType()}"
+        Regex("Uint\\d+List").matches(returnType.toDartType()) -> {
+            "__result__ as ${returnType.toDartType()}"
         }
         returnType.isCollection() -> {
             val type = when {
@@ -20,8 +20,8 @@ fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
                 // List没有指定泛型, 使用各个平台的Object类
                 else -> platform.objectType()
             }
-            "(result as List).cast<${type.toDartType()}>()"
+            "(__result__ as List).cast<${type.toDartType()}>()"
         }
-        else -> "result"
+        else -> "__result__"
     }
 }

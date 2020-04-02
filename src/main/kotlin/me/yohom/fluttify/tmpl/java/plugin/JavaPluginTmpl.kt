@@ -122,7 +122,10 @@ fun JavaPluginTmpl(lib: Lib, subHandlerOutputDir: String): String {
 
     val subHandlerDir = File(subHandlerOutputDir)
     val registerHandler = if (subHandlerDir.exists()) {
-        subHandlerDir.list()?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }?.joinToString("\n") ?: ""
+        subHandlerDir
+            .list { _, name -> name?.contains("SubHandlerCustom.java") != true }
+            ?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }
+            ?.joinToString("\n") ?: ""
     } else {
         ""
     }

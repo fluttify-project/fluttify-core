@@ -63,7 +63,9 @@ data class Field(
                 must("公开field") { isPublic } &&
                 mustNot("静态field") { isStatic } &&
                 variable.must("已知类型") { isKnownType() } &&
+                variable.mustNot("多维列表") { genericLevel > 1 } &&
                 variable.mustNot("lambda类型") { isLambda() } &&
+                variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) } &&
                 variable.must("公开类型") { isPublicType() } &&
                 variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() } &&
                 variable.must("返回类型的祖宗类是已知类") {
@@ -81,7 +83,9 @@ data class Field(
                 mustNot("不可改field") { isFinal } &&
                 mustNot("静态field") { isStatic } &&
                 variable.must("已知类型") { isKnownType() } &&
+                variable.mustNot("多维列表") { genericLevel > 1 } &&
                 variable.mustNot("lambda类型") { isLambda() } &&
+                variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) } &&
                 variable.must("公开类型") { typeName.findType().isPublic } &&
                 variable.must("返回类型的祖宗类是已知类") {
                     typeName.findType().ancestorTypes.all {

@@ -131,7 +131,7 @@ data class Method(
     /**
      * 只包含方法名和命名参数部分的签名
      */
-    fun signatureNamed(): String {
+    private fun signatureNamed(): String {
         return name + formalParams.joinToStringX("") { if (it.named.isNotBlank()) "_${it.named}" else "" }
             .capitalize()
     }

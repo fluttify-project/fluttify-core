@@ -54,7 +54,7 @@ fun MethodBatchTmpl(method: Method): String {
 
     val checkParamSize = method.formalParams.checkParamSize()
     val invoke = InvokeBatchTmpl(method)
-    val returnStatement = "(resultBatch as List).map((result) => ${ReturnTmpl(method)}).toList()"
+    val returnStatement = "(resultBatch as List).map((__result__) => ${ReturnTmpl(method)}).toList()"
     val nativeObjectPool = method.returnType.run {
         when {
             jsonable() or findType().isEnum() or isVoid() -> ""

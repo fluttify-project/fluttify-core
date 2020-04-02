@@ -146,7 +146,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     val subHandlerDir = File(subHandlerOutputDir)
     val registerHandler = if (subHandlerDir.exists()) {
         subHandlerDir
-            .list { _, name -> name?.endsWith(".h") == true }
+            .list { _, name -> name?.endsWith(".h") == true && !name.contains("SubHandlerCustom.h") }
             ?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }
             ?.joinToString("\n") ?: ""
     } else {
@@ -154,7 +154,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     }
     val importSubHandler = if (subHandlerDir.exists()) {
         subHandlerDir
-            .list { _, name -> name?.endsWith(".h") == true }
+            .list { _, name -> name?.endsWith(".h") == true && !name.contains("SubHandlerCustom.h") }
             ?.mapIndexed { index, _ -> "#import \"SubHandler/SubHandler$index.h\"" }
             ?.joinToString("\n") ?: ""
     } else {

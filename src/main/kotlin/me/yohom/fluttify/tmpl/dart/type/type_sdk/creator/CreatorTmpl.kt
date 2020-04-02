@@ -24,7 +24,11 @@ fun CreatorTmpl(type: Type): List<String> {
                     .replace(
                         "#__signature__#",
                         it.formalParams.joinToString("__") {
-                            it.variable.typeName.toUnderscore().replace("[]", "Array")
+                            it.variable
+                                .typeName
+                                .replace("[]", "Array")
+                                .enList(it.variable.genericLevel)
+                                .toUnderscore()
                         }
                     )
                     .replace("#__creator_name__#", it.creatorName(type.name))

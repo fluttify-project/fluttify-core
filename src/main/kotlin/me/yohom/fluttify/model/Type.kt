@@ -289,12 +289,14 @@ open class Type : IPlatform, IScope {
     }
 
     fun isView(): Boolean {
-        return superClass in listOf(
-            "android.view.View",
-            "android.view.ViewGroup",
-            "android.widget.FrameLayout",
-            "UIView"
-        )
+        return ancestorTypes.any {
+            it in listOf(
+                "android.view.View",
+                "android.view.ViewGroup",
+                "android.widget.FrameLayout",
+                "UIView"
+            )
+        } && !isAbstract
     }
 
     fun nameWithGeneric(): String {
