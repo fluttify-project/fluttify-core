@@ -3,11 +3,10 @@ package me.yohom.fluttify.tmpl.objc.plugin
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
-import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method.NonViewCallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_handler.RegisterHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 import java.io.File
-import java.io.FilenameFilter
 
 //#import <Flutter/Flutter.h>
 //#__imports__#
@@ -141,7 +140,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
         .filter { it.isCallback() }
         .flatMap { it.methods }
         .distinctBy { it.exactName }
-        .map { CallbackMethodTmpl(it) }
+        .map { NonViewCallbackMethodTmpl(it) }
 
     val subHandlerDir = File(subHandlerOutputDir)
     val registerHandler = if (subHandlerDir.exists()) {

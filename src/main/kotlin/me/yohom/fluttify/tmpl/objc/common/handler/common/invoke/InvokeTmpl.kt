@@ -65,17 +65,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     }
 
     private fun param2arg(it: Parameter, isFunction: Boolean = false): String {
-        return if (!isFunction) {
-            if (it.variable.isLambda() && method != null) {
-                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
-            } else {
-                "${it.named}: ${when {
-                    it.variable.isCallback() -> "self"
-                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
-                    else -> it.variable.name
-                }}"
-            }
-        } else {
+        return if (isFunction) {
             if (it.variable.isLambda() && method != null) {
                 CallbackLambdaTmpl(method, it.variable.typeName.findType())
             } else {
@@ -84,6 +74,16 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                     it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }
+            }
+        } else {
+            if (it.variable.isLambda() && method != null) {
+                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
+            } else {
+                "${it.named}: ${when {
+                    it.variable.isCallback() -> "self"
+                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    else -> it.variable.name
+                }}"
             }
         }
     }

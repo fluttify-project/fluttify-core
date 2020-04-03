@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.callback.callback_method
+package me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method
 
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
@@ -15,7 +15,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //- (#__return_type__#)#__method_name__##__formal_params__#
 //{
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
-//      methodChannelWithName:@"#__method_channel__#"
+//      methodChannelWithName:@#__method_channel__#
 //            binaryMessenger:[_registrar messenger]];
 //  // print log
 //  if (enableLog) {
@@ -29,11 +29,11 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //}
 private val tmpl = getResource("/tmpl/objc/callback_method.stmt.m.tmpl").readText()
 
-fun CallbackMethodTmpl(method: Method): String {
+fun NonViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "${method.className}::Callback"
+    val methodChannel = "@\"${method.className}::Callback\""
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
     val localArgs = method

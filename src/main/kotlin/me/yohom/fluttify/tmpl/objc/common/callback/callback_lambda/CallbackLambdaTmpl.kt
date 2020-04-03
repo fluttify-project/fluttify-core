@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda
 
 import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
@@ -16,7 +17,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 
 //^(#__formal_params__#) {
 //    FlutterMethodChannel *channel = [FlutterMethodChannel
-//        methodChannelWithName:@"#__method_channel__#"
+//        methodChannelWithName:[NSString stringWithFormat:@"#__method_channel__#@%@", @(ref.hash)]
 //              binaryMessenger:[[self registrar] messenger]];
 //
 //    // print log
