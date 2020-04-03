@@ -25,13 +25,13 @@ fun InvokeTmpl(method: Method): String {
                 type.findType().isEnum() -> {
                     // 枚举列表
                     if (it.isList) {
-                        "${it.name.depointer()}.map((it) => it.index).toList()"
+                        "${it.name.depointer()}.map((__it__) => __it__.index).toList()"
                     } else {
                         "${it.name.depointer()}.index"
                     }
                 }
                 type.jsonable() -> it.name.depointer()
-                (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}.map((it) => it.refId).toList()"
+                (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}.map((__it__) => __it__.refId).toList()"
                 it.genericLevel > 1 -> "[]" // 多维数组暂不处理
                 else -> "${it.name.depointer()}.refId"
             }

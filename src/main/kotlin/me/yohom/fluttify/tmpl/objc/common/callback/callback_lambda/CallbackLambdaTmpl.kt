@@ -17,7 +17,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 
 //^(#__formal_params__#) {
 //    FlutterMethodChannel *channel = [FlutterMethodChannel
-//        methodChannelWithName:[NSString stringWithFormat:@"#__method_channel__#@%@", @(ref.hash)]
+//        methodChannelWithName:@"#__method_channel__#"
 //              binaryMessenger:[[self registrar] messenger]];
 //
 //    // print log
