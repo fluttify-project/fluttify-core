@@ -387,7 +387,7 @@ fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
     if (level != null) {
         for (i in 0 until level) {
             // 除了列表相关类, 其他的都保留泛型信息
-            if (isCollection()) {
+            if (isCollection() || Regex("id<.+>").matches(this)) {
                 result = result.substringAfter("<").substringBeforeLast(">")
             } else {
                 break
@@ -396,7 +396,7 @@ fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
     } else {
         while (result.contains("<") && result.contains(">")) {
             // 除了列表相关类, 其他的都保留泛型信息
-            if (isCollection()) {
+            if (isCollection() || Regex("id<.+>").matches(this)) {
                 result = result.substringAfter("<").substringBeforeLast(">")
             } else {
                 break
