@@ -56,8 +56,8 @@ data class Method(
 
     fun filter(): Boolean {
         println("方法:${toString()}正在执行过滤")
-        return must("返回类型通过类型过滤") { returnType.findType().filter() } &&
-                must("参数类型全部通过类型过滤") { formalParams.all { it.variable.type().filter() } } &&
+        return must("返回类型通过类型过滤") { returnType.findType().filter() || returnType in className.findType().genericTypes } &&
+                must("参数类型全部通过类型过滤") { formalParams.all { it.variable.type().filter() || it.variable.typeName in className.findType().genericTypes } } &&
                 must("公开方法") { isPublic } &&
                 mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } } &&
                 mustNot("废弃方法") { isDeprecated } &&
@@ -74,7 +74,8 @@ data class Method(
                 must("所在类是公开类") { className.findType().isPublic } &&
                 must("所在类是静态类型") { className.findType().isStaticType } &&
                 must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } &&
-                must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() } } &&
+                // 形参是已知类型或者是类泛型类型之一
+                must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() || it.variable.typeName in className.findType().genericTypes } } &&
                 must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } &&
                 must("形参中的lambda类型的所有参数是已知类型") {
                     formalParams.filter { it.variable.isLambda() }
@@ -122,7 +123,11 @@ data class Method(
             .filter { it == this.signatureNamed() }.size > 1
         return if (hasOverload) {
             // 类内部含有相同方法名超过1个, 说明有重载, 这里需要给方法名加上类型
-            name + formalParams.joinToStringX("__", "__") { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.typeName.toDartType()}" }.toUnderscore()
+            name + formalParams.joinToStringX(
+                "__",
+                "__"
+            ) { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.typeName.toDartType()}" }
+                .toUnderscore()
         } else {
             signatureNamed()
         }

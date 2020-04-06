@@ -171,12 +171,19 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
 
     val parameters = formalParameters().formalParameterList()
 
+    // 所在类声明的泛型类型
+    val typeDeclareGenericTypes = ancestorOf(JavaParser.ClassDeclarationContext::class)?.genericTypes() ?: listOf()
     // 除最后一个参数之外的参数
     parameters
         ?.formalParameter()
         ?.forEach { formalParam ->
             val paramType = formalParam.typeType().text.genericType()
-            val typeFullName = typeFullName(paramType)
+            // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
+            val typeFullName = if (paramType in typeDeclareGenericTypes) {
+                paramType
+            } else {
+                typeFullName(paramType)
+            }
             result.add(
                 Parameter(
                     variable = Variable(
@@ -204,7 +211,12 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
         ?.lastFormalParameter()
         ?.run {
             val paramType = typeType().text.genericType()
-            val typeFullName = typeFullName(paramType)
+            // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
+            val typeFullName = if (paramType in typeDeclareGenericTypes) {
+                paramType
+            } else {
+                typeFullName(paramType)
+            }
             result.add(
                 Parameter(
                     variable = Variable(
@@ -235,12 +247,20 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
 
     val parameters = formalParameters().formalParameterList()
 
+    // 所在类声明的泛型类型
+    val typeDeclareGenericTypes = ancestorOf(JavaParser.InterfaceDeclarationContext::class)?.genericTypes() ?: listOf()
+
     // 除最后一个参数之外的参数
     parameters
         ?.formalParameter()
         ?.forEach { formalParam ->
             val paramType = formalParam.typeType().text.genericType()
-            val typeFullName = typeFullName(paramType)
+            // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
+            val typeFullName = if (paramType in typeDeclareGenericTypes) {
+                paramType
+            } else {
+                typeFullName(paramType)
+            }
             result.add(
                 Parameter(
                     variable = Variable(
@@ -268,7 +288,12 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
         ?.lastFormalParameter()
         ?.run {
             val paramType = typeType().text.genericType()
-            val typeFullName = typeFullName(paramType)
+            // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
+            val typeFullName = if (paramType in typeDeclareGenericTypes) {
+                paramType
+            } else {
+                typeFullName(paramType)
+            }
             result.add(
                 Parameter(
                     variable = Variable(
@@ -394,7 +419,8 @@ fun ObjectiveCParser.BlockTypeContext.returnType(): String {
 
 fun ObjectiveCParser.BlockTypeContext.parameters(): String {
     return blockParameters().typeVariableDeclaratorOrName().joinToString {
-        "${it.typeVariableDeclarator().declarationSpecifiers().text} ${it.typeVariableDeclarator().declarator().directDeclarator().identifier().text}"
+        "${it.typeVariableDeclarator().declarationSpecifiers().text} ${it.typeVariableDeclarator().declarator()
+            .directDeclarator().identifier().text}"
     }
 }
 //endregion

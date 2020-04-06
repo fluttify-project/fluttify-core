@@ -284,6 +284,9 @@ fun String.pack(): String {
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母
  */
 fun TYPE_NAME.isObfuscated(): Boolean {
+    // 如果类名不包含`.`, 说明是泛型类型, 则不认为是混淆类
+    if (!contains(".")) return false
+
     val type = replace("$", ".").substringAfterLast(".")
     val regex = Regex("[a-z|\\d]{1,2}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面

@@ -28,7 +28,11 @@ private val tmpl = getResource("/tmpl/dart/interface_type.dart.tmpl").readText()
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName
-    val className = type.name.toDartType()
+    val typeName = if (type.genericTypes.isNotEmpty()) {
+        "${type.name.toDartType()}<${type.genericTypes.joinToString()}>"
+    } else {
+        type.name.toDartType()
+    }
 
     val constants = type.fields.filterConstants()
 
@@ -52,7 +56,7 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     return tmpl
         .replace("#__current_package__#", currentPackage)
-        .replace("#__interface_type__#", className)
+        .replace("#__interface_type__#", typeName)
         .replace("#__super_mixins__#", superClass.toDartType())
         .replaceParagraph(
             "#__constants__#",
