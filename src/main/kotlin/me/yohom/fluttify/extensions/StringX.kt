@@ -386,20 +386,20 @@ fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
     var result = this
     if (level != null) {
         for (i in 0 until level) {
-            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-            if (Regexes.MAP.matches(this)) {
-                break
-            } else {
+            // 除了列表相关类, 其他的都保留泛型信息
+            if (isCollection()) {
                 result = result.substringAfter("<").substringBeforeLast(">")
+            } else {
+                break
             }
         }
     } else {
         while (result.contains("<") && result.contains(">")) {
-            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-            if (Regexes.MAP.matches(this)) {
-                break
-            } else {
+            // 除了列表相关类, 其他的都保留泛型信息
+            if (isCollection()) {
                 result = result.substringAfter("<").substringBeforeLast(">")
+            } else {
+                break
             }
         }
     }
