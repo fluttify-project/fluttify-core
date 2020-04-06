@@ -407,6 +407,19 @@ fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
 }
 
 /**
+ * 当前类型是否是泛型声明类型
+ *
+ * 比如说有一个类
+ * class A<T> {
+ *   void b(T t) {}
+ * }
+ * 那么判断的就是这个T是否的泛型声明类型
+ */
+fun TYPE_NAME.isDeclaredGenericType(): Boolean {
+    return !contains(".")
+}
+
+/**
  * 获取泛型容器名称 比如List<Integer> -> List
  */
 fun TYPE_NAME.containerType(): TYPE_NAME {

@@ -161,8 +161,6 @@ open class Type : IPlatform, IScope {
         return isInterface() // 必须是接口
                 // 必须公开
                 && isPublic
-                // 不能有泛型
-                && genericTypes.isEmpty()
                 // 回调类不能有超类
                 && superClass == ""
                 && (interfaces.isEmpty() || interfaces.contains("NSObject"))

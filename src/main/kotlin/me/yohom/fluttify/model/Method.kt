@@ -108,6 +108,20 @@ data class Method(
         return filter() && mustNot("含有回调参数") { formalParams.any { it.variable.run { isCallback() || isLambda() } } }
     }
 
+    /**
+     * 原生端其实不需要实现callback类型的handler, 因为dart端永远也不会有这个机会, 这些callback在dart端只有被原生调用, 所以可以过滤掉
+     */
+    fun filterNative(): Boolean {
+        return filter() && !className.findType().isCallback()
+    }
+
+    /**
+     * 同[filterNative]
+     */
+    fun filterNativeBatch(): Boolean {
+        return filterBatch() && !className.findType().isCallback()
+    }
+
     fun nameWithClass(): String {
         return "${className.replace("$", ".")}::${signature()}"
     }
