@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method
 
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
 //@mustCallSuper
@@ -24,7 +21,7 @@ fun InterfaceMethodTmpl(method: Method): String {
         // 只有回调类的参数需要加入释放池
         method
             .formalParams
-            .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() } }
+            .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() && !typeName.isDeclaredGenericType() } }
             .joinToString("\n") {
                 if (it.variable.isList)
                     "kNativeObjectPool.addAll(${it.variable.name});"

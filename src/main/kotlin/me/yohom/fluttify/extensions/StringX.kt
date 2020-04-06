@@ -284,6 +284,9 @@ fun String.pack(): String {
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母
  */
 fun TYPE_NAME.isObfuscated(): Boolean {
+    // 如果类名不包含`.`, 说明是泛型类型, 则不认为是混淆类
+    if (!contains(".")) return false
+
     val type = replace("$", ".").substringAfterLast(".")
     val regex = Regex("[a-z|\\d]{1,2}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
@@ -383,24 +386,37 @@ fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
     var result = this
     if (level != null) {
         for (i in 0 until level) {
-            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-            if (Regexes.MAP.matches(this)) {
-                break
-            } else {
+            // 除了列表相关类, 其他的都保留泛型信息
+            if (isCollection()) {
                 result = result.substringAfter("<").substringBeforeLast(">")
+            } else {
+                break
             }
         }
     } else {
         while (result.contains("<") && result.contains(">")) {
-            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-            if (Regexes.MAP.matches(this)) {
-                break
-            } else {
+            // 除了列表相关类, 其他的都保留泛型信息
+            if (isCollection()) {
                 result = result.substringAfter("<").substringBeforeLast(">")
+            } else {
+                break
             }
         }
     }
     return result
+}
+
+/**
+ * 当前类型是否是泛型声明类型
+ *
+ * 比如说有一个类
+ * class A<T> {
+ *   void b(T t) {}
+ * }
+ * 那么判断的就是这个T是否的泛型声明类型
+ */
+fun TYPE_NAME.isDeclaredGenericType(): Boolean {
+    return !contains(".")
 }
 
 /**

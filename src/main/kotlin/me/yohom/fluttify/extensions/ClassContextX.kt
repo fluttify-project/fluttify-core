@@ -18,7 +18,7 @@ fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
 fun JavaParser.ClassDeclarationContext.genericTypes(): List<String> {
     return typeParameters()
         ?.typeParameter()
-        ?.map { typeFullName(it.IDENTIFIER().text) } ?: listOf()
+        ?.map { it.IDENTIFIER().text } ?: listOf()
 }
 
 /**
@@ -79,7 +79,7 @@ fun JavaParser.EnumDeclarationContext.fullName(): String {
 fun JavaParser.InterfaceDeclarationContext.genericTypes(): List<String> {
     return typeParameters()
         ?.typeParameter()
-        ?.map { typeFullName(it.IDENTIFIER().text) } ?: listOf()
+        ?.map { it.IDENTIFIER().text } ?: listOf()
 }
 
 /**

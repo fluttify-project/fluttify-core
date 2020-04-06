@@ -142,7 +142,8 @@ open class Type : IPlatform, IScope {
         return must("已知类型") { this != UNKNOWN_TYPE } &&
                 must("公开类型") { isPublic } &&
                 must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } } &&
-                mustNot("含有泛型") { genericTypes.isNotEmpty() } &&
+                // 换言之只支持接口的泛型
+                mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() } &&
                 mustNot("混淆类型") { isObfuscated() } &&
                 mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&
                 mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } &&
@@ -160,8 +161,6 @@ open class Type : IPlatform, IScope {
         return isInterface() // 必须是接口
                 // 必须公开
                 && isPublic
-                // 不能有泛型
-                && genericTypes.isEmpty()
                 // 回调类不能有超类
                 && superClass == ""
                 && (interfaces.isEmpty() || interfaces.contains("NSObject"))
