@@ -11,78 +11,60 @@ import parser.objc.ObjectiveCParser
 fun JavaParser.MethodDeclarationContext.returnType(): String {
     val containerType = typeTypeOrVoid().text.containerType()
     // 返回类型 简称
-    val genericTypes = typeTypeOrVoid().text.genericType().split(",")
+    val genericTypes = typeTypeOrVoid().text.genericTypes()
+
     // 返回类型 全称
     val fullGenericTypes = genericTypes.map { typeFullName(it) }.toMutableList()
     // 返回容器类型 全称
     val fullContainerType = typeFullName(containerType)
 
     // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
+    // 遍历泛型列表, 找出和当前类型一样的成员, 并加上当前的包名
     genericTypes.forEachIndexed { index, type ->
         if (type.simpleName() == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
-            val `package` =
-                ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
-            fullGenericTypes[index] = "$`package`.${type.simpleName()}"
+            val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?.packageDeclaration()
+                ?.qualifiedName()
+                ?.text
+            fullGenericTypes[index] = "$packageName.${type.simpleName()}"
         }
     }
 
     return when {
-        typeTypeOrVoid().text.isCollection() -> {
-            var result = fullGenericTypes[0]
-            for (i in 0 until typeTypeOrVoid().text.collectionLevel()) {
-                result = if (Regex("Collection<(\\w*|.*)>").matches(typeTypeOrVoid().text)) {
-                    result.enCollection()
-                } else {
-                    result.enList()
-                }
-            }
-            result
-        }
-        // 容器类型和泛型类型不一样, 说明是泛型类型
-        fullContainerType != fullGenericTypes[0] -> {
-            "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
-        }
+        // 泛型列表不为空, 则拼接完整类型
+        genericTypes.isNotEmpty() -> "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
         // 普通类型
-        else -> {
-            fullGenericTypes[0]
-        }
+        else -> fullContainerType
     }
 }
 
 fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
     val containerType = typeTypeOrVoid().text.containerType()
     // 返回类型 简称
-    val genericTypes = typeTypeOrVoid().text.genericType().split(",")
+    val genericTypes = typeTypeOrVoid().text.genericTypes()
+
     // 返回类型 全称
     val fullGenericTypes = genericTypes.map { typeFullName(it) }.toMutableList()
     // 返回容器类型 全称
     val fullContainerType = typeFullName(containerType)
 
     // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
+    // 遍历泛型列表, 找出和当前类型一样的成员, 并加上当前的包名
     genericTypes.forEachIndexed { index, type ->
         if (type.simpleName() == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
-            val `package` =
-                ancestorOf(JavaParser.CompilationUnitContext::class)?.packageDeclaration()?.qualifiedName()?.text
-            fullGenericTypes[index] = "$`package`.${type.simpleName()}"
+            val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?.packageDeclaration()
+                ?.qualifiedName()
+                ?.text
+            fullGenericTypes[index] = "$packageName.${type.simpleName()}"
         }
     }
 
     return when {
-        typeTypeOrVoid().text.isCollection() -> {
-            var result = fullGenericTypes[0]
-            for (i in 0 until typeTypeOrVoid().text.collectionLevel()) {
-                result = result.enList()
-            }
-            result
-        }
-        // 容器类型和泛型类型不一样, 说明是泛型类型
-        fullContainerType != fullGenericTypes[0] -> {
-            "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
-        }
+        // 泛型列表不为空, 则拼接完整类型
+        genericTypes.isNotEmpty() -> "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
         // 普通类型
-        else -> {
-            fullGenericTypes[0]
-        }
+        else -> fullContainerType
     }
 }
 
@@ -130,28 +112,11 @@ fun JavaParser.InterfaceMethodDeclarationContext.isStatic(): Boolean {
         ?.contains("static") == true
 }
 
-/**
- * 判断当前方法是否被混淆
- *
- * 规则:
- *   1. 方法名长度只有1
- */
-fun JavaParser.MethodDeclarationContext.isObfuscated(): Boolean {
-    return name().length == 1
-}
-
 fun JavaParser.MethodDeclarationContext.isPublic(): Boolean {
     return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
         ?.modifier()
         ?.map { it.text }
         ?.contains("public") == true
-}
-
-fun JavaParser.MethodDeclarationContext.isInstanceMethod(): Boolean {
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("static") != true
 }
 
 fun JavaParser.MethodDeclarationContext.isDeprecated(): Boolean {
@@ -177,29 +142,22 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     parameters
         ?.formalParameter()
         ?.forEach { formalParam ->
-            // 只有列表类型需要解泛型
-            val paramType = formalParam.typeType().text.run {
-                if (isCollection()) {
-                    genericType()
-                } else {
-                    this
-                }
-            }
+            val paramType = formalParam.typeType().text
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
                 val containerType = paramType.containerType()
-                val genericType = paramType.genericType()
+                val genericTypes = paramType.genericTypes()
 
                 val fullContainerType = typeFullName(containerType)
-                val fullGenericType = typeFullName(genericType)
+                val fullGenericType = genericTypes.map { typeFullName(it) }
 
-                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
-                if (fullContainerType == fullGenericType) {
-                    fullGenericType
+                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
+                if (genericTypes.isEmpty()) {
+                    fullContainerType
                 } else {
-                    "${fullContainerType}<${fullGenericType}>"
+                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
                 }
             }
             result.add(
@@ -207,17 +165,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        Platform.Android,
-                        formalParam.typeType().text.run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        formalParam.typeType().text.collectionLevel()
+                        Platform.Android
                     ),
                     platform = Platform.Android
                 )
@@ -228,28 +176,22 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     parameters
         ?.lastFormalParameter()
         ?.run {
-            val paramType = typeType().text.run {
-                if (isCollection()) {
-                    genericType()
-                } else {
-                    this
-                }
-            }
+            val paramType = typeType().text
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
                 val containerType = paramType.containerType()
-                val genericType = paramType.genericType()
+                val genericTypes = paramType.genericTypes()
 
                 val fullContainerType = typeFullName(containerType)
-                val fullGenericType = typeFullName(genericType)
+                val fullGenericType = genericTypes.map { typeFullName(it) }
 
-                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
-                if (fullContainerType == fullGenericType) {
-                    fullGenericType
+                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
+                if (genericTypes.isEmpty()) {
+                    fullContainerType
                 } else {
-                    "${fullContainerType}<${fullGenericType}>"
+                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
                 }
             }
             result.add(
@@ -257,17 +199,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        Platform.Android,
-                        typeType().text.run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        typeType().text.collectionLevel()
+                        Platform.Android
                     ),
                     platform = Platform.Android
                 )
@@ -289,28 +221,22 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
     parameters
         ?.formalParameter()
         ?.forEach { formalParam ->
-            val paramType = formalParam.typeType().text.run {
-                if (isCollection()) {
-                    genericType()
-                } else {
-                    this
-                }
-            }
+            val paramType = formalParam.typeType().text
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
                 val containerType = paramType.containerType()
-                val genericType = paramType.genericType()
+                val genericTypes = paramType.genericTypes()
 
                 val fullContainerType = typeFullName(containerType)
-                val fullGenericType = typeFullName(genericType)
+                val fullGenericType = genericTypes.map { typeFullName(it) }
 
-                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
-                if (fullContainerType == fullGenericType) {
-                    fullGenericType
+                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
+                if (genericTypes.isEmpty()) {
+                    fullContainerType
                 } else {
-                    "${fullContainerType}<${fullGenericType}>"
+                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
                 }
             }
             result.add(
@@ -318,17 +244,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        Platform.Android,
-                        formalParam.typeType().text.run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        formalParam.typeType().text.collectionLevel()
+                        Platform.Android
                     ),
                     platform = Platform.Android
                 )
@@ -339,28 +255,22 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
     parameters
         ?.lastFormalParameter()
         ?.run {
-            val paramType = typeType().text.run {
-                if (isCollection()) {
-                    genericType()
-                } else {
-                    this
-                }
-            }
+            val paramType = typeType().text
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
                 val containerType = paramType.containerType()
-                val genericType = paramType.genericType()
+                val genericTypes = paramType.genericTypes()
 
                 val fullContainerType = typeFullName(containerType)
-                val fullGenericType = typeFullName(genericType)
+                val fullGenericType = genericTypes.map { typeFullName(it) }
 
-                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
-                if (fullContainerType == fullGenericType) {
-                    fullGenericType
+                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
+                if (genericTypes.isEmpty()) {
+                    fullContainerType
                 } else {
-                    "${fullContainerType}<${fullGenericType}>"
+                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
                 }
             }
             result.add(
@@ -368,17 +278,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        Platform.Android,
-                        typeType().text.run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        typeType().text.collectionLevel()
+                        Platform.Android
                     ),
                     platform = Platform.Android
                 )
@@ -443,7 +343,6 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 // 非lambda参数处理 如果有__kindof限定词就空格分隔一下
                                     ?: text.objcSpecifierExpand()
                             }
-                            .genericType()
                             .run {
                                 // 如果变量名以*号开始, 说明类名上的*号被移动到变量名上了, 需要加回来
                                 if (it.identifier().text.startsWith("*")) {
@@ -453,17 +352,7 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 }
                             },
                         it.identifier().text.depointer(), // 统一把*号加到类名上去
-                        Platform.iOS,
-                        it.methodType()[0].typeName().text.run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        it.methodType()[0].typeName().text.collectionLevel()
+                        Platform.iOS
                     ),
                     platform = Platform.iOS
                 )

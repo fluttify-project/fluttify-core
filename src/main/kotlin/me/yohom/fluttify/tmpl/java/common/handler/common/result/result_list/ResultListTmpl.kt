@@ -1,7 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list
 
 import me.yohom.fluttify.extensions.collectionLevel
-import me.yohom.fluttify.extensions.genericType
+import me.yohom.fluttify.extensions.genericTypes
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
 
@@ -19,7 +19,7 @@ fun ResultListTmpl(method: Method): String {
     val typeName = if (method.returnType.collectionLevel() > 1) {
         "List jsonableResult = new ArrayList());"
     } else {
-        method.returnType.genericType().replace("$", ".")
+        method.returnType.genericTypes()[0].replace("$", ".")
     }
 
     return tmpl

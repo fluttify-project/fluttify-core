@@ -1,6 +1,5 @@
 package me.yohom.fluttify.extensions
 
-import me.yohom.fluttify.Regexes
 import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
@@ -15,13 +14,6 @@ fun JavaParser.ConstructorDeclarationContext.isPublic(): Boolean {
         ?.modifier()
         ?.map { it.text }
         ?.contains("public") ?: false
-}
-
-/**
- * 是否是无参构造器
- */
-fun JavaParser.ConstructorDeclarationContext.hasDependency(): Boolean {
-    return formalParameters().formalParameterList() != null
 }
 
 /**
@@ -57,34 +49,19 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
     parameters
         ?.formalParameter()
         ?.forEach { formalParam ->
-            val paramType = formalParam.typeType().text.genericType()
-            // 由于Map/Dictionary类作为普通类处理, 之类需要为其专门处理一下
-            val typeFullName = if (Regexes.MAP.matches(paramType)) {
-                val containerType = typeFullName(paramType.substringBefore("<"))
-                val genericTypeList = paramType
-                    .substringAfter("<")
-                    .substringBeforeLast(">").split(",")
-                    .joinToString(",") { typeFullName(it) }
-                "$containerType<$genericTypeList>"
+            val containerType = typeFullName(formalParam.typeType().text.containerType())
+            val genericTypes = formalParam.typeType().text.genericTypes().map { typeFullName(it) }
+            val typeFullName = if (genericTypes.isEmpty()) {
+                containerType
             } else {
-                typeFullName(paramType)
+                "$containerType<${genericTypes.joinToString(",")}>"
             }
             result.add(
                 Parameter(
                     variable = Variable(
                         typeFullName,
                         formalParam.variableDeclaratorId().text,
-                        Platform.Android,
-                        formalParam.typeType().text.run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        formalParam.typeType().text.collectionLevel()
+                        Platform.Android
                     ),
                     platform = Platform.Android
                 )
@@ -95,33 +72,19 @@ fun JavaParser.ConstructorDeclarationContext.formalParams(): List<Parameter> {
     parameters
         ?.lastFormalParameter()
         ?.run {
-            val paramType = typeType().text.genericType()
-            val typeFullName = if (Regexes.MAP.matches(paramType)) {
-                val containerType = typeFullName(paramType.substringBefore("<"))
-                val genericTypeList = paramType
-                    .substringAfter("<")
-                    .substringBeforeLast(">").split(",")
-                    .joinToString(",") { typeFullName(it) }
-                "$containerType<$genericTypeList>"
+            val containerType = typeFullName(typeType().text.containerType())
+            val genericTypes = typeType().text.genericTypes().map { typeFullName(it) }
+            val typeFullName = if (genericTypes.isEmpty()) {
+                containerType
             } else {
-                typeFullName(paramType)
+                "$containerType<${genericTypes.joinToString(",")}>"
             }
             result.add(
                 Parameter(
                     variable = Variable(
                         typeFullName,
                         variableDeclaratorId().text,
-                        Platform.Android,
-                        paramType.run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        typeType().text.collectionLevel()
+                        Platform.Android
                     ),
                     platform = Platform.Android
                 )

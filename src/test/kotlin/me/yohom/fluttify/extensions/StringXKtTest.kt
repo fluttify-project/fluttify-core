@@ -94,19 +94,19 @@ class StringXKtTest {
     inner class GenericTypeTest {
         @Test
         fun genericType_normal_class_should_as_itself() {
-            val result = "Abc".genericType()
+            val result = "Abc".genericTypes()
             assertEquals(result, "Abc")
         }
 
         @Test
         fun genericType_level1() {
-            val result = "List<Abc>".genericType()
+            val result = "List<Abc>".genericTypes()
             assertEquals(result, "Abc")
         }
 
         @Test
         fun genericType_level2() {
-            val result = "List<List<Abc>>".genericType()
+            val result = "List<List<Abc>>".genericTypes()
             assertEquals(result, "Abc")
         }
     }

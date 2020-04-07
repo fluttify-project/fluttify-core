@@ -11,10 +11,13 @@ data class Variable(
     val typeName: TYPE_NAME,
     val name: String,
     override var platform: Platform,
+    @Deprecated("不再使用")
     val listType: ListType = ListType.NonList,
+    @Deprecated("不再使用")
     val genericLevel: Int = 0
 ) : IPlatform {
 
+    @Deprecated("不再使用")
     val isList: Boolean
         get() = listType != ListType.NonList && listType != ListType.Array
 
@@ -70,22 +73,9 @@ data class Variable(
         return typeName.findType().firstConcretSubtype() != null
     }
 
-    fun hasSubtype(): Boolean {
-        return typeName.findType().hasSubtype()
-    }
-
-    fun isRefType(): Boolean {
-        return typeName.findType().isRefType()
-    }
-
-    fun isUnknownType(): Boolean {
-        return typeName.containerType().findType() == Type.UNKNOWN_TYPE ||
-                typeName.genericType().findType() == Type.UNKNOWN_TYPE
-    }
-
     fun isKnownType(): Boolean {
         return typeName.containerType().findType() != Type.UNKNOWN_TYPE &&
-                typeName.genericType().findType() != Type.UNKNOWN_TYPE
+                typeName.genericTypes().all { it.findType() != Type.UNKNOWN_TYPE }
     }
 
     fun isPublicType(): Boolean {
@@ -98,10 +88,6 @@ data class Variable(
 
     fun type(): Type {
         return typeName.containerType().findType()
-    }
-
-    fun definedGenericType(): Type {
-        return typeName.genericType().findType()
     }
 
     fun objcType(): String {
@@ -183,8 +169,6 @@ data class Variable(
 
     fun isCollection(): Boolean = typeName.isCollection()
 
-    fun isMap(): Boolean = typeName.isMap()
-
     /**
      * 是否是Lambda以及组成部分是否都是已知元素
      */
@@ -197,6 +181,7 @@ data class Variable(
     }
 }
 
+@Deprecated("不再使用")
 enum class ListType {
     Array, List, ArrayList, LinkedList, NonList,
 }

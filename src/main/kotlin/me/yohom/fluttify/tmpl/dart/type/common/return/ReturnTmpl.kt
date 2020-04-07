@@ -18,10 +18,10 @@ fun ReturnTmpl(method: Method): String {
         var concretTypeWithContainer: String
         // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
         if (returnType.isCollection() && returnType.collectionLevel() != 0) {
-            val genericType = returnType.genericType()
-            concretTypeWithContainer = genericType
-            if (genericType.findType().isAbstract) {
-                concretTypeWithContainer = genericType.findType().run { firstConcretSubtype()?.name ?: this.name }
+            val genericType = returnType.genericTypes()
+            concretTypeWithContainer = genericType[0]
+            if (genericType[0].findType().isAbstract) {
+                concretTypeWithContainer = genericType[0].findType().run { firstConcretSubtype()?.name ?: this.name }
             }
             concretTypeWithContainer = "List<$concretTypeWithContainer>"
         } else {
@@ -41,7 +41,7 @@ fun ReturnTmpl(method: Method): String {
                 // 返回列表类型
                 isCollection() -> {
                     val type = if (concretTypeWithContainer.collectionLevel() != 0) {
-                        concretTypeWithContainer.genericType()
+                        concretTypeWithContainer.genericTypes()[0]
                     } else {
                         method.platform.objectType()
                     }

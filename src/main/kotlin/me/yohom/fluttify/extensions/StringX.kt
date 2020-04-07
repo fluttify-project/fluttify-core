@@ -2,7 +2,6 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
-import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -218,7 +217,7 @@ fun TYPE_NAME.findType(): Type {
         .deprotocol()
         .let {
             if (it.isCollection()) {
-                if (it.collectionLevel() != 0) it.genericType() else ""
+                if (it.collectionLevel() != 0) it.genericTypes()[0] else ""
             } else {
                 it
             }
@@ -336,7 +335,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
                     "Map<$keyType,$valueType>"
                 }
-                startsWith("NSArray") -> "List<${genericType().depointer()}>"
+                startsWith("NSArray") -> "List<${genericTypes()[0].depointer()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
                 // 其他情况需要去掉泛型
@@ -381,9 +380,11 @@ fun String.enpointer(): String {
 }
 
 /**
- * 获取泛型类型名称
+ * 获取泛型列表
+ *
+ * 根据[level]获取对应层级的泛型类型, 如果为null就获取到最内层的泛型. 如果没有泛型则返回空列表.
  */
-fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
+fun TYPE_NAME.genericTypes(level: Int? = null): List<TYPE_NAME> {
     var result = this
     if (level != null) {
         for (i in 0 until level) {
@@ -394,20 +395,7 @@ fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
             result = result.substringAfter("<").substringBeforeLast(">")
         }
     }
-    return result
-}
-
-/**
- * 当前类型是否是泛型声明类型
- *
- * 比如说有一个类
- * class A<T> {
- *   void b(T t) {}
- * }
- * 那么判断的就是这个T是否的泛型声明类型
- */
-fun TYPE_NAME.isDeclaredGenericType(): Boolean {
-    return findType().platform == Platform.Unknown /* 泛型类型肯定找不到的, 所以是unknown */ && !contains(".")
+    return if (result == this) listOf() else result.split(",")
 }
 
 /**

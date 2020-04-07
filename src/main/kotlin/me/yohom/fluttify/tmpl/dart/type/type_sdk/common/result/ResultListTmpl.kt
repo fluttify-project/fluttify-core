@@ -16,7 +16,6 @@ fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
             // 找出第一个具体类子类去实例化(1. 如果自身是具体类, 那么就是自己 2.逻辑上不合理但是不影响使用), 否则就直接使用类名
             .run { firstConcretSubtype()?.name ?: name }
             .depointer()
-            .genericType()
             .toDartType()
             .run {
                 if (isEmpty()) {
