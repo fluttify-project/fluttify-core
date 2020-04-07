@@ -51,15 +51,15 @@ data class Variable(
     }
 
     fun isCallback(): Boolean {
-        return typeName.findType().isCallback()
+        return typeName.containerType().findType().isCallback()
     }
 
     fun isInterface(): Boolean {
-        return typeName.findType().isInterface()
+        return typeName.containerType().findType().isInterface()
     }
 
     fun isAbstract(): Boolean {
-        return typeName.findType().isAbstract
+        return typeName.containerType().findType().isAbstract
     }
 
     fun isConcret(): Boolean {
@@ -79,11 +79,13 @@ data class Variable(
     }
 
     fun isUnknownType(): Boolean {
-        return typeName.findType() == Type.UNKNOWN_TYPE
+        return typeName.containerType().findType() == Type.UNKNOWN_TYPE ||
+                typeName.genericType().findType() == Type.UNKNOWN_TYPE
     }
 
     fun isKnownType(): Boolean {
-        return typeName.findType() != Type.UNKNOWN_TYPE
+        return typeName.containerType().findType() != Type.UNKNOWN_TYPE &&
+                typeName.genericType().findType() != Type.UNKNOWN_TYPE
     }
 
     fun isPublicType(): Boolean {
@@ -95,7 +97,11 @@ data class Variable(
     }
 
     fun type(): Type {
-        return typeName.findType()
+        return typeName.containerType().findType()
+    }
+
+    fun definedGenericType(): Type {
+        return typeName.genericType().findType()
     }
 
     fun objcType(): String {

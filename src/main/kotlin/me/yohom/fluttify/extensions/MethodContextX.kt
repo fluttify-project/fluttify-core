@@ -189,7 +189,18 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                typeFullName(paramType)
+                val containerType = paramType.containerType()
+                val genericType = paramType.genericType()
+
+                val fullContainerType = typeFullName(containerType)
+                val fullGenericType = typeFullName(genericType)
+
+                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
+                if (fullContainerType == fullGenericType) {
+                    fullGenericType
+                } else {
+                    "${fullContainerType}<${fullGenericType}>"
+                }
             }
             result.add(
                 Parameter(
@@ -228,7 +239,18 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                typeFullName(paramType)
+                val containerType = paramType.containerType()
+                val genericType = paramType.genericType()
+
+                val fullContainerType = typeFullName(containerType)
+                val fullGenericType = typeFullName(genericType)
+
+                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
+                if (fullContainerType == fullGenericType) {
+                    fullGenericType
+                } else {
+                    "${fullContainerType}<${fullGenericType}>"
+                }
             }
             result.add(
                 Parameter(
@@ -278,7 +300,18 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                typeFullName(paramType)
+                val containerType = paramType.containerType()
+                val genericType = paramType.genericType()
+
+                val fullContainerType = typeFullName(containerType)
+                val fullGenericType = typeFullName(genericType)
+
+                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
+                if (fullContainerType == fullGenericType) {
+                    fullGenericType
+                } else {
+                    "${fullContainerType}<${fullGenericType}>"
+                }
             }
             result.add(
                 Parameter(
@@ -317,7 +350,18 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                typeFullName(paramType)
+                val containerType = paramType.containerType()
+                val genericType = paramType.genericType()
+
+                val fullContainerType = typeFullName(containerType)
+                val fullGenericType = typeFullName(genericType)
+
+                // 如果容器类型和泛型类型一致, 说明没有泛型类型, 那么直接使用容器类或者泛型类型, 否则拼接成泛型类型
+                if (fullContainerType == fullGenericType) {
+                    fullGenericType
+                } else {
+                    "${fullContainerType}<${fullGenericType}>"
+                }
             }
             result.add(
                 Parameter(

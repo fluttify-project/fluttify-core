@@ -340,7 +340,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
                 // 其他情况需要去掉泛型
-                else -> this.substringBefore("<")
+                else -> this.containerType()
             }
         }
         .replace("$", ".")
