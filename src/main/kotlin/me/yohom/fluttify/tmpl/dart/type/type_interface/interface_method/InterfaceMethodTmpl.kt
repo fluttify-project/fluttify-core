@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Platform
 
 //@mustCallSuper
 //Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {
@@ -21,7 +22,13 @@ fun InterfaceMethodTmpl(method: Method): String {
         // 只有回调类的参数需要加入释放池
         method
             .formalParams
-            .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() && !typeName.isDeclaredGenericType() } }
+            .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() } }
+            // 过滤掉泛型声明参数, 即类似
+            // class A<T> {
+            //   void b(T t) {}
+            // }
+            // 的情况
+            .filter { it.variable.typeName !in method.className.findType().genericTypes }
             .joinToString("\n") {
                 if (it.variable.isList)
                     "kNativeObjectPool.addAll(${it.variable.name});"

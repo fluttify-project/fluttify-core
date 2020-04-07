@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -323,7 +324,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("NS(Mutable)?Array\\*?").matches(this) -> "List"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
-                Regex("int64_t").matches(this) -> "int"
+                Regex("int(32|64)_t").matches(this) -> "int"
                 Regex("long long").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
@@ -381,26 +382,27 @@ fun String.enpointer(): String {
 
 /**
  * 获取泛型类型名称
+ * TODO 重命名为 definedGenericType 与declaredGenericType区分
  */
 fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
     var result = this
     if (level != null) {
         for (i in 0 until level) {
-            // 除了列表相关类, 其他的都保留泛型信息
-            if (isCollection() || Regex("id<.+>").matches(this)) {
+//            // 除了列表相关类, 其他的都保留泛型信息
+//            if (isCollection() || Regex("id<.+>").matches(this)) {
                 result = result.substringAfter("<").substringBeforeLast(">")
-            } else {
-                break
-            }
+//            } else {
+//                break
+//            }
         }
     } else {
         while (result.contains("<") && result.contains(">")) {
-            // 除了列表相关类, 其他的都保留泛型信息
-            if (isCollection() || Regex("id<.+>").matches(this)) {
+//            // 除了列表相关类, 其他的都保留泛型信息
+//            if (isCollection() || Regex("id<.+>").matches(this)) {
                 result = result.substringAfter("<").substringBeforeLast(">")
-            } else {
-                break
-            }
+//            } else {
+//                break
+//            }
         }
     }
     return result
@@ -416,7 +418,7 @@ fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
  * 那么判断的就是这个T是否的泛型声明类型
  */
 fun TYPE_NAME.isDeclaredGenericType(): Boolean {
-    return !contains(".")
+    return findType().platform == Platform.Unknown /* 泛型类型肯定找不到的, 所以是unknown */ && !contains(".")
 }
 
 /**
