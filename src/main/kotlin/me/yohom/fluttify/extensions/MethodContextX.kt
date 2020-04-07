@@ -177,7 +177,14 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     parameters
         ?.formalParameter()
         ?.forEach { formalParam ->
-            val paramType = formalParam.typeType().text.genericType()
+            // 只有列表类型需要解泛型
+            val paramType = formalParam.typeType().text.run {
+                if (isCollection()) {
+                    genericType()
+                } else {
+                    this
+                }
+            }
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
@@ -210,7 +217,13 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     parameters
         ?.lastFormalParameter()
         ?.run {
-            val paramType = typeType().text.genericType()
+            val paramType = typeType().text.run {
+                if (isCollection()) {
+                    genericType()
+                } else {
+                    this
+                }
+            }
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
@@ -254,7 +267,13 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
     parameters
         ?.formalParameter()
         ?.forEach { formalParam ->
-            val paramType = formalParam.typeType().text.genericType()
+            val paramType = formalParam.typeType().text.run {
+                if (isCollection()) {
+                    genericType()
+                } else {
+                    this
+                }
+            }
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
@@ -287,7 +306,13 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
     parameters
         ?.lastFormalParameter()
         ?.run {
-            val paramType = typeType().text.genericType()
+            val paramType = typeType().text.run {
+                if (isCollection()) {
+                    genericType()
+                } else {
+                    this
+                }
+            }
             // 如果当前参数类型是所在类声明中的泛型类型, 那么就直接使用, 否则拼接包名
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
