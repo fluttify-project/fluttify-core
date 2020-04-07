@@ -382,27 +382,16 @@ fun String.enpointer(): String {
 
 /**
  * 获取泛型类型名称
- * TODO 重命名为 definedGenericType 与declaredGenericType区分
  */
 fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
     var result = this
     if (level != null) {
         for (i in 0 until level) {
-//            // 除了列表相关类, 其他的都保留泛型信息
-//            if (isCollection() || Regex("id<.+>").matches(this)) {
-                result = result.substringAfter("<").substringBeforeLast(">")
-//            } else {
-//                break
-//            }
+            result = result.substringAfter("<").substringBeforeLast(">")
         }
     } else {
         while (result.contains("<") && result.contains(">")) {
-//            // 除了列表相关类, 其他的都保留泛型信息
-//            if (isCollection() || Regex("id<.+>").matches(this)) {
-                result = result.substringAfter("<").substringBeforeLast(">")
-//            } else {
-//                break
-//            }
+            result = result.substringAfter("<").substringBeforeLast(">")
         }
     }
     return result
