@@ -56,10 +56,10 @@ data class Method(
     fun filter(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓方法↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("方法:${toString()}执行过滤开始")
-        val result = (must("返回类型是jsonable类型") { returnType.jsonable() } ||
-                must("返回类型是void") { returnType.isVoid() } ||
-                must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } } ||
-                must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
+        val result = (must("返回类型是jsonable类型") { returnType.jsonable() }
+                || must("返回类型是void") { returnType.isVoid() }
+                || must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } }
+                || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
                 &&
                 must("参数类型全部通过类型过滤") {
                     formalParams.all {
