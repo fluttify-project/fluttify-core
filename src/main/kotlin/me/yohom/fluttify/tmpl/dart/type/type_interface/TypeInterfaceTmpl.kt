@@ -39,9 +39,9 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     val allSuperType = type.interfaces.union(listOf(type.superClass))
         .filter { it.isNotBlank() }
-        .filter { it.findType().platform == Platform.Unknown }
+        .filter { it.findType().platform != Platform.Unknown }
         .filter { !it.isObfuscated() }
-    val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
+    val superClass = if (allSuperType.isEmpty()) type.platform.objectType() else allSuperType.joinToString()
 
     val methods = type.methods
         .filterMethod()
