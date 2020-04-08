@@ -266,7 +266,7 @@ open class Type : IPlatform, IScope {
                 &&
                 must("有公开构造器或没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
                 &&
-                must("父类不是未知类或没有父类") { superClass.findType().platform == Platform.Unknown || superClass == "" }
+                must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
                 &&
                 must("所有构造器都通过过滤或没有构造器或jsonable类型") { constructors.any { it.filter() } || constructors.isEmpty() || isJsonable }
                 &&
