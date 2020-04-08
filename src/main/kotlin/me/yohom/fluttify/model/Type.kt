@@ -235,39 +235,48 @@ open class Type : IPlatform, IScope {
     }
 
     fun constructable(): Boolean {
-        return !isAbstract
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓构造器↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("构造器:${name}执行过滤开始")
+        val result = mustNot("抽象类型") { isAbstract }
+                &&
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
-                &&
-                !(constructors.any {
-                    it.formalParams.any {
-                        it.variable.containerType().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+                mustNot("构造器循环构造") {
+                    constructors.any {
+                        it.formalParams.any {
+                            it.variable.containerType().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+                        }
                     }
-                })
+                }
                 &&
-                (platform == Platform.Unknown || jsonable())
+                must("是已知类型或jsonable类型") { platform != Platform.Unknown || jsonable() }
                 &&
-                !isEnum()
+                mustNot("枚举类型") { isEnum() }
                 &&
-                !isLambda()
+                mustNot("lambda类型") { isLambda() }
                 &&
-                !isFunction()
+                mustNot("函数类型") { isFunction() }
                 &&
-                !isAlias()
+                mustNot("别名类型") { isAlias() }
                 &&
-                !isObfuscated()
+                mustNot("混淆类型") { isObfuscated() }
                 &&
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
-                ((isInnerType && isStaticType) || !isInnerType)
+                must("静态类的内部类") { (isInnerType && isStaticType) || !isInnerType }
                 &&
-                (constructors.any { it.isPublic } || constructors.isEmpty())
+                must("有公开构造器或没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
                 &&
-                (superClass.findType().platform == Platform.Unknown || superClass == "")
+                must("父类不是未知类或没有父类") { superClass.findType().platform == Platform.Unknown || superClass == "" }
                 &&
-                (constructors.any { it.filter() } || constructors.isEmpty() || isJsonable)
+                must("所有构造器都通过过滤或没有构造器或jsonable类型") { constructors.any { it.filter() } || constructors.isEmpty() || isJsonable }
                 &&
-                // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
-                ((platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false) || platform != Platform.iOS)
+                must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
+                    platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
+                            || platform != Platform.iOS
+                }
+        println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     fun isEnum(): Boolean {
@@ -292,10 +301,6 @@ open class Type : IPlatform, IScope {
 
     fun hasSubtype(): Boolean {
         return subtypes().isNotEmpty()
-    }
-
-    fun isList(): Boolean {
-        return name.isIterable()
     }
 
     fun jsonable(): Boolean {
@@ -340,13 +345,6 @@ open class Type : IPlatform, IScope {
     }
 
     /**
-     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的类
-     */
-    fun ancestorClasses(): List<String> {
-        return ancestorTypes.filter { it.findType().typeType == TypeType.Class }
-    }
-
-    /**
      * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的接口, [includeObfuscated]区分是否包含混淆的接口类
      */
     fun ancestorInterfaces(includeObfuscated: Boolean = true): List<String> {
@@ -368,12 +366,6 @@ open class Type : IPlatform, IScope {
     }
 
     companion object {
-        /**
-         * 未知的类
-         */
-        @Deprecated("使用platform == Platform.Unknown判断是否是未知类")
-        val UNKNOWN_TYPE: Type = Type().apply { name = "unknown" }
-
         /**
          * 没有类
          */
