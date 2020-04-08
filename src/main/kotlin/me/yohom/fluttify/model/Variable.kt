@@ -141,9 +141,7 @@ data class Variable(
                 // 数组类型
                 typeName.isArray() -> typeName.removeSuffix("[]")
                 // 如果是列表, 却没有指定泛型, 那么就认为泛型是Object
-                genericLevel == 0 -> type = "List<${platform.objectType()}>"
-                // 根据List嵌套层次生成类型
-                else -> for (i in 0 until genericLevel) type = "List<$type>"
+                getIterableLevel() == 0 -> type = "List<${platform.objectType()}>"
             }
         } else if (isStructPointer()) {
             type = "List<$type>"
