@@ -44,7 +44,10 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
     val result = field.variable.run {
         when {
             jsonable() or isAliasType() -> ResultJsonableTmpl(typeNameWithContainer, platform)
-            isIterable && getIterableLevel() > 0 -> ResultListTmpl(typeName.genericTypes()[0], platform)
+            isIterable -> ResultListTmpl(
+                if (getIterableLevel() > 0) typeName.genericTypes()[0] else platform.objectType(),
+                platform
+            )
             isStructPointer() -> ResultListTmpl(typeName.depointer(), platform)
             isEnum() -> ResultEnumTmpl(typeName)
             typeName.isVoid() -> ResultVoidTmpl()

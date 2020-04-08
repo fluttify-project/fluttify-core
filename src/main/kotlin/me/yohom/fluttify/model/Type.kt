@@ -161,7 +161,7 @@ open class Type : IPlatform, IScope {
                     if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
                 }
                 ||
-                must("是List或Map") { Regexes.MAP.matches(name) || Regexes.ITERABLE.matches(name) }
+                must("是List") { /* Regexes.MAP.matches(name) ||*/ Regexes.ITERABLE.matches(name) }
         println("类:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result

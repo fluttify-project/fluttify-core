@@ -317,6 +317,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("NS(Mutable)?Array\\*?").matches(this) -> "List"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
+                Regex("NSArray<NSNumber\\*>\\*").matches(this) -> "List<num>"
                 Regex("int(32|64)_t").matches(this) -> "int"
                 Regex("long long").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
