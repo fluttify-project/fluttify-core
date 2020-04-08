@@ -18,10 +18,6 @@ fun SetterTmpl(field: Field): String {
             var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
             if (isStructPointer()) {
                 result = "List<$result>"
-            } else if (isIterable) {
-                for (i in 0 until genericLevel) {
-                    result = "List<$result>"
-                }
             }
             result
         }
@@ -40,8 +36,8 @@ fun SetterTmpl(field: Field): String {
             when {
                 isEnum() -> "${name}.index"
                 typeName.jsonable() -> name
-                (isIterable && genericLevel <= 1) || isStructPointer() -> "${name}.map((it) => it.refId).toList()"
-                genericLevel > 1 -> "[]" // 多维数组暂不处理
+                (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "${name}.map((it) => it.refId).toList()"
+                getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
                 else -> "${name}.refId"
             }
         }

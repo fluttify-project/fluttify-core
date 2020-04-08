@@ -18,10 +18,6 @@ fun SetterBatchTmpl(field: Field): String {
             var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
             if (isStructPointer()) {
                 result = "List<$result>"
-            } else if (isIterable) {
-                for (i in 0 until genericLevel) {
-                    result = "List<$result>"
-                }
             }
             result
         }
@@ -39,8 +35,8 @@ fun SetterBatchTmpl(field: Field): String {
         val argValue = when {
             isEnum() -> "$name[__i__].index"
             typeName.jsonable() -> "$name[__i__]"
-            (isIterable && genericLevel <= 1) || isStructPointer() -> "$name[__i__].map((it) => it.refId).toList()"
-            genericLevel > 1 -> "[]" // 多维数组暂不处理
+            (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "$name[__i__].map((it) => it.refId).toList()"
+            getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
             else -> "$name[__i__].refId"
         }
         val setterMethodName = field.setterMethodName()
