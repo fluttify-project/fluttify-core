@@ -183,7 +183,7 @@ data class Variable(
         return if (!isLambda()) {
             false
         } else {
-            containerType().formalParams.all { it.variable.containerType().isKnownType() }
+            typeName.findType().formalParams.all { it.variable.isKnownType() }
         }
     }
 }
