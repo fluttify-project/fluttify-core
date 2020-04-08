@@ -39,7 +39,7 @@ fun CreatorTmpl(type: Type): List<String> {
                         when {
                             it.typeName.jsonable() -> it.name
                             it.isEnum() -> "${it.name}.index"
-                            it.isIterable -> if (it.genericLevel <= 1) "${it.name}.map((it) => it.refId).toList()" else "[] /* 暂不支持嵌套列表 */"
+                            it.isIterable -> if (it.getIterableLevel() <= 1) "${it.name}.map((it) => it.refId).toList()" else "[] /* 暂不支持嵌套列表 */"
                             else -> "${it.name}.refId"
                         }
                     })

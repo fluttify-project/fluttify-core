@@ -63,8 +63,8 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                                             }
                                         }
                                         it.typeName.jsonable() -> "${it.name.depointer()}[__i__]"
-                                        (it.isIterable && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
-                                        it.genericLevel > 1 -> "[]" // 多维数组暂不处理
+                                        (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
+                                        it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
                                         else -> "${it.name.depointer()}[__i__].refId"
                                     }
                                 }

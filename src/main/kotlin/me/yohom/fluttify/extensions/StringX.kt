@@ -391,6 +391,17 @@ fun TYPE_NAME.genericTypes(level: Int? = null): List<TYPE_NAME> {
 }
 
 /**
+ * 获取最内层泛型
+ */
+fun TYPE_NAME.innermostGenericType(): TYPE_NAME {
+    var result = this
+    while (result.contains("<") && result.contains(">")) {
+        result = result.substringAfter("<").substringBeforeLast(">")
+    }
+    return result
+}
+
+/**
  * 获取泛型容器名称 比如List<Integer> -> List
  */
 fun TYPE_NAME.containerType(): TYPE_NAME {
