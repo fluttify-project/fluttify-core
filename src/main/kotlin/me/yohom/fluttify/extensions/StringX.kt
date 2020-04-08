@@ -324,8 +324,8 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("NSDictionary\\*").matches(this) -> "Map"
                 // 若是某种java的List, 那么去掉前缀
                 Regex("((\\w|\\.)*)List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
-                Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
-                Regex("((Hash)?Map|NSDictionary)(<.+,.+>)(\\*)?").matches(this) -> {
+                Regex("java\\.util\\.Collection<.+>").matches(this) -> replace("Collection", "List")
+                Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(<.+,.+>)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
                     "Map<$keyType,$valueType>"
