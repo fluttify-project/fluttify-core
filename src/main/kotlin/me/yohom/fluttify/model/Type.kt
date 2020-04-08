@@ -189,7 +189,7 @@ open class Type : IPlatform, IScope {
 
     fun isKnownFunction(): Boolean {
         return isFunction()
-                && returnType.findType().platform == Platform.Unknown
+                && returnType.findType().platform != Platform.Unknown
                 && formalParams.all { it.variable.isKnownType() }
     }
 
