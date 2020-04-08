@@ -118,7 +118,7 @@ object Regexes {
     //            || Regex("NSArray.*\\*?").matches(this)
     //            || Regex("NSMutableArray.*\\*?").matches(this)
     //            || Regex("""\w+\[]""").matches(this)
-    val ITERABLE = Regex("(((\\w|\\.)*List|Iterable|Collection)(<.*>)?)|(NS(Mutable)?Array.*\\*?)|(\\w+\\[])")
+    val ITERABLE = Regex("(\\w|\\.)*(List|Iterable|Collection)(<.*>)?|(NS(Mutable)?Array.*\\*?)|(\\w+\\[])")
 }
 
 /**
@@ -128,15 +128,8 @@ typealias TYPE_NAME = String
 
 typealias JAVA_SOURCE = String
 typealias OBJC_SOURCE = String
-typealias DART_SOURCE = String
-typealias KOTLIN_SOURCE = String
 
 typealias PATH = String
 
 typealias JAVA_FILE = File
 typealias OBJC_FILE = File
-typealias DART_FILE = File
-typealias KOTLIN_FILE = File
-typealias SWIFT_FILE = File
-
-typealias DIR = File

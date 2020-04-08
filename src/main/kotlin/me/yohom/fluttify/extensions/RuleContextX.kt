@@ -31,6 +31,8 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
             "java.lang.Throwable"
         } else if (typeName == "Exception") {
             "java.lang.Exception"
+        } else if (typeName == "Iterable") {
+            "java.lang.Iterable"
         } else {
             ancestorOf(JavaParser.CompilationUnitContext::class)
                 ?.importDeclaration()

@@ -324,8 +324,9 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NSDictionary\\*").matches(this) -> "Map"
                 // 若是某种java的List, 那么去掉前缀
-                Regex("((\\w|\\.)*)List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
-                Regex("java\\.util\\.Collection<.+>").matches(this) -> replace("Collection", "List")
+                Regex("(\\w|\\.)*List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
+                Regex("java\\.util\\.Collection<.+>").matches(this) -> replace("java.util.Collection", "List")
+                Regex("java\\.lang\\.Iterable<.+>").matches(this) -> replace("java.lang.Iterable", "List")
                 Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(<.+,.+>)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
