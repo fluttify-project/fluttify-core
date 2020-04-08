@@ -12,25 +12,25 @@ class StringXKtTest {
     inner class GenericLevelTest {
         @Test
         fun genericLevel_level_0() {
-            val level = "Abc".collectionLevel()
+            val level = "Abc".iterableLevel()
             assertEquals(level, 0)
         }
 
         @Test
         fun genericLevel_level_1() {
-            val level = "List<Abc>".collectionLevel()
+            val level = "List<Abc>".iterableLevel()
             assertEquals(level, 1)
         }
 
         @Test
         fun genericLevel_level_2() {
-            val level = "List<List<Abc>>".collectionLevel()
+            val level = "List<List<Abc>>".iterableLevel()
             assertEquals(level, 2)
         }
 
         @Test
         fun genericLevel_wrong_format_return_0() {
-            val level = "Abc>".collectionLevel()
+            val level = "Abc>".iterableLevel()
             assertEquals(level, 0)
         }
     }

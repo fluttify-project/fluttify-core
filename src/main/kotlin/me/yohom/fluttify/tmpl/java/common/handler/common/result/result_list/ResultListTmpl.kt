@@ -1,6 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list
 
-import me.yohom.fluttify.extensions.collectionLevel
+import me.yohom.fluttify.extensions.iterableLevel
 import me.yohom.fluttify.extensions.genericTypes
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
@@ -16,7 +16,7 @@ import me.yohom.fluttify.model.Method
 private val tmpl = getResource("/tmpl/java/result_list.stmt.java.tmpl").readText()
 
 fun ResultListTmpl(method: Method): String {
-    val typeName = if (method.returnType.collectionLevel() > 1) {
+    val typeName = if (method.returnType.iterableLevel() > 1) {
         "List jsonableResult = new ArrayList());"
     } else {
         method.returnType.genericTypes()[0].replace("$", ".")

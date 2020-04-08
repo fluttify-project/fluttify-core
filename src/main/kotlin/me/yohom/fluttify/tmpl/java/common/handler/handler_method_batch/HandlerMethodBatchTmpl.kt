@@ -45,7 +45,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
     val resultType = when {
         method.returnType.jsonable() -> method.returnType.boxedType().stringArray2List()
         method.returnType.isVoid() -> "String"
-        method.returnType.isCollection() -> "List<Integer>"
+        method.returnType.isIterable() -> "List<Integer>"
         else -> "Integer"
     }
     val args = method.formalParams
@@ -54,7 +54,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
             when {
                 it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
-                it.variable.isList -> ArgListTmpl(it.variable)
+                it.variable.isIterable -> ArgListTmpl(it.variable)
                 else -> ArgRefTmpl(it.variable)
             }
         }
@@ -74,7 +74,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
     val result = when {
         method.returnType.jsonable() -> ResultJsonableTmpl(method.returnType)
         // jsonable已经把List<String>类似的类型挡掉了, 所以到这里的肯定是List<? extends Object>类型
-        method.returnType.isCollection() -> ResultListTmpl(method)
+        method.returnType.isIterable() -> ResultListTmpl(method)
         method.returnType == "void" -> ResultVoidTmpl()
         else -> ResultRefTmpl()
     }

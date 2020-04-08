@@ -126,7 +126,7 @@ data class Method(
                 &&
                 mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE }
                 &&
-                mustNot("返回类型是嵌套数组/列表") { returnType.run { collectionLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
+                mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
                 &&
                 mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() }
                 &&

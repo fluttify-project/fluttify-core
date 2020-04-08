@@ -17,9 +17,8 @@ data class Variable(
     val genericLevel: Int = 0
 ) : IPlatform {
 
-    @Deprecated("不再使用")
-    val isList: Boolean
-        get() = listType != ListType.NonList && listType != ListType.Array
+    val isIterable: Boolean
+        get() = typeName.isIterable()
 
     fun isStructPointer(): Boolean {
         return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
@@ -104,9 +103,13 @@ data class Variable(
             typeName == "constvoid*" -> "const void*"
             isValueType() or isStruct() -> typeName
             isInterface() -> typeName.enprotocol()
-            isList && genericLevel > 0 -> "NSArray<$typeName>*"
+            isIterable && genericLevel > 0 -> "NSArray<$typeName>*"
             else -> typeName.removeObjcSpecifier().enpointer() // 要先去除一下objc里的限定词
         }
+    }
+
+    fun getIterableLevel(): Int {
+        return typeName.iterableLevel()
     }
 
     fun toDartString(): String {
@@ -116,26 +119,24 @@ data class Variable(
         } else {
             // 结构体指针认为是列表类型
             var type = (if (isAliasType()) typeName.findType().aliasOf!! else typeName).toDartType()
-            if (isList) {
+            if (isIterable) {
                 when {
                     // 数组类型
                     typeName.isArray() -> typeName.removeSuffix("[]")
                     // 如果是列表, 却没有指定泛型, 那么就认为泛型是Object
-                    genericLevel == 0 -> type = "List<${platform.objectType()}>"
-                    // 根据List嵌套层次生成类型
-                    else -> for (i in 0 until genericLevel) type = "List<$type>"
+                    getIterableLevel() == 0 -> type = "List<${platform.objectType()}>"
                 }
             } else if (isStructPointer()) {
                 type = "List<$type>"
             }
-            "$type ${name.depointer()}"
+            "$type $name"
         }
     }
 
     fun toDartStringBatch(): String {
         // 结构体指针认为是列表类型
         var type = (if (isAliasType()) typeName.findType().aliasOf!! else typeName).toDartType()
-        if (isList) {
+        if (isIterable) {
             when {
                 // 数组类型
                 typeName.isArray() -> typeName.removeSuffix("[]")
@@ -153,7 +154,7 @@ data class Variable(
     fun var2Args(hostMethod: Method? = null): String {
         return if (typeName.findType().isCallback() && hostMethod != null) {
             when {
-                isList -> "new ArrayList() /* 暂不支持列表回调 */"
+                isIterable -> "new ArrayList() /* 暂不支持列表回调 */"
                 containerType().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
                 else -> CallbackTmpl(hostMethod, typeName.findType())
             }
@@ -164,7 +165,7 @@ data class Variable(
                 // 基本类型数组不需要转换, 直接使用
                 isArray() -> name
                 // 自定义类列表需要转换成ArrayList
-                isList -> "new ArrayList($name)"
+                isIterable -> "new ArrayList($name)"
                 typeName.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
                 else -> name
             }
@@ -175,7 +176,7 @@ data class Variable(
 
     fun isArray(): Boolean = typeName.isArray()
 
-    fun isCollection(): Boolean = typeName.isCollection()
+    fun isCollection(): Boolean = typeName.isIterable()
 
     /**
      * 是否是Lambda以及组成部分是否都是已知元素

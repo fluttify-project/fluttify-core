@@ -35,7 +35,7 @@ fun HandlerGetterBatchTmpl(field: Field): String {
         when {
             jsonable() -> typeName.boxedType().enList(genericLevel).stringArray2List()
             typeName.isVoid() -> "String"
-            isList -> "Integer".enList(genericLevel)
+            isIterable -> "Integer".enList(genericLevel)
             else -> "Integer"
         }
     }
@@ -43,7 +43,7 @@ fun HandlerGetterBatchTmpl(field: Field): String {
     val fieldName = field.variable.name
     val result = when {
         field.variable.jsonable() -> ResultJsonableTmpl(fieldType)
-        field.variable.isList -> ResultListTmpl(field.asGetterMethod())
+        field.variable.isIterable -> ResultListTmpl(field.asGetterMethod())
         field.variable.typeName.isVoid() -> ResultVoidTmpl()
         else -> ResultRefTmpl()
     }

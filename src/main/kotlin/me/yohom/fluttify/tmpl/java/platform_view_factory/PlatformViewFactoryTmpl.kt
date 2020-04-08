@@ -112,7 +112,7 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
                 when {
                     it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
                     it.variable.isEnum() -> ArgEnumTmpl(it.variable)
-                    it.variable.isList -> ArgListTmpl(it.variable)
+                    it.variable.isIterable -> ArgListTmpl(it.variable)
                     else -> ArgRefTmpl(it.variable)
                 }
             }

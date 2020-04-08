@@ -11,10 +11,10 @@ fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
         Regex("Uint\\d+List").matches(returnType.toDartType()) -> {
             "__result__ as ${returnType.toDartType()}"
         }
-        returnType.isCollection() -> {
+        returnType.isIterable() -> {
             val type = when {
                 // 说明List有指定泛型, 拿出泛型类
-                returnType.collectionLevel() != 0 -> returnType.toDartType()
+                returnType.iterableLevel() != 0 -> returnType.toDartType()
                 // 数组类型
                 returnType.isArray() -> returnType.dearray()
                 // List没有指定泛型, 使用各个平台的Object类

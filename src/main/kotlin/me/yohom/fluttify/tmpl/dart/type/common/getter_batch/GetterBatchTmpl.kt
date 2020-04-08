@@ -18,7 +18,7 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
         var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
         if (isStructPointer()) {
             result = "List<$result>"
-        } else if (isList) {
+        } else if (isIterable) {
             for (i in 0 until genericLevel) {
                 result = "List<$result>"
             }
@@ -48,7 +48,7 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
     val result = field.variable.run {
         when {
             jsonable() or isAliasType() -> ResultJsonableTmpl(typeNameWithContainer, platform)
-            isList || isStructPointer() -> ResultListTmpl(typeName, platform)
+            isIterable || isStructPointer() -> ResultListTmpl(typeName, platform)
             isEnum() -> ResultEnumTmpl(typeName)
             typeName.isVoid() -> ResultVoidTmpl()
             else -> ResultRefTmpl(typeName)
@@ -57,7 +57,7 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
     val nativeObjectPool = field.variable.run {
         when {
             jsonable() or isEnum() or isAliasType() -> ""
-            isList || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
+            isIterable || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
             else -> "kNativeObjectPool.addAll(typedResult);"
         }
     }

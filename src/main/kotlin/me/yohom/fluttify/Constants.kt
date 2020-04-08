@@ -118,8 +118,7 @@ object Regexes {
     //            || Regex("NSArray.*\\*?").matches(this)
     //            || Regex("NSMutableArray.*\\*?").matches(this)
     //            || Regex("""\w+\[]""").matches(this)
-    // TODO 要不包含数组?
-    val ITERABLE = Regex("(((\\w|\\.)*List|Iterable|Collection)(<.*>)?)|(NS(Mutable)?Array.*\\*?)")
+    val ITERABLE = Regex("(((\\w|\\.)*List|Iterable|Collection)(<.*>)?)|(NS(Mutable)?Array.*\\*?)|(\\w+\\[])")
 }
 
 /**

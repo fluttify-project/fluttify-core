@@ -1,7 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda
 
 import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
@@ -47,7 +46,7 @@ fun CallbackLambdaTmpl(callerMethod: Method, callbackLambda: Type): String {
                     it.isEnum() -> CallbackArgEnumTmpl(it)
                     it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
                     it.jsonable() -> CallbackArgJsonableTmpl(it)
-                    it.isList -> CallbackArgListTmpl(it)
+                    it.isIterable -> CallbackArgListTmpl(it)
                     it.isStruct() -> CallbackArgStructTmpl(it)
                     else -> CallbackArgRefTmpl(it)
                 }

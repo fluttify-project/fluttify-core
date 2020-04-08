@@ -26,7 +26,7 @@ fun HandlerSetterTmpl(field: Field): String {
     val arg = when {
         field.variable.jsonable() -> ArgJsonableTmpl(field.variable)
         field.variable.isEnum() -> ArgEnumTmpl(field.variable)
-        field.variable.isList -> ArgListTmpl(field.variable)
+        field.variable.isIterable -> ArgListTmpl(field.variable)
         else -> ArgRefTmpl(field.variable)
     }
     val className = field.className.replace("$", ".")

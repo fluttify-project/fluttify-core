@@ -33,7 +33,7 @@ fun HandlerSetterTmpl(field: Field): String {
     val args = field.variable.run {
         when {
             jsonable() || isAliasType() -> ArgJsonableTmpl(field.variable)
-            isList -> ArgListRefTmpl(field.variable)
+            isIterable -> ArgListRefTmpl(field.variable)
             isEnum() -> ArgEnumTmpl(field.variable)
             isStructPointer() -> ArgListStructTmpl(field.variable)
             isCallback() -> ""

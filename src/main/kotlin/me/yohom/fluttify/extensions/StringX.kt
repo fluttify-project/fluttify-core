@@ -43,13 +43,8 @@ fun TYPE_NAME.jsonable(): Boolean {
 /**
  * 是否是集合类型
  */
-fun TYPE_NAME.isCollection(): Boolean {
-    return Regex("\\w*List<(\\w*|.*)>").matches(this)
-            || Regex("Iterable<(\\w*|.*)>").matches(this)
-            || Regex("Collection<(\\w*|.*)>").matches(this)
-            || Regex("NSArray.*\\*?").matches(this)
-            || Regex("NSMutableArray.*\\*?").matches(this)
-            || Regex("""\w+\[]""").matches(this)
+fun TYPE_NAME.isIterable(): Boolean {
+    return Regexes.ITERABLE.matches(this)
 }
 
 /**
@@ -413,10 +408,10 @@ fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
 /**
  * 获取泛型层数 用在List中 表示嵌套了几层
  */
-fun TYPE_NAME.collectionLevel(): Int {
+fun TYPE_NAME.iterableLevel(): Int {
     var result = this
     var level = 0
-    if (isCollection()) {
+    if (isIterable()) {
         while (result.contains("<") && result.contains(">")) {
             result = result.substringAfter("<").substringBeforeLast(">")
             level++

@@ -283,7 +283,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun isList(): Boolean {
-        return name.isCollection()
+        return name.isIterable()
     }
 
     fun jsonable(): Boolean {
