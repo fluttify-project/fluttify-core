@@ -1,8 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.arg
 
-import me.yohom.fluttify.extensions.dearray
-import me.yohom.fluttify.extensions.enList
-import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Variable
 
 //// jsonable arg
@@ -14,6 +12,7 @@ fun ArgJsonableTmpl(variable: Variable): String {
         when {
             // java端不会以float接收数据, 一律都是double
             toLowerCase() == "float" -> "Double"
+            isStringArray() -> "ArrayList<String>"
             else -> this
         }
     }
