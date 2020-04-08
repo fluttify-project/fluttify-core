@@ -14,9 +14,16 @@ data class Parameter(
     override var platform: Platform
 ) : IPlatform {
     fun filter(): Boolean {
-        return variable.mustNot("Lambda") { isLambda() } && // lambda不参与传递
-                variable.mustNot("Callback") { isCallback() } && // 回调类不参与传递(但是接口类型参与传递)
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓参数↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("参数:${variable}执行过滤开始")
+        val result = variable.mustNot("Lambda") { isLambda() } // lambda不参与传递
+                &&
+                variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
+                &&
                 variable.mustNot("未知类型") { typeName.findType().platform == Platform.Unknown }
+        println("参数:${variable}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     companion object {

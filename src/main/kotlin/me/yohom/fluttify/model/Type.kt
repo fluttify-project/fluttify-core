@@ -369,7 +369,7 @@ open class Type : IPlatform, IScope {
         /**
          * 没有类
          */
-        val NO_TYPE: Type = Type().apply { name = "" }
+        val NO_TYPE: Type = Type().apply { name = ""; platform = Platform.General }
     }
 }
 
