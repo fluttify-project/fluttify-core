@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Platform
 fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
     return when {
         // 如果是原始类型数组, 那么就直接cast
-        Regex("U?[Ii]nt\\d+List").matches(returnType.toDartType()) -> {
+        Regex("(U?[Ii]nt|Float)\\d+List").matches(returnType.toDartType()) -> {
             "__result__ as ${returnType.toDartType()}"
         }
         returnType.isIterable() -> {
