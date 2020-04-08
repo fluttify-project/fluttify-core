@@ -300,14 +300,14 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("[Bb]oolean").matches(this) -> "bool"
                 Regex("(unsigned)?([Bb]yte|[Ii]nt|Integer|[Ll]ong)").matches(this) -> "int"
                 Regex("[Dd]ouble|[Ff]loat").matches(this) -> "double"
-                Regex("(Collection|(Array)?List)<(Byte|Integer|Long)>").matches(this) -> "List<int>"
-                Regex("(Collection|(Array)?List)<(Float|Double)>").matches(this) -> "List<double>"
-                Regex("(Collection|(Array)?List)<String>|String\\[]").matches(this) -> "List<String>"
+                Regex("java\\.util\\.(Collection|(Array)?List)<(Byte|Integer|Long)>").matches(this) -> "List<int>"
+                Regex("java\\.util\\.(Collection|(Array)?List)<(Float|Double)>").matches(this) -> "List<double>"
+                Regex("java\\.util\\.(Collection|(Array)?List)<String>|String\\[]").matches(this) -> "List<String>"
                 Regex("[Bb]yte\\[]").matches(this) -> "Uint8List"
                 Regex("(int|Integer)\\[]").matches(this) -> "Int32List"
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
-                Regex("(Hash)?Map").matches(this) -> "Map"
+                Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 // objc
                 Regex("NSString\\*?").matches(this) -> "String"
