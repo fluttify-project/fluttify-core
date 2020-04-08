@@ -1,6 +1,8 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.extensions.allTypes
 import me.yohom.fluttify.extensions.findType
+import me.yohom.fluttify.extensions.must
 import me.yohom.fluttify.extensions.mustNot
 
 /**
@@ -20,7 +22,7 @@ data class Parameter(
                 &&
                 variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
                 &&
-                variable.mustNot("未知类型") { typeName.findType().platform == Platform.Unknown }
+                variable.must("已知类型") { isKnownType() }
         println("参数:${variable}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result

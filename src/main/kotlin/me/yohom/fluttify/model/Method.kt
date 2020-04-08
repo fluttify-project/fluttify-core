@@ -71,7 +71,9 @@ data class Method(
                 &&
                 mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
                 &&
-                must("返回类型的祖宗类是已知类") { returnType.allTypes().flatMap { it.ancestorTypes }.all { it.findType().isKnownType() } }
+                must("返回类型的祖宗类是已知类") {
+                    returnType.allTypes().flatMap { it.ancestorTypes }.all { it.findType().isKnownType() }
+                }
                 &&
                 must("参数类型全部通过类型过滤") {
                     formalParams.all {
@@ -104,7 +106,13 @@ data class Method(
                 must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } }
                 &&
                 // 形参是已知类型或者是类泛型类型之一
-                must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() || it.variable.typeName in className.findType().genericTypes } }
+                must("形参类型全部都是已知类型") {
+                    formalParams.all {
+                        it.variable.jsonable()
+                                || it.variable.isKnownType()
+                                || it.variable.typeName in className.findType().genericTypes
+                    }
+                }
                 &&
                 must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } }
                 &&
