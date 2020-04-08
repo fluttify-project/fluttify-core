@@ -61,6 +61,18 @@ data class Method(
                 || must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } }
                 || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
                 &&
+                must("返回类型是具体类型或者含有实体子类的抽象类") {
+                    returnType.findType().run { isConcret() || hasConcretSubtype() }
+                }
+                &&
+                mustNot("返回类型是混淆类") { returnType.isObfuscated() }
+                &&
+                mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
+                &&
+                mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
+                &&
+                must("返回类型的祖宗类是已知类") { returnType.allTypes().flatMap { it.ancestorTypes }.all { it.findType().isKnownType() } }
+                &&
                 must("参数类型全部通过类型过滤") {
                     formalParams.all {
                         it.variable.typeName.jsonable() ||
@@ -117,22 +129,6 @@ data class Method(
                 mustNot("形参父类是混淆类") {
                     formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
                 }
-                &&
-                must("返回类型是具体类型或者含有实体子类的抽象类") {
-                    returnType.findType().run { isConcret() || hasConcretSubtype() }
-                }
-                &&
-                mustNot("返回类型是混淆类") { returnType.isObfuscated() }
-                &&
-                mustNot("返回类型是未知类") { returnType.findType().platform == Platform.Unknown }
-                &&
-                mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
-                &&
-                mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() }
-                &&
-                mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
-                &&
-                must("返回类型的祖宗类是已知类") { returnType.findType().ancestorTypes.all { it.findType().isKnownType() } }
         println("方法:${toString()}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result
