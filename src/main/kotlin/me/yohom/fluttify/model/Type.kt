@@ -146,7 +146,7 @@ open class Type : IPlatform, IScope {
                 &&
                 must("公开类型") { isPublic }
                 &&
-                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } }
+                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType().platform != Platform.Unknown } }
                 &&
                 // 换言之只支持接口的泛型
                 mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() }
