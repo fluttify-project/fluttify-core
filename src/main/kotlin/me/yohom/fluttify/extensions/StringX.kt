@@ -322,7 +322,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 // 若是某种java的List, 那么去掉前缀
-                Regex("((\\w|\\.)*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
+                Regex("((\\w|\\.)*)List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
                 Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
                 Regex("((Hash)?Map|NSDictionary)<.+,.+>").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
