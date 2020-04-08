@@ -384,9 +384,7 @@ fun TYPE_NAME.genericTypes(level: Int? = null): List<TYPE_NAME> {
             result = result.substringAfter("<").substringBeforeLast(">")
         }
     } else {
-        while (result.contains("<") && result.contains(">")) {
-            result = result.substringAfter("<").substringBeforeLast(">")
-        }
+        result = result.substringAfter("<").substringBeforeLast(">")
     }
     return if (result == this) listOf() else result.split(",")
 }

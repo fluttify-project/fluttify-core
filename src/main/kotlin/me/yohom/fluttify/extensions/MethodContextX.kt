@@ -1,6 +1,5 @@
 package me.yohom.fluttify.extensions
 
-import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable
@@ -9,63 +8,11 @@ import parser.objc.ObjectiveCParser
 
 //region Java Method
 fun JavaParser.MethodDeclarationContext.returnType(): String {
-    val containerType = typeTypeOrVoid().text.containerType()
-    // 返回类型 简称
-    val genericTypes = typeTypeOrVoid().text.genericTypes()
-
-    // 返回类型 全称
-    val fullGenericTypes = genericTypes.map { typeFullName(it) }.toMutableList()
-    // 返回容器类型 全称
-    val fullContainerType = typeFullName(containerType)
-
-    // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
-    // 遍历泛型列表, 找出和当前类型一样的成员, 并加上当前的包名
-    genericTypes.forEachIndexed { index, type ->
-        if (type.simpleName() == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
-            val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
-                ?.packageDeclaration()
-                ?.qualifiedName()
-                ?.text
-            fullGenericTypes[index] = "$packageName.${type.simpleName()}"
-        }
-    }
-
-    return when {
-        // 泛型列表不为空, 则拼接完整类型
-        genericTypes.isNotEmpty() -> "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
-        // 普通类型
-        else -> fullContainerType
-    }
+    return typeFullName(typeTypeOrVoid().text)
 }
 
 fun JavaParser.InterfaceMethodDeclarationContext.returnType(): String {
-    val containerType = typeTypeOrVoid().text.containerType()
-    // 返回类型 简称
-    val genericTypes = typeTypeOrVoid().text.genericTypes()
-
-    // 返回类型 全称
-    val fullGenericTypes = genericTypes.map { typeFullName(it) }.toMutableList()
-    // 返回容器类型 全称
-    val fullContainerType = typeFullName(containerType)
-
-    // 如果返回类型是当前类, 那么从import里是找不到的, 需要用package和当前类名合成
-    // 遍历泛型列表, 找出和当前类型一样的成员, 并加上当前的包名
-    genericTypes.forEachIndexed { index, type ->
-        if (type.simpleName() == ancestorOf(JavaParser.ClassDeclarationContext::class)?.IDENTIFIER()?.text) {
-            val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
-                ?.packageDeclaration()
-                ?.qualifiedName()
-                ?.text
-            fullGenericTypes[index] = "$packageName.${type.simpleName()}"
-        }
-    }
-
-    return when {
-        // 泛型列表不为空, 则拼接完整类型
-        genericTypes.isNotEmpty() -> "$fullContainerType<${fullGenericTypes.joinToString(",")}>"
-        // 普通类型
-        else -> fullContainerType
-    }
+    return typeFullName(typeTypeOrVoid().text)
 }
 
 fun JavaParser.MethodDeclarationContext.name(): String {
@@ -89,13 +36,6 @@ fun JavaParser.InterfaceMethodDeclarationContext.name(): String {
 
 fun JavaParser.InterfaceMethodDeclarationContext.isGenericMethod(): Boolean {
     return typeParameters() != null
-}
-
-fun JavaParser.MethodDeclarationContext.isPrivate(): Boolean {
-    return ancestorOf(JavaParser.ClassBodyDeclarationContext::class)
-        ?.modifier()
-        ?.map { it.text }
-        ?.contains("private") == true
 }
 
 fun JavaParser.MethodDeclarationContext.isStatic(): Boolean {
@@ -147,18 +87,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                val containerType = paramType.containerType()
-                val genericTypes = paramType.genericTypes()
-
-                val fullContainerType = typeFullName(containerType)
-                val fullGenericType = genericTypes.map { typeFullName(it) }
-
-                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
-                if (genericTypes.isEmpty()) {
-                    fullContainerType
-                } else {
-                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
-                }
+                typeFullName(paramType)
             }
             result.add(
                 Parameter(
@@ -181,18 +110,7 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                val containerType = paramType.containerType()
-                val genericTypes = paramType.genericTypes()
-
-                val fullContainerType = typeFullName(containerType)
-                val fullGenericType = genericTypes.map { typeFullName(it) }
-
-                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
-                if (genericTypes.isEmpty()) {
-                    fullContainerType
-                } else {
-                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
-                }
+                typeFullName(paramType)
             }
             result.add(
                 Parameter(
@@ -226,18 +144,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                val containerType = paramType.containerType()
-                val genericTypes = paramType.genericTypes()
-
-                val fullContainerType = typeFullName(containerType)
-                val fullGenericType = genericTypes.map { typeFullName(it) }
-
-                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
-                if (genericTypes.isEmpty()) {
-                    fullContainerType
-                } else {
-                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
-                }
+                typeFullName(paramType)
             }
             result.add(
                 Parameter(
@@ -260,18 +167,7 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
             val typeFullName = if (paramType in typeDeclareGenericTypes) {
                 paramType
             } else {
-                val containerType = paramType.containerType()
-                val genericTypes = paramType.genericTypes()
-
-                val fullContainerType = typeFullName(containerType)
-                val fullGenericType = genericTypes.map { typeFullName(it) }
-
-                // 泛型列表为空, 则直接使用容器类型, 否则拼接成完整类型
-                if (genericTypes.isEmpty()) {
-                    fullContainerType
-                } else {
-                    "${fullContainerType}<${fullGenericType.joinToString(",")}>"
-                }
+                typeFullName(paramType)
             }
             result.add(
                 Parameter(
