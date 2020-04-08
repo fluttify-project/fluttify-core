@@ -451,11 +451,14 @@ fun OBJC_FILE.objcType(): List<Type> {
                 ?.typeVariableDeclaratorOrName()
                 ?.mapNotNull { it.typeVariableDeclarator() }
                 ?.map {
-                    val rawTypeName = it.declarationSpecifiers().text
+                    val argName = it.declarator().text
+                    val argType = it.declarationSpecifiers()
+                        .text
+                        .run { if (argName.startsWith("*")) enpointer() else this }
                     Parameter(
                         variable = Variable(
-                            rawTypeName,
-                            it.declarator().text,
+                            argType,
+                            argName.depointer(),
                             Platform.iOS
                         ),
                         platform = Platform.iOS
@@ -463,6 +466,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 }
 
             if (returnType != null && typeName != null) {
+                // lambda
                 if (formalParams != null) {
                     result.add(
                         Type().also {
