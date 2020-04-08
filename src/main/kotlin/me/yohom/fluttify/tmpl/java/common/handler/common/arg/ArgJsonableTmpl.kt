@@ -18,28 +18,15 @@ fun ArgJsonableTmpl(variable: Variable): String {
         }
     }
     return tmpl
-        .replace(
-            "#__type_name__#",
-            when {
-                // 如果是数组, 那么需要去掉`[]`, 再补成列表
-                variable.isStringArray() -> type.dearray().enList()
-                // 其他列表类型, 加上List<>
-                variable.isIterable -> type.enList()
-                else -> type
-            }
-        )
+        .replace("#__type_name__#", type)
         .replace(
             "#__cast_type_name__#",
-            when {
-                // 如果是数组, 那么需要去掉`[]`, 再补成列表
-                variable.isStringArray() -> "(${type.dearray().enList()})"
-                // 其他列表类型, 加上List<>
-                variable.isIterable -> "(${type.enList()})"
-                // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.
-                // dart端只有int, 不区分32位和64位, java端具体类型由数值大小决定, 所以如果要精确处理这个问题的话会比较麻烦, 这里先一律转成int处理
-                // 后期如果真的碰到int无法满足的情况再想办法
-                variable.typeName == "Long" -> "(Long) (long) (int)"
-                variable.typeName == "long" -> "(long) (int)"
+            // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.
+            // dart端只有int, 不区分32位和64位, java端具体类型由数值大小决定, 所以如果要精确处理这个问题的话会比较麻烦, 这里先一律转成int处理
+            // 后期如果真的碰到int无法满足的情况再想办法
+            when (variable.typeName) {
+                "Long" -> "(Long) (long) (int)"
+                "long" -> "(long) (int)"
                 else -> "($type)"
             }
         )
