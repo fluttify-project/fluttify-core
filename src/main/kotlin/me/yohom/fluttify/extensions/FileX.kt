@@ -171,20 +171,9 @@ fun JAVA_FILE.javaType(): Type {
                     ctx.isStatic(),
                     ctx.getValue(),
                     Variable(
-                        ctx.type()
-                            .run { if (isCollection()) genericType() else this }, // 如果是集合类型, 那么抽取出泛型类型作为类型, 其他直接使用原始类名
+                        ctx.type(),
                         ctx.name(),
-                        Platform.Android,
-                        ctx.type().run {
-                            when {
-                                isArray() -> ListType.Array
-                                isArrayList() -> ListType.ArrayList
-                                isLinkedList() -> ListType.LinkedList
-                                isCollection() -> ListType.List
-                                else -> ListType.NonList
-                            }
-                        },
-                        ctx.type().collectionLevel()
+                        Platform.Android
                     ),
                     "$packageName.$simpleName",
                     platform = Platform.Android,
@@ -462,29 +451,22 @@ fun OBJC_FILE.objcType(): List<Type> {
                 ?.typeVariableDeclaratorOrName()
                 ?.mapNotNull { it.typeVariableDeclarator() }
                 ?.map {
-                    val rawTypeName = it.declarationSpecifiers().text
-                    val paramListType = rawTypeName.run {
-                        when {
-                            isArray() -> ListType.Array
-                            isArrayList() -> ListType.ArrayList
-                            isLinkedList() -> ListType.LinkedList
-                            isCollection() -> ListType.List
-                            else -> ListType.NonList
-                        }
-                    }
+                    val argName = it.declarator().text
+                    val argType = it.declarationSpecifiers()
+                        .text
+                        .run { if (argName.startsWith("*")) enpointer() else this }
                     Parameter(
                         variable = Variable(
-                            rawTypeName.genericType(),
-                            it.declarator().text,
-                            Platform.iOS,
-                            paramListType,
-                            rawTypeName.collectionLevel()
+                            argType,
+                            argName.depointer(),
+                            Platform.iOS
                         ),
                         platform = Platform.iOS
                     )
                 }
 
             if (returnType != null && typeName != null) {
+                // lambda
                 if (formalParams != null) {
                     result.add(
                         Type().also {
@@ -529,23 +511,12 @@ fun OBJC_FILE.objcType(): List<Type> {
                 val variable = Variable(
                     ctx.type().run {
                         when {
-                            isCollection() -> genericType()
                             ctx.name().startsWith("*") -> enpointer()
                             else -> this
                         }
                     },
                     ctx.name().depointer(), // 统一把*号加到类名上去
-                    Platform.iOS,
-                    ctx.type().run {
-                        when {
-                            isArray() -> ListType.Array
-                            isArrayList() -> ListType.ArrayList
-                            isLinkedList() -> ListType.LinkedList
-                            isCollection() -> ListType.List
-                            else -> ListType.NonList
-                        }
-                    },
-                    ctx.type().collectionLevel()
+                    Platform.iOS
                 )
                 // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
                 fields.add(

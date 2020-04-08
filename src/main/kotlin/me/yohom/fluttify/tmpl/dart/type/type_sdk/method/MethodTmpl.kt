@@ -58,7 +58,7 @@ fun MethodTmpl(method: Method): String {
     val nativeObjectPool = method.returnType.run {
         when {
             jsonable() or findType().isEnum() or isVoid() -> ""
-            isCollection() -> "kNativeObjectPool.addAll($returnStatement);"
+            isIterable() -> "kNativeObjectPool.addAll($returnStatement);"
             else -> "kNativeObjectPool.add($returnStatement);"
         }
     }

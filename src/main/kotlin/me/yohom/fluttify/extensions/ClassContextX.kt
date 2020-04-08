@@ -1,21 +1,15 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.TYPE_NAME
 import parser.java.JavaParser
 import parser.objc.ObjectiveCParser
 
 //region Java类扩展
-/**
- * 是某个类的子类(实现了某个接口的认为还是model, 比如说实现了Parcel)
- */
-fun JavaParser.ClassDeclarationContext?.isSubclass(): Boolean {
-    if (this == null) return false
-    return EXTENDS() != null
-}
 
 /**
  * 获取泛型类型
  */
-fun JavaParser.ClassDeclarationContext.genericTypes(): List<String> {
+fun JavaParser.ClassDeclarationContext.genericTypes(): List<TYPE_NAME> {
     return typeParameters()
         ?.typeParameter()
         ?.map { it.IDENTIFIER().text } ?: listOf()

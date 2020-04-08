@@ -2,7 +2,6 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
-import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -44,13 +43,8 @@ fun TYPE_NAME.jsonable(): Boolean {
 /**
  * 是否是集合类型
  */
-fun TYPE_NAME.isCollection(): Boolean {
-    return Regex("\\w*List<(\\w*|.*)>").matches(this)
-            || Regex("Iterable<(\\w*|.*)>").matches(this)
-            || Regex("Collection<(\\w*|.*)>").matches(this)
-            || Regex("NSArray.*\\*?").matches(this)
-            || Regex("NSMutableArray.*\\*?").matches(this)
-            || Regex("""\w+\[]""").matches(this)
+fun TYPE_NAME.isIterable(): Boolean {
+    return Regexes.ITERABLE.matches(this)
 }
 
 /**
@@ -214,16 +208,15 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    val type = depointer()
-        .deprotocol()
-        .let {
-            if (it.isCollection()) {
-                if (it.collectionLevel() != 0) it.genericType() else ""
-            } else {
-                it
-            }
-        }
+    val type = depointer().deprotocol()
     return SDK.findType(type)
+}
+
+/**
+ * 获取与当前类名关联的所有类型信息
+ */
+fun TYPE_NAME.allTypes(): List<Type> {
+    return genericTypes().map { it.findType() }.union(listOf(containerType().findType())).toList()
 }
 
 /**
@@ -328,19 +321,19 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("long long").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
+                Regex("NSDictionary\\*").matches(this) -> "Map"
                 // 若是某种java的List, 那么去掉前缀
-                Regex("(\\w*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
+                Regex("((\\w|\\.)*)List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
                 Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
-                Regex("((Hash)?Map|NSDictionary)<.+,.+>").matches(this) -> {
+                Regex("((Hash)?Map|NSDictionary)(<.+,.+>)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
                     "Map<$keyType,$valueType>"
                 }
-                startsWith("NSArray") -> "List<${genericType().depointer()}>"
+                startsWith("NSArray") -> "List<${genericTypes()[0].depointer()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
-                // 其他情况需要去掉泛型
-                else -> this.containerType()
+                else -> this
             }
         }
         .replace("$", ".")
@@ -381,33 +374,31 @@ fun String.enpointer(): String {
 }
 
 /**
- * 获取泛型类型名称
+ * 获取泛型列表
+ *
+ * 根据[level]获取对应层级的泛型类型, 如果为null就获取到最内层的泛型. 如果没有泛型则返回空列表.
  */
-fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
+fun TYPE_NAME.genericTypes(level: Int? = null): List<TYPE_NAME> {
     var result = this
     if (level != null) {
         for (i in 0 until level) {
             result = result.substringAfter("<").substringBeforeLast(">")
         }
     } else {
-        while (result.contains("<") && result.contains(">")) {
-            result = result.substringAfter("<").substringBeforeLast(">")
-        }
+        result = result.substringAfter("<").substringBeforeLast(">")
     }
-    return result
+    return if (result == this) listOf() else result.split(",")
 }
 
 /**
- * 当前类型是否是泛型声明类型
- *
- * 比如说有一个类
- * class A<T> {
- *   void b(T t) {}
- * }
- * 那么判断的就是这个T是否的泛型声明类型
+ * 获取最内层泛型
  */
-fun TYPE_NAME.isDeclaredGenericType(): Boolean {
-    return findType().platform == Platform.Unknown /* 泛型类型肯定找不到的, 所以是unknown */ && !contains(".")
+fun TYPE_NAME.innermostGenericType(): TYPE_NAME {
+    var result = this
+    while (result.contains("<") && result.contains(">")) {
+        result = result.substringAfter("<").substringBeforeLast(">")
+    }
+    return result
 }
 
 /**
@@ -427,10 +418,10 @@ fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
 /**
  * 获取泛型层数 用在List中 表示嵌套了几层
  */
-fun TYPE_NAME.collectionLevel(): Int {
+fun TYPE_NAME.iterableLevel(): Int {
     var result = this
     var level = 0
-    if (isCollection()) {
+    if (isIterable()) {
         while (result.contains("<") && result.contains(">")) {
             result = result.substringAfter("<").substringBeforeLast(">")
             level++

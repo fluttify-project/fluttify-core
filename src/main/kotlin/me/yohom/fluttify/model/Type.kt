@@ -1,6 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.EXCLUDE_TYPES
+import me.yohom.fluttify.Regexes
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
@@ -139,17 +140,31 @@ open class Type : IPlatform, IScope {
     }
 
     fun filter(): Boolean {
-        return must("已知类型") { this != UNKNOWN_TYPE } &&
-                must("公开类型") { isPublic } &&
-                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } } &&
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("类:${name}执行过滤开始")
+        val result = must("已知类型") { platform != Platform.Unknown }
+                &&
+                must("公开类型") { isPublic }
+                &&
+                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType().platform != Platform.Unknown } }
+                &&
                 // 换言之只支持接口的泛型
-                mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() } &&
-                mustNot("混淆类型") { isObfuscated() } &&
-                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&
-                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } &&
+                mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() }
+                &&
+                mustNot("混淆类型") { isObfuscated() }
+                &&
+                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
+                &&
+                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } }
+                &&
                 (isEnum() || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
                     if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
                 }
+                ||
+                must("是List或Map") { Regexes.MAP.matches(name) || Regexes.ITERABLE.matches(name) }
+        println("类:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     /**
@@ -174,7 +189,7 @@ open class Type : IPlatform, IScope {
 
     fun isKnownFunction(): Boolean {
         return isFunction()
-                && returnType.findType() != UNKNOWN_TYPE
+                && returnType.findType().platform == Platform.Unknown
                 && formalParams.all { it.variable.isKnownType() }
     }
 
@@ -220,27 +235,48 @@ open class Type : IPlatform, IScope {
     }
 
     fun constructable(): Boolean {
-        return !isAbstract
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓构造器↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("构造器:${name}执行过滤开始")
+        val result = mustNot("抽象类型") { isAbstract }
+                &&
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
-                && !(constructors.any {
-            it.formalParams.any {
-                it.variable.type().constructors.any { it.formalParams.any { it.variable.typeName == name } }
-            }
-        })
-                && (this != UNKNOWN_TYPE || jsonable())
-                && !isEnum()
-                && !isLambda()
-                && !isFunction()
-                && !isAlias()
-                && !isObfuscated()
+                mustNot("构造器循环构造") {
+                    constructors.any {
+                        it.formalParams.any {
+                            it.variable.containerType().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+                        }
+                    }
+                }
+                &&
+                must("是已知类型或jsonable类型") { platform != Platform.Unknown || jsonable() }
+                &&
+                mustNot("枚举类型") { isEnum() }
+                &&
+                mustNot("lambda类型") { isLambda() }
+                &&
+                mustNot("函数类型") { isFunction() }
+                &&
+                mustNot("别名类型") { isAlias() }
+                &&
+                mustNot("混淆类型") { isObfuscated() }
+                &&
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
-                && ((isInnerType && isStaticType) || !isInnerType)
-                && (constructors.any { it.isPublic } || constructors.isEmpty())
-                && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
-                && (constructors.any { it.filter() } || constructors.isEmpty() || isJsonable)
-                // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
-                && ((platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false) || platform != Platform.iOS)
+                must("静态类的内部类") { (isInnerType && isStaticType) || !isInnerType }
+                &&
+                must("有公开构造器或没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
+                &&
+                must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
+                &&
+                must("所有构造器都通过过滤或没有构造器或jsonable类型") { constructors.any { it.filter() } || constructors.isEmpty() || isJsonable }
+                &&
+                must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
+                    platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
+                            || platform != Platform.iOS
+                }
+        println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     fun isEnum(): Boolean {
@@ -267,20 +303,12 @@ open class Type : IPlatform, IScope {
         return subtypes().isNotEmpty()
     }
 
-    fun isList(): Boolean {
-        return name.isCollection()
-    }
-
     fun jsonable(): Boolean {
         return name.jsonable()
     }
 
     fun toDartType(): String {
         return name.toDartType()
-    }
-
-    fun isRefType(): Boolean {
-        return typeType == TypeType.Class || typeType == TypeType.Interface
     }
 
     fun isObfuscated(): Boolean {
@@ -296,10 +324,6 @@ open class Type : IPlatform, IScope {
                 "UIView"
             )
         } && !isAbstract
-    }
-
-    fun nameWithGeneric(): String {
-        return if (genericTypes.isEmpty()) name else "$name<${genericTypes.joinToString()}>"
     }
 
     /**
@@ -321,13 +345,6 @@ open class Type : IPlatform, IScope {
     }
 
     /**
-     * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的类
-     */
-    fun ancestorClasses(): List<String> {
-        return ancestorTypes.filter { it.findType().typeType == TypeType.Class }
-    }
-
-    /**
      * [ancestorTypes]的一个别名方法, 过滤出祖宗类型里的接口, [includeObfuscated]区分是否包含混淆的接口类
      */
     fun ancestorInterfaces(includeObfuscated: Boolean = true): List<String> {
@@ -337,11 +354,11 @@ open class Type : IPlatform, IScope {
     }
 
     fun isKnownType(): Boolean {
-        return this != UNKNOWN_TYPE
+        return platform != Platform.Unknown
     }
 
     fun isUnknownType(): Boolean {
-        return this == UNKNOWN_TYPE
+        return platform == Platform.Unknown
     }
 
     override fun toString(): String {
@@ -350,14 +367,9 @@ open class Type : IPlatform, IScope {
 
     companion object {
         /**
-         * 未知的类
-         */
-        val UNKNOWN_TYPE: Type = Type().apply { name = "unknown" }
-
-        /**
          * 没有类
          */
-        val NO_TYPE: Type = Type().apply { name = "" }
+        val NO_TYPE: Type = Type().apply { name = ""; platform = Platform.General }
     }
 }
 

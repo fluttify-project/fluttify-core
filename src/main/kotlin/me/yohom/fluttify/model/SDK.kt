@@ -81,15 +81,15 @@ class SDK : IPlatform {
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
                 allTypes.map { it.name.depointer() }.contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
                 // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
-                finalTypeName.jsonable() -> Type().apply { name = finalTypeName; isJsonable = true }
+                finalTypeName.jsonable() -> Type().apply { name = finalTypeName; isJsonable = true; platform = Platform.General }
                 // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
                 SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(finalTypeName) } -> SYSTEM_TYPE.first {
                     Regex(it.name).matches(finalTypeName)
                 }
                 // 是objc的id指针
-                finalTypeName == "id" -> Type().apply { name = "id"; typeType == TypeType.Class }
+                finalTypeName == "id" -> Type().apply { name = "id"; typeType = TypeType.Class; platform = Platform.iOS }
                 // void*类型
-                finalTypeName == "void*" -> Type().apply { name = "NSValue"; typeType = TypeType.Class }
+                finalTypeName == "void*" -> Type().apply { name = "NSValue"; typeType = TypeType.Class; platform = Platform.iOS }
                 // lambda
                 finalTypeName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda
@@ -105,9 +105,10 @@ class SDK : IPlatform {
                                 platform = Platform.General
                             )
                         }
+                    platform = Platform.iOS
                 }
                 // 其他情况一律认为不认识的类
-                else -> Type.UNKNOWN_TYPE
+                else -> Type().apply { name = finalTypeName }
             }
         }
     }

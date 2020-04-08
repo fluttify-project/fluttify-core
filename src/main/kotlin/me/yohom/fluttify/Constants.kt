@@ -110,9 +110,15 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum; platform = Platform.iOS }
 )
 
-// TODO 集中一下目前的正则表达式, 统一管理
 object Regexes {
-    val MAP = Regex("(\\w*Map|NS(Mutable)?Dictionary)<.+,.+>")
+    val MAP = Regex("(\\w*Map|NS(Mutable)?Dictionary)(<.+,.+>)?")
+    // Regex("\\w*List<(\\w*|.*)>").matches(this)
+    //            || Regex("Iterable<(\\w*|.*)>").matches(this)
+    //            || Regex("Collection<(\\w*|.*)>").matches(this)
+    //            || Regex("NSArray.*\\*?").matches(this)
+    //            || Regex("NSMutableArray.*\\*?").matches(this)
+    //            || Regex("""\w+\[]""").matches(this)
+    val ITERABLE = Regex("(((\\w|\\.)*List|Iterable|Collection)(<.*>)?)|(NS(Mutable)?Array.*\\*?)|(\\w+\\[])")
 }
 
 /**

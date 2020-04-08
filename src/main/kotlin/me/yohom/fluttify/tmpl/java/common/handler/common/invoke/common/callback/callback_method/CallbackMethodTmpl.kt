@@ -56,7 +56,7 @@ fun CallbackMethodTmpl(method: Method): String {
             when {
                 it.variable.jsonable() -> CallbackArgJsonableTmpl(it)
                 it.variable.isEnum() -> CallbackArgEnumTmpl(it)
-                it.variable.isList -> CallbackArgListTmpl(it)
+                it.variable.isIterable -> CallbackArgListTmpl(it)
                 else -> CallbackArgRefTmpl(it)
             }
         }

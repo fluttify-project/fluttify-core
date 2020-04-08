@@ -18,11 +18,7 @@ fun GetterTmpl(field: Field): String {
         // 碰到了void *mData这种情况, 导致被识别为void类型
         var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
         if (isStructPointer()) {
-            result = "List<$result>"
-        } else if (isList) {
-            for (i in 0 until genericLevel) {
-                result = "List<$result>"
-            }
+            result = result.enList()
         }
         result
     }
@@ -42,7 +38,8 @@ fun GetterTmpl(field: Field): String {
     val result = field.variable.run {
         when {
             jsonable() or isAliasType() -> ResultJsonableTmpl(typeNameWithContainer, platform)
-            isList || isStructPointer() -> ResultListTmpl(typeName, platform)
+            isIterable -> ResultListTmpl(typeName.genericTypes()[0], platform)
+            isStructPointer() -> ResultListTmpl(typeName.depointer(), platform)
             isEnum() -> ResultEnumTmpl(typeName)
             typeName.isVoid() -> ResultVoidTmpl()
             else -> ResultRefTmpl(typeName)
@@ -51,7 +48,7 @@ fun GetterTmpl(field: Field): String {
     val nativeObjectPool = field.variable.run {
         when {
             jsonable() or isEnum() or isAliasType() -> ""
-            isList || isStructPointer() -> "kNativeObjectPool.addAll($result);"
+            isIterable || isStructPointer() -> "kNativeObjectPool.addAll($result);"
             else -> "kNativeObjectPool.add($result);"
         }
     }

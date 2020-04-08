@@ -24,16 +24,16 @@ fun InvokeTmpl(method: Method): String {
             when {
                 type.findType().isEnum() -> {
                     // 枚举列表
-                    if (it.isList) {
+                    if (it.isIterable) {
                         "${it.name.depointer()}.map((__it__) => __it__.index).toList()"
                     } else {
                         "${it.name.depointer()}.index"
                     }
                 }
-                type.jsonable() -> it.name.depointer()
-                (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}.map((__it__) => __it__.refId).toList()"
-                it.genericLevel > 1 -> "[]" // 多维数组暂不处理
-                else -> "${it.name.depointer()}.refId"
+                type.jsonable() -> it.name
+                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__.refId).toList()"
+                it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
+                else -> "${it.name}.refId"
             }
         }
     return tmpl

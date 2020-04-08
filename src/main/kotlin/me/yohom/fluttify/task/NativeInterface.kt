@@ -80,13 +80,13 @@ open class AndroidJavaInterface : FluttifyTask() {
             val methods = lib.types
                 .filterType()
                 .flatMap { it.methods }
-                .filterMethod(native = true)
+                .filterMethod()
                 .map { HandlerMethodTmpl(it) }
 
             val methodsBatch = lib.types
                 .filterType()
                 .flatMap { it.methods }
-                .filterMethod(batch = true, native = true)
+                .filterMethod(batch = true)
                 .map { HandlerMethodBatchTmpl(it) }
 
             val objectCreators = lib.types
@@ -203,13 +203,13 @@ open class IOSObjcInterface : FluttifyTask() {
             val methods = lib.types
                 .filterType()
                 .flatMap { it.methods }
-                .filterMethod(native = true)
+                .filterMethod()
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
 
             val methodsBatch = lib.types
                 .filterType()
                 .flatMap { it.methods }
-                .filterMethod(batch = true, native = true)
+                .filterMethod(batch = true)
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl(it) }
 
             val typeCasts = lib.types
