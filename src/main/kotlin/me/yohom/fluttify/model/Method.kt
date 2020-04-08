@@ -124,7 +124,7 @@ data class Method(
                 &&
                 mustNot("返回类型是混淆类") { returnType.isObfuscated() }
                 &&
-                mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE }
+                mustNot("返回类型是未知类") { returnType.findType().platform == Platform.Unknown }
                 &&
                 mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
                 &&

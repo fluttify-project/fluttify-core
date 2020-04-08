@@ -73,8 +73,8 @@ data class Variable(
     }
 
     fun isKnownType(): Boolean {
-        return typeName.containerType().findType() != Type.UNKNOWN_TYPE &&
-                typeName.genericTypes().all { it.findType() != Type.UNKNOWN_TYPE }
+        return typeName.containerType().findType().platform == Platform.Unknown &&
+                typeName.genericTypes().all { it.findType().platform == Platform.Unknown }
     }
 
     fun isPublicType(): Boolean {

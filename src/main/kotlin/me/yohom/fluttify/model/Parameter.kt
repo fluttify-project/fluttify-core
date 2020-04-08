@@ -16,7 +16,7 @@ data class Parameter(
     fun filter(): Boolean {
         return variable.mustNot("Lambda") { isLambda() } && // lambda不参与传递
                 variable.mustNot("Callback") { isCallback() } && // 回调类不参与传递(但是接口类型参与传递)
-                variable.mustNot("未知类型") { typeName.findType() == Type.UNKNOWN_TYPE }
+                variable.mustNot("未知类型") { typeName.findType().platform == Platform.Unknown }
     }
 
     companion object {

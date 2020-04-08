@@ -189,7 +189,7 @@ open class Type : IPlatform, IScope {
 
     fun isKnownFunction(): Boolean {
         return isFunction()
-                && returnType.findType() != UNKNOWN_TYPE
+                && returnType.findType().platform == Platform.Unknown
                 && formalParams.all { it.variable.isKnownType() }
     }
 
@@ -238,24 +238,36 @@ open class Type : IPlatform, IScope {
         return !isAbstract
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
-                && !(constructors.any {
-            it.formalParams.any {
-                it.variable.containerType().constructors.any { it.formalParams.any { it.variable.typeName == name } }
-            }
-        })
-                && (this != UNKNOWN_TYPE || jsonable())
-                && !isEnum()
-                && !isLambda()
-                && !isFunction()
-                && !isAlias()
-                && !isObfuscated()
+                &&
+                !(constructors.any {
+                    it.formalParams.any {
+                        it.variable.containerType().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+                    }
+                })
+                &&
+                (platform == Platform.Unknown || jsonable())
+                &&
+                !isEnum()
+                &&
+                !isLambda()
+                &&
+                !isFunction()
+                &&
+                !isAlias()
+                &&
+                !isObfuscated()
+                &&
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
-                && ((isInnerType && isStaticType) || !isInnerType)
-                && (constructors.any { it.isPublic } || constructors.isEmpty())
-                && (superClass.findType() != UNKNOWN_TYPE || superClass == "")
-                && (constructors.any { it.filter() } || constructors.isEmpty() || isJsonable)
+                ((isInnerType && isStaticType) || !isInnerType)
+                &&
+                (constructors.any { it.isPublic } || constructors.isEmpty())
+                &&
+                (superClass.findType().platform == Platform.Unknown || superClass == "")
+                &&
+                (constructors.any { it.filter() } || constructors.isEmpty() || isJsonable)
+                &&
                 // 这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类
-                && ((platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false) || platform != Platform.iOS)
+                ((platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false) || platform != Platform.iOS)
     }
 
     fun isEnum(): Boolean {
