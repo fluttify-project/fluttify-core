@@ -54,71 +54,92 @@ data class Method(
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
 
     fun filter(): Boolean {
-        println("方法:${toString()}正在执行过滤")
-        return must("返回类型通过类型过滤") { returnType.findType().filter() || returnType in className.findType().genericTypes } &&
-                must("参数类型全部通过类型过滤") { formalParams.all { it.variable.type().filter() || it.variable.typeName in className.findType().genericTypes } } &&
-                must("公开方法") { isPublic } &&
-                mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } } &&
-                mustNot("废弃方法") { isDeprecated } &&
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓方法↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("方法:${toString()}执行过滤开始")
+        val result = (must("返回类型是jsonable类型") { returnType.jsonable() } ||
+                must("返回类型是void") { returnType.isVoid() } ||
+                must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } } ||
+                must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
+                &&
+                must("参数类型全部通过类型过滤") {
+                    formalParams.all {
+                        it.variable.typeName.jsonable() ||
+                                it.variable.allTypes().all { it.filter() } ||
+                                it.variable.typeName in className.findType().genericTypes
+                    }
+                }
+                &&
+                must("公开方法") { isPublic }
+                &&
+                mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } }
+                &&
+                mustNot("废弃方法") { isDeprecated }
+                &&
                 // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
                 mustNot("祖宗类已有的方法") {
-                    name in
-                            className
-                                .findType()
-                                .ancestorTypes
-                                .filter { !it.isObfuscated() }
-                                .flatMap { it.findType().methods }
-                                .map { it.name }
-                } &&
-                must("所在类是公开类") { className.findType().isPublic } &&
-                must("所在类是静态类型") { className.findType().isStaticType } &&
-                must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } } &&
+                    name in className
+                        .findType()
+                        .ancestorTypes
+                        .filter { !it.isObfuscated() }
+                        .flatMap { it.findType().methods }
+                        .map { it.name }
+                }
+                &&
+                must("所在类是公开类") { className.containerType().findType().isPublic }
+                &&
+                must("所在类是静态类型") { className.containerType().findType().isStaticType }
+                &&
+                must("形参类型全部都是公开类型") { formalParams.all { it.variable.isPublicType() } }
+                &&
                 // 形参是已知类型或者是类泛型类型之一
-                must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() || it.variable.typeName in className.findType().genericTypes } } &&
-                must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } } &&
+                must("形参类型全部都是已知类型") { formalParams.all { it.variable.isKnownType() || it.variable.typeName in className.findType().genericTypes } }
+                &&
+                must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } }
+                &&
                 must("形参中的lambda类型的所有参数是已知类型") {
                     formalParams.filter { it.variable.isLambda() }
                         .run { isEmpty() || all { it.variable.isKnownLambda() } }
-                } &&
-                mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } } &&
-                mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } } &&
+                }
+                &&
+                mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } }
+                &&
+                mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } }
+                &&
                 // 参数不能中含有排除的类
-                mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.typeName.depointer()) } } } &&
+                mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.typeName.depointer()) } } }
+                &&
                 mustNot("形参祖宗类含有未知类型") {
                     formalParams
                         .flatMap { it.variable.typeName.findType().ancestorTypes }
                         .any { it.findType().isUnknownType() }
-                } &&
+                }
+                &&
                 mustNot("形参父类是混淆类") {
                     formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
-                } &&
+                }
+                &&
                 must("返回类型是具体类型或者含有实体子类的抽象类") {
                     returnType.findType().run { isConcret() || hasConcretSubtype() }
-                } &&
-                mustNot("返回类型是混淆类") { returnType.isObfuscated() } &&
-                mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE } &&
-                mustNot("返回类型是嵌套数组/列表") { returnType.run { collectionLevel() > 1 || (isList() && genericTypes()[0].isArray()) } } &&
-                mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() } &&
-                mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } } &&
+                }
+                &&
+                mustNot("返回类型是混淆类") { returnType.isObfuscated() }
+                &&
+                mustNot("返回类型是未知类") { returnType.findType() == Type.UNKNOWN_TYPE }
+                &&
+                mustNot("返回类型是嵌套数组/列表") { returnType.run { collectionLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
+                &&
+                mustNot("返回类型含有泛型") { returnType.findType().genericTypes.isNotEmpty() }
+                &&
+                mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
+                &&
                 must("返回类型的祖宗类是已知类") { returnType.findType().ancestorTypes.all { it.findType().isKnownType() } }
+        println("方法:${toString()}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     fun filterBatch(): Boolean {
         return filter() && mustNot("含有回调参数") { formalParams.any { it.variable.run { isCallback() || isLambda() } } }
-    }
-
-    /**
-     * 原生端其实不需要实现callback类型的handler, 因为dart端永远也不会有这个机会, 这些callback在dart端只有被原生调用, 所以可以过滤掉
-     */
-    fun filterNative(): Boolean {
-        return filter() && !className.findType().isCallback()
-    }
-
-    /**
-     * 同[filterNative]
-     */
-    fun filterNativeBatch(): Boolean {
-        return filterBatch() && !className.findType().isCallback()
     }
 
     fun nameWithClass(): String {

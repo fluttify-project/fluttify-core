@@ -54,21 +54,13 @@ fun List<Field>.filterConstants(): List<Field> {
 /**
  * 过滤出可以自动生成的方法
  */
-fun List<Method>.filterMethod(batch: Boolean = false, native: Boolean = false): List<Method> {
+fun List<Method>.filterMethod(batch: Boolean = false): List<Method> {
     return asSequence()
         .filter {
-            if (native) {
-                if (batch) {
-                    it.filterNativeBatch()
-                } else {
-                    it.filterNative()
-                }
+            if (batch) {
+                it.filterBatch()
             } else {
-                if (batch) {
-                    it.filterBatch()
-                } else {
-                    it.filter()
-                }
+                it.filter()
             }
         }
         .distinctBy { it.nameWithClass() }

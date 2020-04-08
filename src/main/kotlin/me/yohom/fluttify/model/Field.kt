@@ -1,7 +1,6 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.EXCLUDE_TYPES
-import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
 data class Field(
@@ -59,7 +58,7 @@ data class Field(
     }
 
     fun filterGetters(): Boolean {
-        return variable.type().filter() && // 必须先通过类型的过滤
+        return variable.containerType().filter() && // 必须先通过类型的过滤
                 must("公开field") { isPublic } &&
                 mustNot("静态field") { isStatic } &&
                 variable.must("已知类型") { isKnownType() } &&
@@ -78,7 +77,7 @@ data class Field(
     }
 
     fun filterSetter(): Boolean {
-        return variable.type().filter() && // 必须先通过类型的过滤
+        return variable.containerType().filter() && // 必须先通过类型的过滤
                 must("公开field") { isPublic } &&
                 mustNot("不可改field") { isFinal } &&
                 mustNot("静态field") { isStatic } &&
@@ -96,7 +95,7 @@ data class Field(
     }
 
     fun filterSetterBatch(): Boolean {
-        return filterSetter() && !variable.type().isCallback()
+        return filterSetter() && !variable.containerType().isCallback()
     }
 
     fun getterMethodName(): String {

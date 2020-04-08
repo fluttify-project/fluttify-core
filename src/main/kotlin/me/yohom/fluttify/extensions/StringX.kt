@@ -213,16 +213,15 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    val type = depointer()
-        .deprotocol()
-        .let {
-            if (it.isCollection()) {
-                if (it.collectionLevel() != 0) it.genericTypes()[0] else ""
-            } else {
-                it
-            }
-        }
+    val type = depointer().deprotocol()
     return SDK.findType(type)
+}
+
+/**
+ * 获取与当前类名关联的所有类型信息
+ */
+fun TYPE_NAME.allTypes(): List<Type> {
+    return genericTypes().map { it.findType() }.union(listOf(containerType().findType())).toList()
 }
 
 /**
@@ -328,7 +327,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 // 若是某种java的List, 那么去掉前缀
-                Regex("(\\w*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
+                Regex("((\\w|\\.)*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
                 Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
                 Regex("((Hash)?Map|NSDictionary)<.+,.+>").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
@@ -338,8 +337,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 startsWith("NSArray") -> "List<${genericTypes()[0].depointer()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
-                // 其他情况需要去掉泛型
-                else -> this.containerType()
+                else -> this
             }
         }
         .replace("$", ".")

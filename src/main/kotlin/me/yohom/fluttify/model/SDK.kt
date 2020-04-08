@@ -107,7 +107,7 @@ class SDK : IPlatform {
                         }
                 }
                 // 其他情况一律认为不认识的类
-                else -> Type.UNKNOWN_TYPE
+                else -> Type().apply { name = finalTypeName }
             }
         }
     }

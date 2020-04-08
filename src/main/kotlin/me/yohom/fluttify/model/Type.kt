@@ -1,6 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.EXCLUDE_TYPES
+import me.yohom.fluttify.Regexes
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
@@ -139,17 +140,31 @@ open class Type : IPlatform, IScope {
     }
 
     fun filter(): Boolean {
-        return must("已知类型") { this != UNKNOWN_TYPE } &&
-                must("公开类型") { isPublic } &&
-                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } } &&
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("类:${name}执行过滤开始")
+        val result = must("已知类型") { platform != Platform.Unknown }
+                &&
+                must("公开类型") { isPublic }
+                &&
+                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType() != UNKNOWN_TYPE } }
+                &&
                 // 换言之只支持接口的泛型
-                mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() } &&
-                mustNot("混淆类型") { isObfuscated() } &&
-                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } } &&
-                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } } &&
+                mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() }
+                &&
+                mustNot("混淆类型") { isObfuscated() }
+                &&
+                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
+                &&
+                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } }
+                &&
                 (isEnum() || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
                     if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
                 }
+                ||
+                must("是List或Map") { Regexes.MAP.matches(name) || Regexes.ITERABLE.matches(name) }
+        println("类:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     /**
@@ -225,7 +240,7 @@ open class Type : IPlatform, IScope {
                 // 这样的结构会造成死循环
                 && !(constructors.any {
             it.formalParams.any {
-                it.variable.type().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+                it.variable.containerType().constructors.any { it.formalParams.any { it.variable.typeName == name } }
             }
         })
                 && (this != UNKNOWN_TYPE || jsonable())
@@ -279,10 +294,6 @@ open class Type : IPlatform, IScope {
         return name.toDartType()
     }
 
-    fun isRefType(): Boolean {
-        return typeType == TypeType.Class || typeType == TypeType.Interface
-    }
-
     fun isObfuscated(): Boolean {
         return name.isObfuscated()
     }
@@ -296,10 +307,6 @@ open class Type : IPlatform, IScope {
                 "UIView"
             )
         } && !isAbstract
-    }
-
-    fun nameWithGeneric(): String {
-        return if (genericTypes.isEmpty()) name else "$name<${genericTypes.joinToString()}>"
     }
 
     /**
@@ -337,11 +344,11 @@ open class Type : IPlatform, IScope {
     }
 
     fun isKnownType(): Boolean {
-        return this != UNKNOWN_TYPE
+        return platform != Platform.Unknown
     }
 
     fun isUnknownType(): Boolean {
-        return this == UNKNOWN_TYPE
+        return platform == Platform.Unknown
     }
 
     override fun toString(): String {
@@ -352,6 +359,7 @@ open class Type : IPlatform, IScope {
         /**
          * 未知的类
          */
+        @Deprecated("使用platform == Platform.Unknown判断是否是未知类")
         val UNKNOWN_TYPE: Type = Type().apply { name = "unknown" }
 
         /**

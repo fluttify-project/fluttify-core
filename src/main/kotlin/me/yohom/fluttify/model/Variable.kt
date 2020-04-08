@@ -86,8 +86,16 @@ data class Variable(
         return typeName.findType().genericTypes.isNotEmpty()
     }
 
-    fun type(): Type {
+    fun containerType(): Type {
         return typeName.containerType().findType()
+    }
+
+    fun genericTypes(): List<Type> {
+        return typeName.genericTypes().map { it.findType() }
+    }
+
+    fun allTypes(): List<Type> {
+        return typeName.allTypes()
     }
 
     fun objcType(): String {
@@ -146,7 +154,7 @@ data class Variable(
         return if (typeName.findType().isCallback() && hostMethod != null) {
             when {
                 isList -> "new ArrayList() /* 暂不支持列表回调 */"
-                type().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
+                containerType().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
                 else -> CallbackTmpl(hostMethod, typeName.findType())
             }
         } else {
@@ -176,7 +184,7 @@ data class Variable(
         return if (!isLambda()) {
             false
         } else {
-            type().formalParams.all { it.variable.type().isKnownType() }
+            containerType().formalParams.all { it.variable.containerType().isKnownType() }
         }
     }
 }
