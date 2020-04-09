@@ -273,7 +273,7 @@ fun ObjectiveCParser.BlockTypeContext.returnType(): String {
 
 fun ObjectiveCParser.BlockTypeContext.parameters(): String {
     return blockParameters().typeVariableDeclaratorOrName().joinToString(",") {
-        val name = it.typeVariableDeclarator().declarator().directDeclarator().identifier().text
+        val name = it.typeVariableDeclarator().declarator().text
         val type = it.typeVariableDeclarator()
             .declarationSpecifiers()
             .text

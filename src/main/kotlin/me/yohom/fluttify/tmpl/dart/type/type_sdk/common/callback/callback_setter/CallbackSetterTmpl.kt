@@ -25,9 +25,9 @@ fun CallbackSetterTmpl(field: Field): String {
     // 如果是View类型的类, 那么就加上当前的View代表的id
     // 因为objc端的delegate方法无法区分调用方, 所以只有view类型的类能根据viewId区分
     val callbackChannel = if (field.className.findType().isView()) {
-        "${field.variable.typeName.replace("$", ".")}::Callback@\$refId"
+        "${field.variable.typeName.deprotocol().replace("$", ".")}::Callback@\$refId"
     } else {
-        "${field.variable.typeName.replace("$", ".")}::Callback"
+        "${field.variable.typeName.deprotocol().replace("$", ".")}::Callback"
     }
 
     val callbackDelegateCases = field

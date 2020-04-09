@@ -97,13 +97,9 @@ data class Variable(
     }
 
     fun objcType(): String {
-        return when {
-            typeName == "id" -> "id"
-            typeName == "constvoid*" -> "const void*"
-            isValueType() or isStruct() -> typeName
-            isInterface() -> typeName.enprotocol()
-            isIterable && getIterableLevel() > 0 -> "NSArray<$typeName>*"
-            else -> typeName.removeObjcSpecifier().enpointer() // 要先去除一下objc里的限定词
+        return when (typeName) {
+            "constvoid*" -> "const void*"
+            else -> typeName.removeObjcSpecifier() // 要先去除一下objc里的限定词
         }
     }
 
