@@ -10,9 +10,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 data class Variable(
     val typeName: TYPE_NAME,
     val name: String,
-    override var platform: Platform,
-    @Deprecated("不再使用")
-    val listType: ListType = ListType.NonList
+    override var platform: Platform
 ) : IPlatform {
 
     val isIterable: Boolean
@@ -157,9 +155,4 @@ data class Variable(
             typeName.findType().formalParams.all { it.variable.isKnownType() }
         }
     }
-}
-
-@Deprecated("不再使用")
-enum class ListType {
-    Array, List, ArrayList, LinkedList, NonList,
 }

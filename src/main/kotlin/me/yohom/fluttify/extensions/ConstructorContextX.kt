@@ -1,6 +1,5 @@
 package me.yohom.fluttify.extensions
 
-import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Variable

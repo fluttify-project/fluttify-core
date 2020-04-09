@@ -13,7 +13,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 //}
 private val tmpl = getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").readText()
 
-fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
+fun GetterBatchTmpl(field: Field): String {
     val dartType = field.variable.typeName.toDartType()
     val name = field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView()) "{bool viewChannel = true}" else ""

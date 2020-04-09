@@ -1,10 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method
 
-import me.yohom.fluttify.extensions.enArrayList
-import me.yohom.fluttify.extensions.enList
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.model.ListType
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
@@ -43,11 +40,7 @@ fun CallbackMethodTmpl(method: Method): String {
         .formalParams
         .map { it.variable }
         .joinToString {
-            "${when (it.listType) {
-                ListType.ArrayList -> it.typeName.enArrayList()
-                ListType.List -> it.typeName.enList()
-                else -> it.typeName
-            }.replace("$", ".")} ${it.name}"
+            "${it.typeName.replace("$", ".")} ${it.name}"
         }
     val returnType = method.returnType.replace("$", ".")
     val localArgs = method
