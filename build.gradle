@@ -17,7 +17,7 @@ plugins {
 
 def GROUP_ID = 'me.yohom'
 def ARTIFACT_ID = 'fluttify-core'
-def VERSION_NAME = '0.4.4'
+def VERSION_NAME = '0.5.0'
 
 group GROUP_ID
 version VERSION_NAME
