@@ -272,7 +272,7 @@ fun ObjectiveCParser.BlockTypeContext.returnType(): String {
 }
 
 fun ObjectiveCParser.BlockTypeContext.parameters(): String {
-    return blockParameters().typeVariableDeclaratorOrName().joinToString {
+    return blockParameters().typeVariableDeclaratorOrName().joinToString(",") {
         val name = it.typeVariableDeclarator().declarator().directDeclarator().identifier().text
         val type = it.typeVariableDeclarator()
             .declarationSpecifiers()
@@ -281,7 +281,7 @@ fun ObjectiveCParser.BlockTypeContext.parameters(): String {
                 // 如果变量名上面有*号, 那么需要把*号移到类型名上面来
                 if (name.startsWith("*")) enpointer() else this
             }
-        "$type ${name.depointer()}"
+        "$type#${name.depointer()}"
     }
 }
 //endregion

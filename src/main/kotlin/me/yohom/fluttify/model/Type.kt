@@ -189,7 +189,7 @@ open class Type : IPlatform, IScope {
 
     fun isKnownFunction(): Boolean {
         return isFunction()
-                && returnType.findType().platform != Platform.Unknown
+                && returnType.findType().isKnownType()
                 && formalParams.all { it.variable.isKnownType() }
     }
 
@@ -354,7 +354,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun isKnownType(): Boolean {
-        return platform != Platform.Unknown
+        return platform != Platform.Unknown || jsonable()
     }
 
     fun isUnknownType(): Boolean {

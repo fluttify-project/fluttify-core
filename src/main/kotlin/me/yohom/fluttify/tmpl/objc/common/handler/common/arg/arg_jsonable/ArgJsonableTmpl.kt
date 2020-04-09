@@ -11,7 +11,7 @@ private val tmpl = getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
 fun ArgJsonableTmpl(variable: Variable): String {
     val typeName = when {
         variable.typeName.isValueType() -> variable.typeName.depointer()
-        variable.isIterable -> variable.typeName.enpointer().enNSArray(variable.genericLevel)
+        variable.isIterable -> variable.typeName
         else -> variable.typeName.enpointer()
     }
     val rightValue = if (variable.typeName.isValueType() || variable.isAliasType()) {

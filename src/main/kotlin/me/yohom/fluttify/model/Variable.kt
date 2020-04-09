@@ -12,16 +12,14 @@ data class Variable(
     val name: String,
     override var platform: Platform,
     @Deprecated("不再使用")
-    val listType: ListType = ListType.NonList,
-    @Deprecated("不再使用")
-    val genericLevel: Int = 0
+    val listType: ListType = ListType.NonList
 ) : IPlatform {
 
     val isIterable: Boolean
         get() = typeName.isIterable()
 
     fun isStructPointer(): Boolean {
-        return typeName.findType().isStruct() && (typeName.endsWith("*") || name.startsWith("*"))
+        return typeName.isStructPointer()
     }
 
     fun isValuePointerType(): Boolean {
@@ -53,7 +51,7 @@ data class Variable(
     }
 
     fun isCallback(): Boolean {
-        return typeName.containerType().findType().isCallback()
+        return typeName.containerType().findType().isCallback() || typeName.deprotocol().findType().isCallback()
     }
 
     fun isInterface(): Boolean {
@@ -75,6 +73,7 @@ data class Variable(
     fun isKnownType(): Boolean {
         return typeName.containerType().run { isIterable() || isMap() || findType().platform != Platform.Unknown }
                 && typeName.genericTypes().all { it.findType().platform != Platform.Unknown }
+                || typeName.jsonable()
     }
 
     fun isPublicType(): Boolean {
@@ -103,7 +102,7 @@ data class Variable(
             typeName == "constvoid*" -> "const void*"
             isValueType() or isStruct() -> typeName
             isInterface() -> typeName.enprotocol()
-            isIterable && genericLevel > 0 -> "NSArray<$typeName>*"
+            isIterable && getIterableLevel() > 0 -> "NSArray<$typeName>*"
             else -> typeName.removeObjcSpecifier().enpointer() // 要先去除一下objc里的限定词
         }
     }
@@ -117,36 +116,12 @@ data class Variable(
             val type = typeName.findType()
             "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
-            // 结构体指针认为是列表类型
-            var type = (if (isAliasType()) typeName.findType().aliasOf!! else typeName).toDartType()
-            if (isIterable) {
-                when {
-                    // 数组类型
-                    typeName.isArray() -> typeName.removeSuffix("[]")
-                    // 如果是列表, 却没有指定泛型, 那么就认为泛型是Object
-                    getIterableLevel() == 0 -> type = "List<${platform.objectType()}>"
-                }
-            } else if (isStructPointer()) {
-                type = "List<$type>"
-            }
-            "$type $name"
+            "${typeName.toDartType()} $name"
         }
     }
 
     fun toDartStringBatch(): String {
-        // 结构体指针认为是列表类型
-        var type = (if (isAliasType()) typeName.findType().aliasOf!! else typeName).toDartType()
-        if (isIterable) {
-            when {
-                // 数组类型
-                typeName.isArray() -> typeName.removeSuffix("[]")
-                // 如果是列表, 却没有指定泛型, 那么就认为泛型是Object
-                getIterableLevel() == 0 -> type = "List<${platform.objectType()}>"
-            }
-        } else if (isStructPointer()) {
-            type = "List<$type>"
-        }
-        return "${type.enList()} ${name.depointer()}"
+        return "List<${typeName.toDartType()}> $name"
     }
 
     fun var2Args(hostMethod: Method? = null): String {

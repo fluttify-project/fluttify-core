@@ -23,6 +23,8 @@ data class Parameter(
                 variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
                 &&
                 variable.must("已知类型") { isKnownType() }
+                ||
+                variable.must("jsonable类型") { jsonable() }
         println("参数:${variable}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result

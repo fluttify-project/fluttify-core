@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -290,12 +291,12 @@ fun TYPE_NAME.isObfuscated(): Boolean {
 /**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
-fun TYPE_NAME.toDartType(): TYPE_NAME {
+fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
     // 如果是系统别名就先取出原始类型, 否则就直接使用
     return (SYSTEM_TYPEDEF[this] ?: this).pack()
         .run {
             when {
-                // java/kotlin
+                // java
                 Regex("String").matches(this) -> "String"
                 Regex("[Bb]oolean").matches(this) -> "bool"
                 Regex("(unsigned)?([Bb]yte|[Ii]nt|Integer|[Ll]ong)").matches(this) -> "int"
@@ -309,12 +310,18 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
+                // 若是某种java的List, 那么去掉前缀
+                Regex("(\\w|\\.)*List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
+                Regex("(\\w|\\.)*List").matches(this) -> "List<java_lang_Object>"
+                Regex("java\\.util\\.Collection<.+>").matches(this) -> replace("java.util.Collection", "List")
+                Regex("java\\.lang\\.Iterable<.+>").matches(this) -> replace("java.lang.Iterable", "List")
+
                 // objc
                 Regex("NSString\\*?").matches(this) -> "String"
                 Regex("NS(Mutable)?Array<NSString\\*?>\\*?").matches(this) -> "List<String>"
                 Regex("nil").matches(this) -> "null"
                 Regex("id").matches(this) -> "NSObject"
-                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List"
+                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<NSObject>"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
                 Regex("NSArray<NSNumber\\*>\\*").matches(this) -> "List<num>"
@@ -323,18 +330,19 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NSDictionary\\*").matches(this) -> "Map"
-                // 若是某种java的List, 那么去掉前缀
-                Regex("(\\w|\\.)*List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
-                Regex("java\\.util\\.Collection<.+>").matches(this) -> replace("java.util.Collection", "List")
-                Regex("java\\.lang\\.Iterable<.+>").matches(this) -> replace("java.lang.Iterable", "List")
                 Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(<.+,.+>)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
                     "Map<$keyType,$valueType>"
                 }
-                startsWith("NSArray") -> "List<${genericTypes()[0].depointer()}>"
+                Regex("NSArray<.+>\\*").matches(this) -> "List<${genericTypes()[0].depointer()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
+
+                // 通用
+                findType().isAlias() -> findType().aliasOf!!.toDartType()
+                // 是否是结构体指针
+                findType().isStruct() && endsWith("*") -> findType().name.depointer().enList()
                 else -> this
             }
         }
@@ -345,6 +353,10 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
 
 fun TYPE_NAME.toUnderscore(): String {
     return replace(Regex("[$.<>,]"), "_")
+}
+
+fun TYPE_NAME.isStructPointer(): Boolean {
+    return findType().isStruct() && endsWith("*")
 }
 
 /**

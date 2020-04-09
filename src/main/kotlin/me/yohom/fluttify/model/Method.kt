@@ -58,6 +58,7 @@ data class Method(
         println("方法:${toString()}执行过滤开始")
         val result = (must("返回类型是jsonable类型") { returnType.jsonable() }
                 || must("返回类型是void") { returnType.isVoid() }
+                || must("返回类型是原始类型指针类型") { returnType.isPrimitivePointerType() }
                 || must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } }
                 || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
                 &&
@@ -108,8 +109,7 @@ data class Method(
                 // 形参是已知类型或者是类泛型类型之一
                 must("形参类型全部都是已知类型") {
                     formalParams.all {
-                        it.variable.jsonable()
-                                || it.variable.isKnownType()
+                        it.variable.isKnownType()
                                 || it.variable.typeName in className.findType().genericTypes
                     }
                 }

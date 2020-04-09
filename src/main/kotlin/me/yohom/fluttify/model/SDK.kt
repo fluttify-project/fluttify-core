@@ -80,8 +80,6 @@ class SDK : IPlatform {
                 finalTypeName.isEmpty() -> Type.NO_TYPE
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
                 allTypes.map { it.name.depointer() }.contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
-                // 如果不在sdk内, 但是是jsonable类型, 那么构造一个Type
-                finalTypeName.jsonable() -> Type().apply { name = finalTypeName; isJsonable = true; platform = Platform.General }
                 // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
                 SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(finalTypeName) } -> SYSTEM_TYPE.first {
                     Regex(it.name).matches(finalTypeName)
@@ -98,7 +96,7 @@ class SDK : IPlatform {
                     formalParams = finalTypeName
                         .substringAfter("|")
                         .split(",")
-                        .map { it.trim().split(" ") }
+                        .map { it.trim().split("#") }
                         .map {
                             Parameter(
                                 variable = Variable(it[0], it[1], platform = Platform.General),

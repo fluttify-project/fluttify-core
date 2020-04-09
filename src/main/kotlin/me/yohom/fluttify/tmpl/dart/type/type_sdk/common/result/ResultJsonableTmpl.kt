@@ -11,7 +11,7 @@ fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
         Regex("(U?[Ii]nt|Float)\\d+List").matches(returnType.toDartType()) -> {
             "__result__ as ${returnType.toDartType()}"
         }
-        returnType.isIterable() -> {
+        returnType.isIterable() || returnType.isArray() -> {
             val type = when {
                 // 说明List有指定泛型, 拿出泛型类
                 returnType.iterableLevel() != 0 -> returnType.genericTypes()[0]

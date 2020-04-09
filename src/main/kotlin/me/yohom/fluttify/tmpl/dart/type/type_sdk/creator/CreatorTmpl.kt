@@ -27,7 +27,7 @@ fun CreatorTmpl(type: Type): List<String> {
                             it.variable
                                 .typeName
                                 .replace("[]", "Array")
-                                .enList(it.variable.genericLevel)
+                                .enList(it.variable.getIterableLevel())
                                 .toUnderscore()
                         }
                     )

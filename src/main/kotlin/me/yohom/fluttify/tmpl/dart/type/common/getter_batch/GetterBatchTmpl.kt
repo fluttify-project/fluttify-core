@@ -14,13 +14,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 private val tmpl = getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").readText()
 
 fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
-    val typeNameWithContainer = field.variable.run {
-        var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
-        if (isStructPointer()) {
-            result = "List<$result>"
-        }
-        result
-    }
+    val dartType = field.variable.typeName.toDartType()
     val name = field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView()) "{bool viewChannel = true}" else ""
 
@@ -43,7 +37,7 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
     }
     val result = field.variable.run {
         when {
-            jsonable() or isAliasType() -> ResultJsonableTmpl(typeNameWithContainer, platform)
+            jsonable() or isAliasType() -> ResultJsonableTmpl(typeName, platform)
             isIterable -> ResultListTmpl(
                 if (getIterableLevel() > 0) typeName.genericTypes()[0] else platform.objectType(),
                 platform
@@ -64,7 +58,7 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
 
     return field.variable.run {
         tmpl
-            .replace("#__type__#", typeNameWithContainer)
+            .replace("#__type__#", dartType)
             .replace("#__name__#", name)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__method_channel__#", methodChannel)

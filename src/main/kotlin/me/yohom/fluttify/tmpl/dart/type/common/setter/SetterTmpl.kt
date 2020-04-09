@@ -14,14 +14,7 @@ private val tmpl = getResource("/tmpl/dart/setter.mtd.dart.tmpl").readText()
 
 fun SetterTmpl(field: Field): String {
     return field.variable.run {
-        val typeName = field.variable.run {
-            var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
-            if (isStructPointer()) {
-                result = "List<$result>"
-            }
-            result
-        }
-        val name = name.depointer()
+        val typeName = field.variable.typeName.toDartType()
 
         val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
         val normalMethodChannel = ext.methodChannelName
@@ -32,13 +25,13 @@ fun SetterTmpl(field: Field): String {
             "'$normalMethodChannel'"
         }
 
-        val argValue = name.depointer().run {
+        val argValue = field.variable.typeName.run {
             when {
-                isEnum() -> "${name}.index"
-                typeName.jsonable() -> name
-                (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "${name}.map((it) => it.refId).toList()"
+                isEnum() -> "$name.index"
+                jsonable() -> name
+                (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "$name.map((it) => it.refId).toList()"
                 getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
-                else -> "${name}.refId"
+                else -> "$name.refId"
             }
         }
         val setterMethodName = field.setterMethodName()

@@ -21,7 +21,7 @@ private val tmpl = getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readT
 fun HandlerGetterTmpl(field: Field): String {
     val getterName = field.getterMethodName()
     val className = field.className.replace("$", ".")
-    val fieldType = field.variable.typeName.replace("$", ".").enList(field.variable.genericLevel)
+    val fieldType = field.variable.typeName.replace("$", ".")
     val fieldName = field.variable.name
     val putMap = if (field.variable.jsonable()) "" else "getHEAP().put(result.hashCode(), result);"
     val result = if (field.variable.jsonable()) "result" else "result.hashCode()"

@@ -116,13 +116,7 @@ fun ObjectiveCParser.FieldDeclarationContext.getValue(): String {
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {
-    return specifierQualifierList().text.run {
-        if (contains("id<")) {
-            replaceFirst("id<", "").removeSuffix(">")
-        } else {
-            this
-        }
-    }
+    return specifierQualifierList().text
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.name(): String {

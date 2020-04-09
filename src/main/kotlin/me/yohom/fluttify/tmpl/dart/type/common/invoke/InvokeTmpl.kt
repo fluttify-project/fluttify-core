@@ -25,9 +25,9 @@ fun InvokeTmpl(method: Method): String {
                 type.findType().isEnum() -> {
                     // 枚举列表
                     if (it.isIterable) {
-                        "${it.name.depointer()}.map((__it__) => __it__.index).toList()"
+                        "${it.name}.map((__it__) => __it__.index).toList()"
                     } else {
-                        "${it.name.depointer()}.index"
+                        "${it.name}.index"
                     }
                 }
                 type.jsonable() -> it.name

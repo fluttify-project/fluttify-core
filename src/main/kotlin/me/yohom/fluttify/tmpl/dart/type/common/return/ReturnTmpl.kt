@@ -50,6 +50,7 @@ fun ReturnTmpl(method: Method): String {
 
                     ResultListTmpl(type, method.platform)
                 }
+                isStructPointer() -> ResultListTmpl(depointer(), method.platform)
                 else -> ResultRefTmpl(concretType)
             }
         }
