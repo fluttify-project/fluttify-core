@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Variable
 //List<Integer> #__arg_name__#RefIdList = (List<Integer>) ((Map<String, Object>) args).get("#__arg_name__#");
 //#__type_name__# #__arg_name__# = new ArrayList<>();
 //for (int refId : #__arg_name__#RefIdList) {
-//    #__arg_name__#.add((#__generic_type_name__#) getHEAP().get(refId));
+//    ((ArrayList<#__generic_type_name__#>) #__arg_name__#).add((#__generic_type_name__#) getHEAP().get(refId));
 //}
 private val tmpl = getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText()
 

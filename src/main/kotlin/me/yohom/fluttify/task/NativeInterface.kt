@@ -79,12 +79,20 @@ open class AndroidJavaInterface : FluttifyTask() {
 
             val methods = lib.types
                 .filterType()
+                // callback类型不需要生成原生的handler
+                .filterNot { it.isCallback() }
+                // 含有泛型的类型不需要生成handler
+                .filter { it.genericTypes.isEmpty() }
                 .flatMap { it.methods }
                 .filterMethod()
                 .map { HandlerMethodTmpl(it) }
 
             val methodsBatch = lib.types
                 .filterType()
+                // callback类型不需要生成原生的handler
+                .filterNot { it.isCallback() }
+                // 含有泛型的类型不需要生成handler
+                .filter { it.genericTypes.isEmpty() }
                 .flatMap { it.methods }
                 .filterMethod(batch = true)
                 .map { HandlerMethodBatchTmpl(it) }
@@ -202,12 +210,20 @@ open class IOSObjcInterface : FluttifyTask() {
 
             val methods = lib.types
                 .filterType()
+                // callback类型不需要生成原生的handler
+                .filterNot { it.isCallback() }
+                // 含有泛型的类型不需要生成handler
+                .filter { it.genericTypes.isEmpty() }
                 .flatMap { it.methods }
                 .filterMethod()
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
 
             val methodsBatch = lib.types
                 .filterType()
+                // callback类型不需要生成原生的handler
+                .filterNot { it.isCallback() }
+                // 含有泛型的类型不需要生成handler
+                .filter { it.genericTypes.isEmpty() }
                 .flatMap { it.methods }
                 .filterMethod(batch = true)
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl(it) }

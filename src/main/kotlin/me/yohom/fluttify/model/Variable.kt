@@ -163,7 +163,7 @@ data class Variable(
                 // 基本类型数组不需要转换, 直接使用
                 isArray() -> name
                 // 自定义类列表需要转换成ArrayList
-                isIterable -> "new ArrayList($name)"
+                isIterable -> "(ArrayList) $name"
                 typeName.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
                 else -> name
             }
