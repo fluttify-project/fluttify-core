@@ -1,10 +1,8 @@
 package me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method
 
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Platform
 
 //@mustCallSuper
 //Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {
@@ -25,8 +23,14 @@ fun InterfaceMethodTmpl(method: Method): String {
         method
             .formalParams
             .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() } }
+            // 过滤掉泛型声明参数, 即类似
+            // class A<T> {
+            //   void b(T t) {}
+            // }
+            // 的情况
+            .filter { it.variable.typeName !in method.className.findType().genericTypes }
             .joinToString("\n") {
-                if (it.variable.isList)
+                if (it.variable.isCollection())
                     "kNativeObjectPool.addAll(${it.variable.name});"
                 else
                     "kNativeObjectPool.add(${it.variable.name});"

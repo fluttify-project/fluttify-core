@@ -1,4 +1,4 @@
-package me.yohom.fluttify.tmpl.objc.common.callback.callback_method
+package me.yohom.fluttify.tmpl.objc.common.callback.callback_method.view_callback_method
 
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
@@ -15,7 +15,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //- (#__return_type__#)#__method_name__##__formal_params__#
 //{
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
-//      methodChannelWithName:@"#__method_channel__#"
+//      methodChannelWithName:#__method_channel__#
 //            binaryMessenger:[_registrar messenger]];
 //  // print log
 //  if (enableLog) {
@@ -29,11 +29,14 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //}
 private val tmpl = getResource("/tmpl/objc/callback_method.stmt.m.tmpl").readText()
 
-fun CallbackMethodTmpl(method: Method): String {
+/**
+ * View类型的回调方法, 需要给回调Method Channel加上viewId
+ */
+fun ViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "${method.className}::Callback"
+    val methodChannel = "[NSString stringWithFormat:@\"${method.className}::Callback@%@\", @(2147483647 - _viewId)]"
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
     val localArgs = method
@@ -45,7 +48,7 @@ fun CallbackMethodTmpl(method: Method): String {
                 it.isEnum() -> CallbackArgEnumTmpl(it)
                 it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
                 it.jsonable() -> CallbackArgJsonableTmpl(it)
-                it.isList -> CallbackArgListTmpl(it)
+                it.isIterable -> CallbackArgListTmpl(it)
                 it.isStruct() -> CallbackArgStructTmpl(it)
                 else -> CallbackArgRefTmpl(it)
             }

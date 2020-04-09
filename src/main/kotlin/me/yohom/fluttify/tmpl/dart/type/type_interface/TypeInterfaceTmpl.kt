@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_interface
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
@@ -28,15 +29,19 @@ private val tmpl = getResource("/tmpl/dart/interface_type.dart.tmpl").readText()
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName
-    val className = type.name.toDartType()
+    val typeName = if (type.genericTypes.isNotEmpty()) {
+        "${type.name.toDartType()}<${type.genericTypes.joinToString()}>"
+    } else {
+        type.name.toDartType()
+    }
 
     val constants = type.fields.filterConstants()
 
     val allSuperType = type.interfaces.union(listOf(type.superClass))
         .filter { it.isNotBlank() }
-        .filter { it.findType() != Type.UNKNOWN_TYPE }
+        .filter { it.findType().platform != Platform.Unknown }
         .filter { !it.isObfuscated() }
-    val superClass = if (allSuperType.isEmpty()) "java_lang_Object" else allSuperType.joinToString()
+    val superClass = if (allSuperType.isEmpty()) type.platform.objectType() else allSuperType.joinToString()
 
     val methods = type.methods
         .filterMethod()
@@ -52,7 +57,7 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     return tmpl
         .replace("#__current_package__#", currentPackage)
-        .replace("#__interface_type__#", className)
+        .replace("#__interface_type__#", typeName)
         .replace("#__super_mixins__#", superClass.toDartType())
         .replaceParagraph(
             "#__constants__#",

@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -43,13 +44,8 @@ fun TYPE_NAME.jsonable(): Boolean {
 /**
  * 是否是集合类型
  */
-fun TYPE_NAME.isCollection(): Boolean {
-    return Regex("\\w*List<(\\w*|.*)>").matches(this)
-            || Regex("Iterable<(\\w*|.*)>").matches(this)
-            || Regex("Collection<(\\w*|.*)>").matches(this)
-            || Regex("NSArray.*\\*?").matches(this)
-            || Regex("NSMutableArray.*\\*?").matches(this)
-            || Regex("""\w+\[]""").matches(this)
+fun TYPE_NAME.isIterable(): Boolean {
+    return Regexes.ITERABLE.matches(this)
 }
 
 /**
@@ -213,16 +209,15 @@ fun TYPE_NAME.simpleName(): String {
  * 从类名获取类信息
  */
 fun TYPE_NAME.findType(): Type {
-    val type = depointer()
-        .deprotocol()
-        .let {
-            if (it.isCollection()) {
-                if (it.collectionLevel() != 0) it.genericType() else ""
-            } else {
-                it
-            }
-        }
+    val type = depointer().deprotocol()
     return SDK.findType(type)
+}
+
+/**
+ * 获取与当前类名关联的所有类型信息
+ */
+fun TYPE_NAME.allTypes(): List<Type> {
+    return genericTypes().map { it.findType() }.union(listOf(containerType().findType())).toList()
 }
 
 /**
@@ -265,7 +260,6 @@ fun TYPE_NAME.isPrimitivePointerType(): Boolean {
     // 原始类型的指针类型和结构体的指针类型还是有点区别, 比如说结构体在dart端是生成的类的, 而原始类型是没有类的, 所以这边还是区分对待好了
     val isVoidPointer = Regex("(const)?void\\*").matches(pack())
     val isCPointer = isCPointerType()
-    val isStructPointer = findType().isStruct() && endsWith("*")
     val isSystemTypedefPointer = this in SYSTEM_TYPEDEF.map { it.key.enpointer() }
             || this in SYSTEM_POINTER_TYPEDEF.keys
     return isVoidPointer || isCPointer || isSystemTypedefPointer/* || isStructPointer*/
@@ -284,6 +278,9 @@ fun String.pack(): String {
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母
  */
 fun TYPE_NAME.isObfuscated(): Boolean {
+    // 如果类名不包含`.`, 说明是泛型类型, 则不认为是混淆类
+    if (!contains(".")) return false
+
     val type = replace("$", ".").substringAfterLast(".")
     val regex = Regex("[a-z|\\d]{1,2}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
@@ -293,50 +290,59 @@ fun TYPE_NAME.isObfuscated(): Boolean {
 /**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
-fun TYPE_NAME.toDartType(): TYPE_NAME {
+fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
     // 如果是系统别名就先取出原始类型, 否则就直接使用
     return (SYSTEM_TYPEDEF[this] ?: this).pack()
         .run {
             when {
-                // java/kotlin
+                // java
                 Regex("String").matches(this) -> "String"
                 Regex("[Bb]oolean").matches(this) -> "bool"
                 Regex("(unsigned)?([Bb]yte|[Ii]nt|Integer|[Ll]ong)").matches(this) -> "int"
                 Regex("[Dd]ouble|[Ff]loat").matches(this) -> "double"
-                Regex("(Collection|(Array)?List)<(Byte|Integer|Long)>").matches(this) -> "List<int>"
-                Regex("(Collection|(Array)?List)<(Float|Double)>").matches(this) -> "List<double>"
-                Regex("(Collection|(Array)?List)<String>|String\\[]").matches(this) -> "List<String>"
+                Regex("java\\.util\\.(Collection|(Array)?List)<(Byte|Integer|Long)>").matches(this) -> "List<int>"
+                Regex("java\\.util\\.(Collection|(Array)?List)<(Float|Double)>").matches(this) -> "List<double>"
+                Regex("java\\.util\\.(Collection|(Array)?List)<String>|String\\[]").matches(this) -> "List<String>"
                 Regex("[Bb]yte\\[]").matches(this) -> "Uint8List"
                 Regex("(int|Integer)\\[]").matches(this) -> "Int32List"
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
-                Regex("(Hash)?Map").matches(this) -> "Map"
+                Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
+                // 若是某种java的List, 那么去掉前缀
+                Regex("(\\w|\\.)*List<.+>").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
+                Regex("(\\w|\\.)*List").matches(this) -> "List<java_lang_Object>"
+                Regex("java\\.util\\.Collection<.+>").matches(this) -> replace("java.util.Collection", "List")
+                Regex("java\\.lang\\.Iterable<.+>").matches(this) -> replace("java.lang.Iterable", "List")
+
                 // objc
                 Regex("NSString\\*?").matches(this) -> "String"
                 Regex("NS(Mutable)?Array<NSString\\*?>\\*?").matches(this) -> "List<String>"
                 Regex("nil").matches(this) -> "null"
                 Regex("id").matches(this) -> "NSObject"
-                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List"
+                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<NSObject>"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
-                Regex("int64_t").matches(this) -> "int"
+                Regex("NSArray<NSNumber\\*>\\*").matches(this) -> "List<num>"
+                Regex("int(32|64)_t").matches(this) -> "int"
                 Regex("long long").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
-                // 若是某种java的List, 那么去掉前缀
-                Regex("(\\w*)List<.+>").matches(this) -> removePrefix(substringBefore("List<"))
-                Regex("Collection<.+>").matches(this) -> replace("Collection", "List")
-                Regex("((Hash)?Map|NSDictionary)<.+,.+>").matches(this) -> {
+                Regex("NSDictionary\\*").matches(this) -> "Map"
+                Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(<.+,.+>)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
                     "Map<$keyType,$valueType>"
                 }
-                startsWith("NSArray") -> "List<${genericType().depointer()}>"
+                Regex("NSArray<.+>\\*").matches(this) -> "List<${genericTypes()[0].depointer()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
-                // 其他情况需要去掉泛型
-                else -> this.substringBefore("<")
+
+                // 通用
+                findType().isAlias() -> findType().aliasOf!!.toDartType()
+                // 是否是结构体指针
+                findType().isStruct() && endsWith("*") -> findType().name.depointer().enList()
+                else -> this
             }
         }
         .replace("$", ".")
@@ -346,6 +352,10 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
 
 fun TYPE_NAME.toUnderscore(): String {
     return replace(Regex("[$.<>,]"), "_")
+}
+
+fun TYPE_NAME.isStructPointer(): Boolean {
+    return findType().isStruct() && endsWith("*")
 }
 
 /**
@@ -372,33 +382,34 @@ fun String.enprotocol(): String {
 /**
  * 为指针类型加上`*`号
  */
-fun String.enpointer(): String {
-    return if (endsWith("*")) this else "$this*"
+fun TYPE_NAME.enpointer(): TYPE_NAME {
+    return if (endsWith("*") || Regex("id<\\w+>").matches(this)) this else "$this*"
 }
 
 /**
- * 获取泛型类型名称
+ * 获取泛型列表
+ *
+ * 根据[level]获取对应层级的泛型类型, 如果为null就获取到最内层的泛型. 如果没有泛型则返回空列表.
  */
-fun TYPE_NAME.genericType(level: Int? = null): TYPE_NAME {
+fun TYPE_NAME.genericTypes(level: Int? = null): List<TYPE_NAME> {
     var result = this
     if (level != null) {
         for (i in 0 until level) {
-            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-            if (Regexes.MAP.matches(this)) {
-                break
-            } else {
-                result = result.substringAfter("<").substringBeforeLast(">")
-            }
+            result = result.substringAfter("<").substringBeforeLast(">")
         }
     } else {
-        while (result.contains("<") && result.contains(">")) {
-            // NSDictionary(objc)相关类, 和Map(java)相关类作为普通类处理
-            if (Regexes.MAP.matches(this)) {
-                break
-            } else {
-                result = result.substringAfter("<").substringBeforeLast(">")
-            }
-        }
+        result = result.substringAfter("<").substringBeforeLast(">")
+    }
+    return if (result == this) listOf() else result.split(",")
+}
+
+/**
+ * 获取最内层泛型
+ */
+fun TYPE_NAME.innermostGenericType(): TYPE_NAME {
+    var result = this
+    while (result.contains("<") && result.contains(">")) {
+        result = result.substringAfter("<").substringBeforeLast(">")
     }
     return result
 }
@@ -420,10 +431,10 @@ fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
 /**
  * 获取泛型层数 用在List中 表示嵌套了几层
  */
-fun TYPE_NAME.collectionLevel(): Int {
+fun TYPE_NAME.iterableLevel(): Int {
     var result = this
     var level = 0
-    if (isCollection()) {
+    if (isIterable()) {
         while (result.contains("<") && result.contains(">")) {
             result = result.substringAfter("<").substringBeforeLast(">")
             level++

@@ -4,7 +4,7 @@ import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Type
-import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.CallbackMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.view_callback_method.ViewCallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl
@@ -146,7 +146,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .filter { it.isCallback() }
         .flatMap { it.methods }
         .distinctBy { it.exactName }
-        .joinToString("\n") { CallbackMethodTmpl(it) }
+        .joinToString("\n") { ViewCallbackMethodTmpl(it) }
 
     return listOf(
         hTmpl

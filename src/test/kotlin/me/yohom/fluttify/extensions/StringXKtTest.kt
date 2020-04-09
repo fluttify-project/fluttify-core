@@ -12,25 +12,25 @@ class StringXKtTest {
     inner class GenericLevelTest {
         @Test
         fun genericLevel_level_0() {
-            val level = "Abc".collectionLevel()
+            val level = "Abc".iterableLevel()
             assertEquals(level, 0)
         }
 
         @Test
         fun genericLevel_level_1() {
-            val level = "List<Abc>".collectionLevel()
+            val level = "List<Abc>".iterableLevel()
             assertEquals(level, 1)
         }
 
         @Test
         fun genericLevel_level_2() {
-            val level = "List<List<Abc>>".collectionLevel()
+            val level = "List<List<Abc>>".iterableLevel()
             assertEquals(level, 2)
         }
 
         @Test
         fun genericLevel_wrong_format_return_0() {
-            val level = "Abc>".collectionLevel()
+            val level = "Abc>".iterableLevel()
             assertEquals(level, 0)
         }
     }
@@ -94,19 +94,19 @@ class StringXKtTest {
     inner class GenericTypeTest {
         @Test
         fun genericType_normal_class_should_as_itself() {
-            val result = "Abc".genericType()
+            val result = "Abc".genericTypes()
             assertEquals(result, "Abc")
         }
 
         @Test
         fun genericType_level1() {
-            val result = "List<Abc>".genericType()
+            val result = "List<Abc>".genericTypes()
             assertEquals(result, "Abc")
         }
 
         @Test
         fun genericType_level2() {
-            val result = "List<List<Abc>>".genericType()
+            val result = "List<List<Abc>>".genericTypes()
             assertEquals(result, "Abc")
         }
     }

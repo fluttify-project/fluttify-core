@@ -46,7 +46,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
                 it.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(it.variable)
                 it.variable.isStructPointer() -> ArgListStructTmpl(it.variable)
-                it.variable.isList -> ArgListRefTmpl(it.variable)
+                it.variable.isIterable -> ArgListRefTmpl(it.variable)
                 it.variable.isStruct() -> ArgStructTmpl(it.variable)
                 it.variable.isLambda() -> ""
                 else -> ArgRefTmpl(it.variable)
@@ -67,7 +67,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
         when {
             isValueType() -> ResultValueTmpl()
             jsonable() -> ResultJsonableTmpl()
-            isCollection() -> ResultListTmpl()
+            isIterable() -> ResultListTmpl()
             findType().isStruct() -> ResultStructTmpl(method.returnType)
             isVoid() -> ResultVoidTmpl()
             isPrimitivePointerType() -> ResultValuePointerTmpl()

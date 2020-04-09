@@ -56,7 +56,13 @@ fun List<Field>.filterConstants(): List<Field> {
  */
 fun List<Method>.filterMethod(batch: Boolean = false): List<Method> {
     return asSequence()
-        .filter { if (batch) it.filterBatch() else it.filter() }
+        .filter {
+            if (batch) {
+                it.filterBatch()
+            } else {
+                it.filter()
+            }
+        }
         .distinctBy { it.nameWithClass() }
         .filter { println("Method::${it.name}通过Method过滤"); true }
         .toList()

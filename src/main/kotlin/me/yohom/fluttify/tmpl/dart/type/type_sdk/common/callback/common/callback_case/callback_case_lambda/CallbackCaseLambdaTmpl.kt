@@ -31,7 +31,7 @@ fun CallbackCaseLambdaTmpl(lambdaParam: Parameter): String {
         .joinToString {
             when {
                 it.variable.jsonable() -> CallbackCaseArgJsonableTmpl(it)
-                it.variable.isList -> CallbackCaseArgListTmpl(it)
+                it.variable.isIterable -> CallbackCaseArgListTmpl(it)
                 it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it)
                 else -> CallbackCaseArgRefTmpl(it)
             }

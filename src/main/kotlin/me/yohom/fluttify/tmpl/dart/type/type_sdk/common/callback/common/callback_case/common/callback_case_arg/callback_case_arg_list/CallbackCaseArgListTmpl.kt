@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callbac
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.genericTypes
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Parameter
@@ -16,10 +17,10 @@ fun CallbackCaseArgListTmpl(param: Parameter): String {
             .variable
             .typeName
             .run {
-                if (param.variable.genericLevel == 0) {
+                if (param.variable.getIterableLevel() == 0) {
                     param.platform.objectType()
                 } else {
-                    this
+                    genericTypes()[0]
                 }
             }
             .toDartType())

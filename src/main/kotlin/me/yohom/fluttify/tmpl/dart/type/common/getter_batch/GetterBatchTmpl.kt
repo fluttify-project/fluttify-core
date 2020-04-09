@@ -6,25 +6,15 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //Future<List<#__type__#>> get_#__name__#_batch(#__view_channel__#) async {
-//  final resultBatch = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#_batch", [for (final item in this) {'refId': item.refId}]);
-//  final typedResult = (resultBatch as List).map((result) => #__result__#).toList();
+//  final resultBatch = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'refId': __item__.refId}]);
+//  final typedResult = (resultBatch as List).cast<#__result_type__#>.map((__result__) => #__result__#).toList();
 //  #__native_object_pool__#
 //  return typedResult;
 //}
 private val tmpl = getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").readText()
 
-fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
-    val typeNameWithContainer = field.variable.run {
-        var result = typeName.findType().run { if (isAlias()) aliasOf!! else typeName }.toDartType()
-        if (isStructPointer()) {
-            result = "List<$result>"
-        } else if (isList) {
-            for (i in 0 until genericLevel) {
-                result = "List<$result>"
-            }
-        }
-        result
-    }
+fun GetterBatchTmpl(field: Field): String {
+    val dartType = field.variable.typeName.toDartType()
     val name = field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView()) "{bool viewChannel = true}" else ""
 
@@ -38,10 +28,21 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
     }
 
     val getter = field.getterMethodName()
+    val resultType = field.variable.typeName.run {
+        when {
+            jsonable() -> toDartType()
+            isVoid() -> "String"
+            else -> "int"
+        }
+    }
     val result = field.variable.run {
         when {
-            jsonable() or isAliasType() -> ResultJsonableTmpl(typeNameWithContainer, platform)
-            isList || isStructPointer() -> ResultListTmpl(typeName, platform)
+            jsonable() or isAliasType() -> ResultJsonableTmpl(typeName, platform)
+            isIterable -> ResultListTmpl(
+                if (getIterableLevel() > 0) typeName.genericTypes()[0] else platform.objectType(),
+                platform
+            )
+            isStructPointer() -> ResultListTmpl(typeName.depointer(), platform)
             isEnum() -> ResultEnumTmpl(typeName)
             typeName.isVoid() -> ResultVoidTmpl()
             else -> ResultRefTmpl(typeName)
@@ -50,18 +51,19 @@ fun GetterBatchTmpl(field: Field, batch: Boolean = false): String {
     val nativeObjectPool = field.variable.run {
         when {
             jsonable() or isEnum() or isAliasType() -> ""
-            isList || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
+            isIterable || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
             else -> "kNativeObjectPool.addAll(typedResult);"
         }
     }
 
     return field.variable.run {
         tmpl
-            .replace("#__type__#", typeNameWithContainer)
+            .replace("#__type__#", dartType)
             .replace("#__name__#", name)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__method_channel__#", methodChannel)
             .replace("#__getter_method__#", getter)
+            .replace("#__result_type__#", resultType)
             .replace("#__native_object_pool__#", nativeObjectPool)
             .replace("#__result__#", result)
     }

@@ -27,7 +27,7 @@ fun CallbackCaseDelegateTmpl(callbackMethod: Method, callbackObject: String): St
         .joinToString {
             when {
                 it.variable.run { jsonable() || isAliasType() } -> CallbackCaseArgJsonableTmpl(it)
-                it.variable.isList -> CallbackCaseArgListTmpl(it)
+                it.variable.isCollection() -> CallbackCaseArgListTmpl(it)
                 it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it)
                 else -> CallbackCaseArgRefTmpl(it)
             }

@@ -31,7 +31,7 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                             it.variable
                                 .typeName
                                 .replace("[]", "Array")
-                                .enList(it.variable.genericLevel)
+                                .enList(it.variable.getIterableLevel())
                                 .toUnderscore()
                         }
                     )
@@ -56,16 +56,16 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                                     when {
                                         it.typeName.findType().isEnum() -> {
                                             // 枚举列表
-                                            if (it.isList) {
-                                                "${it.name.depointer()}[__i__].map((it) => it.index).toList()"
+                                            if (it.isIterable) {
+                                                "${it.name}[__i__].map((it) => it.index).toList()"
                                             } else {
-                                                "${it.name.depointer()}[__i__].index"
+                                                "${it.name}[__i__].index"
                                             }
                                         }
-                                        it.typeName.jsonable() -> "${it.name.depointer()}[__i__]"
-                                        (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
-                                        it.genericLevel > 1 -> "[]" // 多维数组暂不处理
-                                        else -> "${it.name.depointer()}[__i__].refId"
+                                        it.typeName.jsonable() -> "${it.name}[__i__]"
+                                        (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
+                                        it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
+                                        else -> "${it.name}[__i__].refId"
                                     }
                                 }
                             }

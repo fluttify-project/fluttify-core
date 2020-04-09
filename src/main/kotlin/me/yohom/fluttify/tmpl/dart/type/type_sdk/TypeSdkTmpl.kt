@@ -62,7 +62,11 @@ private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
 
 fun TypeSdkTmpl(type: Type): String {
     val currentPackage = ext.projectName
-    val className = type.name.toDartType()
+    val className = if (type.genericTypes.isNotEmpty()) {
+        "${type.name.toDartType()}<${type.genericTypes.joinToString()}>"
+    } else {
+        type.name.toDartType()
+    }
     val originClassName = type.name.replace("$", ".")
     // 如果父类是混淆类, 那么直接继承Object类
     val superClass = if (type.superClass.run { isEmpty() || isObfuscated() })

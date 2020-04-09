@@ -11,7 +11,7 @@ private val tmpl = getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
 fun ArgJsonableTmpl(variable: Variable): String {
     val typeName = when {
         variable.typeName.isValueType() -> variable.typeName.depointer()
-        variable.isList -> variable.typeName.enpointer().enNSArray(variable.genericLevel)
+        variable.isIterable -> variable.typeName
         else -> variable.typeName.enpointer()
     }
     val rightValue = if (variable.typeName.isValueType() || variable.isAliasType()) {
@@ -26,6 +26,15 @@ fun ArgJsonableTmpl(variable: Variable): String {
             methodPrefix = "unsignedInteger"
         }
         if (variable.typeName == "long long") {
+            methodPrefix = "longLongInteger"
+        }
+        if (variable.typeName == "uint32_t") {
+            methodPrefix = "unsignedInt"
+        }
+        if (variable.typeName == "int32_t") {
+            methodPrefix = "int"
+        }
+        if (variable.typeName == "int64_t") {
             methodPrefix = "longLongInteger"
         }
         "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value]"

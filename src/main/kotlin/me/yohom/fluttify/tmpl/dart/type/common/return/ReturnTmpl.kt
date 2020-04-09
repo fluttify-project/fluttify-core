@@ -10,45 +10,48 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.ResultRefTmpl
 fun ReturnTmpl(method: Method): String {
     return method.run {
         // 如果是多维列表, 那么不处理, 直接返回空列表
-        if (returnType.isCollection() && returnType.collectionLevel() > 1) {
+        if (returnType.isIterable() && returnType.iterableLevel() > 1) {
             return "[] /* 暂时不支持多维列表 */";
         }
 
         // 如果返回类型是抽象类, 那么先转换成它的子类
-        var concretTypeWithContainer: String
-        // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
-        if (returnType.isCollection() && returnType.collectionLevel() != 0) {
-            val genericType = returnType.genericType()
-            concretTypeWithContainer = genericType
-            if (genericType.findType().isAbstract) {
-                concretTypeWithContainer = genericType.findType().run { firstConcretSubtype()?.name ?: this.name }
+        val concretType: String = if (returnType.isIterable() && returnType.iterableLevel() != 0) {
+            // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
+            val genericType = returnType.genericTypes()[0]
+            val concretGenericType = if (genericType.findType().isAbstract) {
+                genericType.findType().run { firstConcretSubtype()?.name ?: this.name }
+            } else {
+                genericType
             }
-            concretTypeWithContainer = "List<$concretTypeWithContainer>"
+            returnType.replace(genericType, concretGenericType)
         } else {
-            concretTypeWithContainer = returnType
+            // 否则直接处理返回类型
             if (returnType.findType().isAbstract) {
-                concretTypeWithContainer = returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
+                returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
+            } else {
+                returnType
             }
         }
 
-        concretTypeWithContainer.run {
+        concretType.run {
             when {
-                jsonable() || concretTypeWithContainer == "void" -> {
-                    ResultJsonableTmpl(concretTypeWithContainer, method.platform)
+                jsonable() || concretType.isVoid() -> {
+                    ResultJsonableTmpl(concretType, method.platform)
                 }
                 // 返回枚举类型
-                findType().isEnum() -> ResultEnumTmpl(concretTypeWithContainer)
+                findType().isEnum() -> ResultEnumTmpl(concretType)
                 // 返回列表类型
-                isCollection() -> {
-                    val type = if (concretTypeWithContainer.collectionLevel() != 0) {
-                        concretTypeWithContainer.genericType()
+                isIterable() -> {
+                    val type = if (concretType.iterableLevel() != 0) {
+                        concretType.genericTypes()[0]
                     } else {
                         method.platform.objectType()
                     }
 
                     ResultListTmpl(type, method.platform)
                 }
-                else -> ResultRefTmpl(concretTypeWithContainer)
+                isStructPointer() -> ResultListTmpl(depointer(), method.platform)
+                else -> ResultRefTmpl(concretType)
             }
         }
     }

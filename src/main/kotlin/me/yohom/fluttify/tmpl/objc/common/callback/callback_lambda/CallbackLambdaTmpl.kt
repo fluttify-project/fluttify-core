@@ -46,7 +46,7 @@ fun CallbackLambdaTmpl(callerMethod: Method, callbackLambda: Type): String {
                     it.isEnum() -> CallbackArgEnumTmpl(it)
                     it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
                     it.jsonable() -> CallbackArgJsonableTmpl(it)
-                    it.isList -> CallbackArgListTmpl(it)
+                    it.isIterable -> CallbackArgListTmpl(it)
                     it.isStruct() -> CallbackArgStructTmpl(it)
                     else -> CallbackArgRefTmpl(it)
                 }

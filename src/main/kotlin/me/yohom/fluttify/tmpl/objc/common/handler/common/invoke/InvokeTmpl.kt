@@ -15,17 +15,13 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     fun objcInvoke(): String {
         val invokeGetter = field?.run {
             val typeName = variable.run {
-                when {
-                    typeName == "id" -> "NSObject*"
-                    isStructPointer() -> typeName.enpointer()
-                    typeName.isValueType() || isStruct() -> typeName
-                    isList && genericLevel > 0 -> if (isInterface()) "NSArray<${typeName.enprotocol()}>*" else "NSArray<${typeName}>*"
-                    isInterface() -> typeName.enprotocol()
-                    else -> typeName.enpointer()
+                when (typeName) {
+                    "id" -> "NSObject*"
+                    else -> typeName
                 }
             }
 
-            "$typeName result = ref.${variable.name.depointer()};"
+            "$typeName result = ref.${variable.name};"
         }
 
         val invokeMethod = method?.run {
@@ -65,17 +61,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     }
 
     private fun param2arg(it: Parameter, isFunction: Boolean = false): String {
-        return if (!isFunction) {
-            if (it.variable.isLambda() && method != null) {
-                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
-            } else {
-                "${it.named}: ${when {
-                    it.variable.isCallback() -> "self"
-                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
-                    else -> it.variable.name
-                }}"
-            }
-        } else {
+        return if (isFunction) {
             if (it.variable.isLambda() && method != null) {
                 CallbackLambdaTmpl(method, it.variable.typeName.findType())
             } else {
@@ -84,6 +70,16 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                     it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }
+            }
+        } else {
+            if (it.variable.isLambda() && method != null) {
+                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
+            } else {
+                "${it.named}: ${when {
+                    it.variable.isCallback() -> "self"
+                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    else -> it.variable.name
+                }}"
             }
         }
     }

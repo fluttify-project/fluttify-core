@@ -1,7 +1,5 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.EXCLUDE_TYPES
-import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
 data class Field(
@@ -59,44 +57,53 @@ data class Field(
     }
 
     fun filterGetters(): Boolean {
-        return variable.type().filter() && // 必须先通过类型的过滤
-                must("公开field") { isPublic } &&
-                mustNot("静态field") { isStatic } &&
-                variable.must("已知类型") { isKnownType() } &&
-                variable.mustNot("多维列表") { genericLevel > 1 } &&
-                variable.mustNot("lambda类型") { isLambda() } &&
-                variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) } &&
-                variable.must("公开类型") { isPublicType() } &&
-                variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() } &&
-                variable.must("返回类型的祖宗类是已知类") {
-                    typeName.findType().ancestorTypes.all {
-                        it.findType().isKnownType()
-                    }
-                } &&
-                variable.mustNot("混淆类") { typeName.isObfuscated() } &&
-                variable.mustNot("类型是排除类") { EXCLUDE_TYPES.any { it.matches(typeName) } }
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("属性:${toString()}执行getter过滤开始")
+        val result = (must("jsonable类型") { variable.typeName.jsonable() }
+                || must("关联类型都通过过滤") { variable.typeName.allTypes().all { it.filter() } })
+                && // 必须先通过类型的过滤
+                must("公开field") { isPublic }
+                &&
+                mustNot("静态field") { isStatic }
+                &&
+                variable.mustNot("多维列表") { getIterableLevel() > 1 }
+                &&
+                variable.mustNot("lambda类型") { isLambda() }
+                &&
+                variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) }
+                &&
+                variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() }
+                &&
+                variable.mustNot("回调类") { isCallback() }
+        println("属性:${toString()}执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     fun filterSetter(): Boolean {
-        return variable.type().filter() && // 必须先通过类型的过滤
-                must("公开field") { isPublic } &&
-                mustNot("不可改field") { isFinal } &&
-                mustNot("静态field") { isStatic } &&
-                variable.must("已知类型") { isKnownType() } &&
-                variable.mustNot("多维列表") { genericLevel > 1 } &&
-                variable.mustNot("lambda类型") { isLambda() } &&
-                variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) } &&
-                variable.must("公开类型") { typeName.findType().isPublic } &&
-                variable.must("返回类型的祖宗类是已知类") {
-                    typeName.findType().ancestorTypes.all {
-                        it.findType().isKnownType()
-                    }
-                } &&
-                variable.mustNot("混淆类") { typeName.isObfuscated() }
+        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        println("属性:${toString()}执行setter过滤开始")
+        val result = (must("jsonable类型") { variable.typeName.jsonable() }
+                || must("关联类型都通过过滤") { variable.typeName.allTypes().all { it.filter() } })
+                && // 必须先通过类型的过滤
+                must("公开field") { isPublic }
+                &&
+                mustNot("不可改field") { isFinal }
+                &&
+                mustNot("静态field") { isStatic }
+                &&
+                variable.mustNot("多维列表") { getIterableLevel() > 1 }
+                &&
+                variable.mustNot("lambda类型") { isLambda() }
+                &&
+                variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) }
+        println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        return result
     }
 
     fun filterSetterBatch(): Boolean {
-        return filterSetter() && !variable.type().isCallback()
+        return filterSetter() && !variable.isCallback()
     }
 
     fun getterMethodName(): String {

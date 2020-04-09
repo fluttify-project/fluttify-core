@@ -116,17 +116,12 @@ fun ObjectiveCParser.FieldDeclarationContext.getValue(): String {
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {
-    return specifierQualifierList().text.run {
-        if (contains("id<")) {
-            replaceFirst("id<", "").removeSuffix(">")
-        } else {
-            this
-        }
-    }
+    return specifierQualifierList().text
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.name(): String {
-    return fieldDeclaratorList().text
+    // 由于没有找到DEPRECATED_ATTRIBUTE对应的antlr声明部分, 所以这里只能先强行删除了
+    return fieldDeclaratorList().text.removeSuffix("DEPRECATED_ATTRIBUTE")
 }
 
 /**
@@ -138,7 +133,7 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
  * 导致了先有鸡还是先有蛋的问题, 所以这里暂时就先只判断是否是NSArray
  */
 fun ObjectiveCParser.FieldDeclarationContext.isListType(): Boolean {
-    return specifierQualifierList().text.isCollection()
+    return specifierQualifierList().text.isIterable()
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {

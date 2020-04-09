@@ -114,8 +114,8 @@ fun AndroidViewTmpl(viewType: Type): String {
                 when {
                     it.isEnum() -> "widget.${it.name.depointer()}?.index"
                     it.jsonable() -> "widget.${it.name.depointer()}"
-                    (it.isList && it.genericLevel <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
-                    it.genericLevel > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
+                    (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
+                    it.getIterableLevel() > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
                     Regexes.MAP.matches(it.typeName) -> "{} /* Map类型暂不处理 */" // 多维数组暂不处理
                     else -> "widget.${it.name.depointer()}?.refId ?? -1"
                 }

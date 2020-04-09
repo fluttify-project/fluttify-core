@@ -8,12 +8,6 @@ private val tmpl = getResource("/tmpl/java/callback_arg_jsonable.stmt.java.tmpl"
 
 fun CallbackArgJsonableTmpl(param: Parameter): String {
     return tmpl
-        .replace("#__type_name__#", param.variable.run {
-            var result = typeName
-            for (i in 0 until genericLevel) {
-                result = "List<$result>"
-            }
-            result
-        })
+        .replace("#__type_name__#", param.variable.typeName.replace("$", "."))
         .replace("#__arg_name__#", param.variable.name)
 }
