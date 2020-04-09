@@ -53,32 +53,30 @@ open class AndroidJavaInterface : FluttifyTask() {
 
         // 生成主plugin文件
         sdk.directLibs.forEach { lib ->
-            val getters = lib.types
-                .filterType()
+            val filteredTypes = lib.types.filterType()
+            val constructableTypes = lib.types.filterConstructable()
+
+            val getters = filteredTypes
                 .flatMap { it.fields }
                 .filterGetters()
                 .map { HandlerGetterTmpl(it) }
 
-            val gettersBatch = lib.types
-                .filterType()
+            val gettersBatch = filteredTypes
                 .flatMap { it.fields }
                 .filterGetters()
                 .map { HandlerGetterBatchTmpl(it) }
 
-            val setters = lib.types
-                .filterType()
+            val setters = filteredTypes
                 .flatMap { it.fields }
                 .filterSetters()
                 .map { HandlerSetterTmpl(it) }
 
-            val settersBatch = lib.types
-                .filterType()
+            val settersBatch = filteredTypes
                 .flatMap { it.fields }
                 .filterSetters(true)
                 .map { HandlerSetterBatchTmpl(it) }
 
-            val methods = lib.types
-                .filterType()
+            val methods = filteredTypes
                 // callback类型不需要生成原生的handler
                 .filterNot { it.isCallback() }
                 // 含有泛型的类型不需要生成handler
@@ -87,8 +85,7 @@ open class AndroidJavaInterface : FluttifyTask() {
                 .filterMethod()
                 .map { HandlerMethodTmpl(it) }
 
-            val methodsBatch = lib.types
-                .filterType()
+            val methodsBatch = filteredTypes
                 // callback类型不需要生成原生的handler
                 .filterNot { it.isCallback() }
                 // 含有泛型的类型不需要生成handler
@@ -97,12 +94,10 @@ open class AndroidJavaInterface : FluttifyTask() {
                 .filterMethod(batch = true)
                 .map { HandlerMethodBatchTmpl(it) }
 
-            val objectCreators = lib.types
-                .filterConstructable()
+            val objectCreators = constructableTypes
                 .flatMap { HandlerObjectFactoryTmpl(it) }
 
-            val objectCreatorsBatch = lib.types
-                .filterConstructable()
+            val objectCreatorsBatch = constructableTypes
                 .flatMap { HandlerObjectFactoryBatchTmpl(it) }
 
             getters
@@ -178,26 +173,25 @@ open class IOSObjcInterface : FluttifyTask() {
         if (sdk.directLibs.isNotEmpty()) projectRootDir.file().deleteRecursively()
 
         sdk.directLibs.forEach { lib ->
-            val getters = lib.types
-                .filterType()
+            val filteredTypes = lib.types.filterType()
+            val constructableTypes = lib.types.filterConstructable()
+
+            val getters = filteredTypes
                 .flatMap { it.fields }
                 .filterGetters()
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl(it) }
 
-            val gettersBatch = lib.types
-                .filterType()
+            val gettersBatch = filteredTypes
                 .flatMap { it.fields }
                 .filterGetters()
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_getter_batch.HandlerGetterBatchTmpl(it) }
 
-            val setters = lib.types
-                .filterType()
+            val setters = filteredTypes
                 .flatMap { it.fields }
                 .filterSetters()
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl(it) }
 
-            val settersBatch = lib.types
-                .filterType()
+            val settersBatch = filteredTypes
                 .flatMap { it.fields }
                 .filterSetters(true)
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_setter_batch.HandlerSetterBatchTmpl(it) }
@@ -208,8 +202,7 @@ open class IOSObjcInterface : FluttifyTask() {
                 .map { it.asMethod() }
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
 
-            val methods = lib.types
-                .filterType()
+            val methods = filteredTypes
                 // callback类型不需要生成原生的handler
                 .filterNot { it.isCallback() }
                 // 含有泛型的类型不需要生成handler
@@ -218,8 +211,7 @@ open class IOSObjcInterface : FluttifyTask() {
                 .filterMethod()
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
 
-            val methodsBatch = lib.types
-                .filterType()
+            val methodsBatch = filteredTypes
                 // callback类型不需要生成原生的handler
                 .filterNot { it.isCallback() }
                 // 含有泛型的类型不需要生成handler
@@ -228,8 +220,7 @@ open class IOSObjcInterface : FluttifyTask() {
                 .filterMethod(batch = true)
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl(it) }
 
-            val typeCasts = lib.types
-                .filterType()
+            val typeCasts = filteredTypes
                 .asSequence()
                 .filterNot { it.isLambda() }
                 .filterNot { it.isFunction() }
@@ -239,8 +230,7 @@ open class IOSObjcInterface : FluttifyTask() {
                 .map { HandlerTypeCastTmpl(it) }
                 .toList()
 
-            val typeChecks = lib.types
-                .filterType()
+            val typeChecks = filteredTypes
                 .asSequence()
                 .filterNot { it.isLambda() }
                 .filterNot { it.isFunction() }
@@ -250,8 +240,7 @@ open class IOSObjcInterface : FluttifyTask() {
                 .map { HandlerTypeCheckTmpl(it) }
                 .toList()
 
-            val objectCreators = lib.types
-                .filterConstructable()
+            val objectCreators = constructableTypes
                 .distinctBy { it.name }
                 .map {
                     if (it.isStruct()) {
@@ -261,8 +250,7 @@ open class IOSObjcInterface : FluttifyTask() {
                     }
                 }
 
-            val objectCreatorsBatch = lib.types
-                .filterConstructable()
+            val objectCreatorsBatch = constructableTypes
                 .distinctBy { it.name }
                 .map {
                     if (it.isStruct()) {

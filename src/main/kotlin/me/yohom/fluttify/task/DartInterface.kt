@@ -74,8 +74,6 @@ open class AndroidDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this))
             }
 
-        // todo 增加打开Activity的函数
-
         val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
