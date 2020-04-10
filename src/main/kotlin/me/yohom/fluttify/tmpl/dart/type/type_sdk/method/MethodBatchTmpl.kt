@@ -5,7 +5,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 
-//Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+//#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  if (#__check_param_size__#) {
 //    return Future.error('all args must have same length!');
 //  }
@@ -30,6 +30,7 @@ private val tmpl = getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText
  * 不接受有回调的方法
  */
 fun MethodBatchTmpl(method: Method): String {
+    val static = if (method.isStatic) "static " else ""
     val returnType = if (method.returnType.findType().isStructPointer()) {
         // 返回类型是结构体指针
         method.returnType.toDartType().enList().enList()
@@ -73,6 +74,7 @@ fun MethodBatchTmpl(method: Method): String {
     }
 
     return tmpl
+        .replace("#__static__#", static)
         .replace("#__return_type__#", returnType)
         .replace("#__method_name__#", methodName)
         .replace("#__formal_params__#", formalParams)
