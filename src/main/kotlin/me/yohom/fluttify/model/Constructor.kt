@@ -25,13 +25,17 @@ data class Constructor(
     fun filter(): Boolean {
         return must("必须是公开构造器") { isPublic }
                 &&
-                (formalParams.isEmpty() || // 构造器没有参数
+                (formalParams.isEmpty() // 构造器没有参数
+                        ||
                         formalParams.all {
                             // jsonable的
-                            it.variable.jsonable() ||
+                            it.variable.jsonable()
+                                    ||
                                     // SDK中有其他方法可以返回构造器需要的参数类型的
-                                    SDK.sdks.flatMap { it.allFilteredMethods }.map { it.returnType }
-                                        .contains(it.variable.typeName) ||
+                                    SDK.sdks.flatMap { it.allFilteredMethods }
+                                        .map { it.returnType }
+                                        .contains(it.variable.typeName)
+                                    ||
                                     // 构造器的参数类型也是可构造的
                                     it.variable.typeName.run {
                                         if (isIterable()) {
