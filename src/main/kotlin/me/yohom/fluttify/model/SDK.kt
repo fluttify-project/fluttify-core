@@ -59,6 +59,14 @@ class SDK : IPlatform {
         directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters() || it.filterSetter() }
     }
 
+    /**
+     * 所有类型
+     */
+    @delegate:Transient
+    val allTypes: List<Type> by lazy {
+        directLibs.flatMap { it.types }
+    }
+
     override fun toString(): String {
         return "SDK(version='$version', platform=$platform, libs=$libs)"
     }

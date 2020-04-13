@@ -36,6 +36,9 @@ data class Constructor(
                                         .map { it.returnType }
                                         .contains(it.variable.typeName)
                                     ||
+                                    // 参数类型有实体子类(更精确的应该是可构造的子类)
+                                    it.variable.typeName.findType().hasConcretSubtype()
+                                    ||
                                     // 构造器的参数类型也是可构造的
                                     it.variable.typeName.run {
                                         if (isIterable()) {

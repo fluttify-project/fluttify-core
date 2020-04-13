@@ -268,7 +268,7 @@ open class Type : IPlatform, IScope {
                 &&
                 must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
                 &&
-                must("所有构造器都通过过滤或没有构造器或jsonable类型") { constructors.any { it.filter() } || constructors.isEmpty() || isJsonable }
+                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter() } || constructors.isEmpty() || isJsonable }
                 &&
                 must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
@@ -296,7 +296,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun isConcret(): Boolean {
-        return !isAbstract
+        return !isAbstract && isKnownType()
     }
 
     fun hasSubtype(): Boolean {
