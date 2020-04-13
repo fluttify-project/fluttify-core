@@ -212,7 +212,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun firstConcretSubtype(): Type? {
-        return if (isConcret()) {
+        return if (isConcret() && isPublic) {
             this
         } else {
             SDK
