@@ -113,7 +113,6 @@ class SDK : IPlatform {
                         }
                     platform = Platform.iOS
                 }
-                // 其他情况一律认为不认识的类
                 else -> Type().apply { name = finalTypeName }
             }
         }

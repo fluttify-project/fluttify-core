@@ -51,8 +51,18 @@ fun CallbackMethodTmpl(callerMethod: Method): String {
                 .findType()
                 .methods
                 .filterMethod()
-                // 回调的方法要过滤掉参数含有`没有子类的抽象类`参数的方法
-                .filter { it.must("形参类型是具体类型或者含有子类的抽象类") { formalParams.all { it.variable.hasConcretSubtype() } } }
+                // 回调的方法要过滤掉参数含有`回调类`参数的方法
+                .filter {
+                    it.must("形参类型是具体类型或者含有子类的抽象类") {
+                        formalParams.all {
+                            it.variable.jsonable()
+                                    ||
+                                    it.variable.isConcret()
+                                    ||
+                                    it.variable.hasConcretSubtype()
+                        }
+                    }
+                }
                 .joinToString("\n") {
                     CallbackCaseDelegateTmpl(it, param.variable.name)
                 }

@@ -62,10 +62,6 @@ data class Method(
                 || must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } }
                 || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
                 &&
-                must("返回类型是具体类型 或 含有实体子类的抽象类") {
-                    returnType.findType().run { isConcret() || hasConcretSubtype() }
-                }
-                &&
                 mustNot("返回类型是混淆类") { returnType.isObfuscated() }
                 &&
                 mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
