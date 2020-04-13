@@ -206,7 +206,6 @@ open class Type : IPlatform, IScope {
             // 计算子类的时候, 去除掉忽略的类
             .filter { type -> EXCLUDE_TYPES.none { it.matches(type.name) } }
             .filter { it.isPublic }
-            .filterNot { it.name.isObfuscated() }
             .filter { (it.superClass == name || name in it.interfaces) }
             .toList()
     }
@@ -349,7 +348,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun isKnownType(): Boolean {
-        return platform != Platform.Unknown || jsonable()
+        return platform != Platform.Unknown || jsonable() || Regexes.ITERABLE.matches(name) || Regexes.MAP.matches(name)
     }
 
     fun isUnknownType(): Boolean {

@@ -72,6 +72,10 @@ data class Method(
                     returnType.allTypes().flatMap { it.ancestorTypes }.all { it.findType().isKnownType() }
                 }
                 &&
+                must("返回类型不是回调类") { returnType.allTypes().none { it.isCallback() } }
+                &&
+                must("返回类型有实体子类") { returnType.allTypes().all { it.isConcret() || it.hasConcretSubtype() } }
+                &&
                 must("参数类型全部通过类型过滤") {
                     formalParams.all {
                         it.variable.typeName.jsonable() ||
