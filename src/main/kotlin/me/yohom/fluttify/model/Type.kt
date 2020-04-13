@@ -216,7 +216,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun firstConcretSubtype(): Type? {
-        return subtypes().firstOrNull { it.isConcret() }
+        return subtypes().firstOrNull { it.isConcret() && !it.isObfuscated() }
     }
 
     fun superTypes(): List<Type> {
