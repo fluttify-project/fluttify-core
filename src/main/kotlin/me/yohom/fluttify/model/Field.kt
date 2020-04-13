@@ -58,7 +58,7 @@ data class Field(
 
     fun filterGetters(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        println("属性:${toString()}执行getter过滤开始")
+        println("属性:\"${toString()}\"执行getter过滤开始")
         val result = (must("jsonable类型") { variable.typeName.jsonable() }
                 || must("关联类型都通过过滤") { variable.typeName.allTypes().all { it.filter() } })
                 && // 必须先通过类型的过滤
@@ -75,7 +75,7 @@ data class Field(
                 variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() }
                 &&
                 variable.mustNot("回调类") { isCallback() }
-        println("属性:${toString()}执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("属性:\"${toString()}\"执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result
     }

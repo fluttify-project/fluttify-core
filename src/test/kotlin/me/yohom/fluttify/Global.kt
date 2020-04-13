@@ -32,3 +32,8 @@ object Bmap {
     val iosSearchNaviSDK = "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_navi_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
 }
 
+object BaiduAsr {
+    val androidAsrSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/baidu_asr/jr/baidu_asr_fluttify.android.json".file().readText().fromJson<SDK>()
+
+}
+

@@ -55,14 +55,14 @@ data class Method(
 
     fun filter(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓方法↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        println("方法:${toString()}执行过滤开始")
+        println("方法:\"${toString()}\"执行过滤开始")
         val result = (must("返回类型是jsonable类型") { returnType.jsonable() }
                 || must("返回类型是void") { returnType.isVoid() }
                 || must("返回类型是原始类型指针类型") { returnType.isPrimitivePointerType() }
                 || must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } }
                 || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
                 &&
-                must("返回类型是具体类型或者含有实体子类的抽象类") {
+                must("返回类型是具体类型 或 含有实体子类的抽象类") {
                     returnType.findType().run { isConcret() || hasConcretSubtype() }
                 }
                 &&
@@ -137,7 +137,7 @@ data class Method(
                 mustNot("形参父类是混淆类") {
                     formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
                 }
-        println("方法:${toString()}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result
     }

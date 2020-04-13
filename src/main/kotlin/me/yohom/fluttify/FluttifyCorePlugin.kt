@@ -12,7 +12,6 @@ lateinit var ext: FluttifyExtension
 //     2. 包下的其他元素只能是子包, 这些子包下的类是当前包下类的组成部分, 其他类推
 //   2. 包下面没有类, 只有子包
 //     1. 当包下面没有类, 只有并列的子包时, 代表这些子包是相同组成部分的不同情况
-// todo 可以提供一些启动Activity的方法, 就是以`迁移原生平台的代码`为场景的功能
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         ext = project.extensions.create("fluttify", FluttifyExtension::class.java, project.objects)

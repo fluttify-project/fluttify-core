@@ -141,12 +141,16 @@ open class Type : IPlatform, IScope {
 
     fun filter(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        println("类:${name}执行过滤开始")
+        println("类:\"${name}\"执行过滤开始")
         val result = must("已知类型") { platform != Platform.Unknown }
                 &&
                 must("公开类型") { isPublic }
                 &&
-                must("祖宗类全部是已知类型") { ancestorTypes.all { it.findType().platform != Platform.Unknown } }
+                must("祖宗类全部是已知类型 或 没有祖宗类") {
+                    ancestorTypes.all { it.findType().platform != Platform.Unknown }
+                            ||
+                            ancestorTypes.isEmpty()
+                }
                 &&
                 // 换言之只支持接口的泛型
                 mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() }
@@ -155,14 +159,14 @@ open class Type : IPlatform, IScope {
                 &&
                 mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
                 &&
-                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } } }
+                mustNot("祖宗类含有忽略类型") { EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } || ancestorTypes.isEmpty() } }
                 &&
                 (isEnum() || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
                     if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
                 }
                 ||
                 must("是List") { /* Regexes.MAP.matches(name) ||*/ Regexes.ITERABLE.matches(name) }
-        println("类:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        println("类:\"${name}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result
     }
@@ -212,16 +216,7 @@ open class Type : IPlatform, IScope {
     }
 
     fun firstConcretSubtype(): Type? {
-        return if (isConcret() && isPublic) {
-            this
-        } else {
-            SDK
-                .sdks
-                .flatMap { it.libs }
-                .flatMap { it.types }
-                .firstOrNull { (it.superClass == name || name in it.interfaces) && !it.name.isObfuscated() }
-                ?.firstConcretSubtype()
-        }
+        return subtypes().firstOrNull { it.isConcret() }
     }
 
     fun superTypes(): List<Type> {

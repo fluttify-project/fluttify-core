@@ -1,6 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.Amap
+import me.yohom.fluttify.BaiduAsr
 import me.yohom.fluttify.Bmap
 import org.junit.jupiter.api.Test
 
@@ -43,10 +44,10 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        Amap.androidMapSDK
-            .libs[2]
+        BaiduAsr.androidAsrSDK
+            .libs[1]
             .types
-            .find { it.name == "com.amap.api.maps.model.TileProvider" }
+            .find { it.name == "com.baidu.speech.EventManager" }
 //            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
 //            .find { it.name == "com.amap.api.maps.AMap.InfoWindowAdapter" }
             ?.firstConcretSubtype()
@@ -65,13 +66,13 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        Amap.androidMapSDK
-            .libs[2]
+        BaiduAsr.androidAsrSDK
+            .libs[1]
             .types
-            .find { it.name.contains("com.amap.api.maps.AMap.InfoWindowAdapter") }
-            ?.hasSubtype()
+            .find { it.name == "com.baidu.speech.EventManager" }
+            ?.subtypes()
             ?.run {
-                println("结果: $this")
+                println("结果: ${this.joinToString { it.name }}")
             }
     }
 

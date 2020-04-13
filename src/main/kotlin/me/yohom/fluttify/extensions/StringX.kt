@@ -22,6 +22,7 @@ fun TYPE_NAME.jsonable(): Boolean {
         "num",
         "String",
         "Map<String,String>",
+        "Map<String,Object>",
         "Map",
         "null",
         "List<int>",
