@@ -7,6 +7,7 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
 //import 'dart:typed_data';
 //
@@ -45,7 +46,14 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     val methods = type.methods
         .filterMethod()
-        .map { InterfaceMethodTmpl(it) }
+        .map {
+            // 只有回调类不需要调用原生方法
+            if (type.isCallback()) {
+                InterfaceMethodTmpl(it)
+            } else {
+                MethodTmpl(it)
+            }
+        }
 
     val getters = type.fields
         .filterGetters()
