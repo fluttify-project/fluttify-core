@@ -10,6 +10,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator.Handler
 import me.yohom.fluttify.tmpl.java.common.handler.handler_object_creator_batch.HandlerObjectFactoryBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_setter.HandlerSetterTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_setter_batch.HandlerSetterBatchTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_top_constant.HandlerTopConstantTmpl
 import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref.HandlerObjectFactoryRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref_batch.HandlerObjectFactoryRefBatchTmpl
@@ -181,6 +182,10 @@ open class IOSObjcInterface : FluttifyTask() {
                 .filterGetters()
                 .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl(it) }
 
+            val topConstants = lib
+                .topLevelConstants
+                .map { HandlerTopConstantTmpl(it) }
+
             val gettersBatch = filteredTypes
                 .flatMap { it.fields }
                 .filterGetters()
@@ -262,6 +267,7 @@ open class IOSObjcInterface : FluttifyTask() {
 
             methods
                 .union(methodsBatch)
+                .union(topConstants)
                 .union(getters)
                 .union(gettersBatch)
                 .union(setters)
