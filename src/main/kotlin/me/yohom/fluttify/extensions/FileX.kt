@@ -187,22 +187,26 @@ fun JAVA_FILE.javaType(): SourceFile {
         }
     })
 
-    return SourceFile(listOf(Type().also {
-        it.typeType = typeType
-        it.isPublic = isPublic
-        it.isAbstract = isAbstract
-        it.isInnerType = isInnerType
-        it.isStaticType = isStaticType
-        it.genericTypes.addAll(genericTypes)
-        it.constructors = constructors
-        it.interfaces = interfaces
-        it.name = "$packageName.$simpleName"
-        it.superClass = superClass
-        it.fields.addAll(fields)
-        it.methods.addAll(methods)
-        it.constants.addAll(enumConstants)
-        it.platform = Platform.Android
-    }), listOf())
+    return SourceFile(
+        nameWithoutExtension,
+        listOf(Type().also {
+            it.typeType = typeType
+            it.isPublic = isPublic
+            it.isAbstract = isAbstract
+            it.isInnerType = isInnerType
+            it.isStaticType = isStaticType
+            it.genericTypes.addAll(genericTypes)
+            it.constructors = constructors
+            it.interfaces = interfaces
+            it.name = "$packageName.$simpleName"
+            it.superClass = superClass
+            it.fields.addAll(fields)
+            it.methods.addAll(methods)
+            it.constants.addAll(enumConstants)
+            it.platform = Platform.Android
+        }),
+        listOf()
+    )
 }
 
 /**
@@ -620,7 +624,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
     })
 
-    return SourceFile(types, topLevelConstant)
+    return SourceFile(nameWithoutExtension, types, topLevelConstant)
 }
 
 fun File.iterate(
