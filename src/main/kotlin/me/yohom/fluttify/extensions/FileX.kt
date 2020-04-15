@@ -27,7 +27,7 @@ import javax.net.ssl.X509TrustManager
 /**
  * Java源码解析
  */
-fun JAVA_FILE.javaType(): Type {
+fun JAVA_FILE.javaType(): SourceFile {
     val source = readText()
 
     var packageName = ""
@@ -187,7 +187,7 @@ fun JAVA_FILE.javaType(): Type {
         }
     })
 
-    return Type().also {
+    return SourceFile(listOf(Type().also {
         it.typeType = typeType
         it.isPublic = isPublic
         it.isAbstract = isAbstract
@@ -202,16 +202,18 @@ fun JAVA_FILE.javaType(): Type {
         it.methods.addAll(methods)
         it.constants.addAll(enumConstants)
         it.platform = Platform.Android
-    }
+    }), listOf())
 }
 
 /**
  * Objc源码解析
  */
-fun OBJC_FILE.objcType(): List<Type> {
+fun OBJC_FILE.objcType(): SourceFile {
     val source = readText()
 
-    val result = mutableListOf<Type>()
+    val topLevelConstant = mutableListOf<Variable>()
+
+    val types = mutableListOf<Type>()
 
     var fields = mutableListOf<Field>()
     var enumConstants = mutableListOf<String>()
@@ -224,6 +226,29 @@ fun OBJC_FILE.objcType(): List<Type> {
     var genericTypes = listOf<TYPE_NAME>()
 
     source.walkTree(object : ObjectiveCParserBaseListener() {
+
+        override fun enterDeclaration(ctx: ObjectiveCParser.DeclarationContext) {
+            // 只有顶层声明需要处理
+            if (ctx.isDirectChildOf(ObjectiveCParser.TopLevelDeclarationContext::class)) {
+                val isExternString = ctx.varDeclaration()
+                    ?.declarationSpecifiers()
+                    ?.text
+                    ?.run {
+                        contains("extern") && contains("NSString")
+                    }
+                val constantName = ctx.varDeclaration()
+                    ?.initDeclaratorList()
+                    ?.initDeclarator()
+                    ?.get(0)
+                    ?.declarator()
+                    ?.text
+
+                if (isExternString == true && constantName != null) {
+                    topLevelConstant.add(Variable("NSString*", constantName.depointer(), Platform.iOS))
+                }
+            }
+        }
+
         //region 类
         override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
             typeType = TypeType.Class
@@ -236,7 +261,7 @@ fun OBJC_FILE.objcType(): List<Type> {
         override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
             name = ctx.className.text
             if (name.isNotEmpty()) {
-                result.add(
+                types.add(
                     Type().also {
                         it.typeType = typeType
                         it.isPublic = true
@@ -270,7 +295,7 @@ fun OBJC_FILE.objcType(): List<Type> {
 
         override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
             if (name.isNotEmpty()) {
-                result.add(
+                types.add(
                     Type().also {
                         it.typeType = typeType
                         it.isPublic = true
@@ -307,7 +332,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             //typedef enum MALineCapType MALineCapType;
             //
             // 这种情况, 导致MALineCapType在dart端的内容是空的, 这里如果碰到的枚举是已经定义过的, 那么就跳过
-            if (result.map { it.name }.contains(ctx.identifier()?.text)) return
+            if (types.map { it.name }.contains(ctx.identifier()?.text)) return
 
             typeType = TypeType.Enum
             name = ctx.identifier()?.text
@@ -317,7 +342,7 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
-            if (result.map { it.name }.contains(
+            if (types.map { it.name }.contains(
                     ctx.ancestorOf(ObjectiveCParser.EnumDeclarationContext::class)?.identifier()?.text
                 )
             ) return
@@ -326,10 +351,10 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
 
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
-            if (result.map { it.name }.contains(ctx.identifier()?.text)) return
+            if (types.map { it.name }.contains(ctx.identifier()?.text)) return
 
             if (name.isNotEmpty()) {
-                result.add(Type().also {
+                types.add(Type().also {
                     it.typeType = typeType
                     it.isPublic = true
                     it.isAbstract = isAbstract
@@ -359,7 +384,7 @@ fun OBJC_FILE.objcType(): List<Type> {
 
         override fun exitCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
             // 先在已识别出来的类型列表中寻找是否存在Category对应的类型
-            val categoryClass = result.find { it.name == ctx.categoryName.text }
+            val categoryClass = types.find { it.name == ctx.categoryName.text }
             // 如果存在的话, 那么把收集到的属性和方法数据添加进去, 否则什么都不做, 并清空属性和方法列表
             categoryClass?.run {
                 categoryClass.fields.addAll(fields)
@@ -410,8 +435,8 @@ fun OBJC_FILE.objcType(): List<Type> {
 
         override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
             // 结构体 && 名称不为空 && result中不包含当前名称
-            if (typeType == TypeType.Struct && name.isNotEmpty() && !result.map { it.name }.contains(name)) {
-                result.add(
+            if (typeType == TypeType.Struct && name.isNotEmpty() && !types.map { it.name }.contains(name)) {
+                types.add(
                     Type().also {
                         it.typeType = typeType
                         it.isPublic = true
@@ -468,7 +493,7 @@ fun OBJC_FILE.objcType(): List<Type> {
             if (returnType != null && typeName != null) {
                 // lambda
                 if (formalParams != null) {
-                    result.add(
+                    types.add(
                         Type().also {
                             it.typeType = TypeType.Lambda
                             it.isPublic = true
@@ -488,7 +513,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 }
                 // 别名不包含^, 说明不是函数别名
                 else if (!typeName.contains("^")) {
-                    result.add(
+                    types.add(
                         Type().also {
                             it.typeType = TypeType.Alias
                             it.isPublic = true
@@ -579,7 +604,7 @@ fun OBJC_FILE.objcType(): List<Type> {
                 }
 
             if (returnType != null && typeName != null && formalParams != null) {
-                result.add(
+                types.add(
                     Type().also {
                         it.typeType = TypeType.Function
                         it.isPublic = true
@@ -595,7 +620,7 @@ fun OBJC_FILE.objcType(): List<Type> {
         }
     })
 
-    return result
+    return SourceFile(types, topLevelConstant)
 }
 
 fun File.iterate(

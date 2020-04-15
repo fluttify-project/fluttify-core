@@ -12,6 +12,10 @@ fun <T : Any> RuleContext.isChildOf(parentClass: KClass<T>): Boolean {
     }
 }
 
+fun <T : Any> RuleContext.isDirectChildOf(parentClass: KClass<T>): Boolean {
+    return parent.javaClass == parentClass.java
+}
+
 @Throws(IllegalArgumentException::class)
 fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
     return when {

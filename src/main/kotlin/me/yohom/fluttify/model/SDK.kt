@@ -87,15 +87,20 @@ class SDK : IPlatform {
                 // 如果是空字符串那么返回NO_TYPE
                 finalTypeName.isEmpty() -> Type.NO_TYPE
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
-                allTypes.map { it.name.depointer() }.contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
+                allTypes.map { it.name.depointer() }
+                    .contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
                 // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
                 SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(finalTypeName) } -> SYSTEM_TYPE.first {
                     Regex(it.name).matches(finalTypeName)
                 }
                 // 是objc的id指针
-                finalTypeName == "id" -> Type().apply { name = "id"; typeType = TypeType.Class; platform = Platform.iOS }
+                finalTypeName == "id" -> Type().apply {
+                    name = "id"; typeType = TypeType.Class; platform = Platform.iOS
+                }
                 // void*类型
-                finalTypeName == "void*" -> Type().apply { name = "NSValue"; typeType = TypeType.Class; platform = Platform.iOS }
+                finalTypeName == "void*" -> Type().apply {
+                    name = "NSValue"; typeType = TypeType.Class; platform = Platform.iOS
+                }
                 // lambda
                 finalTypeName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda
@@ -128,15 +133,26 @@ class Lib {
     /**
      * 类
      */
-    var types: MutableList<Type> = mutableListOf()
+    var sourceFiles: MutableList<SourceFile> = mutableListOf()
+
+    /**
+     * 类
+     */
+    val types: List<Type>
+        get() = sourceFiles.flatMap { it.types }
+
+    /**
+     * 顶层常量
+     */
+    val topLevelConstants: List<Variable>
+        get() = sourceFiles.flatMap { it.topLevelConstants }
 
     /**
      * 是否是依赖
      */
     var isDependency: Boolean = false
-
     override fun toString(): String {
-        return "Lib(name='$name', types=$types, isDependency=$isDependency)"
+        return "Lib(name='$name', types=$types, topLevelConstants=$topLevelConstants, isDependency=$isDependency)"
     }
 }
 

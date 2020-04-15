@@ -12,12 +12,8 @@ class FileXKtTest {
 //        val file = "/Users/yohom/Github/Util/Kotlin/fluttify-core/src/main/resources/library/ios/BaiduMapAPI_Map.framework/Headers/BMKMapView.h".file()
 //        val file = "/Users/yohom/Github/Me/All/fluttify/amap_location_fluttify/output-project/amap_location_fluttify/ios/AMapLocationKit.framework/Headers/AMapLocationManager.h".file()
         val dir =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/sdk/ios/BaiduMapAPI_Base.framework/Headers/".file()
-        dir
-            .listFiles()
-            ?.forEach {
-                println(it.objcType())
-            }
+            "/Users/yohom/Github/Me/All/fluttify/3rd_party/baidu_asr/sdk/ios/BDSEventManager.h".file()
+        println(dir.objcType())
     }
 
     @Test
@@ -60,7 +56,8 @@ class FileXKtTest {
         targetVersion?.run {
             val podspecJson = File("$this/$archiveName.podspec.json").readText().fromJson<Map<String, Any>>()
             val source: Map<String, String> = podspecJson["source"] as Map<String, String>
-            val archiveFile = "/Users/yohom/Github/Me/All/fluttify/amap/amap_location_fluttify/sdk/ios/ARCHIVE.zip".file()
+            val archiveFile =
+                "/Users/yohom/Github/Me/All/fluttify/amap/amap_location_fluttify/sdk/ios/ARCHIVE.zip".file()
             source["http"]?.run { archiveFile.downloadFrom(this) }
             // 下载完成后解压
             ZipUtil.unpack(archiveFile, archiveFile.parentFile)

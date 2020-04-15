@@ -30,7 +30,7 @@ open class AndroidJsonRepresentation : FluttifyTask() {
             ?.forEach {
                 val lib = Lib().apply { name = it.nameWithoutExtension }
                 it.iterate("java") { javaFile ->
-                    lib.types.add(javaFile.javaType())
+                    lib.sourceFiles.add(javaFile.javaType())
                 }
                 sdk.libs.add(lib)
             }
@@ -70,7 +70,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
                 if (none { it.extension == "framework" }) {
                     val lib = Lib().apply { name = ext.projectName }
                     frameworkDir.iterate("h") { objcFile ->
-                        lib.types.addAll(objcFile.objcType())
+                        lib.sourceFiles.add(objcFile.objcType())
                     }
                     sdk.libs.add(lib)
                 }
@@ -80,7 +80,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
                         .forEach {
                             val lib = Lib().apply { name = it.nameWithoutExtension }
                             it.iterate("h") { objcFile ->
-                                lib.types.addAll(objcFile.objcType())
+                                lib.sourceFiles.add(objcFile.objcType())
                             }
                             sdk.libs.add(lib)
                         }
