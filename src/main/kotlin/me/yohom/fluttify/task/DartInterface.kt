@@ -3,6 +3,7 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
+import me.yohom.fluttify.tmpl.dart.type.type_constants.TypeConstantsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_functions.TypeFunctionsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
@@ -57,6 +58,20 @@ open class AndroidDartInterface : FluttifyTask() {
                     val fileName = it.name.replace("$", ".").replace(".", "/")
                     val resultFile =
                         "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/${fileName}.g.dart"
+
+                    resultFile.file().writeText(resultDart)
+                }
+            }
+
+        // 顶层常量类
+        sdk.directLibs
+            .flatMap { it.topLevelConstants }
+            .run {
+                val resultDart = TypeConstantsTmpl(this)
+
+                if (resultDart.isNotBlank()) {
+                    val resultFile =
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/constants.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }
@@ -148,6 +163,20 @@ open class IOSDartInterface : FluttifyTask() {
                             ".",
                             "/"
                         )}.g.dart"
+
+                    resultFile.file().writeText(resultDart)
+                }
+            }
+
+        // 顶层常量类
+        sdk.directLibs
+            .flatMap { it.topLevelConstants }
+            .run {
+                val resultDart = TypeConstantsTmpl(this)
+
+                if (resultDart.isNotBlank()) {
+                    val resultFile =
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/constants.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }
