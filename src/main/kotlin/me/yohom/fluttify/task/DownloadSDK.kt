@@ -17,6 +17,7 @@ open class DownloadAndroidSDK : FluttifyTask() {
             project.repositories.run {
                 maven { it.url = URI("http://maven.aliyun.com/nexus/content/groups/public/") }
                 maven { it.url = URI("https://oss.sonatype.org/content/groups/public") }
+                maven { it.url = URI("https://dl.bintray.com/aweme-open-sdk-team/public") }
                 jcenter()
                 mavenCentral()
             }
