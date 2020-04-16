@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_setter
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_id.ArgIdTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_ref.ArgListRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
@@ -32,6 +33,7 @@ fun HandlerSetterTmpl(field: Field): String {
     val setter = field.setterName.depointer()
     val args = field.variable.run {
         when {
+            typeName == "id" -> ArgIdTmpl(field.variable)
             jsonable() || isAliasType() -> ArgJsonableTmpl(field.variable)
             isIterable -> ArgListRefTmpl(field.variable)
             isEnum() -> ArgEnumTmpl(field.variable)

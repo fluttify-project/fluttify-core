@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_method
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_id.ArgIdTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_ref.ArgListRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
@@ -41,6 +42,7 @@ fun HandlerMethodTmpl(method: Method): String {
     val args = method.formalParams
         .joinToString("\n") {
             when {
+                it.variable.typeName == "id" -> ArgIdTmpl(it.variable)
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
                 it.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(it.variable)
                 it.variable.isStructPointer() -> ArgListStructTmpl(it.variable)
