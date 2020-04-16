@@ -1,7 +1,10 @@
 // id arg
 id #__name__#;
 // jsonable
-if ([#__name__# isKindOfClass:[NSNumber class]] || [#__name__# isKindOfClass:[NSString class]] || [#__name__# isKindOfClass:[NSArray class]] || [#__name__# isKindOfClass:[NSDictionary class]]) {
+if ([args[@"#__name__#"] isKindOfClass:[NSNumber class]]
+        || [args[@"#__name__#"] isKindOfClass:[NSString class]]
+        || [args[@"#__name__#"] isKindOfClass:[NSArray class]]
+        || [args[@"#__name__#"] isKindOfClass:[NSDictionary class]]) {
     #__name__# = args[@"#__name__#"];
 }
 // non jsonable
