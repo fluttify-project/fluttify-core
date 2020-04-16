@@ -36,11 +36,6 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     var homepage: String = "https://fluttify.com"
 
     /**
-     * 单价 元/方法
-     */
-    var unitPrice: Double = 0.1
-
-    /**
      * foundation版本
      */
     var foundationVersion: String = ""
