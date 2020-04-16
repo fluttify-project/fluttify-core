@@ -86,7 +86,7 @@ fun AndroidViewTmpl(viewType: Type): String {
         .constructors
         .filter {
             it.formalParams.any { param ->
-                param.variable.typeName !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+                param.variable.trueType !in listOf("android.content.Context", "android.util.AttributeSet", "int")
             }
         }
 
@@ -95,7 +95,7 @@ fun AndroidViewTmpl(viewType: Type): String {
         // 去掉Context的参数列表, 不需要Context
         val formalParamsExcludeContext = constructor
             .formalParams
-            .filter { it.variable.typeName != "android.content.Context" }
+            .filter { it.variable.trueType != "android.content.Context" }
 
         // 参数
         val params = formalParamsExcludeContext
@@ -105,7 +105,7 @@ fun AndroidViewTmpl(viewType: Type): String {
         // 属性
         val fields = formalParamsExcludeContext
             .joinToString("\n") {
-                "final ${it.variable.typeName.toDartType()} ${it.variable.name};"
+                "final ${it.variable.trueType.toDartType()} ${it.variable.name};"
             }
         // 传入参数
         val creationArgs = formalParamsExcludeContext
@@ -116,7 +116,7 @@ fun AndroidViewTmpl(viewType: Type): String {
                     it.jsonable() -> "widget.${it.name.depointer()}"
                     (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
                     it.getIterableLevel() > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
-                    Regexes.MAP.matches(it.typeName) -> "{} /* Map类型暂不处理 */" // 多维数组暂不处理
+                    Regexes.MAP.matches(it.trueType) -> "{} /* Map类型暂不处理 */" // 多维数组暂不处理
                     else -> "widget.${it.name.depointer()}?.refId ?? -1"
                 }
             }

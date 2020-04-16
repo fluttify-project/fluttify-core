@@ -9,5 +9,5 @@ private val hTmpl = getResource("/tmpl/objc/struct_to_nsvalue.stmt.m.tmpl").read
 fun StructToNSValueTmpl(variable: Variable): String {
     return hTmpl
         .replace("#__variable_name__#", variable.name)
-        .replace("#__struct_type__#", variable.typeName)
+        .replace("#__struct_type__#", variable.trueType)
 }

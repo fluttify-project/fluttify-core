@@ -16,11 +16,11 @@ fun ArgListTmpl(variable: Variable): String {
     // 只处理非列表和一维列表, 多维列表一律返回一个空的列表
     return if (variable.getIterableLevel() <= 1) {
         tmpl
-            .replace("#__type_name__#", variable.typeName.replace("$", "."))
-            .replace("#__generic_type_name__#", variable.typeName.replace("$", ".").genericTypes()[0])
+            .replace("#__type_name__#", variable.trueType.replace("$", "."))
+            .replace("#__generic_type_name__#", variable.trueType.replace("$", ".").genericTypes()[0])
             .replace("#__arg_name__#", variable.name)
     } else {
-        val typeName = variable.typeName.replace("$", ".")
+        val typeName = variable.trueType.replace("$", ".")
         "$typeName ${variable.name} = new ArrayList<>();"
     }
 }

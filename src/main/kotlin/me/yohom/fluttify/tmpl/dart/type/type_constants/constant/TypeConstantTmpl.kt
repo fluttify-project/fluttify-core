@@ -15,7 +15,7 @@ private val tmpl = getResource("/tmpl/dart/constant.mtd.dart.tmpl").readText()
 
 fun TypeConstantTmpl(variable: Variable): String {
     return tmpl
-        .replace("#__type_name__#", variable.typeName.toDartType())
+        .replace("#__type_name__#", variable.trueType.toDartType())
         .replace("#__name__#", variable.name)
         .replace("#__channel_name__#", ext.methodChannelName)
 }

@@ -20,12 +20,12 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 private val tmpl = getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText()
 
 fun CallbackCaseLambdaTmpl(lambdaParam: Parameter): String {
-    val callbackCase = "Callback::${lambdaParam.variable.typeName.replace("$", ".")}::${lambdaParam.variable.typeName}"
+    val callbackCase = "Callback::${lambdaParam.variable.trueType.replace("$", ".")}::${lambdaParam.variable.trueType}"
     val log = ""
     val callbackHandler = lambdaParam.variable.name
     val callbackArgs = lambdaParam
         .variable
-        .typeName
+        .trueType
         .findType()
         .formalParams
         .joinToString {

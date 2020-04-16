@@ -14,7 +14,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 private val tmpl = getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").readText()
 
 fun GetterBatchTmpl(field: Field): String {
-    val dartType = field.variable.typeName.toDartType()
+    val dartType = field.variable.trueType.toDartType()
     val name = field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView()) "{bool viewChannel = true}" else ""
 
@@ -28,7 +28,7 @@ fun GetterBatchTmpl(field: Field): String {
     }
 
     val getter = field.getterMethodName()
-    val resultType = field.variable.typeName.run {
+    val resultType = field.variable.trueType.run {
         when {
             jsonable() -> toDartType()
             isVoid() -> "String"
@@ -37,15 +37,15 @@ fun GetterBatchTmpl(field: Field): String {
     }
     val result = field.variable.run {
         when {
-            jsonable() or isAliasType() -> ResultJsonableTmpl(typeName, platform)
+            jsonable() or isAliasType() -> ResultJsonableTmpl(trueType, platform)
             isIterable -> ResultListTmpl(
-                if (getIterableLevel() > 0) typeName.genericTypes()[0] else platform.objectType(),
+                if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType(),
                 platform
             )
-            isStructPointer() -> ResultListTmpl(typeName.depointer(), platform)
-            isEnum() -> ResultEnumTmpl(typeName)
-            typeName.isVoid() -> ResultVoidTmpl()
-            else -> ResultRefTmpl(typeName)
+            isStructPointer() -> ResultListTmpl(trueType.depointer(), platform)
+            isEnum() -> ResultEnumTmpl(trueType)
+            trueType.isVoid() -> ResultVoidTmpl()
+            else -> ResultRefTmpl(trueType)
         }
     }
     val nativeObjectPool = field.variable.run {

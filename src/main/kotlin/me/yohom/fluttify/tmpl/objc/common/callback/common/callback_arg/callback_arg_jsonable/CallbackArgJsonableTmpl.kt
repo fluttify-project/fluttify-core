@@ -12,7 +12,7 @@ private val tmpl = getResource("/tmpl/objc/callback_arg_jsonable.stmt.m.tmpl").r
 
 fun CallbackArgJsonableTmpl(variable: Variable): String {
     return tmpl
-        .replace("#__type_name__#", variable.typeName.run {
+        .replace("#__type_name__#", variable.trueType.run {
             if (this.isValueType()) this else this.enpointer()
         })
         .replace("#__arg_name__#", variable.name.depointer())

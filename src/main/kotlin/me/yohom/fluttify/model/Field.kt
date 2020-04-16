@@ -52,7 +52,7 @@ data class Field(
                 must("静态field") { isStatic == true } &&
                 must("不可变变量") { isFinal == true } &&
                 variable.must("数字或字符串类型") {
-                    typeName in listOf("int", "double", "String") && (value.isNumber() || value.isString())
+                    trueType in listOf("int", "double", "String") && (value.isNumber() || value.isString())
                 } &&
                 must("有值") { value.isNotEmpty() } &&
                 mustNot("包含new关键字") { value.startsWith("new") }
@@ -61,8 +61,8 @@ data class Field(
     fun filterGetters(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("属性:\"${toString()}\"执行getter过滤开始")
-        val result = (must("jsonable类型") { variable.typeName.jsonable() }
-                || must("关联类型都通过过滤") { variable.typeName.allTypes().all { it.filter() } })
+        val result = (must("jsonable类型") { variable.trueType.jsonable() }
+                || must("关联类型都通过过滤") { variable.trueType.allTypes().all { it.filter() } })
                 && // 必须先通过类型的过滤
                 must("公开field") { isPublic }
                 &&
@@ -85,8 +85,8 @@ data class Field(
     fun filterSetter(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("属性:${toString()}执行setter过滤开始")
-        val result = (must("jsonable类型") { variable.typeName.jsonable() }
-                || must("关联类型都通过过滤") { variable.typeName.allTypes().all { it.filter() } })
+        val result = (must("jsonable类型") { variable.trueType.jsonable() }
+                || must("关联类型都通过过滤") { variable.trueType.allTypes().all { it.filter() } })
                 && // 必须先通过类型的过滤
                 must("公开field") { isPublic }
                 &&
@@ -118,7 +118,7 @@ data class Field(
 
     fun asGetterMethod(): Method {
         return Method(
-            variable.typeName,
+            variable.trueType,
             getterName,
             listOf(),
             isStatic = false,

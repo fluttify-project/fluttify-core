@@ -50,8 +50,8 @@ fun HandlerGetterBatchTmpl(field: Field): String {
         field.variable.jsonable() -> ResultJsonableTmpl()
         field.variable.isIterable -> ResultListTmpl()
         field.variable.isValuePointerType() -> ResultValuePointerTmpl()
-        field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName)
-        else -> ResultRefTmpl(field.variable.typeName)
+        field.variable.isStruct() -> ResultStructTmpl(field.variable.trueType)
+        else -> ResultRefTmpl(field.variable.trueType)
     }
     return tmpl
         .replace("#__method_name__#", methodName)

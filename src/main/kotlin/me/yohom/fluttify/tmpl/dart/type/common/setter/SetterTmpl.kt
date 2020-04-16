@@ -14,7 +14,7 @@ private val tmpl = getResource("/tmpl/dart/setter.mtd.dart.tmpl").readText()
 
 fun SetterTmpl(field: Field): String {
     return field.variable.run {
-        val typeName = field.variable.typeName.toDartType()
+        val typeName = field.variable.trueType.toDartType()
 
         val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
         val normalMethodChannel = ext.methodChannelName
@@ -25,7 +25,7 @@ fun SetterTmpl(field: Field): String {
             "'$normalMethodChannel'"
         }
 
-        val argValue = field.variable.typeName.run {
+        val argValue = field.variable.trueType.run {
             when {
                 isEnum() -> "$name.index"
                 jsonable() -> name

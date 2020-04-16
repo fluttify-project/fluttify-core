@@ -33,7 +33,7 @@ fun HandlerSetterTmpl(field: Field): String {
     val setter = field.setterName.depointer()
     val args = field.variable.run {
         when {
-            typeName == "id" -> ArgIdTmpl(field.variable)
+            trueType == "id" -> ArgIdTmpl(field.variable)
             jsonable() || isAliasType() -> ArgJsonableTmpl(field.variable)
             isIterable -> ArgListRefTmpl(field.variable)
             isEnum() -> ArgEnumTmpl(field.variable)
@@ -55,8 +55,8 @@ fun HandlerSetterTmpl(field: Field): String {
     // 如果setter的是一个delegate, 那么就认定是当前类作为delegate处理
     val fieldValue =field.variable.run {
         when {
-            typeName.findType().isCallback() -> "self"
-            typeName.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
+            trueType.findType().isCallback() -> "self"
+            trueType.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
             else -> fieldName.depointer()
         }
     }

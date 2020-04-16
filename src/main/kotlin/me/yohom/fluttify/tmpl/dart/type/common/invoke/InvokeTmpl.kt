@@ -20,7 +20,7 @@ fun InvokeTmpl(method: Method): String {
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter("int", "refId")) else this }
         .map { it.variable }
         .toDartMap {
-            val type = if (it.isAliasType()) it.typeName.findType().aliasOf!! else it.typeName
+            val type = if (it.isAliasType()) it.trueType.findType().aliasOf!! else it.trueType
             when {
                 type.findType().isEnum() -> {
                     // 枚举列表

@@ -113,7 +113,7 @@ fun List<Constructor>.filterConstructor(): List<Constructor> {
 fun List<Parameter>.filterFormalParams(): List<Parameter> {
     return asSequence()
         .filter { it.filter() }
-        .filter { println("Parameter::${it.variable.typeName}通过过滤"); true }
+        .filter { println("Parameter::${it.variable.trueType}通过过滤"); true }
         .toList()
 }
 

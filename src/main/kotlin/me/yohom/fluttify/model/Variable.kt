@@ -2,6 +2,7 @@ package me.yohom.fluttify.model
 
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.CallbackTmpl
 
@@ -9,7 +10,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
  * 表示一个变量(字段, 方法参数, 局部变量)
  */
 data class Variable(
-    val typeName: TYPE_NAME,
+    private val typeName: TYPE_NAME,
     val name: String,
     override var platform: Platform,
     override var id: Int = NEXT_ID
@@ -18,48 +19,54 @@ data class Variable(
     val isIterable: Boolean
         get() = typeName.isIterable()
 
+    /**
+     * 如果类型由被手动override的话, 这里需要使用override之后的类
+     */
+    val trueType: String
+        get() = ext.ios.overrideElements[id]?.fromJson<Variable>()?.typeName ?: typeName
+
     fun isStructPointer(): Boolean {
-        return typeName.isStructPointer()
+        return trueType.isStructPointer()
     }
 
     fun isValuePointerType(): Boolean {
-        return typeName.isPrimitivePointerType()
+        return trueType.isPrimitivePointerType()
     }
 
     fun isStruct(): Boolean {
-        return typeName.findType().isStruct()
+        return trueType.findType().isStruct()
     }
 
     fun isEnum(): Boolean {
-        return typeName.findType().isEnum()
+        return trueType.findType().isEnum()
     }
 
     fun jsonable(): Boolean {
-        return typeName.jsonable()
+        return trueType.jsonable()
     }
 
     fun isAliasType(): Boolean {
-        return typeName.findType().isAlias()
+        return trueType.findType().isAlias()
     }
 
     fun isValueType(): Boolean {
-        return typeName.isValueType()
+        return trueType.isValueType()
     }
 
     fun isLambda(): Boolean {
-        return typeName.findType().isLambda()
+        return trueType.findType().isLambda()
     }
 
     fun isCallback(): Boolean {
-        return typeName.containerType().findType().isCallback() || typeName.deprotocol().findType().isCallback()
+        return trueType.containerType().findType().isCallback() || trueType.deprotocol().findType().isCallback()
     }
 
     fun isInterface(): Boolean {
-        return typeName.containerType().findType().isInterface()
+        return trueType.containerType().findType().isInterface()
     }
 
     fun isAbstract(): Boolean {
-        return typeName.containerType().findType().isAbstract
+        return trueType.containerType().findType().isAbstract
     }
 
     fun isConcret(): Boolean {
@@ -67,85 +74,85 @@ data class Variable(
     }
 
     fun hasConcretSubtype(): Boolean {
-        return typeName.findType().firstConcretSubtype() != null
+        return trueType.findType().firstConcretSubtype() != null
     }
 
     fun isKnownType(): Boolean {
-        return typeName.containerType().run { isIterable() || isMap() || findType().platform != Platform.Unknown }
-                && typeName.genericTypes().all { it.findType().platform != Platform.Unknown }
-                || typeName.jsonable()
+        return trueType.containerType().run { isIterable() || isMap() || findType().platform != Platform.Unknown }
+                && trueType.genericTypes().all { it.findType().platform != Platform.Unknown }
+                || trueType.jsonable()
     }
 
     fun isPublicType(): Boolean {
-        return typeName.findType().isPublic
+        return trueType.findType().isPublic
     }
 
     fun isGenericType(): Boolean {
-        return typeName.findType().genericTypes.isNotEmpty()
+        return trueType.findType().genericTypes.isNotEmpty()
     }
 
     fun containerType(): Type {
-        return typeName.containerType().findType()
+        return trueType.containerType().findType()
     }
 
     fun genericTypes(): List<Type> {
-        return typeName.genericTypes().map { it.findType() }
+        return trueType.genericTypes().map { it.findType() }
     }
 
     fun allTypes(): List<Type> {
-        return typeName.allTypes()
+        return trueType.allTypes()
     }
 
     fun objcType(): String {
-        return when (typeName) {
+        return when (trueType) {
             "constvoid*" -> "const void*"
-            else -> typeName.removeObjcSpecifier() // 要先去除一下objc里的限定词
+            else -> trueType.removeObjcSpecifier() // 要先去除一下objc里的限定词
         }
     }
 
     fun getIterableLevel(): Int {
-        return typeName.iterableLevel()
+        return trueType.iterableLevel()
     }
 
     fun toDartString(): String {
-        return if (typeName.findType().isLambda()) {
-            val type = typeName.findType()
+        return if (trueType.findType().isLambda()) {
+            val type = trueType.findType()
             "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
-            "${typeName.toDartType()} $name"
+            "${trueType.toDartType()} $name"
         }
     }
 
     fun toDartStringBatch(): String {
-        return "List<${typeName.toDartType()}> $name"
+        return "List<${trueType.toDartType()}> $name"
     }
 
     fun var2Args(hostMethod: Method? = null): String {
-        return if (typeName.findType().isCallback() && hostMethod != null) {
+        return if (trueType.findType().isCallback() && hostMethod != null) {
             when {
                 isIterable -> "new ArrayList() /* 暂不支持列表回调 */"
                 containerType().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
-                else -> CallbackTmpl(hostMethod, typeName.findType())
+                else -> CallbackTmpl(hostMethod, trueType.findType())
             }
         } else {
             when {
                 // 字符串数组需要转换
-                isStringArray() -> "$name.toArray(new ${typeName.dearray()}[$name.size()])"
+                isStringArray() -> "$name.toArray(new ${trueType.dearray()}[$name.size()])"
                 // 基本类型数组不需要转换, 直接使用
                 isArray() -> name
                 // 自定义类列表需要转换成ArrayList
                 isIterable -> "(ArrayList) $name"
-                typeName.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
+                trueType.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
                 else -> name
             }
         }
     }
 
-    fun isStringArray(): Boolean = typeName.isStringArray()
+    fun isStringArray(): Boolean = trueType.isStringArray()
 
-    fun isArray(): Boolean = typeName.isArray()
+    fun isArray(): Boolean = trueType.isArray()
 
-    fun isCollection(): Boolean = typeName.isIterable()
+    fun isCollection(): Boolean = trueType.isIterable()
 
     /**
      * 是否是Lambda以及组成部分是否都是已知元素
@@ -154,7 +161,7 @@ data class Variable(
         return if (!isLambda()) {
             false
         } else {
-            typeName.findType().formalParams.all { it.variable.isKnownType() }
+            trueType.findType().formalParams.all { it.variable.isKnownType() }
         }
     }
 }

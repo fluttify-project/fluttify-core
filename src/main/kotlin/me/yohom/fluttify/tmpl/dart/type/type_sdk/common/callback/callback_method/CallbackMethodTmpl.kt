@@ -23,14 +23,14 @@ fun CallbackMethodTmpl(callerMethod: Method): String {
     // 如果方法参数中没有回调类型的参数, 那么直接返回空字符串
     if (callerMethod
             .formalParams
-            .none { it.variable.typeName.findType().run { isCallback() || isLambda() } }
+            .none { it.variable.trueType.findType().run { isCallback() || isLambda() } }
     )
         return ""
 
     val callbackDelegates = callerMethod.formalParams
-        .filter { it.variable.typeName.findType().isCallback() }
+        .filter { it.variable.trueType.findType().isCallback() }
     val callbackLambdas = callerMethod.formalParams
-        .filter { it.variable.typeName.findType().isLambda() }
+        .filter { it.variable.trueType.findType().isLambda() }
 
     // 如果是View类型的类, 那么就加上当前的View代表的id
     // 如果参数的回调是lambda类型, 那么也不加入viewid, 因为不需要
@@ -47,7 +47,7 @@ fun CallbackMethodTmpl(callerMethod: Method): String {
         .map { param ->
             param
                 .variable
-                .typeName
+                .trueType
                 .findType()
                 .methods
                 .filterMethod()

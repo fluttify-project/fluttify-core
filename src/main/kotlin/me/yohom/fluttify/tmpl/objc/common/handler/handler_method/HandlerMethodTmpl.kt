@@ -42,7 +42,7 @@ fun HandlerMethodTmpl(method: Method): String {
     val args = method.formalParams
         .joinToString("\n") {
             when {
-                it.variable.typeName == "id" -> ArgIdTmpl(it.variable)
+                it.variable.trueType == "id" -> ArgIdTmpl(it.variable)
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
                 it.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(it.variable)
                 it.variable.isStructPointer() -> ArgListStructTmpl(it.variable)

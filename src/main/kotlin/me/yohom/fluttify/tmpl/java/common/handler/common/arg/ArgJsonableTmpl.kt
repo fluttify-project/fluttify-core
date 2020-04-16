@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Variable
 private val tmpl = getResource("/tmpl/java/arg_jsonable.stmt.java.tmpl").readText()
 
 fun ArgJsonableTmpl(variable: Variable): String {
-    val type = variable.typeName.run {
+    val type = variable.trueType.run {
         when {
             // java端不会以float接收数据, 一律都是double
             toLowerCase() == "float" -> "Double"
@@ -23,7 +23,7 @@ fun ArgJsonableTmpl(variable: Variable): String {
             // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.
             // dart端只有int, 不区分32位和64位, java端具体类型由数值大小决定, 所以如果要精确处理这个问题的话会比较麻烦, 这里先一律转成int处理
             // 后期如果真的碰到int无法满足的情况再想办法
-            when (variable.typeName) {
+            when (variable.trueType) {
                 "Long" -> "(Long) (long) (int)"
                 "long" -> "(long) (int)"
                 else -> "($type)"

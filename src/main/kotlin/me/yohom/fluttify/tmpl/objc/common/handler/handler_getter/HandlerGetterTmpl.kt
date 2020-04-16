@@ -44,12 +44,12 @@ fun HandlerGetterTmpl(field: Field): String {
     val invoke = InvokeTmpl(field).objcInvoke()
     val result = field.variable.run {
         when {
-            typeName.isValueType() -> ResultValueTmpl()
+            trueType.isValueType() -> ResultValueTmpl()
             jsonable() -> ResultJsonableTmpl()
             isIterable -> ResultListTmpl()
             isValuePointerType() -> ResultValuePointerTmpl()
-            isStruct() -> ResultStructTmpl(typeName)
-            else -> ResultRefTmpl(typeName)
+            isStruct() -> ResultStructTmpl(trueType)
+            else -> ResultRefTmpl(trueType)
         }
     }
     return tmpl

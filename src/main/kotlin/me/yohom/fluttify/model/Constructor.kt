@@ -36,13 +36,13 @@ data class Constructor(
                                     // SDK中有其他方法可以返回构造器需要的参数类型的
                                     SDK.sdks.flatMap { it.allFilteredMethods }
                                         .map { it.returnType }
-                                        .contains(it.variable.typeName)
+                                        .contains(it.variable.trueType)
                                     ||
                                     // 参数类型有实体子类(更精确的应该是可构造的子类)
-                                    it.variable.typeName.findType().hasConcretSubtype()
+                                    it.variable.trueType.findType().hasConcretSubtype()
                                     ||
                                     // 构造器的参数类型也是可构造的
-                                    it.variable.typeName.run {
+                                    it.variable.trueType.run {
                                         if (isIterable()) {
                                             innermostGenericType().findType().constructable()
                                         } else {
@@ -52,9 +52,9 @@ data class Constructor(
                         })
     }
 
-    fun creatorName(typeName: TYPE_NAME): String {
-        return "${typeName.toUnderscore()}${formalParams.joinToString("__", "__") {
-            it.variable.typeName.toUnderscore().replace("[]", "Array")
+    fun creatorName(trueType: TYPE_NAME): String {
+        return "${trueType.toUnderscore()}${formalParams.joinToString("__", "__") {
+            it.variable.trueType.toUnderscore().replace("[]", "Array")
         }}"
     }
 }

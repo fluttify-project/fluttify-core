@@ -69,7 +69,7 @@ fun TypeInterfaceTmpl(type: Type): String {
         .replace("#__super_mixins__#", superClass.toDartType())
         .replaceParagraph(
             "#__constants__#",
-            constants.joinToString("\n") { "static final ${it.variable.typeName.toDartType()} ${it.variable.name} = ${it.value};" })
+            constants.joinToString("\n") { "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value};" })
         .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))

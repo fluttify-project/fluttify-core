@@ -13,5 +13,5 @@ private val tmpl = getResource("/tmpl/objc/callback_arg_struct.stmt.m.tmpl").rea
 fun CallbackArgStructTmpl(variable: Variable): String {
     return tmpl
         .replace("#__arg_name__#", variable.name.depointer())
-        .replace("#__type_name__#", variable.typeName)
+        .replace("#__type_name__#", variable.trueType)
 }

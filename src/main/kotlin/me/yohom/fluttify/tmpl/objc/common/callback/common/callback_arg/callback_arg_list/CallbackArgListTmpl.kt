@@ -18,6 +18,6 @@ private val tmpl = getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readT
 
 fun CallbackArgListTmpl(variable: Variable): String {
     return tmpl
-        .replace("#__type_name__#", variable.typeName.enpointer())
+        .replace("#__type_name__#", variable.trueType.enpointer())
         .replace("#__arg_name__#", variable.name.depointer())
 }

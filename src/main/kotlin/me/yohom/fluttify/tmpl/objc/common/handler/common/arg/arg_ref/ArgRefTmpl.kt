@@ -9,10 +9,10 @@ private val tmpl = getResource("/tmpl/objc/arg_ref.stmt.m.tmpl").readText()
 
 fun ArgRefTmpl(variable: Variable): String {
     val typeName = when {
-        variable.typeName == "id" -> variable.typeName
-        variable.typeName.isPrimitivePointerType() -> "NSValue*"
-        variable.typeName.findType().isInterface() -> variable.typeName.deprotocol().enprotocol()
-        else -> variable.typeName.enpointer()
+        variable.trueType == "id" -> variable.trueType
+        variable.trueType.isPrimitivePointerType() -> "NSValue*"
+        variable.trueType.findType().isInterface() -> variable.trueType.deprotocol().enprotocol()
+        else -> variable.trueType.enpointer()
     }
     val argName = variable.name.depointer()
     return tmpl

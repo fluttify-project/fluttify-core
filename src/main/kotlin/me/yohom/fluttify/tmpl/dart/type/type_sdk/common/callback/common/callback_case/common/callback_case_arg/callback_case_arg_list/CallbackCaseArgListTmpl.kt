@@ -15,7 +15,7 @@ fun CallbackCaseArgListTmpl(param: Parameter): String {
         .replace("#__arg_name__#", param.variable.name.depointer())
         .replace("#__arg_type_name__#", param
             .variable
-            .typeName
+            .trueType
             .run {
                 if (param.variable.getIterableLevel() == 0) {
                     param.platform.objectType()

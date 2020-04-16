@@ -31,7 +31,7 @@ fun JavaParser.ConstructorDeclarationContext.isStaticType(): Boolean {
         // 如果是内部类, 判断构造器第一个参数是否是外部类类型, 如果是, 那么说明就是非静态类
         return formalParams()
             .firstOrNull()
-            ?.run { outerClass != variable.typeName.simpleName() } == true
+            ?.run { outerClass != variable.trueType.simpleName() } == true
                 || formalParams().firstOrNull() == null
     }
 }

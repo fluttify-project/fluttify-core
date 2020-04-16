@@ -13,7 +13,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 private val tmpl = getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
 
 fun GetterTmpl(field: Field): String {
-    val dartType = field.variable.typeName.toDartType()
+    val dartType = field.variable.trueType.toDartType()
     val name = field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView()) "{bool viewChannel = true}" else ""
 
@@ -29,15 +29,15 @@ fun GetterTmpl(field: Field): String {
     val getter = field.getterMethodName()
     val result = field.variable.run {
         when {
-            jsonable() or isAliasType() -> ResultJsonableTmpl(typeName, platform)
+            jsonable() or isAliasType() -> ResultJsonableTmpl(trueType, platform)
             isIterable -> ResultListTmpl(
-                if (getIterableLevel() > 0) typeName.genericTypes()[0] else platform.objectType(),
+                if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType(),
                 platform
             )
-            isStructPointer() -> ResultListTmpl(typeName.depointer(), platform)
-            isEnum() -> ResultEnumTmpl(typeName)
-            typeName.isVoid() -> ResultVoidTmpl()
-            else -> ResultRefTmpl(typeName)
+            isStructPointer() -> ResultListTmpl(trueType.depointer(), platform)
+            isEnum() -> ResultEnumTmpl(trueType)
+            trueType.isVoid() -> ResultVoidTmpl()
+            else -> ResultRefTmpl(trueType)
         }
     }
     val nativeObjectPool = field.variable.run {

@@ -15,9 +15,9 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     fun objcInvoke(): String {
         val invokeGetter = field?.run {
             val typeName = variable.run {
-                when (typeName) {
+                when (trueType) {
                     "id" -> "NSObject*"
-                    else -> typeName
+                    else -> trueType
                 }
             }
 
@@ -63,21 +63,21 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     private fun param2arg(it: Parameter, isFunction: Boolean = false): String {
         return if (isFunction) {
             if (it.variable.isLambda() && method != null) {
-                CallbackLambdaTmpl(method, it.variable.typeName.findType())
+                CallbackLambdaTmpl(method, it.variable.trueType.findType())
             } else {
                 when {
                     it.variable.isCallback() -> "self"
-                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }
             }
         } else {
             if (it.variable.isLambda() && method != null) {
-                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
+                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.trueType.findType())}"
             } else {
                 "${it.named}: ${when {
                     it.variable.isCallback() -> "self"
-                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }}"
             }

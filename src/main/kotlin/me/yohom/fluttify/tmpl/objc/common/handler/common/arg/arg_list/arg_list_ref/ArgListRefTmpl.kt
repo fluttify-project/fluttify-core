@@ -18,9 +18,9 @@ private val tmpl = getResource("/tmpl/objc/arg_list_ref.stmt.m.tmpl").readText()
 fun ArgListRefTmpl(variable: Variable): String {
     val typeName = variable.run {
         if (isInterface()) {
-            typeName.enprotocol()
+            trueType.enprotocol()
         } else {
-            typeName.enpointer()
+            trueType.enpointer()
         }
     }
     val argName = variable.name.depointer()

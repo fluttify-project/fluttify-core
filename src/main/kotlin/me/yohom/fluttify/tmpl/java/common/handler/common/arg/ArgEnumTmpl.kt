@@ -9,6 +9,6 @@ private val tmpl = getResource("/tmpl/java/arg_enum.stmt.java.tmpl").readText()
 
 fun ArgEnumTmpl(variable: Variable): String {
     return tmpl
-        .replace("#__type_name__#", variable.typeName.replace("$", "."))
+        .replace("#__type_name__#", variable.trueType.replace("$", "."))
         .replace("#__arg_name__#", variable.name)
 }

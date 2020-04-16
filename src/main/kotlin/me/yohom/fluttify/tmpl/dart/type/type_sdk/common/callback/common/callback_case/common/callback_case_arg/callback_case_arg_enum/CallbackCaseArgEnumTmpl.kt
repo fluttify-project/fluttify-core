@@ -10,6 +10,6 @@ private val tmpl = getResource("/tmpl/dart/callback_case_arg_enum.stmt.dart.tmpl
 
 fun CallbackCaseArgEnumTmpl(param: Parameter): String {
     return tmpl
-        .replace("#__arg_type_name__#", param.variable.typeName.toDartType())
+        .replace("#__arg_type_name__#", param.variable.trueType.toDartType())
         .replace("#__arg_name__#", param.variable.name.depointer())
 }

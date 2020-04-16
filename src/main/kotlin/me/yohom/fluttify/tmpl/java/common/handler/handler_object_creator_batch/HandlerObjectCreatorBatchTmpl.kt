@@ -41,7 +41,7 @@ fun HandlerObjectFactoryBatchTmpl(type: Type): List<String> {
         .filterConstructor()
         .map {
             val args = it.formalParams
-                .filter { !it.variable.typeName.findType().isCallback() }
+                .filter { !it.variable.trueType.findType().isCallback() }
                 .joinToString("\n") {
                     when {
                         it.variable.jsonable() -> ArgJsonableTmpl(it.variable)

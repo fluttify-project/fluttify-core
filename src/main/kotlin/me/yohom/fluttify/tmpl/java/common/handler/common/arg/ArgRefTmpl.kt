@@ -9,6 +9,6 @@ private val tmpl = getResource("/tmpl/java/arg_ref.stmt.java.tmpl").readText()
 
 fun ArgRefTmpl(variable: Variable): String {
     return tmpl
-        .replace("#__type_name__#", variable.typeName.replace("$", "."))
+        .replace("#__type_name__#", variable.trueType.replace("$", "."))
         .replace("#__arg_name__#", variable.name)
 }

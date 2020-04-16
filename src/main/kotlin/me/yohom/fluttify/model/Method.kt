@@ -77,9 +77,9 @@ data class Method(
                 &&
                 must("参数类型全部通过类型过滤") {
                     formalParams.all {
-                        it.variable.typeName.jsonable() ||
+                        it.variable.trueType.jsonable() ||
                                 it.variable.allTypes().all { it.filter() } ||
-                                it.variable.typeName in className.findType().genericTypes
+                                it.variable.trueType in className.findType().genericTypes
                     }
                 }
                 &&
@@ -109,11 +109,11 @@ data class Method(
                 must("形参类型全部都是已知类型") {
                     formalParams.all {
                         it.variable.isKnownType()
-                                || it.variable.typeName in className.findType().genericTypes
+                                || it.variable.trueType in className.findType().genericTypes
                     }
                 }
                 &&
-                must("形参全部是静态类型") { formalParams.all { it.variable.typeName.findType().isStaticType } }
+                must("形参全部是静态类型") { formalParams.all { it.variable.trueType.findType().isStaticType } }
                 &&
                 must("形参中的lambda类型的所有参数是已知类型") {
                     formalParams.filter { it.variable.isLambda() }
@@ -122,19 +122,19 @@ data class Method(
                 &&
                 mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } }
                 &&
-                mustNot("形参类型含有混淆类") { formalParams.any { it.variable.typeName.isObfuscated() } }
+                mustNot("形参类型含有混淆类") { formalParams.any { it.variable.trueType.isObfuscated() } }
                 &&
                 // 参数不能中含有排除的类
-                mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.typeName.depointer()) } } }
+                mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.trueType.depointer()) } } }
                 &&
                 mustNot("形参祖宗类含有未知类型") {
                     formalParams
-                        .flatMap { it.variable.typeName.findType().ancestorTypes }
+                        .flatMap { it.variable.trueType.findType().ancestorTypes }
                         .any { it.findType().isUnknownType() }
                 }
                 &&
                 mustNot("形参父类是混淆类") {
-                    formalParams.any { it.variable.typeName.findType().superClass.isObfuscated() }
+                    formalParams.any { it.variable.trueType.findType().superClass.isObfuscated() }
                 }
         println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
@@ -163,7 +163,7 @@ data class Method(
             name + formalParams.joinToStringX(
                 "__",
                 "__"
-            ) { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.typeName.toDartType()}" }
+            ) { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.trueType.toDartType()}" }
                 .toUnderscore()
         } else {
             signatureNamed()

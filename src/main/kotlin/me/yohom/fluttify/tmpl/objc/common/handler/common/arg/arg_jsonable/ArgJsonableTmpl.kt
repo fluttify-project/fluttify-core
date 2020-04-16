@@ -10,31 +10,31 @@ private val tmpl = getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
 
 fun ArgJsonableTmpl(variable: Variable): String {
     val typeName = when {
-        variable.typeName.isValueType() -> variable.typeName.depointer()
-        variable.isIterable -> variable.typeName
-        else -> variable.typeName.enpointer()
+        variable.trueType.isValueType() -> variable.trueType.depointer()
+        variable.isIterable -> variable.trueType
+        else -> variable.trueType.enpointer()
     }
-    val rightValue = if (variable.typeName.isValueType() || variable.isAliasType()) {
-        var methodPrefix = (SYSTEM_TYPEDEF[variable.typeName]
-            ?: variable.typeName.findType().aliasOf
-            ?: variable.typeName)
+    val rightValue = if (variable.trueType.isValueType() || variable.isAliasType()) {
+        var methodPrefix = (SYSTEM_TYPEDEF[variable.trueType]
+            ?: variable.trueType.findType().aliasOf
+            ?: variable.trueType)
             .depointer()
             .toLowerCase()
             .removePrefix("ns")
             .removePrefix("cg")
-        if (variable.typeName == "NSUInteger" || variable.typeName.findType().aliasOf == "NSUInteger") {
+        if (variable.trueType == "NSUInteger" || variable.trueType.findType().aliasOf == "NSUInteger") {
             methodPrefix = "unsignedInteger"
         }
-        if (variable.typeName == "long long") {
+        if (variable.trueType == "long long") {
             methodPrefix = "longLongInteger"
         }
-        if (variable.typeName == "uint32_t") {
+        if (variable.trueType == "uint32_t") {
             methodPrefix = "unsignedInt"
         }
-        if (variable.typeName == "int32_t") {
+        if (variable.trueType == "int32_t") {
             methodPrefix = "int"
         }
-        if (variable.typeName == "int64_t") {
+        if (variable.trueType == "int64_t") {
             methodPrefix = "longLongInteger"
         }
         "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value]"

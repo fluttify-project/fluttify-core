@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Variable
 private val tmpl = getResource("/tmpl/objc/arg_enum.stmt.m.tmpl").readText()
 
 fun ArgEnumTmpl(variable: Variable): String {
-    val typeName = variable.typeName
+    val typeName = variable.trueType
     val name = variable.name
 
     return tmpl

@@ -33,18 +33,18 @@ fun HandlerGetterBatchTmpl(field: Field): String {
     val className = field.className.replace("$", ".")
     val resultType = field.variable.run {
         when {
-            jsonable() -> typeName.boxedType().stringArray2List()
-            typeName.isVoid() -> "String"
+            jsonable() -> trueType.boxedType().stringArray2List()
+            trueType.isVoid() -> "String"
             isIterable -> "Integer".enList(getIterableLevel())
             else -> "Integer"
         }
     }
-    val fieldType = field.variable.typeName.replace("$", ".")
+    val fieldType = field.variable.trueType.replace("$", ".")
     val fieldName = field.variable.name
     val result = when {
         field.variable.jsonable() -> ResultJsonableTmpl(fieldType)
         field.variable.isIterable -> ResultListTmpl(field.asGetterMethod())
-        field.variable.typeName.isVoid() -> ResultVoidTmpl()
+        field.variable.trueType.isVoid() -> ResultVoidTmpl()
         else -> ResultRefTmpl()
     }
 

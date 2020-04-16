@@ -40,7 +40,7 @@ fun CallbackMethodTmpl(method: Method): String {
         .formalParams
         .map { it.variable }
         .joinToString {
-            "${it.typeName.replace("$", ".")} ${it.name}"
+            "${it.trueType.replace("$", ".")} ${it.name}"
         }
     val returnType = method.returnType.replace("$", ".")
     val localArgs = method

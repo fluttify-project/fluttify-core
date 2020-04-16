@@ -14,7 +14,7 @@ fun CallbackCaseArgRefTmpl(param: Parameter): String {
     return tmpl
         .replace("#__arg_type_name__#", param
             .variable
-            .typeName
+            .trueType
             .findType()
             .run { firstConcretSubtype()?.name ?: name }
             .toDartType())

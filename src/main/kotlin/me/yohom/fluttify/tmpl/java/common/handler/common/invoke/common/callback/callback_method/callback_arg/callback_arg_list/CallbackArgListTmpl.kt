@@ -15,5 +15,5 @@ private val tmpl = getResource("/tmpl/java/callback_arg_list.stmt.java.tmpl").re
 fun CallbackArgListTmpl(param: Parameter): String {
     return tmpl
         .replace("#__arg_name__#", param.variable.name)
-        .replace("#__type_name__#", param.variable.typeName.replace("$", ".").dearray().genericTypes()[0])
+        .replace("#__type_name__#", param.variable.trueType.replace("$", ".").dearray().genericTypes()[0])
 }

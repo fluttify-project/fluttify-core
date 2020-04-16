@@ -187,6 +187,14 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 // 必须没有子类
                 !hasSubtype()
+                ||
+                // 是否在手动配置的回调类列表内
+                when (platform) {
+                    Platform.General -> false
+                    Platform.iOS -> ext.ios.callbackClasses.any { Regex(it).matches(name) }
+                    Platform.Android -> ext.android.callbackClasses.any { Regex(it).matches(name) }
+                    Platform.Unknown -> false
+                }
     }
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda
@@ -240,7 +248,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 mustNot("构造器循环构造") {
                     constructors.any {
                         it.formalParams.any {
-                            it.variable.containerType().constructors.any { it.formalParams.any { it.variable.typeName == name } }
+                            it.variable.containerType().constructors.any { it.formalParams.any { it.variable.trueType == name } }
                         }
                     }
                 }
