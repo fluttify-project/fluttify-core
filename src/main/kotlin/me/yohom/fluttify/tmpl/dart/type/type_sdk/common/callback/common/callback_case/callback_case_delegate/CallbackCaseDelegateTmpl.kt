@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callbac
 
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.jsonable
+import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_enum.CallbackCaseArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_jsonable.CallbackCaseArgJsonableTmpl
@@ -26,6 +27,7 @@ fun CallbackCaseDelegateTmpl(callbackMethod: Method, callbackObject: String): St
     val callbackArgs = callbackMethod.formalParams
         .joinToString {
             when {
+                it.variable.trueType.toDartType() == "dynamic" -> "args[\"${it.variable.name}\"] is Ref ? ${CallbackCaseArgRefTmpl(it)} : ${CallbackCaseArgJsonableTmpl(it)}"
                 it.variable.run { jsonable() || isAliasType() } -> CallbackCaseArgJsonableTmpl(it)
                 it.variable.isCollection() -> CallbackCaseArgListTmpl(it)
                 it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it)

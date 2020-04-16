@@ -7,7 +7,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Parameter
 
-//#__arg_type_name__#()..refId = (args['#__arg_name__#'])..tag = '#__plugin_name__#'
+//(#__arg_type_name__#()..refId = (args['#__arg_name__#'])..tag__ = '#__plugin_name__#')
 private val tmpl = getResource("/tmpl/dart/callback_case_arg_ref.stmt.dart.tmpl").readText()
 
 fun CallbackCaseArgRefTmpl(param: Parameter): String {
@@ -16,7 +16,7 @@ fun CallbackCaseArgRefTmpl(param: Parameter): String {
             .variable
             .trueType
             .findType()
-            .run { firstConcretSubtype()?.name ?: name }
+            .run { firstConcretSubtype()?.name ?: if (name.toDartType() == "dynamic") "Ref" else name }
             .toDartType())
         .replace("#__arg_name__#", param.variable.name.depointer())
         .replace("#__plugin_name__#", ext.projectName)
