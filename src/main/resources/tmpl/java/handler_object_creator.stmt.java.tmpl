@@ -8,13 +8,13 @@ put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
     #__args__#;
 
     // create target object
-    #__class_name__# obj = new #__class_name__#(#__args_value__#);
-    getHEAP().put(System.identityHashCode(obj), obj);
+    #__class_name__# __obj__ = new #__class_name__#(#__args_value__#);
+    getHEAP().put(System.identityHashCode(__obj__), __obj__);
 
     // print current HEAP
     if (getEnableLog()) {
         Log.d("ObjectFactory", "HEAP: " + getHEAP());
     }
 
-    methodResult.success(System.identityHashCode(obj));
+    methodResult.success(System.identityHashCode(__obj__));
 });

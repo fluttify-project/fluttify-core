@@ -1,19 +1,19 @@
 // factory
 put("ObjectFactory::create_batch#__creator_name__#", (argsBatch, methodResult) -> {
-    List<Integer> resultList = new ArrayList<>();
+    List<Integer> __resultList__ = new ArrayList<>();
 
-    int length = 0;
+    int __length__ = 0;
     // when batch size is 0, dart side will put a map with key 'length' to indicate the length
     // of this batch
     if (argsBatch instanceof Map) {
-        length = (Integer) ((Map<String, Object>) argsBatch).get("length");
+        __length__ = (Integer) ((Map<String, Object>) argsBatch).get("length");
     }
     // or directly put the arg batch
     else if (argsBatch instanceof List) {
-        length = ((List<Map<String, Object>>) argsBatch).size();
+        __length__ = ((List<Map<String, Object>>) argsBatch).size();
     }
 
-    for (int __i__ = 0; __i__ < length; __i__++) {
+    for (int __i__ = 0; __i__ < __length__; __i__++) {
         Map<String, Object> args = new HashMap<>();
         // only when arg batch is not empty, java side needs to parse args;
         if (argsBatch instanceof List) {
@@ -24,16 +24,16 @@ put("ObjectFactory::create_batch#__creator_name__#", (argsBatch, methodResult) -
         #__args__#;
 
         // create target object
-        #__class_name__# obj = new #__class_name__#(#__args_value__#);
-        getHEAP().put(System.identityHashCode(obj), obj);
+        #__class_name__# __obj__ = new #__class_name__#(#__args_value__#);
+        getHEAP().put(System.identityHashCode(__obj__), __obj__);
 
         // print current HEAP
         if (getEnableLog()) {
             Log.d("ObjectFactory", "HEAP: " + getHEAP());
         }
 
-        resultList.add(System.identityHashCode(obj));
+        __resultList__.add(System.identityHashCode(__obj__));
     }
 
-    methodResult.success(resultList);
+    methodResult.success(__resultList__);
 });
