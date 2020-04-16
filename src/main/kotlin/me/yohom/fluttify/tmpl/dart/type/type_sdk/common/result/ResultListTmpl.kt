@@ -18,10 +18,10 @@ fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
             .depointer()
             .toDartType()
             .run {
-                if (isEmpty()) {
-                    platform.objectType()
-                } else {
-                    this
+                when {
+                    isEmpty() -> platform.objectType()
+                    toDartType().isDynamic() -> "Ref"
+                    else -> this
                 }
             })
         .replace("#__tag__#", ext.projectName)

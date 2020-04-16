@@ -558,3 +558,7 @@ fun String.removeObjcSpecifier(): String {
         .replace("_Nonnull", "")
         .pack()
 }
+
+fun String.isDynamic(): Boolean {
+    return this == "dynamic"
+}

@@ -245,6 +245,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                     ?.initDeclarator()
                     ?.get(0)
                     ?.declarator()
+                    ?.directDeclarator()
+                    ?.identifier()
                     ?.text
 
                 if (isExternString == true && constantName != null) {
