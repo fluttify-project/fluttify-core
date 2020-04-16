@@ -1,11 +1,9 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.EXCLUDE_TYPES
-import me.yohom.fluttify.Regexes
-import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
 
-open class Type : IPlatform, IScope {
+open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     override var platform: Platform = Platform.Unknown
 
     /**
@@ -178,13 +176,17 @@ open class Type : IPlatform, IScope {
      */
     fun isCallback(): Boolean {
         return isInterface() // 必须是接口
+                &&
                 // 必须公开
-                && isPublic
+                isPublic
+                &&
                 // 回调类不能有超类
-                && superClass == ""
-                && (interfaces.isEmpty() || interfaces.contains("NSObject"))
+                superClass == ""
+                &&
+                (interfaces.isEmpty() || interfaces.contains("NSObject"))
+                &&
                 // 必须没有子类
-                && !hasSubtype()
+                !hasSubtype()
     }
 
     fun isLambda(): Boolean = typeType == TypeType.Lambda
@@ -334,7 +336,8 @@ open class Type : IPlatform, IScope {
             isPublic = true,
             className = name,
             platform = platform,
-            isDeprecated = false
+            isDeprecated = false,
+            id = NEXT_ID
         )
     }
 
@@ -363,7 +366,7 @@ open class Type : IPlatform, IScope {
         /**
          * 没有类
          */
-        val NO_TYPE: Type = Type().apply { name = ""; platform = Platform.General }
+        val NO_TYPE: Type = Type(id = NEXT_ID).apply { name = ""; platform = Platform.General }
     }
 }
 

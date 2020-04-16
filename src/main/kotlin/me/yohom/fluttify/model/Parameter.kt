@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.extensions.allTypes
 import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.must
@@ -13,8 +14,9 @@ import me.yohom.fluttify.extensions.mustNot
 data class Parameter(
     val named: String = "",
     val variable: Variable,
-    override var platform: Platform
-) : IPlatform {
+    override var platform: Platform,
+    override var id: Int = NEXT_ID
+) : IPlatform, IElement {
     fun filter(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓参数↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("参数:${variable}执行过滤开始")
@@ -33,8 +35,9 @@ data class Parameter(
     companion object {
         fun simpleParameter(typeName: String, name: String): Parameter {
             return Parameter(
-                variable = Variable(typeName, name, Platform.General),
-                platform = Platform.General
+                variable = Variable(typeName, name, Platform.General, id = NEXT_ID),
+                platform = Platform.General,
+                id = NEXT_ID
             )
         }
     }

@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.CallbackTmpl
@@ -10,8 +11,9 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 data class Variable(
     val typeName: TYPE_NAME,
     val name: String,
-    override var platform: Platform
-) : IPlatform {
+    override var platform: Platform,
+    override var id: Int = NEXT_ID
+) : IPlatform, IElement {
 
     val isIterable: Boolean
         get() = typeName.isIterable()

@@ -1,8 +1,6 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.EXCLUDE_METHODS
-import me.yohom.fluttify.EXCLUDE_TYPES
-import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
 
 data class Method(
@@ -48,8 +46,9 @@ data class Method(
     /**
      * 是否是泛型方法
      */
-    var isGenericMethod: Boolean = false
-) : IPlatform, IScope {
+    var isGenericMethod: Boolean = false,
+    override var id: Int = NEXT_ID
+) : IPlatform, IScope, IElement {
 
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
 

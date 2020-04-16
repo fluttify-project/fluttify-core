@@ -7,3 +7,7 @@ interface IPlatform {
 interface IScope {
     val isPublic: Boolean
 }
+
+interface IElement {
+    var id: Int
+}

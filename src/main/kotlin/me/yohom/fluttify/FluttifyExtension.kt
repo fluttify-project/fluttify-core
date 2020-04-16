@@ -1,5 +1,6 @@
 package me.yohom.fluttify
 
+import me.yohom.fluttify.extensions.pack
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
@@ -95,6 +96,23 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
      * library所在路径
      */
     var libDir: String = ""
+
+    /**
+     * 手动指定的回调类
+     *
+     * 会存在一些情况, 本身的回调类, 但是SDK中有其实体子类, 这里手动指定一下
+     */
+    var callbackClasses = listOf<String>()
+
+    /**
+     * 元素替换
+     */
+    var elementOverrides: Map<Int, String> = mapOf()
+//        get() {
+//            val packedMethods = field.map { entry -> Pair(entry.key.pack(), entry.key.pack()) }.toMap()
+//            println("packedMethods: $packedMethods")
+//            return packedMethods
+//        }
 
     /**
      * 远程依赖配置

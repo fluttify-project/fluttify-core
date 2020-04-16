@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.extensions.*
 
 data class Field(
@@ -42,8 +43,9 @@ data class Field(
     /**
      * 是否过时
      */
-    var isDeprecated: Boolean = false
-) : IPlatform, IScope {
+    var isDeprecated: Boolean = false,
+    override var id: Int = NEXT_ID
+) : IPlatform, IScope, IElement {
 
     fun filterConstants(): Boolean {
         return must("公开field") { isPublic } &&
@@ -124,7 +126,8 @@ data class Field(
             isPublic = true,
             className = className,
             platform = platform,
-            isDeprecated = isDeprecated
+            isDeprecated = isDeprecated,
+            id = NEXT_ID
         )
     }
 
@@ -132,13 +135,14 @@ data class Field(
         return Method(
             "void",
             setterName,
-            listOf(Parameter(variable = variable, platform = platform)),
+            listOf(Parameter(variable = variable, platform = platform, id = NEXT_ID)),
             isStatic = false,
             isAbstract = false,
             isPublic = true,
             className = className,
             platform = platform,
-            isDeprecated = isDeprecated
+            isDeprecated = isDeprecated,
+            id = NEXT_ID
         )
     }
 }

@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.extensions.*
 
@@ -16,8 +17,9 @@ data class Constructor(
      * 是否公开
      */
     override var isPublic: Boolean,
-    override var platform: Platform
-) : IPlatform, IScope {
+    override var platform: Platform,
+    override var id: Int = NEXT_ID
+) : IPlatform, IScope, IElement {
     /**
      * 一个类中可能有多个构造器, 这个过滤是过滤出可以使用的构造器.
      * 区分于Type类的constructable方法, 这个方法是判断一个类是否含有可以使用的构造器.
