@@ -270,7 +270,7 @@ fun TYPE_NAME.isPrimitivePointerType(): Boolean {
  * 压缩字符串, 即去掉所有的空格
  */
 fun String.pack(): String {
-    return replace(" ", "")
+    return replace(Regex("\\s*|\t|\r|\n"), "")
 }
 
 /**

@@ -35,6 +35,34 @@ class StringXKtTest {
         }
     }
 
+    @Test
+    fun testTrim() {
+        val result = """{
+                  "exactName": "setDelegate",
+                  "returnType": "BOOL",
+                  "name": "setDelegate",
+                  "formalParams": [
+                    {
+                      "named": "",
+                      "variable": {
+                        "typeName": "id",
+                        "name": "delegate",
+                        "platform": "iOS"
+                      },
+                      "platform": "iOS"
+                    }
+                  ],
+                  "isStatic": false,
+                  "isPublic": true,
+                  "className": "BDSEventManager",
+                  "platform": "iOS",
+                  "isDeprecated": false,
+                  "isFunction": false,
+                  "isGenericMethod": false
+                }""".replace(Regex("\\s*|\t|\r|\n"), "")
+        println(result)
+    }
+
     @Nested
     @DisplayName("Test for underscore2Camel")
     inner class Underscore2CamelTest {
