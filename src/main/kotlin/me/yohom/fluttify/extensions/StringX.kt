@@ -320,7 +320,7 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("NSString\\*?").matches(this) -> "String"
                 Regex("NS(Mutable)?Array<NSString\\*?>\\*?").matches(this) -> "List<String>"
                 Regex("nil").matches(this) -> "null"
-                Regex("id").matches(this) -> "NSObject"
+                Regex("id").matches(this) -> "dynamic"
                 Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<NSObject>"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"

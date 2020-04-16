@@ -33,6 +33,8 @@ fun InvokeTmpl(method: Method): String {
                 type.jsonable() -> it.name
                 (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__.refId).toList()"
                 it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
+                // dynamic类型需要根据是否是Ref类型来区分是直接传还是传refId
+                type.toDartType() == "dynamic" -> "${it.name} is Ref ? (${it.name} as Ref).refId : ${it.name}"
                 else -> "${it.name}.refId"
             }
         }
