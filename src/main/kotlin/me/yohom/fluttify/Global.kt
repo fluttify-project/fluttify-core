@@ -66,67 +66,70 @@ val SYSTEM_POINTER_TYPEDEF = mapOf(
  */
 val SYSTEM_TYPE = listOf(
     /////////////////////////////////////////Android系统类/////////////////////////////////////////////
-    Type(NEXT_ID).apply { name = "void"; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.content.Context"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.content.Intent"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.content.ContentProvider"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.app.Application"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.app.Notification"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.app.Activity"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.app.PendingIntent"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.os.Bundle"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.os.Binder"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.view.View"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply {
+    Type().apply { name = "void"; platform = Platform.Android },
+    Type().apply { name = "android.content.Context"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.content.Intent"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.content.ContentProvider"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.app.Application"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.app.Notification"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.app.Activity"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.app.PendingIntent"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.os.Bundle"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.os.Binder"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.view.View"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply {
         name = "android.view.View.OnApplyWindowInsetsListener"; typeType = TypeType.Interface; platform =
         Platform.Android
     },
-    Type(NEXT_ID).apply {
+    Type().apply {
         name = "android.view.View.OnClickListener"; typeType = TypeType.Interface; platform = Platform.Android
     },
-    Type(NEXT_ID).apply { name = "android.view.ViewGroup"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.graphics.Point"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.graphics.PointF"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.graphics.Bitmap"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.widget.ImageView"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "java.lang.Object"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "java.io.Serializable"; typeType = TypeType.Interface; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.location.Location"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.view.MotionEvent"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply {
+    Type().apply {
+        name = "android.view.View.OnTouchListener"; typeType = TypeType.Interface; platform = Platform.Android
+    },
+    Type().apply { name = "android.view.ViewGroup"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.graphics.Point"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.graphics.PointF"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.graphics.Bitmap"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.widget.ImageView"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "java.lang.Object"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "java.io.Serializable"; typeType = TypeType.Interface; platform = Platform.Android },
+    Type().apply { name = "android.location.Location"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.view.MotionEvent"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply {
         name = "android.graphics.drawable.Drawable"; typeType = TypeType.Class; platform = Platform.Android
     },
-    Type(NEXT_ID).apply { name = "android.widget.FrameLayout"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.widget.TextView"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.widget.TextView"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.widget.LinearLayout"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.widget.RelativeLayout"; typeType = TypeType.Class; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.os.Parcelable"; typeType = TypeType.Interface; platform = Platform.Android },
-    Type(NEXT_ID).apply { name = "android.util.Pair<.+,.+>"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.widget.FrameLayout"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.widget.TextView"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.widget.TextView"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.widget.LinearLayout"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.widget.RelativeLayout"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.os.Parcelable"; typeType = TypeType.Interface; platform = Platform.Android },
+    Type().apply { name = "android.util.Pair<.+,.+>"; typeType = TypeType.Class; platform = Platform.Android },
 
     /////////////////////////////////////////iOS系统类/////////////////////////////////////////////
-    Type(NEXT_ID).apply { name = "CLLocation"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "CLHeading"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "CGRect"; typeType = TypeType.Struct; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "CGPoint"; typeType = TypeType.Struct; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "CGSize"; typeType = TypeType.Struct; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "UIEdgeInsets"; typeType = TypeType.Struct; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "CLLocationCoordinate2D"; typeType = TypeType.Struct; platform = Platform.iOS },
+    Type().apply { name = "CLLocation"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "CLHeading"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "CGRect"; typeType = TypeType.Struct; platform = Platform.iOS },
+    Type().apply { name = "CGPoint"; typeType = TypeType.Struct; platform = Platform.iOS },
+    Type().apply { name = "CGSize"; typeType = TypeType.Struct; platform = Platform.iOS },
+    Type().apply { name = "UIEdgeInsets"; typeType = TypeType.Struct; platform = Platform.iOS },
+    Type().apply { name = "CLLocationCoordinate2D"; typeType = TypeType.Struct; platform = Platform.iOS },
 
-    Type(NEXT_ID).apply { name = "CLLocationManager"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "NSError"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "NSCoding"; typeType = TypeType.Interface; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "NSCopying"; typeType = TypeType.Interface; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "UIView"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "UIViewController"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "UIControl"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "UIImage"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "NSObject"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "UIColor"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "NSData"; typeType = TypeType.Class; platform = Platform.iOS },
-    Type(NEXT_ID).apply { name = "NSOperation"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "CLLocationManager"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "NSError"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "NSCoding"; typeType = TypeType.Interface; platform = Platform.iOS },
+    Type().apply { name = "NSCopying"; typeType = TypeType.Interface; platform = Platform.iOS },
+    Type().apply { name = "UIView"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "UIViewController"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "UIControl"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "UIImage"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "NSObject"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "UIColor"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "NSData"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "NSOperation"; typeType = TypeType.Class; platform = Platform.iOS },
 
-    Type(NEXT_ID).apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum; platform = Platform.iOS }
+    Type().apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum; platform = Platform.iOS }
 )
 
 object Regexes {
