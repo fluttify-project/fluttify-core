@@ -273,14 +273,17 @@ fun ObjectiveCParser.BlockTypeContext.returnType(): String {
 
 fun ObjectiveCParser.BlockTypeContext.parameters(): String {
     return blockParameters().typeVariableDeclaratorOrName().joinToString(",") {
-        val name = it.typeVariableDeclarator().declarator().text
-        val type = it.typeVariableDeclarator()
-            .declarationSpecifiers()
-            .text
-            .run {
+        // lambda参数, 可以是只有类名, 所以这里的name有可能是空, 类名也可以是空, 如果类名是空的话就直接使用
+        // it.typeName().text
+        val name = it?.typeVariableDeclarator()?.declarator()?.text ?: ""
+        val type = it?.typeVariableDeclarator()
+            ?.declarationSpecifiers()
+            ?.text
+            ?.run {
                 // 如果变量名上面有*号, 那么需要把*号移到类型名上面来
                 if (name.startsWith("*")) enpointer() else this
             }
+            ?: it.typeName().text
         "$type#${name.depointer()}"
     }
 }

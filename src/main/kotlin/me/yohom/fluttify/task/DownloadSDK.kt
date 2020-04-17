@@ -65,6 +65,17 @@ open class DownloadIOSSDK : FluttifyTask() {
                         archiveFile.downloadFrom(this)
                         // 下载完成后解压
                         ZipUtil.unpack(archiveFile, archiveFile.parentFile)
+                        // 如果包含vendored_frameworks, 那么需要再拿出framework
+                        // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
+                        if (podspecJson.containsKey("vendored_frameworks")) {
+                            val trueFramework = "${ext.ios.libDir}/${podspecJson["vendored_frameworks"]}"
+                            // 拿出framework文件, 然后拷贝到顶层
+                            FileUtils.copyDirectoryToDirectory(trueFramework.file(), ext.ios.libDir.file())
+                            ext.ios.libDir.file()
+                                .listFiles()
+                                ?.filter { it.name != trueFramework.file().name }
+                                ?.forEach { it.deleteRecursively() }
+                        }
                         // 删除压缩文件
                         archiveFile.delete()
                     }

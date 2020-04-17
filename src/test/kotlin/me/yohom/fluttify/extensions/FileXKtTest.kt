@@ -1,10 +1,18 @@
 package me.yohom.fluttify.extensions
 
+import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
 
 class FileXKtTest {
+
+    @Test
+    fun moveFile() {
+        val libDir = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/".file()
+        val framework = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Smart/SDK/TXLiteAVSDK_Smart.framework/".file()
+        FileUtils.copyDirectoryToDirectory(framework, libDir)
+    }
 
     @Test
     fun objcType() {
