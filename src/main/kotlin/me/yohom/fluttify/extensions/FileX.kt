@@ -231,17 +231,28 @@ fun OBJC_FILE.objcType(): SourceFile {
 
     source.walkTree(object : ObjectiveCParserBaseListener() {
 
-        override fun enterDeclaration(ctx: ObjectiveCParser.DeclarationContext) {
+        override fun enterVarDeclaration(ctx: ObjectiveCParser.VarDeclarationContext) {
             // 只有顶层声明需要处理
-            if (ctx.isDirectChildOf(ObjectiveCParser.TopLevelDeclarationContext::class)) {
-                val isExternString = ctx.varDeclaration()
-                    ?.declarationSpecifiers()
+            if (!ctx.isChildOf(ObjectiveCParser.ClassInterfaceContext::class)
+                &&
+                !ctx.isChildOf(ObjectiveCParser.ClassImplementationContext::class)
+                &&
+                !ctx.isChildOf(ObjectiveCParser.CategoryInterfaceContext::class)
+                &&
+                !ctx.isChildOf(ObjectiveCParser.CategoryImplementationContext::class)
+                &&
+                !ctx.isChildOf(ObjectiveCParser.ProtocolDeclarationContext::class)
+                &&
+                !ctx.isChildOf(ObjectiveCParser.FunctionDeclarationContext::class)
+            ) {
+                val isExternString = ctx
+                    .declarationSpecifiers()
                     ?.text
                     ?.run {
                         contains("extern") && contains("NSString")
                     }
-                val constantName = ctx.varDeclaration()
-                    ?.initDeclaratorList()
+                val constantName = ctx
+                    .initDeclaratorList()
                     ?.initDeclarator()
                     ?.get(0)
                     ?.declarator()
