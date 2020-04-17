@@ -37,7 +37,7 @@ fun GetterBatchTmpl(field: Field): String {
     }
     val result = field.variable.run {
         when {
-            jsonable() or isAliasType() -> ResultJsonableTmpl(trueType, platform)
+            jsonable() -> ResultJsonableTmpl(trueType, platform)
             isIterable -> ResultListTmpl(
                 if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType(),
                 platform
