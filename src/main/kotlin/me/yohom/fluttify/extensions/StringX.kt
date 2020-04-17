@@ -301,9 +301,9 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("[Bb]oolean").matches(this) -> "bool"
                 Regex("(unsigned)?([Bb]yte|[Ii]nt|Integer|[Ll]ong)").matches(this) -> "int"
                 Regex("[Dd]ouble|[Ff]loat").matches(this) -> "double"
-                Regex("java\\.util\\.(Collection|(Array)?List)<(Byte|Integer|Long)>").matches(this) -> "List<int>"
-                Regex("java\\.util\\.(Collection|(Array)?List)<(Float|Double)>").matches(this) -> "List<double>"
-                Regex("java\\.util\\.(Collection|(Array)?List)<String>|String\\[]").matches(this) -> "List<String>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Byte|Integer|Long)\\u003e").matches(this) -> "List<int>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Float|Double)\\u003e").matches(this) -> "List<double>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003cString\\u003e|String\\[]").matches(this) -> "List<String>"
                 Regex("[Bb]yte\\[]").matches(this) -> "Uint8List"
                 Regex("(int|Integer)\\[]").matches(this) -> "Int32List"
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
@@ -311,33 +311,33 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 // 若是某种java的List, 那么去掉前缀
-                Regexes.ITERABLE.matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(\\u003c.*\\u003e)?").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<java_lang_Object>"
-                Regex("java\\.util\\.Collection<.+>").matches(this) -> replace("java.util.Collection", "List")
-                Regex("java\\.lang\\.Iterable<.+>").matches(this) -> replace("java.lang.Iterable", "List")
+                Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace("java.util.Collection", "List")
+                Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
 
                 // objc
                 Regex("NSString\\*?").matches(this) -> "String"
-                Regex("NS(Mutable)?Array<NSString\\*?>\\*?").matches(this) -> "List<String>"
+                Regex("NS(Mutable)?Array\\u003cNSString\\*?\\u003e\\*?").matches(this) -> "List<String>"
                 Regex("nil").matches(this) -> "null"
                 Regex("id").matches(this) -> "dynamic"
                 Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<NSObject>"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
-                Regex("NSArray<NSNumber\\*>\\*").matches(this) -> "List<num>"
+                Regex("NSArray\\u003cNSNumber\\*\\u003e\\*").matches(this) -> "List<num>"
                 Regex("int(32|64)_t").matches(this) -> "int"
                 Regex("long long").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NSDictionary\\*").matches(this) -> "Map"
-                Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(<.+,.+>)(\\*)?").matches(this) -> {
+                Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
                     "Map<$keyType,$valueType>"
                 }
-                Regex("NSArray<.+>\\*").matches(this) -> "List<${genericTypes()[0].depointer()}>"
+                Regex("NSArray\\u003c.+\\u003e\\*").matches(this) -> "List<${genericTypes()[0].toDartType()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
-                Regex("id<.+>").matches(this) -> removePrefix("id<").removeSuffix(">")
+                Regex("id\\u003c.+\\u003e").matches(this) -> removePrefix("id<").removeSuffix(">")
 
                 // 通用
                 findType().isAlias() -> findType().aliasOf!!.toDartType()

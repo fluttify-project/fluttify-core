@@ -31,13 +31,8 @@ private val tmpl = getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText
  */
 fun MethodBatchTmpl(method: Method): String {
     val static = if (method.isStatic) "static " else ""
-    val returnType = if (method.returnType.findType().isStructPointer()) {
-        // 返回类型是结构体指针
-        method.returnType.toDartType().enList().enList()
-    } else {
-        val dartType = method.returnType.toDartType()
-        if (dartType == "void") "void" else dartType.enList()
-    }
+    val returnType = method.returnType.toDartType().enList()
+
     val methodName = "${method.signature()}_batch"
 
     // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数

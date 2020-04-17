@@ -37,3 +37,8 @@ object BaiduAsr {
 
 }
 
+object TencentLive {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/jr/tencent_live_fluttify.android.json".file().readText().fromJson<SDK>()
+
+}
+

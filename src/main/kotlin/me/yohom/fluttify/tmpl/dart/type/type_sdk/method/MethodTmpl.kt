@@ -31,12 +31,7 @@ private val tmpl = getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
 
 fun MethodTmpl(method: Method): String {
     val static = if (method.isStatic) "static " else ""
-    val returnType = if (method.returnType.findType().isStructPointer()) {
-        // 返回类型是结构体指针
-        method.returnType.toDartType().enList()
-    } else {
-        method.returnType.toDartType()
-    }
+    val returnType = method.returnType.toDartType()
     val methodName = method.signature()
 
     // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
