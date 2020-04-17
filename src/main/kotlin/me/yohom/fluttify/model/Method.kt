@@ -99,7 +99,22 @@ data class Method(
                         .map { it.name }
                 }
                 &&
-                must("所在类是公开类") { className.containerType().findType().isPublic }
+                must("所在类是公开类") {
+                    // 这里需要把内部类的所有外部类都判断过去, 只要碰到一个外部类不是public的, 那当前内部类就认为不是public的
+                    // 碰到了三层内部类的情况, 然后最内一层是public的, 上面两层不是public的
+                    var type = className.containerType().findType()
+                    var result = type.isPublic
+                    while (type.isInnerType) {
+                        if (type.isPublic) {
+                            result = true
+                            type = className.substringBeforeLast("$").containerType().findType()
+                        } else {
+                            result = false
+                            break
+                        }
+                    }
+                    result
+                }
                 &&
                 must("所在类是静态类型") { className.containerType().findType().isStaticType }
                 &&
