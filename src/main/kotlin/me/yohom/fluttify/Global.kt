@@ -34,6 +34,7 @@ val EXCLUDE_METHODS
 val EXCLUDE_TYPES
     get() = ext.ios.exclude.classes
         .union(ext.android.exclude.classes)
+//        .union(listOf(".+\\.R"))
         .map { Regex(it) }
 
 /**
@@ -141,7 +142,7 @@ object Regexes {
     //            || Regex("NSArray.*\\*?").matches(this)
     //            || Regex("NSMutableArray.*\\*?").matches(this)
     //            || Regex("""\w+\[]""").matches(this)
-    val ITERABLE = Regex("(\\w|\\.)*(List|Iterable|Collection)(<.*>)?|(NS(Mutable)?Array.*\\*?)")
+    val ITERABLE = Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<.*>)?|(NS(Mutable)?Array.*\\*?)")
 }
 
 /**
