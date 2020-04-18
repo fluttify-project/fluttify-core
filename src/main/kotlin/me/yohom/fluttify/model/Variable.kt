@@ -110,10 +110,7 @@ data class Variable(
     }
 
     fun objcType(): String {
-        return when (trueType) {
-            "constvoid*" -> "const void*"
-            else -> trueType.removeObjcSpecifier() // 要先去除一下objc里的限定词
-        }
+        return trueType/*.removeObjcSpecifier() */// 要先去除一下objc里的限定词 // 为什么要去掉限定词?
     }
 
     fun getIterableLevel(): Int {

@@ -8,13 +8,8 @@ import me.yohom.fluttify.model.Variable
 private val tmpl = getResource("/tmpl/objc/arg_ref.stmt.m.tmpl").readText()
 
 fun ArgRefTmpl(variable: Variable): String {
-    val typeName = when {
-        variable.trueType == "id" -> variable.trueType
-        variable.trueType.isPrimitivePointerType() -> "NSValue*"
-        variable.trueType.findType().isInterface() -> variable.trueType.deprotocol().enprotocol()
-        else -> variable.trueType.enpointer()
-    }
-    val argName = variable.name.depointer()
+    val typeName = if (variable.trueType.isPrimitivePointerType()) "NSValue*" else variable.trueType
+    val argName = variable.name
     return tmpl
         .replace("#__type_name__#", typeName)
         .replace("#__arg_name__#", argName)

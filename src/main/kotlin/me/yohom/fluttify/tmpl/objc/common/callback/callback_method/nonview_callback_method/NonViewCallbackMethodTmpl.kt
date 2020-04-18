@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method
 
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.isMultiPointer
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgValueTypeTmpl
@@ -36,23 +37,28 @@ fun NonViewCallbackMethodTmpl(method: Method): String {
     val methodChannel = "@\"${method.className}::Callback\""
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
-    val localArgs = method
-        .formalParams
-        .map { it.variable }
-        .joinToString("\n") {
-            when {
-                // !顺序很重要
-                it.isEnum() -> CallbackArgEnumTmpl(it)
-                it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
-                it.jsonable() -> CallbackArgJsonableTmpl(it)
-                it.isIterable -> CallbackArgListTmpl(it)
-                it.isStruct() -> CallbackArgStructTmpl(it)
-                else -> CallbackArgRefTmpl(it)
+    val localArgs = if (method.formalParams.none { it.variable.trueType.isMultiPointer() }) {
+        method
+            .formalParams
+            .map { it.variable }
+            .joinToString("\n") {
+                when {
+                    // !顺序很重要
+                    it.isEnum() -> CallbackArgEnumTmpl(it)
+                    it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
+                    it.jsonable() -> CallbackArgJsonableTmpl(it)
+                    it.isIterable -> CallbackArgListTmpl(it)
+                    it.isStruct() -> CallbackArgStructTmpl(it)
+                    else -> CallbackArgRefTmpl(it)
+                }
             }
-        }
-    val callback = when {
-        method.returnType == "void" -> CallbackVoidTmpl(method)
-        else -> CallbackReturnTmpl(method)
+    } else {
+        ""
+    }
+    val callback = if (method.returnType == "void") {
+        CallbackVoidTmpl(method)
+    } else {
+        CallbackReturnTmpl(method)
     }
 
     return tmpl

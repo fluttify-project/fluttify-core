@@ -230,6 +230,9 @@ fun TYPE_NAME.isValueType(): Boolean {
         "float",
         "double",
         "BOOL",
+        "bool",
+        "unsigned long long",
+        "GLuint",
         "CGFloat"
     )) or (this in SYSTEM_TYPEDEF.keys && this !in SYSTEM_POINTER_TYPEDEF.keys) or findType().run { isEnum() or isAlias() }
 }
@@ -325,7 +328,7 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
                 Regex("NSArray\\u003cNSNumber\\*\\u003e\\*").matches(this) -> "List<num>"
-                Regex("int(32|64)_t").matches(this) -> "int"
+                Regex("(unsigned )?int(32|64)?(_t)?").matches(this) -> "int"
                 Regex("long long").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
@@ -338,6 +341,7 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("NSArray\\u003c.+\\u003e\\*").matches(this) -> "List<${genericTypes()[0].toDartType()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id\\u003c.+\\u003e").matches(this) -> removePrefix("id<").removeSuffix(">")
+                Regex("GLuint").matches(this) -> "int"
 
                 // 通用
                 findType().isAlias() -> findType().aliasOf!!.toDartType()
@@ -547,6 +551,9 @@ fun String.objcSpecifierExpand(): String {
     return replace("__kindof", " __kindof ")
         .replace("_Nullable", " _Nullable ")
         .replace("_Nonnull", " _Nonnull ")
+        .replace("unsignedint", "unsigned int")
+        .replace("constvoid*", "const void*")
+        .replace("unsignedlonglong", "unsigned long long")
 }
 
 /**
@@ -561,4 +568,11 @@ fun String.removeObjcSpecifier(): String {
 
 fun String.isDynamic(): Boolean {
     return this == "dynamic"
+}
+
+/**
+ * 是否是多级指针
+ */
+fun String.isMultiPointer(): Boolean {
+    return count { it == '*' } > 1
 }

@@ -9,11 +9,7 @@ import me.yohom.fluttify.model.Variable
 private val tmpl = getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
 
 fun ArgJsonableTmpl(variable: Variable): String {
-    val typeName = when {
-        variable.trueType.isValueType() -> variable.trueType.depointer()
-        variable.isIterable -> variable.trueType
-        else -> variable.trueType.enpointer()
-    }
+    val typeName = variable.trueType
     val rightValue = if (variable.trueType.isValueType() || variable.isAliasType()) {
         var methodPrefix = (SYSTEM_TYPEDEF[variable.trueType]
             ?: variable.trueType.findType().aliasOf
