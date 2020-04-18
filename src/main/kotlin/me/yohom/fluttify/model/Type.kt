@@ -140,14 +140,12 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     fun filter(): Boolean {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("类:\"${name}\"执行过滤开始")
-        val result = must("已知类型") { platform != Platform.Unknown }
+        val result = must("已知类型") { isKnownType() }
                 &&
                 must("公开类型") { isPublic }
                 &&
                 must("祖宗类全部是已知类型 或 没有祖宗类") {
-                    ancestorTypes.all { it.findType().platform != Platform.Unknown }
-                            ||
-                            ancestorTypes.isEmpty()
+                    ancestorTypes.all { it.findType().isKnownType() } || ancestorTypes.isEmpty()
                 }
                 &&
                 // 换言之只支持接口的泛型
@@ -221,7 +219,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     }
 
     fun hasConcretSubtype(): Boolean {
-        return firstConcretSubtype() != null
+        return firstConcretSubtype() != null && isKnownType()
     }
 
     fun firstConcretSubtype(): Type? {
@@ -253,7 +251,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     }
                 }
                 &&
-                must("是已知类型或jsonable类型") { platform != Platform.Unknown || jsonable() }
+                must("是已知类型或jsonable类型") { isKnownType() }
                 &&
                 mustNot("枚举类型") { isEnum() }
                 &&

@@ -5,9 +5,9 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-var SUCCESS_LOG = false
+var SUCCESS_LOG = true
 
-var CONSTRUCTOR_LOG = false
+var CONSTRUCTOR_LOG = true
 var VARIABLE_LOG = true
 var FIELD_LOG = true
 var TYPE_LOG = true

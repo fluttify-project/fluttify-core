@@ -23,7 +23,13 @@ data class Variable(
      * 如果类型由被手动override的话, 这里需要使用override之后的类
      */
     val trueType: String
-        get() = ext.ios.overrideElements[id]?.fromJson<Variable>()?.typeName ?: typeName
+        get() {
+            val origin = typeName.findType().name
+            val alias = typeName.findType().aliasOf
+            return ext.ios.overrideElements[id]?.fromJson<Variable>()?.typeName
+                ?: alias?.run { typeName.replace(origin, this) }
+                ?: typeName
+        }
 
     fun isStructPointer(): Boolean {
         return trueType.isStructPointer()
@@ -78,8 +84,8 @@ data class Variable(
     }
 
     fun isKnownType(): Boolean {
-        return trueType.containerType().run { isIterable() || isMap() || findType().platform != Platform.Unknown }
-                && trueType.genericTypes().all { it.findType().platform != Platform.Unknown }
+        return trueType.containerType().findType().isKnownType()
+                && trueType.genericTypes().all { it.findType().isKnownType() }
                 || trueType.jsonable()
     }
 

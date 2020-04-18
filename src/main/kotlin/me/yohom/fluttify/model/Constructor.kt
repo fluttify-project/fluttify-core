@@ -27,26 +27,30 @@ data class Constructor(
     fun filter(): Boolean {
         return must("必须是公开构造器") { isPublic }
                 &&
-                (formalParams.isEmpty() // 构造器没有参数
+                (must("构造器没有参数") { formalParams.isEmpty() }
                         ||
                         formalParams.all {
                             // jsonable的
-                            it.variable.jsonable()
+                            it.variable.must("是jsonable") { jsonable() }
                                     ||
-                                    // SDK中有其他方法可以返回构造器需要的参数类型的
-                                    SDK.sdks.flatMap { it.allFilteredMethods }
-                                        .map { it.returnType }
-                                        .contains(it.variable.trueType)
+                                    must("SDK中有其他方法可以返回构造器需要的参数类型的") {
+                                        SDK.sdks.flatMap { it.allFilteredMethods }
+                                            .map { it.returnType }
+                                            .contains(it.variable.trueType)
+                                            .apply { println("SDK中有其他方法可以返回构造器需要的参数类型的: $this") }
+                                    }
                                     ||
-                                    // 参数类型有实体子类(更精确的应该是可构造的子类)
-                                    it.variable.trueType.findType().hasConcretSubtype()
+                                    must("参数类型有实体子类(更精确的应该是可构造的子类)") {
+                                        it.variable.trueType.findType().hasConcretSubtype()
+                                    }
                                     ||
-                                    // 构造器的参数类型也是可构造的
-                                    it.variable.trueType.run {
-                                        if (isIterable()) {
-                                            innermostGenericType().findType().constructable()
-                                        } else {
-                                            findType().constructable()
+                                    must("构造器的参数类型也是可构造的") {
+                                        it.variable.trueType.run {
+                                            if (isIterable()) {
+                                                innermostGenericType().findType().constructable()
+                                            } else {
+                                                findType().constructable()
+                                            }
                                         }
                                     }
                         })
