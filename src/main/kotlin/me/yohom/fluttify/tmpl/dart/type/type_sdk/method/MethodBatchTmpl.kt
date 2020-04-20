@@ -5,6 +5,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 
+//#__deprecated__#
 //#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  if (#__check_param_size__#) {
 //    return Future.error('all args must have same length!');
@@ -69,6 +70,7 @@ fun MethodBatchTmpl(method: Method): String {
     }
 
     return tmpl
+        .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
         .replace("#__static__#", static)
         .replace("#__return_type__#", returnType)
         .replace("#__method_name__#", methodName)

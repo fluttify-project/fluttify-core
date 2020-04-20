@@ -87,8 +87,6 @@ data class Method(
                 &&
                 mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } }
                 &&
-                mustNot("废弃方法") { isDeprecated }
-                &&
                 // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
                 mustNot("祖宗类已有的方法") {
                     name in className

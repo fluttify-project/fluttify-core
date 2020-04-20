@@ -7,6 +7,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
 
+//#__deprecated__#
 //#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  // print log
 //  if (fluttifyLogEnabled) {
@@ -20,7 +21,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //  #__callback__#
 //
 //  // convert native result to dart side object
-//  if (result == null) {
+//  if (__result__ == null) {
 //    return null;
 //  } else {
 //    #__native_object_pool__#
@@ -59,6 +60,7 @@ fun MethodTmpl(method: Method): String {
     }
 
     return tmpl
+        .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
         .replace("#__static__#", static)
         .replace("#__return_type__#", returnType)
         .replace("#__method_name__#", methodName)
