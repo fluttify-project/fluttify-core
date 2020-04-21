@@ -314,7 +314,7 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 // 若是某种java的List, 那么去掉前缀
-                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(\\u003c.*\\u003e)?").matches(this) -> replace(Regex("((\\w|\\.)*)List"), "List")
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(\\u003c.*\\u003e)?").matches(this) -> replace(Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)"), "List")
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<java_lang_Object>"
                 Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace("java.util.Collection", "List")
                 Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
