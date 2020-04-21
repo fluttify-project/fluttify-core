@@ -18,7 +18,12 @@ fun ArgJsonableTmpl(variable: Variable): String {
             .toLowerCase()
             .removePrefix("ns")
             .removePrefix("cg")
-        if (variable.trueType == "NSUInteger" || variable.trueType.findType().aliasOf == "NSUInteger") {
+        if (variable.trueType == "NSUInteger"
+            ||
+            variable.trueType.findType().aliasOf == "NSUInteger"
+            ||
+            variable.trueType == "GLuint"
+        ) {
             methodPrefix = "unsignedInteger"
         }
         if (variable.trueType == "long long") {
