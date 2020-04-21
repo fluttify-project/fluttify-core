@@ -39,7 +39,7 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * foundation版本
      */
-    var foundationVersion: String = ""
+    var foundationVersion: Map<String, String> = mapOf()
 
     /**
      * 插件依赖

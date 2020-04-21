@@ -81,7 +81,10 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
-                    .replace("#__foundation_version__#", "foundation_fluttify: ${ext.foundationVersion}")
+                    .replaceParagraph(
+                        "#__foundation_version__#",
+                        ext.foundationVersion.map { "${it.key}: ${it.value}" }.joinToString("\n")
+                    )
                     .replaceParagraph(
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")

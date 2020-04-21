@@ -19,11 +19,11 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
-//import 'package:foundation_fluttify/foundation_fluttify.dart';
+//#__foundation__#
 //
 //class #__class_name__# extends #__super_class__# #__mixins__# {
 //  //region constants
-//  static const String name = '#__origin_class_name__#';
+//  static const String name__ = '#__origin_class_name__#';
 //
 //  #__constants__#
 //  //endregion
@@ -119,6 +119,7 @@ fun TypeSdkTmpl(type: Type): String {
 
     return tmpl
         .replace("#__current_package__#", currentPackage)
+        .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__class_name__#", className)
         .replace("#__origin_class_name__#", originClassName)
         .replace("#__super_class__#", superClass)

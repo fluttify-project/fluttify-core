@@ -65,6 +65,7 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     return tmpl
         .replace("#__current_package__#", currentPackage)
+        .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__interface_type__#", typeName)
         .replace("#__super_mixins__#", superClass.toDartType())
         .replaceParagraph(

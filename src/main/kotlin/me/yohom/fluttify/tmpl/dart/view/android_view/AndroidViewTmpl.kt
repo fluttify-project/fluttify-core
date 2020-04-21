@@ -15,7 +15,7 @@ import me.yohom.fluttify.model.Type
 //import 'package:flutter/rendering.dart';
 //import 'package:flutter/services.dart';
 //
-//import 'package:foundation_fluttify/foundation_fluttify.dart';
+//#__foundation__#
 //
 //typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
 //typedef Future<void> _OnAndroidViewDispose();
@@ -57,7 +57,8 @@ import me.yohom.fluttify.model.Type
 //  }
 //
 //  void _onViewCreated(int id) {
-//    _controller = #__view__#()..refId = id;
+//    // 碰到一个对象返回的hashCode为0的情况, 造成和这个id冲突了, 这里用一个magic number避免一下
+//    _controller = #__view__#()..refId = 2147483647 - id;
 //    if (widget.onViewCreated != null) {
 //      widget.onViewCreated(_controller);
 //    }
@@ -66,7 +67,7 @@ import me.yohom.fluttify.model.Type
 //  @override
 //  void dispose() {
 //    if (widget.onDispose != null) {
-//      widget.onDispose().then((_) => _controller.release());
+//      widget.onDispose().then((_) => _controller.release__());
 //    }
 //    super.dispose();
 //  }
@@ -130,6 +131,7 @@ fun AndroidViewTmpl(viewType: Type): String {
             .replace("#__creation_fields__#", "")
             .replace("#__creation_args__#", "")
     }.replace("#__current_package__#", currentPackage)
+        .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__view__#", view.toDartType())
         .replace("#__org__#", org)

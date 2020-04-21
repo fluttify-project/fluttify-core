@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.view.uikit_view
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Type
@@ -74,6 +75,7 @@ fun UiKitViewTmpl(viewClass: Type): String {
 
     return tmpl
         .replace("#__current_package__#", currentPackage)
+        .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__view__#", view.toDartType())
         .replace("#__org__#", org)

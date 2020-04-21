@@ -106,6 +106,7 @@ open class AndroidDartInterface : FluttifyTask() {
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__current_package__#", ext.projectName)
+            .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "Android")
             .replaceParagraph("#__type_check__#", typeChecks)
@@ -211,6 +212,7 @@ open class IOSDartInterface : FluttifyTask() {
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__current_package__#", ext.projectName)
+            .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "IOS")
             .replaceParagraph("#__type_check__#", typeChecks)
