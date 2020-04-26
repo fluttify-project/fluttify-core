@@ -35,6 +35,13 @@ fun TYPE_NAME.jsonable(): Boolean {
         "Int32List",
         "Int64List",
         "Float64List",
+        // 这里加上数组类型的列表类型, 虽然不是最终解决方案, 但是应该也能覆盖99%的场景了
+        "List<Uint8List>",
+        "List<Uint32List>",
+        "List<Uint64List>",
+        "List<Int32List>",
+        "List<Int64List>",
+        "List<Float64List>",
         // 把Object列为jsonable, 解决参数为Object时的情况, 因为jsonable类型会自动在平台间进行转换,
         // 所以兼容起jsonable和非jsonable的类型比较麻烦, 这里规定只要是java.lang.Object的参数,
         // 一律断言为jsonable类型并且实际的类型也必须要是jsonable才能在Channel中传递
@@ -313,8 +320,11 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
-                // 若是某种java的List, 那么去掉前缀
-                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(\\u003c.*\\u003e)?").matches(this) -> replace(Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)"), "List")
+                // 若是某种java的List, 那么去掉前缀, 然后转换泛型类型
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)\\u003c.*\\u003e").matches(this) -> {
+                    val genericType = genericTypes()[0]
+                    "List<${genericType.toDartType()}>"
+                }
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<java_lang_Object>"
                 Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace("java.util.Collection", "List")
                 Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
@@ -332,7 +342,7 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("long long").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
-                Regex("NSDictionary\\*").matches(this) -> "Map"
+                Regex("NS(Mutable)?Dictionary\\*").matches(this) -> "Map"
                 Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("<").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore(">").toDartType()
