@@ -584,5 +584,5 @@ fun String.isDynamic(): Boolean {
  * 是否是多级指针
  */
 fun String.isMultiPointer(): Boolean {
-    return count { it == '*' } > 1
+    return contains("**")
 }
