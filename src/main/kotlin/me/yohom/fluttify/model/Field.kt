@@ -62,7 +62,8 @@ data class Field(
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("属性:\"${toString()}\"执行getter过滤开始")
         val result = (must("jsonable类型") { variable.trueType.jsonable() }
-                || must("关联类型都通过过滤") { variable.trueType.allTypes().all { it.filter() } })
+                // 关联类型不能超过2个, 即只能有一个泛型, 像Map<X, Y>这种就要过滤掉, 因为无法直接传递
+                || must("关联类型都通过过滤") { variable.trueType.allTypes().run { size <= 2 && all { it.filter() } } })
                 && // 必须先通过类型的过滤
                 must("公开field") { isPublic }
                 &&
@@ -86,7 +87,8 @@ data class Field(
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("属性:${toString()}执行setter过滤开始")
         val result = (must("jsonable类型") { variable.trueType.jsonable() }
-                || must("关联类型都通过过滤") { variable.trueType.allTypes().all { it.filter() } })
+                // 关联类型不能超过2个, 即只能有一个泛型, 像Map<X, Y>这种就要过滤掉, 因为无法直接传递
+                || must("关联类型都通过过滤") { variable.trueType.allTypes().run { size <= 2 && all { it.filter() } } })
                 && // 必须先通过类型的过滤
                 must("公开field") { isPublic }
                 &&
