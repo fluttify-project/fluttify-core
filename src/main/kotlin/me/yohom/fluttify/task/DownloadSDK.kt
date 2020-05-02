@@ -37,12 +37,16 @@ open class DownloadIOSSDK : FluttifyTask() {
     @TaskAction
     fun process() {
         ext.ios.libDir.file().run {
-            if (list()?.isEmpty() == true && ext.ios.remote.run { "$name$version" }.isNotEmpty()) {
+            if (list { _, name -> !name.startsWith(".") }?.isEmpty() == true
+                &&
+                ext.ios.remote.run { "$name$version" }.isNotEmpty()
+            ) {
                 val iosArchiveSpec: File?
 
                 val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
                 val archiveName = ext.ios.remote.name
-                val archiveVersion = ext.ios.remote.version                // 找出目标pod所在的文件
+                val archiveVersion = ext.ios.remote.version
+                // 找出目标pod所在的文件
                 // cocoapods的Specs文件夹分为三层0x0-0xf的文件夹, 最后一层文件夹下的分别存放着所有的pod, 找到目标pod后再根据版本号找到目标podspec.json
                 // 解析出下载地址后进行下载
                 iosArchiveSpec = specDir.listFiles()
@@ -69,17 +73,23 @@ open class DownloadIOSSDK : FluttifyTask() {
                         // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
                         if (podspecJson.containsKey("vendored_frameworks")) {
                             val trueFramework = "${ext.ios.libDir}/${podspecJson["vendored_frameworks"]}"
-                            // 拿出framework文件, 然后拷贝到顶层
-                            FileUtils.copyDirectoryToDirectory(trueFramework.file(), ext.ios.libDir.file())
-                            ext.ios.libDir.file()
-                                .listFiles()
-                                ?.filter { it.name != trueFramework.file().name }
-                                ?.forEach { it.deleteRecursively() }
+                            // 因为其实每个pod都会有vendored_frameworks字段, 所以这里判断一下顶层是否已经有这个framework, 如果有的
+                            // 话就不需要拷贝了
+                            if (!File(trueFramework).exists()) {
+                                // 拿出framework文件, 然后拷贝到顶层
+                                FileUtils.copyDirectoryToDirectory(trueFramework.file(), ext.ios.libDir.file())
+                                ext.ios.libDir.file()
+                                    .listFiles()
+                                    ?.filter { it.name != trueFramework.file().name }
+                                    ?.forEach { it.deleteRecursively() }
+                            }
                         }
                         // 删除压缩文件
                         archiveFile.delete()
                     }
                 }
+            } else {
+                println("非远程依赖 或 本地已缓存依赖")
             }
         }
     }
