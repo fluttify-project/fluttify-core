@@ -11,9 +11,9 @@ fun ResultJsonableTmpl(returnType: String): String {
         else -> returnType
     }
     val result = if (returnType.isStringArray()) {
-        "new ArrayList<${returnType.dearray()}>(java.util.Arrays.asList(result))"
+        "new ArrayList<${returnType.dearray()}>(java.util.Arrays.asList(__result__))"
     } else {
-        "result"
+        "__result__"
     }
     return tmpl
         .replace("#__type_name__#", typeName)

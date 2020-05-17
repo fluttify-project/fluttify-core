@@ -17,7 +17,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.Resul
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.ResultVoidTmpl
 
 //// method
-//put("#__method_name__#", (args, methodResult) -> {
+//put("#__method_name__#", (__args__, __methodResult__) -> {
 //    // args
 //    #__args__#
 //
@@ -35,7 +35,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //    // convert result to jsonable result
 //    #__result__#
 //
-//    methodResult.success(jsonableResult);
+//    __methodResult__.success(jsonableResult);
 //});
 private val tmpl = getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText()
 

@@ -1,5 +1,5 @@
 // factory
-put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
+put("ObjectFactory::create#__creator_name__#", (__args__, __methodResult__) -> {
     if (getEnableLog()) {
         Log.d("ObjectFactory", "创建对象: #__creator_name__#");
     }
@@ -16,5 +16,5 @@ put("ObjectFactory::create#__creator_name__#", (args, methodResult) -> {
         Log.d("ObjectFactory", "HEAP: " + getHEAP());
     }
 
-    methodResult.success(System.identityHashCode(__obj__));
+    __methodResult__.success(System.identityHashCode(__obj__));
 });

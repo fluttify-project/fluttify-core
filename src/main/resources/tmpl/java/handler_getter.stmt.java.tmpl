@@ -1,12 +1,12 @@
 // getter
-put("#__getter_name__#", (args, methodResult) -> {
+put("#__getter_name__#", (__args__, __methodResult__) -> {
     // ref object
-    int refId = (int) ((Map<String, Object>) args).get("refId");
+    int refId = (int) ((Map<String, Object>) __args__).get("refId");
     #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
 
     #__field_type__# result = ref.#__field_name__#;
 
     #__put_map__#
 
-    methodResult.success(#__result__#);
+    __methodResult__.success(#__result__#);
 });

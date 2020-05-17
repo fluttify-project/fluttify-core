@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Variable
 
 //// jsonable arg
-//#__type_name__# #__arg_name__# = #__cast_type_name__# ((Map<String, Object>) args).get("#__arg_name__#");
+//#__type_name__# #__arg_name__# = #__cast_type_name__# ((Map<String, Object>) __args__).get("#__arg_name__#");
 private val tmpl = getResource("/tmpl/java/arg_jsonable.stmt.java.tmpl").readText()
 
 fun ArgJsonableTmpl(variable: Variable): String {
