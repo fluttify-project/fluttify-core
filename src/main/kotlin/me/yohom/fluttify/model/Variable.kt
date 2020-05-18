@@ -55,6 +55,10 @@ data class Variable(
         return trueType.findType().isAlias()
     }
 
+    fun isDynamic(): Boolean {
+        return trueType.toDartType().isDynamic()
+    }
+
     fun isValueType(): Boolean {
         return trueType.isValueType()
     }

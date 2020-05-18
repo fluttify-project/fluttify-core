@@ -30,10 +30,13 @@ fun InterfaceMethodTmpl(method: Method): String {
             // 的情况
             .filter { it.variable.trueType !in method.className.findType().genericTypes }
             .joinToString("\n") {
-                if (it.variable.isCollection())
+                if (it.variable.isCollection()) {
                     "kNativeObjectPool.addAll(${it.variable.name});"
-                else
+                } else  if (it.variable.isDynamic()) {
+                    "if (${it.variable.name} is Ref) kNativeObjectPool.add(${it.variable.name});"
+                } else {
                     "kNativeObjectPool.add(${it.variable.name});"
+                }
             }
     } else {
         ""
