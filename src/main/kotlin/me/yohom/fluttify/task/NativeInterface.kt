@@ -133,7 +133,7 @@ open class AndroidJavaInterface : FluttifyTask() {
         sdk.directLibs
             .forEach { lib ->
                 lib.types
-                    .filter { it.isView() && !it.isObfuscated() }
+                    .filter { it.isView() && !it.isObfuscated() && it.constructable() }
                     .forEach {
                         val factoryOutputFile = "$packageDir/${it.name.simpleName()}Factory.java".file()
 
@@ -307,7 +307,7 @@ open class IOSObjcInterface : FluttifyTask() {
         sdk.directLibs
             .forEach { lib ->
                 lib.types
-                    .filter { it.isView() && !it.isObfuscated() }
+                    .filter { it.isView() && !it.isObfuscated() && it.constructable() }
                     .forEach {
                         val factoryHFile = "$projectRootDir/${it.name.simpleName()}Factory.h".file()
                         val factoryMFile = "$projectRootDir/${it.name.simpleName()}Factory.m".file()

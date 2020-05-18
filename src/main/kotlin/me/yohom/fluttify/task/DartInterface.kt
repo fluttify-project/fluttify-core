@@ -29,7 +29,7 @@ open class AndroidDartInterface : FluttifyTask() {
         // 处理View, 生成AndroidView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView() && !it.isObfuscated() }
+            .filter { it.isView() && !it.isObfuscated() && it.constructable() }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it)
                 val viewName = it.name.replace("$", ".").simpleName()
@@ -134,7 +134,7 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理View, 生成UiKitView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView() && !it.isObfuscated() }
+            .filter { it.isView() && !it.isObfuscated() && it.constructable() }
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it)
                 val uiKitViewFile =
