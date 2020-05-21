@@ -54,7 +54,7 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                             } else {
                                 toDartMapBatch("[for (int __i__ = 0; __i__ < ${it.formalParams.firstOrNull()?.variable?.name}.length; __i__++) {") {
                                     when {
-                                        it.trueType.findType().isEnum() -> {
+                                        it.trueType.findType().isEnum -> {
                                             // 枚举列表
                                             if (it.isIterable) {
                                                 "${it.name}[__i__].map((it) => it.index).toList()"

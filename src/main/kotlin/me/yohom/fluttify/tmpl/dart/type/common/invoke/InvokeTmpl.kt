@@ -9,7 +9,7 @@ import me.yohom.fluttify.model.Parameter
 private val tmpl = getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText()
 
 fun InvokeTmpl(method: Method): String {
-    val channel = if (method.className.findType().isView()) {
+    val channel = if (method.className.findType().isView) {
         "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
     } else {
         "'${ext.methodChannelName}'"
@@ -22,7 +22,7 @@ fun InvokeTmpl(method: Method): String {
         .toDartMap {
             val type = if (it.isAliasType()) it.trueType.findType().aliasOf!! else it.trueType
             when {
-                type.findType().isEnum() -> {
+                type.findType().isEnum -> {
                     // 枚举列表
                     if (it.isIterable) {
                         "${it.name}.map((__it__) => __it__.index).toList()"

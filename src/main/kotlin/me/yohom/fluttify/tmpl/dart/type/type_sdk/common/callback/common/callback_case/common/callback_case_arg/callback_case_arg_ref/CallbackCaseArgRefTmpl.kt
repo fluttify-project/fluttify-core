@@ -16,7 +16,7 @@ fun CallbackCaseArgRefTmpl(param: Parameter): String {
             .variable
             .trueType
             .findType()
-            .run { firstConcretSubtype()?.name ?: if (name.toDartType() == "dynamic") "Ref" else name }
+            .run { firstConcretSubtype?.name ?: if (name.toDartType() == "dynamic") "Ref" else name }
             .toDartType())
         .replace("#__arg_name__#", param.variable.name.depointer())
         .replace("#__plugin_name__#", ext.projectName)

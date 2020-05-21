@@ -133,7 +133,7 @@ fun JavaPluginTmpl(lib: Lib, subHandlerOutputDir: String): String {
     // 注册PlatformView
     val registerPlatformViews = lib
         .types
-        .filter { it.isView() && !it.isObfuscated() }
+        .filter { it.isView && !it.isObfuscated }
         .joinToString("\n") { RegisterPlatformViewTmpl(it) }
 
     return tmpl

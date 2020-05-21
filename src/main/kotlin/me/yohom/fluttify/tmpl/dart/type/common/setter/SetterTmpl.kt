@@ -19,7 +19,7 @@ fun SetterTmpl(field: Field): String {
         val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
         val normalMethodChannel = ext.methodChannelName
         // 只有当前类是View的时候, 才需要区分普通channel和View channel
-        val methodChannel = if (field.className.findType().isView()) {
+        val methodChannel = if (field.className.findType().isView) {
             "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
         } else {
             "'$normalMethodChannel'"
@@ -34,8 +34,8 @@ fun SetterTmpl(field: Field): String {
                 else -> "$name.refId"
             }
         }
-        val setterMethodName = field.setterMethodName()
-        val viewChannel = if (field.className.findType().isView()) ", {bool viewChannel = true}" else ""
+        val setterMethodName = field.setterMethodName
+        val viewChannel = if (field.className.findType().isView) ", {bool viewChannel = true}" else ""
 
         val callback = CallbackSetterTmpl(field)
 

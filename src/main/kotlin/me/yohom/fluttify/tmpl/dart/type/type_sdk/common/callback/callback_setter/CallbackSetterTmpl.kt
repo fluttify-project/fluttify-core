@@ -19,12 +19,12 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 private val tmpl = getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText()
 
 fun CallbackSetterTmpl(field: Field): String {
-    if (!field.variable.trueType.findType().isCallback())
+    if (!field.variable.trueType.findType().isCallback)
         return ""
 
     // 如果是View类型的类, 那么就加上当前的View代表的id
     // 因为objc端的delegate方法无法区分调用方, 所以只有view类型的类能根据viewId区分
-    val callbackChannel = if (field.className.findType().isView()) {
+    val callbackChannel = if (field.className.findType().isView) {
         "${field.variable.trueType.deprotocol().replace("$", ".")}::Callback@\$refId"
     } else {
         "${field.variable.trueType.deprotocol().replace("$", ".")}::Callback"

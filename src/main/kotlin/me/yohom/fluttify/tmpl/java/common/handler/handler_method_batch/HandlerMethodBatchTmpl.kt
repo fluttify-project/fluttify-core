@@ -49,7 +49,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
         else -> "Integer"
     }
     val args = method.formalParams
-        .filter { !it.variable.trueType.findType().isCallback() }
+        .filter { !it.variable.trueType.findType().isCallback }
         .joinToString("\n") {
             when {
                 it.variable.jsonable() -> ArgJsonableTmpl(it.variable)

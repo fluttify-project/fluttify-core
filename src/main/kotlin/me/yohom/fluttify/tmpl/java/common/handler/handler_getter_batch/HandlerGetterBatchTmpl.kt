@@ -29,7 +29,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 private val tmpl = getResource("/tmpl/java/handler_getter_batch.stmt.java.tmpl").readText()
 
 fun HandlerGetterBatchTmpl(field: Field): String {
-    val getterName = field.getterMethodName()
+    val getterName = field.getterMethodName
     val className = field.className.replace("$", ".")
     val resultType = field.variable.run {
         when {

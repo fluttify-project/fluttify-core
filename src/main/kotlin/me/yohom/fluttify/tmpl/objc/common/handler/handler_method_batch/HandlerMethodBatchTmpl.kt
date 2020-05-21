@@ -56,7 +56,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
         }
 
     // 获取当前调用方法的对象引用
-    val ref = if (method.className.findType().isStruct()) {
+    val ref = if (method.className.findType().isStruct) {
         StructRefTmpl(method)
     } else {
         RefRefTmpl(method)
@@ -70,7 +70,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
             isValueType() -> ResultValueTmpl()
             jsonable() -> ResultJsonableTmpl()
             isIterable() -> ResultListTmpl()
-            findType().isStruct() -> ResultStructTmpl(method.returnType)
+            findType().isStruct -> ResultStructTmpl(method.returnType)
             isVoid() -> ResultVoidTmpl()
             isPrimitivePointerType() -> ResultValuePointerTmpl()
             else -> ResultRefTmpl(method.returnType)

@@ -89,7 +89,7 @@ fun AndroidViewTmpl(viewType: Type): String {
             it.formalParams.any { param ->
                 param.variable.trueType !in listOf("android.content.Context", "android.util.AttributeSet", "int")
                         &&
-                        param.variable.trueType.findType().isKnownType()
+                        param.variable.trueType.findType().isKnownType
             }
         }
 

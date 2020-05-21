@@ -1,13 +1,17 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.Amap
+import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.model.Variable
 import org.junit.jupiter.api.Test
 
 class ListXKtTest {
 
     @Test
     fun filterMethod() {
+        listOf(Field(true, true, true, "", Variable("", "", Platform.Android), "", platform = Platform.Android)).filterConstants()
 //        Amap.androidSearchSDK.libs[1]
 //            .types.apply { println("types:$this") }
 //            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
@@ -16,18 +20,18 @@ class ListXKtTest {
 //            ?.filterMethod()
 //            ?.apply { println("after:$this") }
 
-        val sdk = "/Users/yohom/Github/Me/All/fluttify/3rd_party/xftts/jr/xftts_fluttify.ios.json"
-            .file()
-            .readText()
-            .fromJson<SDK>()
-
-        sdk.libs
-            .flatMap { it.types }
-            .find { it.name == "IFlySpeechRecognizerDelegate" }
-            ?.methods
-            ?.apply { println("before:$this") }
-            ?.filterMethod()
-            ?.apply { println("after:$this") }
+//        val sdk = "/Users/yohom/Github/Me/All/fluttify/3rd_party/xftts/jr/xftts_fluttify.ios.json"
+//            .file()
+//            .readText()
+//            .fromJson<SDK>()
+//
+//        sdk.libs
+//            .flatMap { it.types }
+//            .find { it.name == "IFlySpeechRecognizerDelegate" }
+//            ?.methods
+//            ?.apply { println("before:$this") }
+//            ?.filterMethod()
+//            ?.apply { println("after:$this") }
     }
 
     @Test

@@ -47,7 +47,7 @@ fun HandlerSetterBatchTmpl(field: Field): String {
     val fieldName = field.variable.name
 
     // 获取当前调用方法的对象引用
-    val ref = if (field.className.findType().isStruct()) {
+    val ref = if (field.className.findType().isStruct) {
         StructRefTmpl(field.asGetterMethod())
     } else {
         RefRefTmpl(field.asGetterMethod())
@@ -56,19 +56,19 @@ fun HandlerSetterBatchTmpl(field: Field): String {
     // 如果setter的是一个delegate, 那么就认定是当前类作为delegate处理
     val fieldValue = field.variable.run {
         when {
-            trueType.findType().isCallback() -> "self"
+            trueType.findType().isCallback -> "self"
             trueType.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
             else -> fieldName.depointer()
         }
     }
-    val className = if (field.className.findType().isInterface()) {
+    val className = if (field.className.findType().isInterface) {
         "id<${field.className}>"
     } else {
         field.className.enpointer()
     }
 
     return tmpl
-        .replace("#__method_name__#", field.setterMethodName())
+        .replace("#__method_name__#", field.setterMethodName)
         .replaceParagraph("#__args__#", args)
         .replaceParagraph("#__ref__#", ref)
         .replace("#__setter__#", setter)

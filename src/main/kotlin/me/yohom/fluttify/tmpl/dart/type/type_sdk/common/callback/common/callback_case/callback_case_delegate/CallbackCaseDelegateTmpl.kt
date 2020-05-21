@@ -19,7 +19,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 private val tmpl = getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText()
 
 fun CallbackCaseDelegateTmpl(callbackMethod: Method, callbackObject: String): String {
-    val callbackMethodName = callbackMethod.signature()
+    val callbackMethodName = callbackMethod.signature
     val callbackCase = "Callback::${callbackMethod.nameWithClass()}"
     val log =
         "debugPrint('fluttify-dart-callback: ${callbackMethodName}(${callbackMethod.formalParams.filter { it.variable.trueType.jsonable() }.map { "\\'${it.variable.name}\\':\${args['${it.variable.name}']}" }})');"

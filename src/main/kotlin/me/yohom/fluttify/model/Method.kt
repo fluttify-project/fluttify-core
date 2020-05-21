@@ -52,13 +52,13 @@ data class Method(
 
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
 
-    fun filter(): Boolean {
+    val filter: Boolean get() {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓方法↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("方法:\"${toString()}\"执行过滤开始")
         val result = (must("返回类型是jsonable类型") { returnType.jsonable() }
                 || must("返回类型是void") { returnType.isVoid() }
                 || must("返回类型是原始类型指针类型") { returnType.isPrimitivePointerType() }
-                || must("返回类型关联类型都通过过滤") { !returnType.isMap() && returnType.allTypes().all { it.filter() } }
+                || must("返回类型关联类型都通过过滤") { !returnType.isMap() && returnType.allTypes().all { it.filter } }
                 || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
                 &&
                 mustNot("返回类型是混淆类") { returnType.isObfuscated() }
@@ -68,18 +68,20 @@ data class Method(
                 mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
                 &&
                 must("返回类型的祖宗类是已知类") {
-                    returnType.allTypes().flatMap { it.ancestorTypes }.all { it.findType().isKnownType() }
+                    returnType.allTypes().flatMap { it.ancestorTypes }.all { it.findType().isKnownType }
                 }
                 &&
-                must("返回类型不是回调类") { returnType.allTypes().none { it.isCallback() } }
+                must("返回类型不是回调类") { returnType.allTypes().none { it.isCallback } }
                 &&
-                must("返回类型有实体子类") { returnType.allTypes().all { it.isConcret() || it.hasConcretSubtype() } }
+                must("返回类型有实体子类") { returnType.allTypes().all { it.isConcret || it.hasConcretSubtype } }
                 &&
                 must("参数类型全部通过类型过滤") {
                     formalParams.all {
                         it.variable.trueType.jsonable() ||
-                                it.variable.allTypes().all { it.filter() } ||
-                                it.variable.trueType in className.findType().genericTypes
+                                it.variable.allTypes().all { it.filter } ||
+                                (it.variable.trueType in className.findType().genericTypes).apply {
+                                    println("it.variable.trueType: ${it.variable.trueType}, className.findType().genericTypes: ${className.findType().genericTypes}")
+                                }
                     }
                 }
                 &&
@@ -133,8 +135,6 @@ data class Method(
                         .run { isEmpty() || all { it.variable.isKnownLambda() } }
                 }
                 &&
-                mustNot("形参类型含有泛型") { formalParams.any { it.variable.isGenericType() } }
-                &&
                 mustNot("形参类型含有混淆类") { formalParams.any { it.variable.trueType.isObfuscated() } }
                 &&
                 // 参数不能中含有排除的类
@@ -143,7 +143,7 @@ data class Method(
                 mustNot("形参祖宗类含有未知类型") {
                     formalParams
                         .flatMap { it.variable.trueType.findType().ancestorTypes }
-                        .any { it.findType().isUnknownType() }
+                        .any { it.findType().isUnknownType }
                 }
                 &&
                 mustNot("形参父类是混淆类") {
@@ -154,18 +154,18 @@ data class Method(
         return result
     }
 
-    fun filterBatch(): Boolean {
-        return filter() && mustNot("含有回调参数") { formalParams.any { it.variable.run { isCallback() || isLambda() } } }
+    val filterBatch: Boolean get() {
+        return filter && mustNot("含有回调参数") { formalParams.any { it.variable.run { isCallback() || isLambda() } } }
     }
 
     fun nameWithClass(): String {
-        return "${className.replace("$", ".")}::${signature()}"
+        return "${className.replace("$", ".")}::${signature}"
     }
 
     /**
      * 包含方法名, 命名参数和参数类型的完整签名
      */
-    fun signature(): String {
+    val signature: String get() {
         val hasOverload = className
             .findType()
             .methods

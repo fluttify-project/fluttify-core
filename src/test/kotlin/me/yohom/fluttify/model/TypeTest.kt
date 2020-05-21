@@ -13,7 +13,7 @@ class TypeTest {
 //            .libs[1]
 //            .types
 //            .find { it.name == "com.amap.api.services.route.RouteSearch.DriveRouteQuery" }
-//            ?.constructable()
+//            ?.constructable
 //            ?.run {
 //                println("结果: $this")
 //            }
@@ -21,14 +21,14 @@ class TypeTest {
             .libs[3]
             .types
             .forEach {
-                println("${it.name} constructable: ${it.constructable()}")
+                println("${it.name} constructable: ${it.constructable}")
             }
 //
 //        iosSDK
 //            .libs[1]
 //            .types
 //            .find { it.name == "AMapNearbySearchManager" }
-//            ?.constructable()
+//            ?.constructable
 //            ?.run {
 //                println("结果: $this")
 //            }
@@ -50,7 +50,7 @@ class TypeTest {
             .find { it.name == "com.baidu.speech.EventManager" }
 //            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
 //            .find { it.name == "com.amap.api.maps.AMap.InfoWindowAdapter" }
-            ?.firstConcretSubtype()
+            ?.firstConcretSubtype
             ?.run {
                 println("结果: $this")
             }
@@ -70,7 +70,7 @@ class TypeTest {
             .libs[1]
             .types
             .find { it.name == "com.baidu.speech.EventManager" }
-            ?.subtypes()
+            ?.subtypes
             ?.run {
                 println("结果: ${this.joinToString { it.name }}")
             }

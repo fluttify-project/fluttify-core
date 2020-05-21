@@ -19,7 +19,7 @@ import me.yohom.fluttify.model.Field
 private val tmpl = getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readText()
 
 fun HandlerGetterTmpl(field: Field): String {
-    val getterName = field.getterMethodName()
+    val getterName = field.getterMethodName
     val className = field.className.replace("$", ".")
     val fieldType = field.variable.trueType.replace("$", ".")
     val fieldName = field.variable.name

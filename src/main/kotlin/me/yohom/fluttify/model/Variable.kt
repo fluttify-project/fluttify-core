@@ -10,7 +10,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
  * 表示一个变量(字段, 方法参数, 局部变量)
  */
 data class Variable(
-    private val typeName: TYPE_NAME,
+    private var typeName: TYPE_NAME,
     val name: String,
     override var platform: Platform,
     override var id: Int = NEXT_ID
@@ -31,6 +31,13 @@ data class Variable(
                 ?: typeName
         }
 
+    val rawType: String
+        get() = typeName
+
+    fun defineGenericType(definedTypeName: TYPE_NAME) {
+        typeName = definedTypeName
+    }
+
     fun isStructPointer(): Boolean {
         return trueType.isStructPointer()
     }
@@ -40,11 +47,11 @@ data class Variable(
     }
 
     fun isStruct(): Boolean {
-        return trueType.findType().isStruct()
+        return trueType.findType().isStruct
     }
 
     fun isEnum(): Boolean {
-        return trueType.findType().isEnum()
+        return trueType.findType().isEnum
     }
 
     fun jsonable(): Boolean {
@@ -64,15 +71,15 @@ data class Variable(
     }
 
     fun isLambda(): Boolean {
-        return trueType.findType().isLambda()
+        return trueType.findType().isLambda
     }
 
     fun isCallback(): Boolean {
-        return trueType.containerType().findType().isCallback() || trueType.deprotocol().findType().isCallback()
+        return trueType.containerType().findType().isCallback || trueType.deprotocol().findType().isCallback
     }
 
     fun isInterface(): Boolean {
-        return trueType.containerType().findType().isInterface()
+        return trueType.containerType().findType().isInterface
     }
 
     fun isAbstract(): Boolean {
@@ -84,12 +91,12 @@ data class Variable(
     }
 
     fun hasConcretSubtype(): Boolean {
-        return trueType.findType().firstConcretSubtype() != null
+        return trueType.findType().firstConcretSubtype != null
     }
 
     fun isKnownType(): Boolean {
         // 只有当类型不是Map且包含类型都是已知类, 碰到了Map<String,NSData>类型, 虽然所有成分都是已知类, 但应该过滤掉的
-        return (!trueType.isMap() && trueType.allTypes().all { it.isKnownType() })
+        return (!trueType.isMap() && trueType.allTypes().all { it.isKnownType })
                 || trueType.jsonable()
     }
 
@@ -122,7 +129,7 @@ data class Variable(
     }
 
     fun toDartString(): String {
-        return if (trueType.findType().isLambda()) {
+        return if (trueType.findType().isLambda) {
             val type = trueType.findType()
             "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
@@ -135,7 +142,7 @@ data class Variable(
     }
 
     fun var2Args(hostMethod: Method? = null): String {
-        return if (trueType.findType().isCallback() && hostMethod != null) {
+        return if (trueType.findType().isCallback && hostMethod != null) {
             when {
                 isIterable -> "new ArrayList() /* 暂不支持列表回调 */"
                 containerType().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"

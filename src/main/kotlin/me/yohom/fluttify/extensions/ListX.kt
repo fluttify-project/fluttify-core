@@ -36,7 +36,7 @@ fun List<Variable>.toDartMapBatch(
  */
 fun List<Type>.filterType(): List<Type> {
     return asSequence()
-        .filter { it.filter() }
+        .filter { it.filter }
         .filter { println("Type::${it.name}通过过滤"); true }
         .toList()
 }
@@ -46,7 +46,7 @@ fun List<Type>.filterType(): List<Type> {
  */
 fun List<Field>.filterConstants(): List<Field> {
     return asSequence()
-        .filter { it.filterConstants() }
+        .filter { it.filterConstants }
         .filter { println("Field::${it.variable.name}通过Constants过滤"); true }
         .toList()
 }
@@ -58,9 +58,9 @@ fun List<Method>.filterMethod(batch: Boolean = false): List<Method> {
     return asSequence()
         .filter {
             if (batch) {
-                it.filterBatch()
+                it.filterBatch
             } else {
-                it.filter()
+                it.filter
             }
         }
         .distinctBy { it.nameWithClass() }
@@ -73,7 +73,7 @@ fun List<Method>.filterMethod(batch: Boolean = false): List<Method> {
  */
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
-        .filter { it.filterGetters() }
+        .filter { it.filterGetters }
         .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
         .toList()
 }
@@ -83,7 +83,7 @@ fun List<Field>.filterGetters(): List<Field> {
  */
 fun List<Field>.filterSetters(batch: Boolean = false): List<Field> {
     return asSequence()
-        .filter { if (batch) it.filterSetterBatch() else it.filterSetter() }
+        .filter { if (batch) it.filterSetterBatch else it.filterSetter }
         .filter { println("Field::${it.variable.name}通过Setter过滤"); true }
         .toList()
 }
@@ -94,7 +94,7 @@ fun List<Field>.filterSetters(batch: Boolean = false): List<Field> {
 fun List<Type>.filterConstructable(): List<Type> {
     return filterType()
         .asSequence()
-        .filter { it.constructable() }
+        .filter { it.constructable }
         .toList()
 }
 
@@ -103,7 +103,7 @@ fun List<Type>.filterConstructable(): List<Type> {
  */
 fun List<Constructor>.filterConstructor(): List<Constructor> {
     return asSequence()
-        .filter { it.filter() }
+        .filter { it.filter }
         .toList()
 }
 
@@ -112,7 +112,7 @@ fun List<Constructor>.filterConstructor(): List<Constructor> {
  */
 fun List<Parameter>.filterFormalParams(): List<Parameter> {
     return asSequence()
-        .filter { it.filter() }
+        .filter { it.filter }
         .filter { println("Parameter::${it.variable.trueType}通过过滤"); true }
         .toList()
 }

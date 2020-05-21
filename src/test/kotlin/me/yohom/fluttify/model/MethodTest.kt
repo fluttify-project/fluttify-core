@@ -12,8 +12,8 @@ class MethodTest {
             .flatMap { it.types }
             .find { it.name == "TIMGroupManager" }
             ?.methods
-            ?.find { it.signature() == "modifyGroupCustomInfo_customInfo_succ_fail" }
-            ?.filter()
+            ?.find { it.signature == "modifyGroupCustomInfo_customInfo_succ_fail" }
+            ?.filter
             ?.run {
                 println("通过过滤: $this")
             }

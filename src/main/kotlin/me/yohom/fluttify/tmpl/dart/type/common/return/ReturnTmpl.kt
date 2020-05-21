@@ -19,7 +19,7 @@ fun ReturnTmpl(method: Method): String {
             // 如果是(列表+抽象)类, 那么先把泛型类处理成实体类, 再加上`List`
             val genericType = returnType.genericTypes()[0]
             val concretGenericType = if (genericType.findType().isAbstract) {
-                genericType.findType().run { firstConcretSubtype()?.name ?: this.name }
+                genericType.findType().run { firstConcretSubtype?.name ?: this.name }
             } else {
                 genericType
             }
@@ -27,7 +27,7 @@ fun ReturnTmpl(method: Method): String {
         } else {
             // 否则直接处理返回类型
             if (returnType.findType().isAbstract) {
-                returnType.findType().run { firstConcretSubtype()?.name ?: this.name }
+                returnType.findType().run { firstConcretSubtype?.name ?: this.name }
             } else {
                 returnType
             }
@@ -39,7 +39,7 @@ fun ReturnTmpl(method: Method): String {
                     ResultJsonableTmpl(concretType, method.platform)
                 }
                 // 返回枚举类型
-                findType().isEnum() -> ResultEnumTmpl(concretType)
+                findType().isEnum -> ResultEnumTmpl(concretType)
                 // 返回列表类型
                 isIterable() -> {
                     val type = if (concretType.iterableLevel() != 0) {

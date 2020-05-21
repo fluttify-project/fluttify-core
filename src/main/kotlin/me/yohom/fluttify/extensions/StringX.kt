@@ -225,7 +225,34 @@ fun TYPE_NAME.simpleName(): String {
  */
 fun TYPE_NAME.findType(): Type {
     val type = depointer().deprotocol()
-    return SDK.findType(type)
+    return if (type.genericTypes().isNotEmpty()) {
+        // 说明有泛型, 合成一个新的类
+        val containerType = SDK.findType(type.containerType())
+
+        // 要使用克隆对象, 不能影响原始的类型声明
+        val clonedContainerType = containerType.toJson().fromJson<Type>()
+        val declaredGenericTypes = clonedContainerType.genericTypes;
+        val definedGenericTypes = type.genericTypes().toMutableList()
+        if (definedGenericTypes.isNotEmpty()) {
+            // 泛型列表换成定义的泛型
+            clonedContainerType.genericTypes = definedGenericTypes
+            // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
+            clonedContainerType.methods
+                .flatMap { it.formalParams }
+                .map { it.variable }
+                // 过滤出所有用到类泛型的方法的参数 这里使用rawType代替trueType防止循环调用
+                .filter { it.rawType in declaredGenericTypes }
+                .forEach {
+                    // 找出当前声明泛型在泛型列表中的位置
+                    val genericTypePosition = declaredGenericTypes.indexOf(it.rawType)
+                    // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
+                    it.defineGenericType(definedGenericTypes[genericTypePosition])
+                }
+        }
+        clonedContainerType
+    } else {
+        SDK.findType(type)
+    }
 }
 
 /**
@@ -248,7 +275,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "unsigned long long",
         "GLuint",
         "CGFloat"
-    )) or (this in SYSTEM_TYPEDEF.keys && this !in SYSTEM_POINTER_TYPEDEF.keys) or findType().run { isEnum() or isAlias() }
+    )) or (this in SYSTEM_TYPEDEF.keys && this !in SYSTEM_POINTER_TYPEDEF.keys) or findType().run { isEnum or isAlias() }
 }
 
 
@@ -333,7 +360,10 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                     "List<${genericType.toDartType()}>"
                 }
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<java_lang_Object>"
-                Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace("java.util.Collection", "List")
+                Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace(
+                    "java.util.Collection",
+                    "List"
+                )
                 Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
 
                 // objc
@@ -363,7 +393,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 // 通用
                 findType().isAlias() -> findType().aliasOf!!.toDartType()
                 // 是否是结构体指针
-                findType().isStruct() && endsWith("*") -> findType().name.depointer().enList()
+                findType().isStruct && endsWith("*") -> findType().name.depointer().enList()
                 genericTypes().isNotEmpty() -> "${containerType()}<${genericTypes().joinToString(",") { it.toDartType() }}>"
                 else -> this
             }
@@ -383,7 +413,7 @@ fun TYPE_NAME.toUnderscore(): String {
 }
 
 fun TYPE_NAME.isStructPointer(): Boolean {
-    return findType().isStruct() && endsWith("*")
+    return findType().isStruct && endsWith("*")
 }
 
 /**

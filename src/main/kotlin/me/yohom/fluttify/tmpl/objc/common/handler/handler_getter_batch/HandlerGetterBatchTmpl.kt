@@ -29,15 +29,15 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 private val tmpl = getResource("/tmpl/objc/handler_getter_batch.stmt.m.tmpl").readText()
 
 fun HandlerGetterBatchTmpl(field: Field): String {
-    val methodName = field.getterMethodName()
+    val methodName = field.getterMethodName
     val className = when {
         field.className == "id" -> "NSObject*" // 如果是id类型, 就强转成NSObject*
-        field.className.findType().isInterface() -> field.className.enprotocol()
+        field.className.findType().isInterface -> field.className.enprotocol()
         else -> field.className.enpointer()
     }
 
     // 获取当前调用方法的对象引用
-    val ref = if (field.className.findType().isStruct()) {
+    val ref = if (field.className.findType().isStruct) {
         StructRefTmpl(field.asGetterMethod())
     } else {
         RefRefTmpl(field.asGetterMethod())

@@ -90,7 +90,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     // 注册PlatformView
     val registerPlatformViews = libs
         .flatMap { it.types }
-        .filter { it.isView() }
+        .filter { it.isView }
         .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
         .joinToString("\n") {
             RegisterPlatformViewTmpl(it)
@@ -129,7 +129,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
 
     val protocols = libs
         .flatMap { it.types }
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .map { it.name }
         .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
         .joinToString(", ")
@@ -137,7 +137,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     val callbackMethods = libs
         .flatMap { it.types }
         .filterType()
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .flatMap { it.methods }
         .distinctBy { it.exactName }
         .map { NonViewCallbackMethodTmpl(it) }

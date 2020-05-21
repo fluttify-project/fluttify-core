@@ -117,7 +117,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
     val nativeView = viewType.name
     val protocols = lib
         .types
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .map { it.name }
         .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
         .joinToString(", ")
@@ -143,7 +143,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
 
     val delegateMethods = lib
         .types
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .flatMap { it.methods }
         .distinctBy { it.exactName }
         .joinToString("\n") { ViewCallbackMethodTmpl(it) }

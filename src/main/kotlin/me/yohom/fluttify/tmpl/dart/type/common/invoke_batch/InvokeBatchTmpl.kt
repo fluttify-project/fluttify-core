@@ -9,7 +9,7 @@ import me.yohom.fluttify.model.Parameter
 private val tmpl = getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText()
 
 fun InvokeBatchTmpl(method: Method): String {
-    val channel = if (method.className.findType().isView()) {
+    val channel = if (method.className.findType().isView) {
         "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
     } else {
         "'${ext.methodChannelName}'"
@@ -27,7 +27,7 @@ fun InvokeBatchTmpl(method: Method): String {
         .toDartMapBatch(prefix = loopHeader) {
             val type = if (it.isAliasType()) it.trueType.findType().aliasOf!! else it.trueType
             when {
-                type.findType().isEnum() -> {
+                type.findType().isEnum -> {
                     // 枚举列表
                     if (it.isIterable) {
                         "${it.name}[__i__].map((it) => it.index).toList()"

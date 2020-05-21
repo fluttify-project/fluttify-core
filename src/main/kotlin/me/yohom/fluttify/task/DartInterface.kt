@@ -29,7 +29,7 @@ open class AndroidDartInterface : FluttifyTask() {
         // 处理View, 生成AndroidView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView() && !it.isObfuscated() && it.constructable() }
+            .filter { it.isView && !it.isObfuscated && it.constructable }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it)
                 val viewName = it.name.replace("$", ".").simpleName()
@@ -80,7 +80,7 @@ open class AndroidDartInterface : FluttifyTask() {
         // 处理所有的函数 但是java其实没有顶层函数, 所以这里的结果一定是空字符串
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isKnownFunction() }
+            .filter { it.isKnownFunction }
             .distinctBy { it.name }
             .run {
                 val functionsFile =
@@ -95,11 +95,11 @@ open class AndroidDartInterface : FluttifyTask() {
             .flatMap { it.types }
             .filterType()
             .asSequence()
-            .filterNot { it.isLambda() }
-            .filterNot { it.isFunction() }
+            .filterNot { it.isLambda }
+            .filterNot { it.isFunction }
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
-            .filter { !it.isInterface() && !it.isEnum() }
+            .filter { !it.isInterface && !it.isEnum }
         // 类型检查
         val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
@@ -134,7 +134,7 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理View, 生成UiKitView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView() && !it.isObfuscated() && it.constructable() }
+            .filter { it.isView && !it.isObfuscated && it.constructable }
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it)
                 val uiKitViewFile =
@@ -186,7 +186,7 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理所有的函数
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isKnownFunction() }
+            .filter { it.isKnownFunction }
             .distinctBy { it.name }
             .run {
                 val functionsFile =
@@ -201,11 +201,11 @@ open class IOSDartInterface : FluttifyTask() {
             .flatMap { it.types }
             .filterType()
             .asSequence()
-            .filterNot { it.isLambda() }
-            .filterNot { it.isFunction() }
+            .filterNot { it.isLambda }
+            .filterNot { it.isFunction }
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
-            .filter { !it.isInterface() && !it.isEnum() }
+            .filter { !it.isInterface && !it.isEnum }
         // 类型检查
         val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型

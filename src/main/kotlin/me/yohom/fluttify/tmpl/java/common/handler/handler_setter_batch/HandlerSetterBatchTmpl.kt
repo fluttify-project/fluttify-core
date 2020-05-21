@@ -26,7 +26,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 private val tmpl = getResource("/tmpl/java/handler_setter_batch.stmt.java.tmpl").readText()
 
 fun HandlerSetterBatchTmpl(field: Field): String {
-    val setterName = field.setterMethodName()
+    val setterName = field.setterMethodName
     val fieldName = field.variable.name
     val arg = when {
         field.variable.jsonable() -> ArgJsonableTmpl(field.variable)

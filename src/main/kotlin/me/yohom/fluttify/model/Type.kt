@@ -137,21 +137,22 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
         result.distinct()
     }
 
-    fun filter(): Boolean {
+    @delegate:Transient
+    val filter: Boolean by lazy {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("类:\"${name}\"执行过滤开始")
-        val result = must("已知类型") { isKnownType() }
+        val result = must("已知类型") { isKnownType }
                 &&
                 must("公开类型") { isPublic }
                 &&
                 must("祖宗类全部是已知类型 或 没有祖宗类") {
-                    ancestorTypes.all { it.findType().isKnownType() } || ancestorTypes.isEmpty()
+                    ancestorTypes.all { it.findType().isKnownType } || ancestorTypes.isEmpty()
                 }
                 &&
                 // 换言之只支持接口的泛型
-                mustNot("不是接口且含有泛型") { !isInterface() && genericTypes.isNotEmpty() }
+                mustNot("不是接口且含有泛型") { !isInterface && genericTypes.isNotEmpty() }
                 &&
-                mustNot("混淆类型") { isObfuscated() }
+                mustNot("混淆类型") { isObfuscated }
                 &&
                 mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
                 &&
@@ -159,14 +160,14 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     ancestorTypes.isNotEmpty() && EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } }
                 }
                 &&
-                (isEnum() || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
+                (isEnum || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
                     if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
                 }
                 ||
                 must("是List") { /* Regexes.MAP.matches(name) ||*/ Regexes.ITERABLE.matches(name) }
         println("类:\"${name}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
-        return result
+        result
     }
 
     /**
@@ -174,8 +175,17 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
      *
      * 查找sdk中所有的类, 如果没有一个类是当前类的子类, 且当前类是接口类型, 那么就认为这个类是回调类
      */
-    fun isCallback(): Boolean {
-        return isInterface() // 必须是接口
+    @delegate:Transient
+    val isCallback: Boolean by lazy {
+        // 是否在手动配置的回调类列表内
+        when (platform) {
+            Platform.General -> false
+            Platform.iOS -> ext.ios.callbackClasses.any { Regex(it).matches(name) }
+            Platform.Android -> ext.android.callbackClasses.any { Regex(it).matches(name) }
+            Platform.Unknown -> false
+        }
+                ||
+                isInterface // 必须是接口
                 &&
                 // 必须公开
                 isPublic
@@ -186,29 +196,25 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 &&
                 // 必须没有子类
-                !hasSubtype()
-                ||
-                // 是否在手动配置的回调类列表内
-                when (platform) {
-                    Platform.General -> false
-                    Platform.iOS -> ext.ios.callbackClasses.any { Regex(it).matches(name) }
-                    Platform.Android -> ext.android.callbackClasses.any { Regex(it).matches(name) }
-                    Platform.Unknown -> false
-                }
+                !hasSubtype
     }
 
-    fun isLambda(): Boolean = typeType == TypeType.Lambda
+    @delegate:Transient
+    val isLambda: Boolean by lazy { typeType == TypeType.Lambda }
 
-    fun isFunction(): Boolean = typeType == TypeType.Function
+    @delegate:Transient
+    val isFunction: Boolean by lazy { typeType == TypeType.Function }
 
-    fun isKnownFunction(): Boolean {
-        return isFunction()
-                && returnType.findType().isKnownType()
+    @delegate:Transient
+    val isKnownFunction: Boolean by lazy {
+        isFunction
+                && returnType.findType().isKnownType
                 && formalParams.all { it.variable.isKnownType() }
     }
 
-    fun subtypes(): List<Type> {
-        return SDK
+    @delegate:Transient
+    val subtypes: List<Type> by lazy {
+        SDK
             .sdks
             .flatMap { it.libs }
             .flatMap { it.types }
@@ -216,29 +222,27 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
             // 计算子类的时候, 去除掉忽略的类
             .filter { type -> EXCLUDE_TYPES.none { it.matches(type.name) } }
             .filter { it.isPublic }
-            .filter { (it.superClass == name || name in it.interfaces) }
+            .filter { !it.isObfuscated }
+            .filter { it.ancestorTypes.contains(name) }
             .toList()
     }
 
-    fun hasConcretSubtype(): Boolean {
-        return firstConcretSubtype() != null && isKnownType()
+    @delegate:Transient
+    val hasConcretSubtype: Boolean by lazy {
+        firstConcretSubtype != null && isKnownType
     }
 
-    fun firstConcretSubtype(): Type? {
-        return subtypes().firstOrNull { it.isConcret() && !it.isObfuscated() }
-    }
-
-    fun superTypes(): List<Type> {
-        return listOf(superClass.findType())
-            .union(interfaces.map { it.findType() })
-            .toList()
+    @delegate:Transient
+    val firstConcretSubtype: Type? by lazy {
+        subtypes.firstOrNull { it.isConcret && !it.isObfuscated }
     }
 
     fun isAlias(): Boolean {
         return typeType == TypeType.Alias
     }
 
-    fun constructable(): Boolean {
+    @delegate:Transient
+    val constructable: Boolean by lazy {
         println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓构造器↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         println("构造器:${name}执行过滤开始")
         val result = mustNot("抽象类型") { isAbstract }
@@ -253,17 +257,17 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     }
                 }
                 &&
-                must("是已知类型或jsonable类型") { isKnownType() }
+                must("是已知类型或jsonable类型") { isKnownType }
                 &&
-                mustNot("枚举类型") { isEnum() }
+                mustNot("枚举类型") { isEnum }
                 &&
-                mustNot("lambda类型") { isLambda() }
+                mustNot("lambda类型") { isLambda }
                 &&
-                mustNot("函数类型") { isFunction() }
+                mustNot("函数类型") { isFunction }
                 &&
                 mustNot("别名类型") { isAlias() }
                 &&
-                mustNot("混淆类型") { isObfuscated() }
+                mustNot("混淆类型") { isObfuscated }
                 &&
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
                 must("静态类的内部类") { (isInnerType && isStaticType) || !isInnerType }
@@ -272,7 +276,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
                 &&
-                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter() } || constructors.isEmpty() || isJsonable }
+                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter } || constructors.isEmpty() || isJsonable }
                 &&
                 must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
@@ -280,47 +284,57 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 }
         println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
-        return result
+        result
     }
 
-    fun isEnum(): Boolean {
-        return typeType == TypeType.Enum
+    @delegate:Transient
+    val isEnum: Boolean by lazy {
+        typeType == TypeType.Enum
     }
 
-    fun isStruct(): Boolean {
-        return typeType == TypeType.Struct
+    @delegate:Transient
+    val isStruct: Boolean by lazy {
+        typeType == TypeType.Struct
     }
 
-    fun isStructPointer(): Boolean {
-        return typeType == TypeType.Struct && name.pack().endsWith("*")
+    @delegate:Transient
+    val isStructPointer: Boolean by lazy {
+        typeType == TypeType.Struct && name.pack().endsWith("*")
     }
 
-    fun isInterface(): Boolean {
-        return typeType == TypeType.Interface
+    @delegate:Transient
+    val isInterface: Boolean by lazy {
+        typeType == TypeType.Interface
     }
 
-    fun isConcret(): Boolean {
-        return !isAbstract && isKnownType()
+    @delegate:Transient
+    val isConcret: Boolean by lazy {
+        !isAbstract && isKnownType
     }
 
-    fun hasSubtype(): Boolean {
-        return subtypes().isNotEmpty()
+    @delegate:Transient
+    val hasSubtype: Boolean by lazy {
+        subtypes.isNotEmpty()
     }
 
-    fun jsonable(): Boolean {
-        return name.jsonable()
+    @delegate:Transient
+    val jsonable: Boolean by lazy {
+        name.jsonable()
     }
 
-    fun toDartType(): String {
-        return name.toDartType()
+    @delegate:Transient
+    val toDartType: String by lazy {
+        name.toDartType()
     }
 
-    fun isObfuscated(): Boolean {
-        return name.isObfuscated()
+    @delegate:Transient
+    val isObfuscated: Boolean by lazy {
+        name.isObfuscated()
     }
 
-    fun isView(): Boolean {
-        return ancestorTypes.any {
+    @delegate:Transient
+    val isView: Boolean by lazy {
+        ancestorTypes.any {
             it in listOf(
                 "android.view.View",
                 "android.view.ViewGroup",
@@ -358,12 +372,14 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
             .filter { if (!includeObfuscated) !it.isObfuscated() else true }
     }
 
-    fun isKnownType(): Boolean {
-        return platform != Platform.Unknown || jsonable() || Regexes.ITERABLE.matches(name) || Regexes.MAP.matches(name)
+    @delegate:Transient
+    val isKnownType: Boolean by lazy {
+        platform != Platform.Unknown || jsonable || Regexes.ITERABLE.matches(name) || Regexes.MAP.matches(name)
     }
 
-    fun isUnknownType(): Boolean {
-        return platform == Platform.Unknown
+    @delegate:Transient
+    val isUnknownType: Boolean by lazy {
+        platform == Platform.Unknown
     }
 
     override fun toString(): String {

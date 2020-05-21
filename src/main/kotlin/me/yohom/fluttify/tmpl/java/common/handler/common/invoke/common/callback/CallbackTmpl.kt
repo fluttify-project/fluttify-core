@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.joinToStringX
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
@@ -16,10 +17,11 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 private val tmpl = getResource("/tmpl/java/callback.stmt.java.tmpl").readText()
 
 fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
+    val className = "${callbackType.name.replace("$", ".")}${callbackType.genericTypes.joinToStringX(prefix = "<", suffix = ">")}"
+    val callbackChannel = callerMethod.nameWithClass()
+    val callbackMethods = callbackType.methods.joinToString("\n") { CallbackMethodTmpl(it) }
     return tmpl
-        .replace("#__callback_class_name__#", callbackType.name.replace("$", "."))
-        .replace("#__callback_channel__#", callerMethod.nameWithClass())
-        .replaceParagraph("#__callback_methods__#", callbackType
-            .methods
-            .joinToString("\n") { CallbackMethodTmpl(it) })
+        .replace("#__callback_class_name__#", className)
+        .replace("#__callback_channel__#", callbackChannel)
+        .replaceParagraph("#__callback_methods__#", callbackMethods)
 }

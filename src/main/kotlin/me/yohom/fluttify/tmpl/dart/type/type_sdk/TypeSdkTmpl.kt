@@ -87,7 +87,7 @@ fun TypeSdkTmpl(type: Type): String {
         .joinToString("\n") { "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" }
 
     // 构造器
-    val creators = if (type.constructable()) {
+    val creators = if (type.constructable) {
         CreatorTmpl(type).union(CreatorBatchTmpl(type)).toList()
     } else {
         listOf()

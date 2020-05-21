@@ -32,7 +32,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                     "${method.name}(${method.formalParams.joinToString { param2arg(it, true) }})"
                 }
                 // 类静态方法
-                else if (!method.className.findType().isInterface()) {
+                else if (!method.className.findType().isInterface) {
                     "[${method.className} ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
                 }
                 // 协议静态方法

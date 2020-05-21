@@ -17,20 +17,21 @@ data class Parameter(
     override var platform: Platform,
     override var id: Int = NEXT_ID
 ) : IPlatform, IElement {
-    fun filter(): Boolean {
-        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓参数↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        println("参数:${variable}执行过滤开始")
-        val result = variable.mustNot("Lambda") { isLambda() } // lambda不参与传递
-                &&
-                variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
-                &&
-                variable.must("已知类型") { isKnownType() }
-                ||
-                variable.must("jsonable类型") { jsonable() }
-        println("参数:${variable}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
-        return result
-    }
+    val filter: Boolean
+        get() {
+            println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓参数↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+            println("参数:${variable}执行过滤开始")
+            val result = variable.mustNot("Lambda") { isLambda() } // lambda不参与传递
+                    &&
+                    variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
+                    &&
+                    variable.must("已知类型") { isKnownType() }
+                    ||
+                    variable.must("jsonable类型") { jsonable() }
+            println("参数:${variable}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+            println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+            return result
+        }
 
     companion object {
         fun simpleParameter(typeName: String, name: String): Parameter {

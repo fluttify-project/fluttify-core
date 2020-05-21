@@ -15,7 +15,7 @@ fun RefRefTmpl(method: Method): String {
 
     return when {
         method.isStatic -> empty
-        method.className.findType().isInterface() -> tmpl.replace("#__type_name__#", protocol)
+        method.className.findType().isInterface -> tmpl.replace("#__type_name__#", protocol)
         else -> tmpl.replace("#__type_name__#", `class`)
     }
 }

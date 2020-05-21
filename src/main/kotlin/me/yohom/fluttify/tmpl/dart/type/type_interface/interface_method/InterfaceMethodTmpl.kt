@@ -15,9 +15,9 @@ private val tmpl = getResource("/tmpl/dart/interface_method.mtd.dart.tmpl").read
 
 fun InterfaceMethodTmpl(method: Method): String {
     val returnType = method.returnType.toDartType()
-    val name = method.signature()
+    val name = method.signature
     val formalParams = method.formalParams.joinToString { it.variable.toDartString() }
-    val callbackPool = if (method.className.findType().isCallback()) {
+    val callbackPool = if (method.className.findType().isCallback) {
         // 只有回调类的参数需要加入释放池
         method
             .formalParams

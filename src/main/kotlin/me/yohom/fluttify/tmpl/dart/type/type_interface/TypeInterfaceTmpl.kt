@@ -48,7 +48,7 @@ fun TypeInterfaceTmpl(type: Type): String {
         .filterMethod()
         .map {
             // 只有回调类不需要调用原生方法
-            if (type.isCallback()) {
+            if (type.isCallback) {
                 InterfaceMethodTmpl(it)
             } else {
                 MethodTmpl(it)

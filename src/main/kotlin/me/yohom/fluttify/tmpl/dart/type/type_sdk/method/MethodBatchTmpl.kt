@@ -34,7 +34,7 @@ fun MethodBatchTmpl(method: Method): String {
     val static = if (method.isStatic) "static " else ""
     val returnType = method.returnType.toDartType().enList()
 
-    val methodName = "${method.signature()}_batch"
+    val methodName = "${method.signature}_batch"
 
     // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
     val formalParams = method
@@ -42,7 +42,7 @@ fun MethodBatchTmpl(method: Method): String {
         .joinToString { it.variable.toDartStringBatch() }
         .run {
             // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
-            if (method.className.findType().isView()) {
+            if (method.className.findType().isView) {
                 if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
             } else {
                 this
@@ -63,7 +63,7 @@ fun MethodBatchTmpl(method: Method): String {
 
     val nativeObjectPool = method.returnType.run {
         when {
-            jsonable() or findType().isEnum() or isVoid() -> ""
+            jsonable() or findType().isEnum or isVoid() -> ""
             isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
             else -> "kNativeObjectPool.addAll(typedResult);"
         }

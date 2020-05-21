@@ -38,7 +38,7 @@ fun TypeFunctionTmpl(functionType: Type): String {
         .joinToString { it.variable.toDartString() }
         .run {
             // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
-            if (functionType.isView()) {
+            if (functionType.isView) {
                 if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
             } else {
                 this
@@ -50,7 +50,7 @@ fun TypeFunctionTmpl(functionType: Type): String {
     val returnStatement = ReturnTmpl(functionType.asMethod())
     val nativeObjectPool = functionType.returnType.run {
         when {
-            jsonable() or findType().isEnum() or isVoid() -> ""
+            jsonable() or findType().isEnum or isVoid() -> ""
             isIterable() -> "kNativeObjectPool.addAll($returnStatement);"
             else -> "kNativeObjectPool.add($returnStatement);"
         }

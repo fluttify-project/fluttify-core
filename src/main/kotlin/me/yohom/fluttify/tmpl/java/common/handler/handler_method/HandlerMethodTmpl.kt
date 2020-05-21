@@ -42,7 +42,7 @@ private val tmpl = getResource("/tmpl/java/handler_method.stmt.java.tmpl").readT
 fun HandlerMethodTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams
-        .filter { !it.variable.trueType.findType().isCallback() }
+        .filter { !it.variable.trueType.findType().isCallback }
         .joinToString("\n") {
             when {
                 it.variable.jsonable() -> ArgJsonableTmpl(it.variable)

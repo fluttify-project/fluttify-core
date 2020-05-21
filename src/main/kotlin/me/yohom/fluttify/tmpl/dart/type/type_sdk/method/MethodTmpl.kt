@@ -33,7 +33,7 @@ private val tmpl = getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
 fun MethodTmpl(method: Method): String {
     val static = if (method.isStatic) "static " else ""
     val returnType = method.returnType.toDartType()
-    val methodName = method.signature()
+    val methodName = method.signature
 
     // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
     val formalParams = method
@@ -41,7 +41,7 @@ fun MethodTmpl(method: Method): String {
         .joinToString { it.variable.toDartString() }
         .run {
             // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
-            if (method.className.findType().isView()) {
+            if (method.className.findType().isView) {
                 if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
             } else {
                 this
@@ -53,7 +53,7 @@ fun MethodTmpl(method: Method): String {
     val returnStatement = ReturnTmpl(method)
     val nativeObjectPool = method.returnType.run {
         when {
-            jsonable() or findType().isEnum() or isVoid() -> ""
+            jsonable() or findType().isEnum or isVoid() -> ""
             isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(__return__);"
             else -> "kNativeObjectPool.add(__return__);"
         }

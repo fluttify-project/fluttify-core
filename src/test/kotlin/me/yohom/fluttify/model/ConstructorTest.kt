@@ -15,7 +15,7 @@ class ConstructorTest {
 //            .libs[3]
 //            .types
 //            .find { it.name == "com.amap.api.maps.utils.overlay.SmoothMoveMarker" }
-//            ?.constructable()
+//            ?.constructable
 //            ?.run {
 //                println("结果: $this")
 //            }

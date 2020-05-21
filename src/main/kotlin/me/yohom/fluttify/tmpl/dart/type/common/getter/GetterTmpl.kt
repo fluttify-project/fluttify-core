@@ -15,18 +15,18 @@ private val tmpl = getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
 fun GetterTmpl(field: Field): String {
     val dartType = field.variable.trueType.toDartType()
     val name = field.variable.name.depointer()
-    val viewChannel = if (field.className.findType().isView()) "{bool viewChannel = true}" else ""
+    val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
 
     val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
     val normalMethodChannel = ext.methodChannelName
     // 只有当前类是View的时候, 才需要区分普通channel和View channel
-    val methodChannel = if (field.className.findType().isView()) {
+    val methodChannel = if (field.className.findType().isView) {
         "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
     } else {
         "'$normalMethodChannel'"
     }
 
-    val getter = field.getterMethodName()
+    val getter = field.getterMethodName
     val result = field.variable.run {
         when {
             jsonable() -> ResultJsonableTmpl(trueType, platform)

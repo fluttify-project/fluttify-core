@@ -29,7 +29,7 @@ fun CallbackReturnTmpl(method: Method): String {
                 isVoid() -> ""
                 isBoolean() -> "return NO;"
                 isValueType() -> "return 0;"
-                findType().isStruct() -> "$this value; return value;"
+                findType().isStruct -> "$this value; return value;"
                 else -> "return nil;"
             }
         }

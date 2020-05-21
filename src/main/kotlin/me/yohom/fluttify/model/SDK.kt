@@ -39,7 +39,7 @@ class SDK : IPlatform {
      */
     @delegate:Transient
     val allFilteredMethods: List<Method> by lazy {
-        directLibs.flatMap { it.types }.flatMap { it.methods }.filter { it.filter() }
+        directLibs.flatMap { it.types }.flatMap { it.methods }.filter { it.filter }
     }
 
     /**
@@ -47,7 +47,7 @@ class SDK : IPlatform {
      */
     @delegate:Transient
     val allConstants: List<Field> by lazy {
-        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterConstants() }
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterConstants }
     }
 
     /**
@@ -55,7 +55,7 @@ class SDK : IPlatform {
      */
     @delegate:Transient
     val allProperties: List<Field> by lazy {
-        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters() || it.filterSetter() }
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters || it.filterSetter }
     }
 
     /**

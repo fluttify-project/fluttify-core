@@ -24,7 +24,7 @@ data class Constructor(
      * 一个类中可能有多个构造器, 这个过滤是过滤出可以使用的构造器.
      * 区分于Type类的constructable方法, 这个方法是判断一个类是否含有可以使用的构造器.
      */
-    fun filter(): Boolean {
+    val filter: Boolean get() {
         return must("必须是公开构造器") { isPublic }
                 &&
                 (must("构造器没有参数") { formalParams.isEmpty() }
@@ -41,15 +41,15 @@ data class Constructor(
                                     }
                                     ||
                                     must("参数类型有实体子类(更精确的应该是可构造的子类)") {
-                                        it.variable.trueType.findType().hasConcretSubtype()
+                                        it.variable.trueType.findType().hasConcretSubtype
                                     }
                                     ||
                                     must("构造器的参数类型也是可构造的") {
                                         it.variable.trueType.run {
                                             if (isIterable()) {
-                                                innermostGenericType().findType().constructable()
+                                                innermostGenericType().findType().constructable
                                             } else {
-                                                findType().constructable()
+                                                findType().constructable
                                             }
                                         }
                                     }
