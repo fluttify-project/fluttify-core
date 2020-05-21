@@ -88,8 +88,8 @@ data class Variable(
     }
 
     fun isKnownType(): Boolean {
-        return trueType.containerType().findType().isKnownType()
-                && trueType.genericTypes().all { it.findType().isKnownType() }
+        // 只有当类型不是Map且包含类型都是已知类, 碰到了Map<String,NSData>类型, 虽然所有成分都是已知类, 但应该过滤掉的
+        return (!trueType.isMap() && trueType.allTypes().all { it.isKnownType() })
                 || trueType.jsonable()
     }
 

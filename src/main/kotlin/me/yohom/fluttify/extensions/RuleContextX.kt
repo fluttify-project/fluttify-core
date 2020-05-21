@@ -27,8 +27,10 @@ fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
 
 fun RuleContext.typeFullName(typeSimpleName: String): String {
     fun nonGenericTypeFullName(typeName: String): String {
-        return if (typeName.jsonable() || typeName == "void") {
-            typeName
+        return if (typeName == "List") {
+            "java.util.List"
+        } else if (typeName == "Map") {
+            "java.util.Map"
         } else if (typeName == "Object") {
             "java.lang.Object"
         } else if (typeName == "Throwable") {
@@ -37,6 +39,8 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
             "java.lang.Exception"
         } else if (typeName == "Iterable") {
             "java.lang.Iterable"
+        } else if (typeName.jsonable() || typeName == "void") {
+            typeName
         } else {
             ancestorOf(JavaParser.CompilationUnitContext::class)
                 ?.importDeclaration()

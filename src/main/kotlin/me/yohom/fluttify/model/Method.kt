@@ -58,7 +58,7 @@ data class Method(
         val result = (must("返回类型是jsonable类型") { returnType.jsonable() }
                 || must("返回类型是void") { returnType.isVoid() }
                 || must("返回类型是原始类型指针类型") { returnType.isPrimitivePointerType() }
-                || must("返回类型关联类型都通过过滤") { returnType.allTypes().all { it.filter() } }
+                || must("返回类型关联类型都通过过滤") { !returnType.isMap() && returnType.allTypes().all { it.filter() } }
                 || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
                 &&
                 mustNot("返回类型是混淆类") { returnType.isObfuscated() }
@@ -180,7 +180,7 @@ data class Method(
                 .toUnderscore()
         } else {
             signatureNamed()
-        }
+        }.replace("[]", "_") // 去掉数据的方括号
     }
 
     /**

@@ -2,7 +2,6 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
-import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -23,6 +22,14 @@ fun TYPE_NAME.jsonable(): Boolean {
         "String",
         "Map<String,String>",
         "Map<String,Object>",
+        "Map<String,int>",
+        "Map<String,Int8List>",
+        "Map<String,Int32List>",
+        "Map<String,Int64List>",
+        "Map<String,Uint8List>",
+        "Map<String,Uint32List>",
+        "Map<String,Uint64List>",
+        "Map<String,dynamic>",
         "Map",
         "null",
         "List<int>",
@@ -166,7 +173,7 @@ fun TYPE_NAME.isArray(): Boolean {
  * 是否是Map类型
  */
 fun TYPE_NAME.isMap(): Boolean {
-    return Regex("(\\w*Map|NS(Mutable)?Dictionary)(<.*,.*>)?").matches(pack())
+    return Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.*,.*\\u003e)?\\*?").matches(pack())
 }
 
 /**
@@ -301,7 +308,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
 /**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
-fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
+fun TYPE_NAME.toDartType(): TYPE_NAME {
     // 如果是系统别名就先取出原始类型, 否则就直接使用
     return (SYSTEM_TYPEDEF[this] ?: this).pack()
         .run {
@@ -344,8 +351,8 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NS(Mutable)?Dictionary\\*").matches(this) -> "Map"
                 Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(this) -> {
-                    val keyType = substringAfter("<").substringBefore(",").toDartType()
-                    val valueType = substringAfter(",").substringBefore(">").toDartType()
+                    val keyType = substringAfter("\u003c").substringBefore(",").toDartType()
+                    val valueType = substringAfter(",").substringBefore("\u003e").toDartType()
                     "Map<$keyType,$valueType>"
                 }
                 Regex("NSArray\\u003c.+\\u003e\\*").matches(this) -> "List<${genericTypes()[0].toDartType()}>"
@@ -357,12 +364,18 @@ fun TYPE_NAME.toDartType(platform: Platform = Platform.Unknown): TYPE_NAME {
                 findType().isAlias() -> findType().aliasOf!!.toDartType()
                 // 是否是结构体指针
                 findType().isStruct() && endsWith("*") -> findType().name.depointer().enList()
+                genericTypes().isNotEmpty() -> "${containerType()}<${genericTypes().joinToString(",") { it.toDartType() }}>"
                 else -> this
             }
         }
+        .replace(Regex("java\\.util\\.(Collection|(Array)?List)"), "List")
+        .replace(Regex("java\\.util\\.(Hash)?Map"), "Map")
+        .replace(Regex("java\\.lang\\.Object"), "Object")
+
         .replace("$", ".")
         .replace(".", "_")
         .depointer()
+        .deprotocol()
 }
 
 fun TYPE_NAME.toUnderscore(): String {

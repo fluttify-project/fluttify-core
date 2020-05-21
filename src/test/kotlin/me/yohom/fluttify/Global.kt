@@ -42,3 +42,8 @@ object TencentLive {
 
 }
 
+object Tim {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/tim/jr/tim_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/tim/jr/tim_fluttify.ios.json".file().readText().fromJson<SDK>()
+}
+

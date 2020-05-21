@@ -2,7 +2,6 @@ package me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.model.Platform
 
 //@mustCallSuper
 //Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {

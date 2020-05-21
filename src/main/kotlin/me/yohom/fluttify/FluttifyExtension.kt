@@ -1,6 +1,5 @@
 package me.yohom.fluttify
 
-import me.yohom.fluttify.extensions.pack
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
