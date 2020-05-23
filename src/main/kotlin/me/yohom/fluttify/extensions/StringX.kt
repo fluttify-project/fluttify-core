@@ -401,6 +401,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
         .replace(Regex("java\\.util\\.(Collection|(Array)?List)"), "List")
         .replace(Regex("java\\.util\\.(Hash)?Map"), "Map")
         .replace(Regex("java\\.lang\\.Object"), "Object")
+        .replace(Regex("NSMutableArray"), "List")
 
         .replace("$", ".")
         .replace(".", "_")

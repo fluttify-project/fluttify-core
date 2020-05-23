@@ -47,6 +47,7 @@ fun List<Type>.filterType(): List<Type> {
 fun List<Field>.filterConstants(): List<Field> {
     return asSequence()
         .filter { it.filterConstants }
+        .distinctBy { it.variable.name }
         .filter { println("Field::${it.variable.name}通过Constants过滤"); true }
         .toList()
 }
