@@ -120,6 +120,11 @@ class SDK : IPlatform {
                 else -> Type().apply { name = finalTypeName }
             }
         }
+
+        fun findExtensions(fullName: String): List<Type> {
+            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
+            return allTypes.filter { it.typeType == TypeType.Extension && it.name == fullName }
+        }
     }
 }
 

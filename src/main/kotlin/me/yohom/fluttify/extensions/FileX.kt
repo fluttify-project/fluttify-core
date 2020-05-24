@@ -213,6 +213,9 @@ fun JAVA_FILE.javaType(): SourceFile {
 /**
  * Objc源码解析
  */
+// 因为Category和对应Class不在同一个文件是很常有的事情, 所以这里放一个Category缓存, 如果碰到Category时, 找不到对应的Class的话就先放在
+// 这里, 且碰到Class的时候来这里查找一下有没有属于它的Category
+val categoryCache = mutableMapOf<String, MutableList<Type>>()
 fun OBJC_FILE.objcType(): SourceFile {
     val source = readText()
 
@@ -335,14 +338,17 @@ fun OBJC_FILE.objcType(): SourceFile {
 
         //region 分类
         override fun enterCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
-            // 进入分类后, 把被分类的类从已有类型里拉出来, 重新放入Stack准备处理
-            val targetType = types.first { it.name == ctx.categoryName.text }
-            stack.push(targetType)
+            stack.push(Type().also {
+                it.platform = Platform.iOS
+                it.typeType = TypeType.Extension
+                it.name = ctx.categoryName.text
+                it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                it.isAbstract = false
+            })
         }
 
         override fun exitCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
-            // 这里直接pop就行, 因为操作的类已经在types中
-            stack.pop()
+            types.add(stack.pop())
         }
         //endregion
 
@@ -397,7 +403,7 @@ fun OBJC_FILE.objcType(): SourceFile {
             if (returnType != null && typeName != null) {
                 // lambda
                 if (formalParams != null) {
-                    types.add(
+                    stack.push(
                         Type().also {
                             it.typeType = TypeType.Lambda
                             it.isPublic = true
@@ -417,7 +423,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                 }
                 // 别名不包含^, 说明不是函数别名
                 else if (!typeName.contains("^")) {
-                    types.add(
+                    stack.push(
                         Type().also {
                             it.typeType = TypeType.Alias
                             it.isPublic = true
@@ -433,7 +439,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun exitTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
-            stack.pop()
+            types.add(stack.pop())
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {

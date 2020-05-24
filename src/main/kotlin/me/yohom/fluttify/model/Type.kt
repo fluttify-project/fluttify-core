@@ -382,6 +382,18 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
         platform == Platform.Unknown
     }
 
+    /**
+     * 从Category合并到Class里去
+     */
+    fun mergeWithCategory() {
+        val categories = SDK.findExtensions(name)
+        categories.forEach {
+            fields.addAll(it.fields)
+            methods.addAll(it.methods)
+            interfaces.addAll(it.interfaces)
+        }
+    }
+
     override fun toString(): String {
         return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
@@ -395,5 +407,5 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 }
 
 enum class TypeType {
-    Class, Enum, Interface, Lambda, Struct, Function, Alias
+    Class, Enum, Interface, Lambda, Struct, Function, Alias, Extension
 }

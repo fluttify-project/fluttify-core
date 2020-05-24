@@ -26,7 +26,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //
 //  #__interface_methods__#
 //}
-private val tmpl = getResource("/tmpl/dart/interface_type.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/type_interface.dart.tmpl").readText()
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName

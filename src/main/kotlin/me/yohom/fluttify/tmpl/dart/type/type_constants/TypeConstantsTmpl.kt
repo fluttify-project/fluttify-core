@@ -12,7 +12,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_constants.constant.TypeConstantTmpl
 ////////////////////////////////////////////////////////////
 //
 //#__constants__#
-private val tmpl = getResource("/tmpl/dart/constants.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/type_constants.dart.tmpl").readText()
 
 fun TypeConstantsTmpl(topLevelConstants: List<Variable>): String {
     return tmpl
