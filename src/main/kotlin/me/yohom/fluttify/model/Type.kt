@@ -59,7 +59,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     /**
      * 实现的接口全名
      */
-    var interfaces: List<String> = mutableListOf()
+    var interfaces: MutableList<String> = mutableListOf()
 
     /**
      * 所有的构造器
