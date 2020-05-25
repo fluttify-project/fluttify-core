@@ -58,9 +58,11 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  #__methods_batch__#
 //  //endregion
 //}
-private val tmpl = getResource("/tmpl/dart/sdk_type.dart.tmpl").readText()
+private val tmpl = getResource("/tmpl/dart/type_sdk.dart.tmpl").readText()
 
 fun TypeSdkTmpl(type: Type): String {
+    type.mergeWithCategory()
+
     val currentPackage = ext.projectName
     val className = if (type.genericTypes.isNotEmpty()) {
         "${type.name.toDartType()}<${type.genericTypes.joinToString()}>"

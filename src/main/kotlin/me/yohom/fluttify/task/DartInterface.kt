@@ -48,6 +48,7 @@ open class AndroidDartInterface : FluttifyTask() {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
+                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> ""
                     TypeType.Alias -> ""
@@ -97,6 +98,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
+            .filterNot { it.typeType == TypeType.Extension }
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface && !it.isEnum }
@@ -152,6 +154,7 @@ open class IOSDartInterface : FluttifyTask() {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
+                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> "" // 函数要单独处理, 全部放到一个文件里去
                     TypeType.Alias -> ""
@@ -203,6 +206,7 @@ open class IOSDartInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
+            .filterNot { it.typeType == TypeType.Extension }
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface && !it.isEnum }

@@ -46,28 +46,6 @@ fun JavaParser.EnumDeclarationContext.isPublic(): Boolean {
 }
 
 /**
- * 全名
- */
-fun JavaParser.ClassDeclarationContext.fullName(): String {
-    val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
-        ?.packageDeclaration()
-        ?.qualifiedName()
-        ?.text ?: ""
-    return "$packageName.${IDENTIFIER().text}"
-}
-
-/**
- * 全名
- */
-fun JavaParser.EnumDeclarationContext.fullName(): String {
-    val packageName = ancestorOf(JavaParser.CompilationUnitContext::class)
-        ?.packageDeclaration()
-        ?.qualifiedName()
-        ?.text ?: ""
-    return "$packageName.${IDENTIFIER().text}"
-}
-
-/**
  * 获取泛型类型
  */
 fun JavaParser.InterfaceDeclarationContext.genericTypes(): List<String> {
@@ -91,21 +69,5 @@ fun JavaParser.InterfaceDeclarationContext.isPublic(): Boolean {
         ?.classOrInterfaceModifier()
         ?.map { it.text }
         ?.contains("public") == true
-}
-//endregion
-
-//region Objc类扩展
-/**
- * 是某个类的子类(实现了某个接口的认为还是model, 比如说实现了Parcel)
- */
-fun ObjectiveCParser.ClassInterfaceContext.isSubclass(): Boolean {
-    return COLON() != null && superclassName?.IDENTIFIER()?.text != "NSObject"
-}
-
-/**
- * objc类的全名
- */
-fun ObjectiveCParser.ClassInterfaceContext.fullName(): String {
-    return className.text
 }
 //endregion
