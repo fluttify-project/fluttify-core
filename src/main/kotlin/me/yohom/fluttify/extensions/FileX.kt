@@ -24,7 +24,6 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-// todo 以嵌套/多个类的前提生成结构
 /**
  * Java源码解析
  */
@@ -213,9 +212,6 @@ fun JAVA_FILE.javaType(): SourceFile {
 /**
  * Objc源码解析
  */
-// 因为Category和对应Class不在同一个文件是很常有的事情, 所以这里放一个Category缓存, 如果碰到Category时, 找不到对应的Class的话就先放在
-// 这里, 且碰到Class的时候来这里查找一下有没有属于它的Category
-val categoryCache = mutableMapOf<String, MutableList<Type>>()
 fun OBJC_FILE.objcType(): SourceFile {
     val source = readText()
 
