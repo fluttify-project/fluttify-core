@@ -185,13 +185,10 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
             Platform.Unknown -> false
         }
                 ||
-                isInterface // 必须是接口
+                (isInterface || isAbstract) // 必须是接口 或 抽象类
                 &&
                 // 必须公开
                 isPublic
-                &&
-                // 回调类不能有超类
-                superClass == ""
                 &&
                 (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 &&

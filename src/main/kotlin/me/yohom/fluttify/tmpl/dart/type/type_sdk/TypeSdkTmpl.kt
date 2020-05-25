@@ -122,6 +122,7 @@ fun TypeSdkTmpl(type: Type): String {
     return tmpl
         .replace("#__current_package__#", currentPackage)
         .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+        .replace("#__abstract__#", if(type.isAbstract) "/* abstract */ " else "")
         .replace("#__class_name__#", className)
         .replace("#__origin_class_name__#", originClassName)
         .replace("#__super_class__#", superClass)
