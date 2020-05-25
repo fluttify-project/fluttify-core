@@ -50,9 +50,10 @@ val SYSTEM_TYPEDEF = mapOf(
     "NSInteger" to "long",
     "NSUInteger" to "unsigned long",
     "CVPixelBufferRef" to "void*",
+    "int32_t" to "int",
     "int64_t" to "long long",
     "uint32_t" to "unsigned int",
-    "int32_t" to "int"
+    "uint64_t" to "unsigned long long"
 )
 
 /**
