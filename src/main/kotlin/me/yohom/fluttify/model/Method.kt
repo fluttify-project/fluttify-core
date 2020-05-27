@@ -79,9 +79,7 @@ data class Method(
                     formalParams.all {
                         it.variable.trueType.jsonable() ||
                                 it.variable.allTypes().all { it.filter } ||
-                                (it.variable.trueType in className.findType().genericTypes).apply {
-                                    println("it.variable.trueType: ${it.variable.trueType}, className.findType().genericTypes: ${className.findType().genericTypes}")
-                                }
+                                it.variable.trueType in className.findType().genericTypes
                     }
                 }
                 &&

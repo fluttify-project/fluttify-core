@@ -149,7 +149,7 @@ class Lib {
      * 顶层常量
      */
     val topLevelConstants: List<Variable>
-        get() = sourceFiles.flatMap { it.topLevelConstants }
+        get() = sourceFiles.flatMap { it.topLevelConstants }.distinctBy { it.name }
 
     /**
      * 是否是依赖

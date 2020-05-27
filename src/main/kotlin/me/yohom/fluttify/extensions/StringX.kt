@@ -376,8 +376,9 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("NSNumber\\*?").matches(this) -> "num"
                 Regex("NSArray\\u003cNSNumber\\*\\u003e\\*").matches(this) -> "List<num>"
                 Regex("u?int(32|64)?(_t)?").matches(this) -> "int"
-                Regex("(unsigned )?long long").matches(this) -> "int"
-                Regex("(unsigned )?int").matches(this) -> "int"
+                // 因为已经被pack, 所以要去掉空格
+                Regex("(unsigned)?longlong").matches(this) -> "int"
+                Regex("(unsigned)?int").matches(this) -> "int"
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NS(Mutable)?Dictionary\\*").matches(this) -> "Map"
