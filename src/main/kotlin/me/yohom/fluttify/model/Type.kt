@@ -338,7 +338,11 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 "android.widget.FrameLayout",
                 "UIView"
             )
-        } && !isAbstract
+        }
+                && !isAbstract
+                && !isObfuscated
+                && constructable
+                && EXCLUDE_TYPES.none { exType -> exType.matches(name) }
     }
 
     /**

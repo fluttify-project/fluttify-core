@@ -1,5 +1,6 @@
 package me.yohom.fluttify.task
 
+import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
@@ -29,7 +30,7 @@ open class AndroidDartInterface : FluttifyTask() {
         // 处理View, 生成AndroidView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView && !it.isObfuscated && it.constructable }
+            .filter { it.isView }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it)
                 val viewName = it.name.replace("$", ".").simpleName()
@@ -136,7 +137,7 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理View, 生成UiKitView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView && !it.isObfuscated && it.constructable }
+            .filter { it.isView }
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it)
                 val uiKitViewFile =

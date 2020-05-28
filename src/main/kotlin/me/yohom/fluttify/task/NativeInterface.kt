@@ -1,5 +1,6 @@
 package me.yohom.fluttify.task
 
+import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
@@ -130,16 +131,14 @@ open class AndroidJavaInterface : FluttifyTask() {
 
         // 生成PlatformViewFactory文件
         sdk.directLibs
-            .forEach { lib ->
-                lib.types
-                    .filter { it.isView && !it.isObfuscated && it.constructable }
-                    .forEach {
-                        val factoryOutputFile = "$packageDir/${it.name.simpleName()}Factory.java".file()
+            .flatMap { it.types }
+            .filter { it.isView }
+            .forEach {
+                val factoryOutputFile = "$packageDir/${it.name.simpleName()}Factory.java".file()
 
-                        JavaPlatformViewFactory(it)
-                            .run {
-                                factoryOutputFile.writeText(this)
-                            }
+                JavaPlatformViewFactory(it)
+                    .run {
+                        factoryOutputFile.writeText(this)
                     }
             }
     }
@@ -304,7 +303,7 @@ open class IOSObjcInterface : FluttifyTask() {
         sdk.directLibs
             .forEach { lib ->
                 lib.types
-                    .filter { it.isView && !it.isObfuscated && it.constructable }
+                    .filter { it.isView }
                     .forEach {
                         val factoryHFile = "$projectRootDir/${it.name.simpleName()}Factory.h".file()
                         val factoryMFile = "$projectRootDir/${it.name.simpleName()}Factory.m".file()
