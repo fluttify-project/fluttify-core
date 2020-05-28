@@ -110,7 +110,7 @@ import java.io.File
 //}
 private val tmpl = getResource("/tmpl/java/plugin.java.tmpl").readText()
 
-fun JavaPluginTmpl(lib: Lib, subHandlerOutputDir: String): String {
+fun JavaPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): String {
     // 包名
     val packageName = "${ext.org}.${ext.projectName}"
 
@@ -131,8 +131,8 @@ fun JavaPluginTmpl(lib: Lib, subHandlerOutputDir: String): String {
     }
 
     // 注册PlatformView
-    val registerPlatformViews = lib
-        .types
+    val registerPlatformViews = libs
+        .flatMap { it.types }
         .filter { it.isView && !it.isObfuscated }
         .joinToString("\n") { RegisterPlatformViewTmpl(it) }
 

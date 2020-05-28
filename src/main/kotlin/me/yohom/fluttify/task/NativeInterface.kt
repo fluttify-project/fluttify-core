@@ -53,81 +53,80 @@ open class AndroidJavaInterface : FluttifyTask() {
         if (sdk.directLibs.isNotEmpty()) packageDir.file().deleteRecursively()
 
         // 生成主plugin文件
-        sdk.directLibs.forEach { lib ->
-            val filteredTypes = lib.types.filterType()
-            val constructableTypes = lib.types.filterConstructable()
+        val types = sdk.directLibs.flatMap { it.types }
+        val filteredTypes = types.filterType()
+        val constructableTypes = types.filterConstructable()
 
-            val getters = filteredTypes
-                .flatMap { it.fields }
-                .filterGetters()
-                .map { HandlerGetterTmpl(it) }
+        val getters = filteredTypes
+            .flatMap { it.fields }
+            .filterGetters()
+            .map { HandlerGetterTmpl(it) }
 
-            val gettersBatch = filteredTypes
-                .flatMap { it.fields }
-                .filterGetters()
-                .map { HandlerGetterBatchTmpl(it) }
+        val gettersBatch = filteredTypes
+            .flatMap { it.fields }
+            .filterGetters()
+            .map { HandlerGetterBatchTmpl(it) }
 
-            val setters = filteredTypes
-                .flatMap { it.fields }
-                .filterSetters()
-                .map { HandlerSetterTmpl(it) }
+        val setters = filteredTypes
+            .flatMap { it.fields }
+            .filterSetters()
+            .map { HandlerSetterTmpl(it) }
 
-            val settersBatch = filteredTypes
-                .flatMap { it.fields }
-                .filterSetters(true)
-                .map { HandlerSetterBatchTmpl(it) }
+        val settersBatch = filteredTypes
+            .flatMap { it.fields }
+            .filterSetters(true)
+            .map { HandlerSetterBatchTmpl(it) }
 
-            val methods = filteredTypes
-                // callback类型不需要生成原生的handler
-                .filterNot { it.isCallback }
-                // 含有泛型的类型不需要生成handler
-                .filter { it.genericTypes.isEmpty() }
-                .flatMap { it.methods }
-                .filterMethod()
-                .map { HandlerMethodTmpl(it) }
+        val methods = filteredTypes
+            // callback类型不需要生成原生的handler
+            .filterNot { it.isCallback }
+            // 含有泛型的类型不需要生成handler
+            .filter { it.genericTypes.isEmpty() }
+            .flatMap { it.methods }
+            .filterMethod()
+            .map { HandlerMethodTmpl(it) }
 
-            val methodsBatch = filteredTypes
-                // callback类型不需要生成原生的handler
-                .filterNot { it.isCallback }
-                // 含有泛型的类型不需要生成handler
-                .filter { it.genericTypes.isEmpty() }
-                .flatMap { it.methods }
-                .filterMethod(batch = true)
-                .map { HandlerMethodBatchTmpl(it) }
+        val methodsBatch = filteredTypes
+            // callback类型不需要生成原生的handler
+            .filterNot { it.isCallback }
+            // 含有泛型的类型不需要生成handler
+            .filter { it.genericTypes.isEmpty() }
+            .flatMap { it.methods }
+            .filterMethod(batch = true)
+            .map { HandlerMethodBatchTmpl(it) }
 
-            val objectCreators = constructableTypes
-                .flatMap { HandlerObjectFactoryTmpl(it) }
+        val objectCreators = constructableTypes
+            .flatMap { HandlerObjectFactoryTmpl(it) }
 
-            val objectCreatorsBatch = constructableTypes
-                .flatMap { HandlerObjectFactoryBatchTmpl(it) }
+        val objectCreatorsBatch = constructableTypes
+            .flatMap { HandlerObjectFactoryBatchTmpl(it) }
 
-            getters
-                .union(gettersBatch)
-                .union(setters)
-                .union(settersBatch)
-                .union(methods)
-                .union(methodsBatch)
-                .union(objectCreators)
-                .union(objectCreatorsBatch)
-                .toObservable()
-                .buffer(200)
-                .blockingIterable()
-                .mapIndexed { index, subHandler -> JavaSubHandlerTmpl(index, subHandler) }
-                .forEachIndexed { index, content ->
-                    subHandlerOutputFile.replace("#__number__#", index.toString()).file().writeText(content)
-                }
+        getters
+            .union(gettersBatch)
+            .union(setters)
+            .union(settersBatch)
+            .union(methods)
+            .union(methodsBatch)
+            .union(objectCreators)
+            .union(objectCreatorsBatch)
+            .toObservable()
+            .buffer(200)
+            .blockingIterable()
+            .mapIndexed { index, subHandler -> JavaSubHandlerTmpl(index, subHandler) }
+            .forEachIndexed { index, content ->
+                subHandlerOutputFile.replace("#__number__#", index.toString()).file().writeText(content)
+            }
 
-            val subHandlerCustomTmpl = getResource("/tmpl/java/sub_handler_custom.java.tmpl").readText()
-            subHandlerCustomTmpl
-                .replace("#__package_name__#", "${ext.org}.${ext.projectName}")
-                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
-                .run { subHandlerCustomOutputFile.file().writeText(this) }
+        val subHandlerCustomTmpl = getResource("/tmpl/java/sub_handler_custom.java.tmpl").readText()
+        subHandlerCustomTmpl
+            .replace("#__package_name__#", "${ext.org}.${ext.projectName}")
+            .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+            .run { subHandlerCustomOutputFile.file().writeText(this) }
 
-            JavaPluginTmpl(lib, subHandlerOutputDir)
-                .run {
-                    pluginOutputFile.file().writeText(this)
-                }
-        }
+        JavaPluginTmpl(sdk.directLibs, subHandlerOutputDir)
+            .run {
+                pluginOutputFile.file().writeText(this)
+            }
 
         // 生成PlatformViewFactory文件
         sdk.directLibs
@@ -173,135 +172,133 @@ open class IOSObjcInterface : FluttifyTask() {
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) projectRootDir.file().deleteRecursively()
 
-        sdk.directLibs.forEach { lib ->
-            val filteredTypes = lib.types.filterType()
-            val constructableTypes = lib.types.filterConstructable()
+        val types = sdk.directLibs.flatMap { it.types }
+        val filteredTypes = types.filterType()
+        val constructableTypes = types.filterConstructable()
 
-            val getters = filteredTypes
-                .flatMap { it.fields }
-                .filterGetters()
-                .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl(it) }
+        val getters = filteredTypes
+            .flatMap { it.fields }
+            .filterGetters()
+            .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl(it) }
 
-            val topConstants = lib
-                .topLevelConstants
-                .map { HandlerTopConstantTmpl(it) }
+        val topConstants = sdk.directLibs.flatMap { it.topLevelConstants }
+            .map { HandlerTopConstantTmpl(it) }
 
-            val gettersBatch = filteredTypes
-                .flatMap { it.fields }
-                .filterGetters()
-                .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_getter_batch.HandlerGetterBatchTmpl(it) }
+        val gettersBatch = filteredTypes
+            .flatMap { it.fields }
+            .filterGetters()
+            .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_getter_batch.HandlerGetterBatchTmpl(it) }
 
-            val setters = filteredTypes
-                .flatMap { it.fields }
-                .filterSetters()
-                .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl(it) }
+        val setters = filteredTypes
+            .flatMap { it.fields }
+            .filterSetters()
+            .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTmpl(it) }
 
-            val settersBatch = filteredTypes
-                .flatMap { it.fields }
-                .filterSetters(true)
-                .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_setter_batch.HandlerSetterBatchTmpl(it) }
+        val settersBatch = filteredTypes
+            .flatMap { it.fields }
+            .filterSetters(true)
+            .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_setter_batch.HandlerSetterBatchTmpl(it) }
 
-            val functions = lib.types
-                // 暂时先不处理含有lambda的函数
-                .filter { it.isKnownFunction && it.formalParams.all { !it.variable.isLambda() } }
-                .map { it.asMethod() }
-                .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
+        val functions = types
+            // 暂时先不处理含有lambda的函数
+            .filter { it.isKnownFunction && it.formalParams.all { !it.variable.isLambda() } }
+            .map { it.asMethod() }
+            .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
 
-            val methods = filteredTypes
-                // callback类型不需要生成原生的handler
-                .filterNot { it.isCallback }
-                // 含有泛型的类型不需要生成handler
-                .filter { it.genericTypes.isEmpty() }
-                .flatMap { it.methods }
-                .filterMethod()
-                .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
+        val methods = filteredTypes
+            // callback类型不需要生成原生的handler
+            .filterNot { it.isCallback }
+            // 含有泛型的类型不需要生成handler
+            .filter { it.genericTypes.isEmpty() }
+            .flatMap { it.methods }
+            .filterMethod()
+            .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
 
-            val methodsBatch = filteredTypes
-                // callback类型不需要生成原生的handler
-                .filterNot { it.isCallback }
-                // 含有泛型的类型不需要生成handler
-                .filter { it.genericTypes.isEmpty() }
-                .flatMap { it.methods }
-                .filterMethod(batch = true)
-                .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl(it) }
+        val methodsBatch = filteredTypes
+            // callback类型不需要生成原生的handler
+            .filterNot { it.isCallback }
+            // 含有泛型的类型不需要生成handler
+            .filter { it.genericTypes.isEmpty() }
+            .flatMap { it.methods }
+            .filterMethod(batch = true)
+            .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl(it) }
 
-            val typeCasts = filteredTypes
-                .asSequence()
-                .filterNot { it.isLambda }
-                .filterNot { it.isFunction }
-                .filterNot { it.isAlias() }
-                .distinctBy { it.name }
-                .filter { !it.isInterface && !it.isEnum && !it.isStruct }
-                .map { HandlerTypeCastTmpl(it) }
-                .toList()
+        val typeCasts = filteredTypes
+            .asSequence()
+            .filterNot { it.isLambda }
+            .filterNot { it.isFunction }
+            .filterNot { it.isAlias() }
+            .distinctBy { it.name }
+            .filter { !it.isInterface && !it.isEnum && !it.isStruct }
+            .map { HandlerTypeCastTmpl(it) }
+            .toList()
 
-            val typeChecks = filteredTypes
-                .asSequence()
-                .filterNot { it.isLambda }
-                .filterNot { it.isFunction }
-                .filterNot { it.isAlias() }
-                .distinctBy { it.name }
-                .filter { !it.isInterface && !it.isEnum && !it.isStruct }
-                .map { HandlerTypeCheckTmpl(it) }
-                .toList()
+        val typeChecks = filteredTypes
+            .asSequence()
+            .filterNot { it.isLambda }
+            .filterNot { it.isFunction }
+            .filterNot { it.isAlias() }
+            .distinctBy { it.name }
+            .filter { !it.isInterface && !it.isEnum && !it.isStruct }
+            .map { HandlerTypeCheckTmpl(it) }
+            .toList()
 
-            val objectCreators = constructableTypes
-                .distinctBy { it.name }
-                .map {
-                    if (it.isStruct) {
-                        HandlerObjectFactoryStructTmpl(it)
-                    } else {
-                        HandlerObjectFactoryRefTmpl(it)
-                    }
+        val objectCreators = constructableTypes
+            .distinctBy { it.name }
+            .map {
+                if (it.isStruct) {
+                    HandlerObjectFactoryStructTmpl(it)
+                } else {
+                    HandlerObjectFactoryRefTmpl(it)
                 }
+            }
 
-            val objectCreatorsBatch = constructableTypes
-                .distinctBy { it.name }
-                .map {
-                    if (it.isStruct) {
-                        HandlerObjectFactoryStructBatchTmpl(it)
-                    } else {
-                        HandlerObjectFactoryRefBatchTmpl(it)
-                    }
+        val objectCreatorsBatch = constructableTypes
+            .distinctBy { it.name }
+            .map {
+                if (it.isStruct) {
+                    HandlerObjectFactoryStructBatchTmpl(it)
+                } else {
+                    HandlerObjectFactoryRefBatchTmpl(it)
                 }
+            }
 
-            methods
-                .union(methodsBatch)
-                .union(topConstants)
-                .union(getters)
-                .union(gettersBatch)
-                .union(setters)
-                .union(settersBatch)
-                .union(typeChecks)
-                .union(typeCasts)
-                .union(objectCreators)
-                .union(objectCreatorsBatch)
-                .union(functions)
-                .toObservable()
-                .buffer(200)
-                .blockingIterable()
-                .mapIndexed { index, subHandler -> ObjcSubHandlerTmpl(index, subHandler) }
-                .forEachIndexed { index, content ->
-                    subHandlerOutputHFile.replace("#__number__#", index.toString()).file().writeText(content[0])
-                    subHandlerOutputMFile.replace("#__number__#", index.toString()).file().writeText(content[1])
-                }
+        methods
+            .union(methodsBatch)
+            .union(topConstants)
+            .union(getters)
+            .union(gettersBatch)
+            .union(setters)
+            .union(settersBatch)
+            .union(typeChecks)
+            .union(typeCasts)
+            .union(objectCreators)
+            .union(objectCreatorsBatch)
+            .union(functions)
+            .toObservable()
+            .buffer(200)
+            .blockingIterable()
+            .mapIndexed { index, subHandler -> ObjcSubHandlerTmpl(index, subHandler) }
+            .forEachIndexed { index, content ->
+                subHandlerOutputHFile.replace("#__number__#", index.toString()).file().writeText(content[0])
+                subHandlerOutputMFile.replace("#__number__#", index.toString()).file().writeText(content[1])
+            }
 
-            val subHandlerCustomHTmpl = getResource("/tmpl/objc/sub_handler_custom.h.tmpl").readText()
-            val subHandlerCustomMTmpl = getResource("/tmpl/objc/sub_handler_custom.m.tmpl").readText()
-            subHandlerCustomHTmpl
-                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
-                .run { subHandlerCustomOutputHFile.file().writeText(this) }
-            subHandlerCustomMTmpl
-                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
-                .run { subHandlerCustomOutputMFile.file().writeText(this) }
+        val subHandlerCustomHTmpl = getResource("/tmpl/objc/sub_handler_custom.h.tmpl").readText()
+        val subHandlerCustomMTmpl = getResource("/tmpl/objc/sub_handler_custom.m.tmpl").readText()
+        subHandlerCustomHTmpl
+            .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+            .run { subHandlerCustomOutputHFile.file().writeText(this) }
+        subHandlerCustomMTmpl
+            .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+            .run { subHandlerCustomOutputMFile.file().writeText(this) }
 
-            // 生成主plugin文件
-            ObjcPluginTmpl(sdk.directLibs, subHandlerOutputDir)
-                .run {
-                    pluginHFile.file().writeText(this[0])
-                    pluginMFile.file().writeText(this[1])
-                }
-        }
+        // 生成主plugin文件
+        ObjcPluginTmpl(sdk.directLibs, subHandlerOutputDir)
+            .run {
+                pluginHFile.file().writeText(this[0])
+                pluginMFile.file().writeText(this[1])
+            }
 
         // 生成PlatformViewFactory文件
         sdk.directLibs
