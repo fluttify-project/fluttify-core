@@ -318,17 +318,11 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
-            if (types
-                    .map { it.name }
-                    .contains(ctx.ancestorOf(ObjectiveCParser.EnumDeclarationContext::class)?.identifier()?.text)
-            )
-                return
-
-            stack.peek().constants.add(ctx.identifier().text)
+            stack.peek()?.constants?.add(ctx.identifier().text)
         }
 
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
-            types.add(stack.pop())
+            if (stack.isNotEmpty()) types.add(stack.pop())
         }
         //endregion
 
@@ -441,6 +435,9 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
+            // 只接收property
+            if (!ctx.isChildOf(ObjectiveCParser.PropertyDeclarationContext::class)) return
+
             stack.peek().run {
                 val variable = Variable(
                     ctx.type().run {
@@ -529,7 +526,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun exitFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext?) {
-            if (stack.peek().typeType == TypeType.Function) types.add(stack.pop())
+            if (stack.isNotEmpty()) types.add(stack.pop())
         }
     })
 

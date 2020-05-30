@@ -145,6 +145,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("公开类型") { isPublic }
                 &&
+                must("类名不能为空") { name.isNotBlank() }
+                &&
                 must("祖宗类全部是已知类型 或 没有祖宗类") {
                     ancestorTypes.all { it.findType().isKnownType } || ancestorTypes.isEmpty()
                 }

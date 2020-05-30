@@ -27,7 +27,7 @@ fun ArgJsonableTmpl(variable: Variable): String {
             methodPrefix = "unsignedInteger"
         }
         if (variable.trueType == "long long") {
-            methodPrefix = "longLongInteger"
+            methodPrefix = "longLong"
         }
         if (variable.trueType == "uint32_t") {
             methodPrefix = "unsignedInt"
@@ -36,7 +36,7 @@ fun ArgJsonableTmpl(variable: Variable): String {
             methodPrefix = "int"
         }
         if (variable.trueType == "int64_t") {
-            methodPrefix = "longLongInteger"
+            methodPrefix = "longLong"
         }
         if (variable.trueType == "uint64_t") {
             methodPrefix = "unsignedLongLong"
