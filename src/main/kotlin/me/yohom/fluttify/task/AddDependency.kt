@@ -30,7 +30,7 @@ open class IOSAddDependency : FluttifyTask() {
         // 只有当不是远程依赖时才需要拷贝
         if (ext.ios.remote.run { "$name$version" }.isBlank()) {
             val libraryDir: File = ext.ios.libDir.file()
-            val vendorDir: File = "${project.projectDir}/output-project/${ext.projectName}/ios/Vendor/".file()
+            val vendorDir: File = "${project.projectDir}/output-project/${ext.projectName}/ios/Vendors/".file()
 
             // 添加.framework/.a到工程中
             FileUtils.copyDirectory(libraryDir, vendorDir)
