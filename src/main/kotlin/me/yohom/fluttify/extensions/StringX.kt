@@ -2,7 +2,6 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
-import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -254,16 +253,28 @@ fun TYPE_NAME.findType(): Type {
     } else {
         val result = SDK.findType(type)
         // 如果类型没有指定泛型, 却发现是泛型类, 那么把泛型类型全部替换成Object类
-        if (result.genericTypes.isNotEmpty()) {
-            result.genericTypes.replaceAll {
-                when (result.platform) {
-                    Platform.Android -> "java.lang.Object"
-                    Platform.iOS -> "NSObject*"
-                    else -> ""
+        return if (result.genericTypes.isNotEmpty()) {
+            // 要使用克隆对象, 不能影响原始的类型声明
+            val clonedContainerType = result.toJson().fromJson<Type>()
+
+            clonedContainerType.genericTypes.replaceAll { result.platform.nativeObjectType() }
+            // 声明的泛型类要在原始类型里面找, 不然克隆类型里的都是已经转换成Object类型之后的
+            val declaredGenericTypes = result.genericTypes
+
+            // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
+            clonedContainerType.methods
+                .flatMap { it.formalParams }
+                .map { it.variable }
+                // 过滤出所有用到类泛型的方法的参数 这里使用rawType代替trueType防止循环调用
+                .filter { it.rawType in declaredGenericTypes }
+                .forEach {
+                    // 全部替换成各平台的Object类型
+                    it.defineGenericType(result.platform.nativeObjectType())
                 }
-            }
+            clonedContainerType
+        } else {
+            result
         }
-        result
     }
 }
 

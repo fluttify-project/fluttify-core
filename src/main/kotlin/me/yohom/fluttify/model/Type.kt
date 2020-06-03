@@ -194,6 +194,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 (interfaces.isEmpty() || interfaces.contains("NSObject"))
                 &&
+                constructors.isEmpty()
+                &&
                 // 必须没有子类
                 !hasSubtype
     }

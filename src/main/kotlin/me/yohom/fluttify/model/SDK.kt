@@ -171,4 +171,13 @@ enum class Platform {
             Unknown -> "Object"
         }
     }
+
+    fun nativeObjectType(): String {
+        return when (this) {
+            General -> "Object"
+            iOS -> "NSObject*"
+            Android -> "java.lang.Object"
+            Unknown -> "Object"
+        }
+    }
 }
