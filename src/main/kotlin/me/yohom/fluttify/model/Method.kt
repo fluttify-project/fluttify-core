@@ -105,7 +105,7 @@ data class Method(
                     while (type.isInnerType) {
                         if (type.isPublic) {
                             result = true
-                            type = className.substringBeforeLast("$").containerType().findType()
+                            type = type.name.substringBeforeLast("$").containerType().findType()
                         } else {
                             result = false
                             break

@@ -349,7 +349,6 @@ fun OBJC_FILE.objcType(): SourceFile {
                 it.typeType = TypeType.Struct
                 it.name = ctx.identifier()?.text ?: ""
             })
-
         }
 
         override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {

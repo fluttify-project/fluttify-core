@@ -3,7 +3,7 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.extensions.downloadFrom
 import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.fromJson
-import me.yohom.fluttify.extensions.isIOSArchive
+import me.yohom.fluttify.model.Podspec
 import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.TaskAction
 import org.zeroturnaround.zip.ZipUtil
@@ -61,9 +61,8 @@ open class DownloadIOSSDK : FluttifyTask() {
 
                 // 从podspec.json文件中读取下载地址, 并下载
                 targetVersion?.run {
-                    val podspecJson = File("$this/$archiveName.podspec.json").readText().fromJson<Map<String, Any>>()
-                    val source: Map<String, String> = podspecJson["source"] as Map<String, String>
-                    source["http"]?.run {
+                    val podspec = File("$this/$archiveName.podspec.json").readText().fromJson<Podspec>()
+                    podspec.source?.http?.run {
                         val archiveFile = "${ext.ios.libDir}/ARCHIVE.zip".file()
 
                         archiveFile.downloadFrom(this)
@@ -71,8 +70,8 @@ open class DownloadIOSSDK : FluttifyTask() {
                         ZipUtil.unpack(archiveFile, archiveFile.parentFile)
                         // 如果包含vendored_frameworks, 那么需要再拿出framework
                         // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
-                        if (podspecJson.containsKey("vendored_frameworks")) {
-                            val trueFramework = "${ext.ios.libDir}/${podspecJson["vendored_frameworks"]}"
+                        if (podspec.ios?.vendoredFrameworks != null) {
+                            val trueFramework = "${ext.ios.libDir}/${podspec.ios.vendoredFrameworks}"
                             // 因为其实每个pod都会有vendored_frameworks字段, 所以这里判断一下顶层是否已经有这个framework, 如果有的
                             // 话就不需要拷贝了
                             if (!File(trueFramework).exists()) {
