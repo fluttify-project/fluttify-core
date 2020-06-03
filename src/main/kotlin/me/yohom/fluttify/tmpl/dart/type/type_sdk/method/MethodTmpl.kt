@@ -24,8 +24,9 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //  if (__result__ == null) {
 //    return null;
 //  } else {
+//    final __return__ = #__return_statement__#;
 //    #__native_object_pool__#
-//    return #__return_statement__#;
+//    return __return__;
 //  }
 //}
 private val tmpl = getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()

@@ -45,7 +45,7 @@ fun ReturnTmpl(method: Method): String {
                     val type = if (concretType.iterableLevel() != 0) {
                         concretType.genericTypes()[0]
                     } else {
-                        method.platform.objectType()
+                        "" // 这里传空字符串即可 ResultListTmpl内部会转换为对应平台的Object类型
                     }
 
                     ResultListTmpl(type, method.platform)

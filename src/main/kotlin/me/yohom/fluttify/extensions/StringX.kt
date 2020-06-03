@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -251,7 +252,18 @@ fun TYPE_NAME.findType(): Type {
         }
         clonedContainerType
     } else {
-        SDK.findType(type)
+        val result = SDK.findType(type)
+        // 如果类型没有指定泛型, 却发现是泛型类, 那么把泛型类型全部替换成Object类
+        if (result.genericTypes.isNotEmpty()) {
+            result.genericTypes.replaceAll {
+                when (result.platform) {
+                    Platform.Android -> "java.lang.Object"
+                    Platform.iOS -> "NSObject*"
+                    else -> ""
+                }
+            }
+        }
+        result
     }
 }
 
