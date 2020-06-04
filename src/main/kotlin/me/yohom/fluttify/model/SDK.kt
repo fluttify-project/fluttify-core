@@ -80,7 +80,9 @@ class SDK : IPlatform {
             get() = sdks.firstOrNull { it.platform == Platform.iOS }
 
         fun findType(fullName: String): Type {
-            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
+            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf())
+                .flatMap { it.types }
+                .filter { it.typeType != TypeType.Extension } // extension会跟宿主class重复, 这里要去掉
             val finalTypeName = (SYSTEM_TYPEDEF[fullName] ?: fullName)
             return when {
                 // 如果是空字符串那么返回NO_TYPE

@@ -344,18 +344,21 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val isView: Boolean by lazy {
-        ancestorTypes.any {
-            it in listOf(
-                "android.view.View",
-                "android.view.ViewGroup",
-                "android.widget.FrameLayout",
-                "UIView"
-            )
+        must("祖宗类中有平台View类") {
+            ancestorTypes.any {
+                it in listOf(
+                    "android.view.View",
+                    "android.view.ViewGroup",
+                    "android.widget.FrameLayout",
+                    "UIView"
+                )
+            }
         }
-                && !isAbstract
-                && !isObfuscated
-                && constructable
-                && EXCLUDE_TYPES.none { exType -> exType.matches(name) }
+                && mustNot("抽象类型") { isAbstract }
+                && mustNot("混淆类型") { isObfuscated }
+                && must("可构造") { constructable }
+                && must("是class") { typeType == TypeType.Class }
+                && must("非排除类") { EXCLUDE_TYPES.none { exType -> exType.matches(name) } }
     }
 
     /**

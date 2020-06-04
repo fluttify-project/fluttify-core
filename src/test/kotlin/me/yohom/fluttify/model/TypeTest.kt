@@ -90,4 +90,15 @@ class TypeTest : FluttifyTest() {
                 println("结果: $this")
             }
     }
+
+    @Test
+    fun isView() {
+        Tmap.iosSDK
+            .allTypes
+            .find { it.name == "QMapView" && it.typeType == TypeType.Class }
+            ?.isView
+            ?.run {
+                println("结果: $this")
+            }
+    }
 }
