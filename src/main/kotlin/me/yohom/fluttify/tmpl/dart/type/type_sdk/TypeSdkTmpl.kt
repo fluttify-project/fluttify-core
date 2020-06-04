@@ -64,8 +64,8 @@ fun TypeSdkTmpl(type: Type): String {
     type.mergeWithCategory()
 
     val currentPackage = ext.projectName
-    val className = if (type.genericTypes.isNotEmpty()) {
-        "${type.name.toDartType()}<${type.genericTypes.joinToString()}>"
+    val className = if (type.declaredGenericTypes.isNotEmpty()) {
+        "${type.name.toDartType()}<${type.declaredGenericTypes.joinToString()}>"
     } else {
         type.name.toDartType()
     }

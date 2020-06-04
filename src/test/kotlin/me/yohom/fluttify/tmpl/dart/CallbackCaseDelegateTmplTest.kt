@@ -1,31 +1,21 @@
 package me.yohom.fluttify.tmpl.dart
 
+import me.yohom.fluttify.FluttifyExtension
+import me.yohom.fluttify.Tmap
+import me.yohom.fluttify.ext
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 import org.junit.jupiter.api.Test
 
-// todo 测试优先级最高的应该是模板类和过滤方法
 class CallbackCaseDelegateTmplTest {
 
     @Test
     fun callbackCase() {
-//        val callerMethod = Method(
-//            "String",
-//            "test",
-//            listOf(),
-//            false,
-//            false,
-//            true,
-//            "Test"
-//        )
-//        val callbackMethod = Method(
-//            "String",
-//            "testCallback",
-//            listOf(),
-//            false,
-//            false,
-//            true,
-//            "Test"
-//        )
-//        val result = CallbackCaseTmpl(callerMethod, callbackMethod).callbackCase()
-//        println(result)
+        ext = FluttifyExtension(null)
+        val type = Tmap.androidSDK
+            .allTypes
+            .find { it.name == "com.tencent.tencentmap.mapsdk.maps.TencentMapNavi" }
+            ?.methods
+            ?.find { it.name == "calculateZoomToSpanLevelAsync" }
+        MethodTmpl(type!!)
     }
 }

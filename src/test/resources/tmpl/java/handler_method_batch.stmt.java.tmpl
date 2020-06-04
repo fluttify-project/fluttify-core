@@ -1,0 +1,24 @@
+// method
+put("#__method_name__#_batch", (__argsBatch__, __methodResult__) -> {
+    List<#__result_type__#> __resultList__ = new ArrayList<>();
+
+    for (int __i__ = 0; __i__ < ((List<Map<String, Object>>) __argsBatch__).size(); __i__++) {
+        Map<String, Object> __args__ = ((List<Map<String, Object>>) __argsBatch__).get(__i__);
+
+        // args
+        #__args__#
+
+        // ref
+        #__ref__#
+
+        // invoke native method
+        #__invoke__#
+
+        // convert result to jsonable result
+        #__result__#
+
+        __resultList__.add(jsonableResult);
+    }
+
+    __methodResult__.success(__resultList__);
+});

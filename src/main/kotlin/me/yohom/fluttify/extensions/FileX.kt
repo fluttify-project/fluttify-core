@@ -195,7 +195,7 @@ fun JAVA_FILE.javaType(): SourceFile {
             it.isAbstract = isAbstract
             it.isInnerType = isInnerType
             it.isStaticType = isStaticType
-            it.genericTypes.addAll(genericTypes)
+            it.declaredGenericTypes.addAll(genericTypes)
             it.constructors = constructors
             it.interfaces = interfaces
             it.name = "$packageName.$simpleName"

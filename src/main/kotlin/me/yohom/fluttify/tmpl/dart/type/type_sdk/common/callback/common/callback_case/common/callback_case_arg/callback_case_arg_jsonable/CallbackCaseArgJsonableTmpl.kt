@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Parameter
 
 //args['#__arg_name__#']
-private val tmpl = getResource("/tmpl/dart/callback_case_arg_jsonable.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_jsonable.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgJsonableTmpl(param: Parameter): String {
     return tmpl

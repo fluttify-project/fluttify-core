@@ -1,6 +1,5 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
@@ -82,7 +81,7 @@ open class AndroidJavaInterface : FluttifyTask() {
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
             // 含有泛型的类型不需要生成handler
-            .filter { it.genericTypes.isEmpty() }
+            .filter { it.declaredGenericTypes.isEmpty() }
             .flatMap { it.methods }
             .filterMethod()
             .map { HandlerMethodTmpl(it) }
@@ -91,7 +90,7 @@ open class AndroidJavaInterface : FluttifyTask() {
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
             // 含有泛型的类型不需要生成handler
-            .filter { it.genericTypes.isEmpty() }
+            .filter { it.declaredGenericTypes.isEmpty() }
             .flatMap { it.methods }
             .filterMethod(batch = true)
             .map { HandlerMethodBatchTmpl(it) }
@@ -208,7 +207,7 @@ open class IOSObjcInterface : FluttifyTask() {
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
             // 含有泛型的类型不需要生成handler
-            .filter { it.genericTypes.isEmpty() }
+            .filter { it.declaredGenericTypes.isEmpty() }
             .flatMap { it.methods }
             .filterMethod()
             .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method.HandlerMethodTmpl(it) }
@@ -217,7 +216,7 @@ open class IOSObjcInterface : FluttifyTask() {
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
             // 含有泛型的类型不需要生成handler
-            .filter { it.genericTypes.isEmpty() }
+            .filter { it.declaredGenericTypes.isEmpty() }
             .flatMap { it.methods }
             .filterMethod(batch = true)
             .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl(it) }

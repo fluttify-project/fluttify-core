@@ -30,8 +30,8 @@ private val tmpl = getResource("/tmpl/dart/type_interface.dart.tmpl").readText()
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName
-    val typeName = if (type.genericTypes.isNotEmpty()) {
-        "${type.name.toDartType()}<${type.genericTypes.joinToString()}>"
+    val typeName = if (type.declaredGenericTypes.isNotEmpty()) {
+        "${type.name.toDartType()}<${type.declaredGenericTypes.joinToString()}>"
     } else {
         type.name.toDartType()
     }

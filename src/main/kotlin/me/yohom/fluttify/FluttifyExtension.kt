@@ -4,7 +4,7 @@ import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
-open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
+open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * 项目名称
      */
@@ -48,18 +48,18 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * android端配置
      */
-    var android: PlatformSpec = objectFactory.newInstance(PlatformSpec::class.java)
+    var android: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
-    fun android(action: Action<PlatformSpec>) {
+    fun android(action: Action<PlatformSpec?>) {
         action.execute(android)
     }
 
     /**
      * ios端配置
      */
-    var ios: PlatformSpec = objectFactory.newInstance(PlatformSpec::class.java)
+    var ios: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
-    fun ios(action: Action<PlatformSpec>) {
+    fun ios(action: Action<PlatformSpec?>) {
         action.execute(ios)
     }
 
@@ -90,7 +90,7 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     }
 }
 
-open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
+open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * library所在路径
      */
@@ -116,7 +116,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 远程依赖配置
      */
-    val remote: Remote = objectFactory.newInstance(Remote::class.java)
+    val remote: Remote = objectFactory?.newInstance(Remote::class.java) ?: Remote()
 
     fun remote(action: Action<Remote>) {
         action.execute(remote)
@@ -125,7 +125,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 本地依赖配置
      */
-    val local: Local = objectFactory.newInstance(Local::class.java)
+    val local: Local = objectFactory?.newInstance(Local::class.java) ?: Local()
 
     fun local(action: Action<Local>) {
         action.execute(local)
@@ -134,7 +134,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 排除的成员
      */
-    val exclude: Exclude = objectFactory.newInstance(Exclude::class.java)
+    val exclude: Exclude = objectFactory?.newInstance(Exclude::class.java) ?: Exclude()
 
     fun exclude(action: Action<Exclude>) {
         action.execute(exclude)

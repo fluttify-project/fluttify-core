@@ -6,7 +6,9 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
 //final result = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
-private val tmpl = getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText()
+private val tmpl by lazy {
+    getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText()
+}
 
 fun InvokeTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {

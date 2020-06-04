@@ -1,0 +1,15 @@
+@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
+    // print log
+    if (enableLog) {
+        NSLog(@"#__method_name__#");
+    }
+
+    // args
+    #__args__#
+
+    // ref
+    #__ref__#
+
+    ref.#__setter__# = #__field_value__#;
+    methodResult(@"success");
+},

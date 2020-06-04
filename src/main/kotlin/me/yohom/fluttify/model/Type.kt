@@ -19,7 +19,12 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     /**
      * 泛型类型
      */
-    var genericTypes: MutableList<TYPE_NAME> = mutableListOf()
+    var declaredGenericTypes: MutableList<TYPE_NAME> = mutableListOf()
+
+    /**
+     * 泛型类型
+     */
+    var definedGenericTypes: MutableList<TYPE_NAME> = mutableListOf()
 
     /**
      * 类/接口/枚举/lambda
@@ -152,7 +157,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 }
                 &&
                 // 换言之只支持接口的泛型
-                mustNot("不是接口且含有泛型") { !isInterface && genericTypes.isNotEmpty() }
+                mustNot("不是接口且含有泛型") { !isInterface && declaredGenericTypes.isNotEmpty() }
                 &&
                 mustNot("混淆类型") { isObfuscated }
                 &&
@@ -404,7 +409,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$genericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {

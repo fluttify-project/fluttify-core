@@ -47,3 +47,8 @@ object Tim {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/tim/jr/tim_fluttify.ios.json".file().readText().fromJson<SDK>()
 }
 
+object Tmap {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_map/jr/tmap_map_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_map/jr/tmap_map_fluttify.ios.json".file().readText().fromJson<SDK>()
+}
+

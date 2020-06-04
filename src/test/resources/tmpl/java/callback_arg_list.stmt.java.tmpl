@@ -1,0 +1,6 @@
+// list arg
+List<Integer> arg#__arg_name__# = new ArrayList<>();
+for (#__type_name__# item : #__arg_name__#) {
+    getHEAP().put(System.identityHashCode(item), item);
+    arg#__arg_name__#.add(System.identityHashCode(item));
+}

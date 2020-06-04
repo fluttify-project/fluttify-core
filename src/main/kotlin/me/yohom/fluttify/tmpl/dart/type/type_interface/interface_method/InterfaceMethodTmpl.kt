@@ -27,7 +27,7 @@ fun InterfaceMethodTmpl(method: Method): String {
             //   void b(T t) {}
             // }
             // 的情况
-            .filter { it.variable.trueType !in method.className.findType().genericTypes }
+            .filter { it.variable.trueType !in method.className.findType().declaredGenericTypes }
             .joinToString("\n") {
                 if (it.variable.isCollection()) {
                     "kNativeObjectPool.addAll(${it.variable.name});"

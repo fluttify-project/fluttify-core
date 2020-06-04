@@ -23,7 +23,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 //    return typedResult;
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText() }
 
 /**
  * 方法批处理

@@ -17,7 +17,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 private val tmpl = getResource("/tmpl/java/callback.stmt.java.tmpl").readText()
 
 fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
-    val className = "${callbackType.name.replace("$", ".")}${callbackType.genericTypes.joinToStringX(prefix = "<", suffix = ">")}"
+    val className = "${callbackType.name.replace("$", ".")}${callbackType.declaredGenericTypes.joinToStringX(prefix = "<", suffix = ">")}"
     val callbackChannel = callerMethod.nameWithClass()
     val callbackMethods = callbackType.methods.joinToString("\n") { CallbackMethodTmpl(it) }
     return tmpl

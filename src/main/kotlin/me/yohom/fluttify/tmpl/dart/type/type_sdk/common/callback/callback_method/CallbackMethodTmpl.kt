@@ -17,7 +17,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //          break;
 //      }
 //    });
-private val tmpl = getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText() }
 
 fun CallbackMethodTmpl(callerMethod: Method): String {
     // 如果方法参数中没有回调类型的参数, 那么直接返回空字符串

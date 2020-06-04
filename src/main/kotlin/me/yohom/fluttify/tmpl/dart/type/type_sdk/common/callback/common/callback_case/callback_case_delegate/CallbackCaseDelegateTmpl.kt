@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //    // 调用回调方法
 //  #__callback_handler__#(#__callback_args__#);
 //  break;
-private val tmpl = getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseDelegateTmpl(callbackMethod: Method, callbackObject: String): String {
     val callbackMethodName = callbackMethod.signature

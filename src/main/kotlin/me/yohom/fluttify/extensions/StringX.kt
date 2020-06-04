@@ -229,47 +229,41 @@ fun TYPE_NAME.findType(): Type {
         // 说明有泛型, 合成一个新的类
         val containerType = SDK.findType(type.containerType())
 
-        // 要使用克隆对象, 不能影响原始的类型声明
+        // 要使用克隆对象, 因为定义的泛型类可能不止一个, 如果直接在原对象上操作的话, 那么后续的泛型类可能会受影响
         val clonedContainerType = containerType.toJson().fromJson<Type>()
-        val declaredGenericTypes = clonedContainerType.genericTypes;
+
         val definedGenericTypes = type.genericTypes().toMutableList()
-        if (definedGenericTypes.isNotEmpty()) {
-            // 泛型列表换成定义的泛型
-            clonedContainerType.genericTypes = definedGenericTypes
-            // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
-            clonedContainerType.methods
-                .flatMap { it.formalParams }
-                .map { it.variable }
-                // 过滤出所有用到类泛型的方法的参数 这里使用rawType代替trueType防止循环调用
-                .filter { it.rawType in declaredGenericTypes }
-                .forEach {
-                    // 找出当前声明泛型在泛型列表中的位置
-                    val genericTypePosition = declaredGenericTypes.indexOf(it.rawType)
-                    // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
-                    it.defineGenericType(definedGenericTypes[genericTypePosition])
-                }
-        }
+        clonedContainerType.definedGenericTypes = definedGenericTypes
+        // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
+        clonedContainerType.methods
+            .flatMap { it.formalParams }
+            .map { it.variable }
+            // 过滤出所有用到类泛型的方法的参数 这里使用rawType代替trueType防止循环调用
+            .filter { it.rawType in clonedContainerType.declaredGenericTypes }
+            .forEach {
+                // 找出当前声明泛型在泛型列表中的位置
+                val genericTypePosition = clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
+                // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
+                it.defineGenericType(definedGenericTypes[genericTypePosition])
+            }
         clonedContainerType
     } else {
         val result = SDK.findType(type)
+
         // 如果类型没有指定泛型, 却发现是泛型类, 那么把泛型类型全部替换成Object类
-        return if (result.genericTypes.isNotEmpty()) {
-            // 要使用克隆对象, 不能影响原始的类型声明
+        return if (result.declaredGenericTypes.isNotEmpty()) {
             val clonedContainerType = result.toJson().fromJson<Type>()
 
-            clonedContainerType.genericTypes.replaceAll { result.platform.nativeObjectType() }
-            // 声明的泛型类要在原始类型里面找, 不然克隆类型里的都是已经转换成Object类型之后的
-            val declaredGenericTypes = result.genericTypes
-
+            clonedContainerType.definedGenericTypes.replaceAll { result.platform.nativeObjectType() }
             // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
             clonedContainerType.methods
                 .flatMap { it.formalParams }
                 .map { it.variable }
                 // 过滤出所有用到类泛型的方法的参数 这里使用rawType代替trueType防止循环调用
-                .filter { it.rawType in declaredGenericTypes }
+                .filter { it.rawType in clonedContainerType.declaredGenericTypes }
                 .forEach {
                     // 全部替换成各平台的Object类型
-                    it.defineGenericType(result.platform.nativeObjectType())
+                    it.defineGenericType(clonedContainerType.platform.nativeObjectType())
                 }
             clonedContainerType
         } else {

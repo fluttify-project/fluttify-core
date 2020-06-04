@@ -29,7 +29,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //    return __return__;
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/method.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/method.mtd.dart.tmpl").readText() }
 
 fun MethodTmpl(method: Method): String {
     val static = if (method.isStatic) "static " else ""
@@ -49,8 +49,8 @@ fun MethodTmpl(method: Method): String {
             }
         }
     val log = LogTmpl(method)
-    val invoke = InvokeTmpl(method)
     val callback = CallbackMethodTmpl(method)
+    val invoke = InvokeTmpl(method)
     val returnStatement = ReturnTmpl(method)
     val nativeObjectPool = method.returnType.run {
         when {

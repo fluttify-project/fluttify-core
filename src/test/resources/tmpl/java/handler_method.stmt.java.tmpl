@@ -1,0 +1,21 @@
+// method
+put("#__method_name__#", (__args__, __methodResult__) -> {
+    // args
+    #__args__#
+
+    // ref
+    #__ref__#
+
+    // print log
+    if (getEnableLog()) {
+        #__log__#
+    }
+
+    // invoke native method
+    #__invoke__#
+
+    // convert result to jsonable result
+    #__result__#
+
+    __methodResult__.success(jsonableResult);
+});

@@ -1,0 +1,12 @@
+@"RefClass::as#__type_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
+    // 引用对象
+    NSNumber* refId = ((NSDictionary<NSString*, NSNumber*>*) args)[@"refId"];
+    id ref = HEAP[refId];
+
+    // 转型
+    ref = (#__type_name__# *) ref;
+    // 放回HEAP
+    HEAP[refId] = ref;
+
+    methodResult(refId);
+},

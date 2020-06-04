@@ -59,7 +59,7 @@ data class Method(
                 || must("返回类型是void") { returnType.isVoid() }
                 || must("返回类型是原始类型指针类型") { returnType.isPrimitivePointerType() }
                 || must("返回类型关联类型都通过过滤") { !returnType.isMap() && returnType.allTypes().all { it.filter } }
-                || must("返回类型是所在类声明泛型") { returnType in className.findType().genericTypes })
+                || must("返回类型是所在类声明泛型") { returnType in className.findType().declaredGenericTypes })
                 &&
                 mustNot("返回类型是混淆类") { returnType.isObfuscated() }
                 &&
@@ -79,7 +79,7 @@ data class Method(
                     formalParams.all {
                         it.variable.trueType.jsonable() ||
                                 it.variable.allTypes().all { it.filter } ||
-                                it.variable.trueType in className.findType().genericTypes
+                                it.variable.trueType in className.findType().declaredGenericTypes
                     }
                 }
                 &&
@@ -122,7 +122,7 @@ data class Method(
                 must("形参类型全部都是已知类型") {
                     formalParams.all {
                         it.variable.isKnownType()
-                                || it.variable.trueType in className.findType().genericTypes
+                                || it.variable.trueType in className.findType().declaredGenericTypes
                     }
                 }
                 &&

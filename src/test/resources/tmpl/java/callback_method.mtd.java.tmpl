@@ -1,0 +1,26 @@
+@Override
+public #__return_type__# #__callback_method__#(#__formal_params__#) {
+    // print log
+    if (getEnableLog()) {
+        #__log__#
+    }
+
+    // convert to jsonable data
+    #__local_args__#
+
+    // call dart method
+    handler.post(new Runnable() {
+        @Override
+        public void run() {
+            callbackChannel.invokeMethod(
+                "Callback::#__callback_method_name__#",
+                new HashMap<String, Object>() {{
+                    #__callback_args__#
+                }}
+            );
+        }
+    });
+
+    // method result
+    #__return_stmt__#
+}

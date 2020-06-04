@@ -105,7 +105,7 @@ data class Variable(
     }
 
     fun isGenericType(): Boolean {
-        return trueType.findType().genericTypes.isNotEmpty()
+        return trueType.findType().declaredGenericTypes.isNotEmpty()
     }
 
     fun containerType(): Type {
