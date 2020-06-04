@@ -134,7 +134,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
 
-    val methodHandlers = viewType
+    val methodHandlers = viewType.mergeWithCategory()
         .methods
         .filterMethod()
         .map { HandlerMethodTmpl(it) }

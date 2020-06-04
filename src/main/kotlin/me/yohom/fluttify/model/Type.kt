@@ -402,13 +402,14 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     /**
      * 从Category合并到Class里去
      */
-    fun mergeWithCategory() {
+    fun mergeWithCategory(): Type {
         val categories = SDK.findExtensions(name)
         categories.forEach {
             fields.addAll(it.fields)
             methods.addAll(it.methods)
             interfaces.addAll(it.interfaces)
         }
+        return this
     }
 
     override fun toString(): String {
