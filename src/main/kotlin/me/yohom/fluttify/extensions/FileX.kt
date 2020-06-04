@@ -342,18 +342,18 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
         //endregion
 
-        //region 结构体
-        override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-            stack.push(Type().also {
-                it.platform = Platform.iOS
-                it.typeType = TypeType.Struct
-                it.name = ctx.identifier()?.text ?: ""
-            })
-        }
-
-        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-            types.add(stack.pop())
-        }
+        //region 结构体 已经在typedef上下文中处理
+//        override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+//            stack.push(Type().also {
+//                it.platform = Platform.iOS
+//                it.typeType = TypeType.Struct
+//                it.name = ctx.identifier()?.text ?: ""
+//            })
+//        }
+//
+//        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+//            types.add(stack.pop())
+//        }
         //endregion
 
         override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
@@ -408,7 +408,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                 // 结构体
                 else if (returnType.contains("struct")) {
                     stack.push(Type().also {
-                        it.typeType == TypeType.Struct
+                        it.platform = Platform.iOS
+                        it.typeType = TypeType.Struct
                         it.name = typeName
                     })
                 }
@@ -434,8 +435,10 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
-            // 只接收property
-            if (!ctx.isChildOf(ObjectiveCParser.PropertyDeclarationContext::class)) return
+            // 只接收property和结构体
+            if (!ctx.isChildOf(ObjectiveCParser.PropertyDeclarationContext::class)
+                &&
+                !ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)) return
 
             stack.peek().run {
                 val variable = Variable(
