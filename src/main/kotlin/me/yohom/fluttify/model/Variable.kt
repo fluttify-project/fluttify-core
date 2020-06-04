@@ -83,7 +83,7 @@ data class Variable(
     }
 
     fun isAbstract(): Boolean {
-        return trueType.containerType().findType().isAbstract
+        return trueType.allTypes().any { it.isAbstract }
     }
 
     fun isConcret(): Boolean {
@@ -91,6 +91,7 @@ data class Variable(
     }
 
     fun hasConcretSubtype(): Boolean {
+        // TODO 这里可能要考虑一下泛型的情况
         return trueType.findType().firstConcretSubtype != null
     }
 

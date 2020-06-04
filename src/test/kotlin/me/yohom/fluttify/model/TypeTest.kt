@@ -1,11 +1,9 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.Amap
-import me.yohom.fluttify.BaiduAsr
-import me.yohom.fluttify.Bmap
+import me.yohom.fluttify.*
 import org.junit.jupiter.api.Test
 
-class TypeTest {
+class TypeTest : FluttifyTest() {
 
     @Test
     fun constructable() {
@@ -44,16 +42,13 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        BaiduAsr.androidAsrSDK
-            .libs[1]
-            .types
-            .find { it.name == "com.baidu.speech.EventManager" }
-//            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
-//            .find { it.name == "com.amap.api.maps.AMap.InfoWindowAdapter" }
+        Tmap.androidSDK
+            .allTypes
+            .find { it.name == "com.tencent.tencentmap.mapsdk.maps.model.IOverlay" }
             ?.firstConcretSubtype
             ?.run {
                 println("结果: $this")
-            }
+            } ?: println("没有子类")
     }
 
     @Test

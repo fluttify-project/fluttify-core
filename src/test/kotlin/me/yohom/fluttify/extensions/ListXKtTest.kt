@@ -1,13 +1,15 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.Amap
+import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.Tmap
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Variable
 import org.junit.jupiter.api.Test
 
-class ListXKtTest {
+class ListXKtTest : FluttifyTest() {
 
     @Test
     fun filterMethod() {
@@ -20,7 +22,7 @@ class ListXKtTest {
 //            ?.filterMethod()
 //            ?.apply { println("after:$this") }
 
-//        val sdk = "/Users/yohom/Github/Me/All/fluttify/3rd_party/xftts/jr/xftts_fluttify.ios.json"
+//        val sdk = "/Users/yohom/Github/Me/All/fluttify/3rd.party/xftts/jr/xftts.fluttify.ios.json"
 //            .file()
 //            .readText()
 //            .fromJson<SDK>()
@@ -36,9 +38,16 @@ class ListXKtTest {
 
     @Test
     fun filterGetters() {
-        Amap.iosSearchSDK.libs[1]
-            .types.apply { println("types:$this") }
-            .find { it.name == "AMapPOISearchResponse" }
+//        Amap.iosSearchSDK.libs[1]
+//            .types.apply { println("types:$this") }
+//            .find { it.name == "AMapPOISearchResponse" }
+//            ?.fields
+//            ?.apply { println("before:$this") }
+//            ?.filterGetters()
+//            ?.apply { println("after:$this") }
+        Tmap.androidSDK
+            .allTypes
+            .find { it.name == "com.tencent.tencentmap.mapsdk.maps.model.CamerParameter" }
             ?.fields
             ?.apply { println("before:$this") }
             ?.filterGetters()
