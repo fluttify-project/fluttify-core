@@ -27,6 +27,7 @@ data class Variable(
             val origin = typeName.findType().name
             val alias = typeName.findType().aliasOf
             return ext.ios.overrideElements[id]?.fromJson<Variable>()?.typeName
+                ?: ext.android.overrideElements[id]?.fromJson<Variable>()?.typeName
                 ?: alias?.run { typeName.replace(origin, this) }
                 ?: typeName
         }

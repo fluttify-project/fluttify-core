@@ -16,9 +16,14 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
-//// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
+//#__foundation__#
+//
+//#__sub_class__#
+//
 //mixin #__interface_type__# on #__super_mixins__# {
 //  #__constants__#
+//
+//  #__sub_instance__#
 //
 //  #__getters__#
 //
@@ -38,11 +43,27 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     val constants = type.fields.filterConstants()
 
-    val allSuperType = type.interfaces.union(listOf(type.superClass))
+    val allSuperType = type.ancestorTypes
+        .reversed()
         .filter { it.isNotBlank() }
         .filter { it.findType().platform != Platform.Unknown }
         .filter { !it.isObfuscated() }
-    val superClass = if (allSuperType.isEmpty()) type.platform.objectType() else allSuperType.joinToString()
+        // 去掉NSObject的继承, 下面会添加回去的, 由于objc的class和protocol不在一个命名空间内, 所以存在class NSObject和protocol NSObject
+        // 在dart端不太好处理
+        .filter { it != "NSObject" }
+    val subSuperMixins = if (allSuperType.isEmpty()) "" else "${allSuperType.joinToString().toDartType()}, "
+    val superMixins = if (allSuperType.isEmpty()) {
+        type.platform.objectType()
+    } else {
+        allSuperType.joinToString().toDartType()
+    }
+
+    val subclass = if (!type.isCallback)
+        "class _${typeName}_SUB extends ${type.platform.objectType()} with $subSuperMixins$typeName {}"
+    else
+        ""
+    // 给接口类型提供一个可供实例化的子类, mixin需要继承各平台Object类型, 并实现接口类
+    val subInstance = if (!type.isCallback) "static $typeName subInstance() => _${typeName}_SUB();" else ""
 
     val methods = type.methods
         .filterMethod()
@@ -65,9 +86,14 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     return tmpl
         .replace("#__current_package__#", currentPackage)
-        .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+        .replaceParagraph(
+            "#__foundation__#",
+            ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+        .replace("#__sub_class__#", subclass)
+        .replace("#__sub_instance__#", subInstance)
         .replace("#__interface_type__#", typeName)
-        .replace("#__super_mixins__#", superClass.toDartType())
+        .replace("#__sub_super_mixins__#", subSuperMixins)
+        .replace("#__super_mixins__#", superMixins)
         .replaceParagraph(
             "#__constants__#",
             constants.joinToString("\n") { "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value};" })
