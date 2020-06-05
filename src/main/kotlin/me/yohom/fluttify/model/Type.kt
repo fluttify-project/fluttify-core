@@ -260,7 +260,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                         it.formalParams.any {
                             it.variable.containerType().constructors.any { it.formalParams.any { it.variable.trueType == name } }
                         }
-                    }
+                    } && constructors.isNotEmpty()
                 }
                 &&
                 must("是已知类型或jsonable类型") { isKnownType }
