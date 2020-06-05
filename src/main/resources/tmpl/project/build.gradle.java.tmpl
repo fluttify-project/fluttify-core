@@ -47,11 +47,18 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        merge 'res/values/values.xml'
+        merge 'AndroidManifest.xml'
+        merge 'R.txt'
+        merge 'classes.jar'
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     compileOnly rootProject.findProject(":foundation_fluttify")
     // flutter plugin dependency
     #__plugin_dependency__#
