@@ -290,6 +290,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "BOOL",
         "bool",
         "unsigned long long",
+        "long long",
         "GLuint",
         "CGFloat"
     )) or (this in SYSTEM_TYPEDEF.keys && this !in SYSTEM_POINTER_TYPEDEF.keys) or findType().run { isEnum or isAlias() }

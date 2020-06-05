@@ -343,17 +343,22 @@ fun OBJC_FILE.objcType(): SourceFile {
         //endregion
 
         //region 结构体 已经在typedef上下文中处理
-//        override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-//            stack.push(Type().also {
-//                it.platform = Platform.iOS
-//                it.typeType = TypeType.Struct
-//                it.name = ctx.identifier()?.text ?: ""
-//            })
-//        }
-//
-//        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-//            types.add(stack.pop())
-//        }
+        override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+            // 如果结构体没有内容则略过, 这种情况可以是`typedef struct MACoordinateRegion MACoordinateRegion;`
+            if (ctx.fieldDeclaration().isEmpty()) return
+            stack.push(Type().also {
+                it.platform = Platform.iOS
+                it.typeType = TypeType.Struct
+                // 结构体名字, 从结构体定时时获取, 如果没有则向上找typedef, 获取typedef后的名称
+                it.name = ctx.identifier()?.text
+                    ?: ctx.ancestorOf(ObjectiveCParser.TypedefDeclarationContext::class)?.typeName()
+                            ?: ""
+            })
+        }
+
+        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+            if (stack.isNotEmpty()) types.add(stack.pop())
+        }
         //endregion
 
         override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
@@ -407,11 +412,12 @@ fun OBJC_FILE.objcType(): SourceFile {
                 }
                 // 结构体
                 else if (returnType.contains("struct")) {
-                    stack.push(Type().also {
-                        it.platform = Platform.iOS
-                        it.typeType = TypeType.Struct
-                        it.name = typeName
-                    })
+                    // 结构体统一在struct里处理
+//                    stack.push(Type().also {
+//                        it.platform = Platform.iOS
+//                        it.typeType = TypeType.Struct
+//                        it.name = typeName
+//                    })
                 }
                 // 别名不包含^, 说明不是函数别名
                 else if (!typeName.contains("^")) {
@@ -431,16 +437,17 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun exitTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
-            types.add(stack.pop())
+            if (stack.isNotEmpty()) types.add(stack.pop())
         }
 
         override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
             // 只接收property和结构体
             if (!ctx.isChildOf(ObjectiveCParser.PropertyDeclarationContext::class)
                 &&
-                !ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)) return
+                !ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)
+            ) return
 
-            stack.peek().run {
+            stack.peekOrNull()?.run {
                 val variable = Variable(
                     ctx.type().run {
                         when {
