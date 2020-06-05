@@ -256,7 +256,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
                 mustNot("构造器循环构造") {
-                    constructors.any {
+                    constructors.all {
                         it.formalParams.any {
                             it.variable.containerType().constructors.any { it.formalParams.any { it.variable.trueType == name } }
                         }
