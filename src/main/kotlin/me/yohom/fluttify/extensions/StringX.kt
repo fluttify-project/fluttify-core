@@ -610,35 +610,27 @@ fun String.stripQuotes(): String {
     return replace("\"", "").replace("'", "")
 }
 
-fun String.isAndroidArchive(): Boolean {
-    return endsWith("jar") || endsWith("aar")
-}
-
-fun String.isIOSArchive(): Boolean {
-    return endsWith("framework")
-}
-
 /**
  * 为一些类限定词增加前后的空格, 这么做的原因是类限定词会跟类名粘在一起, 所以要加下空格
  */
 fun String.objcSpecifierExpand(): String {
     return replace("__kindof", " __kindof ")
-        .replace("_Nullable", " _Nullable ")
-        .replace("_Nonnull", " _Nonnull ")
+        .replace("_Nullable", "")
+        .replace("_Nonnull", "")
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
         .replace("unsignedlonglong", "unsigned long long")
 }
-
-/**
- * 为一些类限定词增加前后的空格, 这么做的原因是类限定词会跟类名粘在一起, 所以要加下空格
- */
-fun String.removeObjcSpecifier(): String {
-    return replace("__kindof", "")
-        .replace("_Nullable", "")
-        .replace("_Nonnull", "")
-        .pack()
-}
+//
+///**
+// * 在dart中, 要去掉这些限定词
+// */
+//fun String.removeObjcSpecifier(): String {
+//    return replace("__kindof", "")
+//        .replace("_Nullable", "")
+//        .replace("_Nonnull", "")
+//        .pack()
+//}
 
 fun String.isDynamic(): Boolean {
     return this == "dynamic"
