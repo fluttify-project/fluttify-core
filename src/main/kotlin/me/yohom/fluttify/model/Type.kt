@@ -203,6 +203,14 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 // 必须没有子类
                 !hasSubtype
+                &&
+                // 不在手动配置的非回调类列表内
+                when (platform) {
+                    Platform.General -> true
+                    Platform.iOS -> ext.ios.noncallbackClasses.none { Regex(it).matches(name) }
+                    Platform.Android -> ext.android.noncallbackClasses.none { Regex(it).matches(name) }
+                    Platform.Unknown -> true
+                }
     }
 
     @delegate:Transient

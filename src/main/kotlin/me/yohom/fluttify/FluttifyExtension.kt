@@ -104,6 +104,13 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     var callbackClasses = listOf<String>()
 
     /**
+     * 手动指定的非回调类
+     *
+     * 会存在一些情况, 本身是接口且没有子类, 但不是回调类的情况
+     */
+    var noncallbackClasses = listOf<String>()
+
+    /**
      * 元素替换
      */
     var overrideElements: Map<Int, String> = mapOf()
