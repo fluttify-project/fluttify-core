@@ -93,6 +93,9 @@ private val hTmpl = getResource("/tmpl/objc/platform_view_factory.h.tmpl").readT
 private val mTmpl = getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
 
 fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
+    // 使用前先合并Category
+    viewType.mergeWithCategory()
+
     // 先尝试导入framework里的头文件, 如果没有framework而是.h+.a的情况, 那么就导入所有的.h文件
     val imports = ext.ios.libDir
         .file()
@@ -124,6 +127,11 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
 
     val plugin = ext.projectName.underscore2Camel()
 
+    val methodHandlers = viewType
+        .methods
+        .filterMethod()
+        .map { HandlerMethodTmpl(it) }
+
     val getters = viewType
         .fields
         .filterGetters()
@@ -133,11 +141,6 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .fields
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
-
-    val methodHandlers = viewType.mergeWithCategory()
-        .methods
-        .filterMethod()
-        .map { HandlerMethodTmpl(it) }
 
     val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
