@@ -6,6 +6,7 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
@@ -31,7 +32,16 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //
 //  #__interface_methods__#
 //}
+//
+//#__type_interface_batch__#
+
+//extension #__interface_type__#_Batch on List<#__type_name__#> {
+//  //region methods
+//  #__methods_batch__#
+//  //endregion
+//}
 private val tmpl = getResource("/tmpl/dart/type_interface.dart.tmpl").readText()
+private val batchTmpl = getResource("/tmpl/dart/type_interface_batch.dart.tmpl").readText()
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName
@@ -84,6 +94,10 @@ fun TypeInterfaceTmpl(type: Type): String {
         .filterSetters()
         .map { SetterTmpl(it) }
 
+    val methodsBatch = type.methods
+        .filterMethod(true)
+        .map { InterfaceMethodBatchTmpl(it) }
+
     return tmpl
         .replace("#__current_package__#", currentPackage)
         .replaceParagraph(
@@ -100,4 +114,12 @@ fun TypeInterfaceTmpl(type: Type): String {
         .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))
+        .replaceParagraph(
+            "#__type_interface_batch__#", if (type.isCallback || type.declaredGenericTypes.isNotEmpty()) {
+                ""
+            } else {
+                batchTmpl.replace("#__interface_type__#", typeName)
+                    .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
+            }
+        )
 }
