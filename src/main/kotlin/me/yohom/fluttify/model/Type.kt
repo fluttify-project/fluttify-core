@@ -236,7 +236,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
             // 计算子类的时候, 去除掉忽略的类
             .filter { type -> EXCLUDE_TYPES.none { it.matches(type.name) } }
             .filter { it.isPublic }
-            .filter { !it.isObfuscated }
             .filter { it.ancestorTypes.contains(name) }
             .toList()
     }
