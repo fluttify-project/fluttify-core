@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Variable
 //// ref callback arg
 //NSNumber* arg#__arg_name__# = @(#__arg__#.hash);
 //HEAP[arg#__arg_name__#] = #__arg__#;
-private val tmpl = getResource("/tmpl/objc/callback_arg_ref.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_ref.stmt.m.tmpl").readText() }
 
 fun CallbackArgRefTmpl(variable: Variable): String {
     return tmpl

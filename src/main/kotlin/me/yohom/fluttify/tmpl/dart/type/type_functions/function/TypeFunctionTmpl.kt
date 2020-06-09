@@ -27,8 +27,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //    return #__return_statement__#;
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/function.mtd.dart.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/dart/function.mtd.dart.tmpl").readText() }
 fun TypeFunctionTmpl(functionType: Type): String {
     val returnType = functionType.returnType.toDartType()
     val name = functionType.name

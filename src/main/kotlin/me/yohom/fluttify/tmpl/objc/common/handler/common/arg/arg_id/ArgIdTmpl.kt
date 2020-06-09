@@ -13,8 +13,7 @@ import me.yohom.fluttify.model.Variable
 //else {
 //    #__name__# = HEAP[@([args[@"#__name__#"] integerValue])];
 //}
-private val tmpl = getResource("/tmpl/objc/arg_id.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/arg_id.stmt.m.tmpl").readText() }
 fun ArgIdTmpl(variable: Variable): String {
     val argName = variable.name
     return tmpl.replace("#__name__#", argName)

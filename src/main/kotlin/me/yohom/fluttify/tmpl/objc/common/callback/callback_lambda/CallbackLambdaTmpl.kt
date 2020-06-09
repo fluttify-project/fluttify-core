@@ -28,8 +28,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //
 //    #__callback__#
 //}
-private val tmpl = getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText() }
 fun CallbackLambdaTmpl(callerMethod: Method, callbackLambda: Type): String {
     val methodChannel = "${callerMethod.nameWithClass()}::Callback"
     val formalParams =

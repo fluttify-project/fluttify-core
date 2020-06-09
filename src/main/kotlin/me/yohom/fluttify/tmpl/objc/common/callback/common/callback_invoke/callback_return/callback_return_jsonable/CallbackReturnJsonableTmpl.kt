@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
 
 //_callbackResult = (#__jsonable_type__#) result;
-private val tmpl = getResource("/tmpl/objc/return_jsonable.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/return_jsonable.stmt.m.tmpl").readText() }
 
 fun CallbackReturnJsonableTmpl(method: Method): String {
     return tmpl

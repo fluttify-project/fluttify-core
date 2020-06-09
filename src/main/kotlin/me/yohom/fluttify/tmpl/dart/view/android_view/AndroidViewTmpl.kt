@@ -72,7 +72,7 @@ import me.yohom.fluttify.model.Type
 //    super.dispose();
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/android_view.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/android_view.dart.tmpl").readText() }
 
 fun AndroidViewTmpl(viewType: Type): String {
     val currentPackage = ext.projectName

@@ -17,8 +17,7 @@ import me.yohom.fluttify.model.Type
 //
 //    if (enableLog) NSLog(@"HEAP: %@", HEAP);
 //},
-private val tmpl = getResource("/tmpl/objc/handler_object_creator_ref_batch.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_object_creator_ref_batch.stmt.m.tmpl").readText() }
 fun HandlerObjectFactoryRefBatchTmpl(type: Type): String {
     return tmpl
         .replace("#__method_name__#", "ObjectFactory::create_batch${type.name}")

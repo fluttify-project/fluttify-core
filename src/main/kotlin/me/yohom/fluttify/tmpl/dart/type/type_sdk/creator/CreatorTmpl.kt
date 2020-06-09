@@ -12,7 +12,7 @@ import me.yohom.fluttify.model.Type
 //  kNativeObjectPool.add(object);
 //  return object;
 //}
-private val tmpl = getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText() }
 
 fun CreatorTmpl(type: Type): List<String> {
     return when (type.platform) {

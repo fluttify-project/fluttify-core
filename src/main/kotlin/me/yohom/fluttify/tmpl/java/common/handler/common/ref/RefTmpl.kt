@@ -5,7 +5,7 @@ import me.yohom.fluttify.model.Method
 
 //int refId = (int) args.get("refId");
 //#__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
-private val tmpl = getResource("/tmpl/java/ref.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/ref.stmt.java.tmpl").readText() }
 
 fun RefTmpl(method: Method): String {
     return if (method.isStatic)

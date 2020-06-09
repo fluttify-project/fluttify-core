@@ -318,7 +318,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
-            stack.peek()?.constants?.add(ctx.identifier().text)
+            stack.peekOrNull()?.constants?.add(ctx.identifier().text)
         }
 
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {

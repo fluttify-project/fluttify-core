@@ -28,7 +28,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //
 //    methodResult.success(obj.hashCode());
 //});
-private val tmpl = getResource("/tmpl/java/handler_object_creator.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_object_creator.stmt.java.tmpl").readText() }
 
 fun HandlerObjectFactoryTmpl(type: Type): List<String> {
     return type.constructors

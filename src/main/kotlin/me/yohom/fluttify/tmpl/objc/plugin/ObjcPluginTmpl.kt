@@ -75,9 +75,8 @@ import java.io.File
 //#__delegate_methods__#
 //
 //@end
-private val hTmpl = getResource("/tmpl/objc/plugin.h.tmpl").readText()
-private val mTmpl = getResource("/tmpl/objc/plugin.m.tmpl").readText()
-
+private val hTmpl by lazy { getResource("/tmpl/objc/plugin.h.tmpl").readText() }
+private val mTmpl by lazy { getResource("/tmpl/objc/plugin.m.tmpl").readText() }
 fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     // 插件名称
     val pluginClassName = ext.projectName.underscore2Camel(true)

@@ -40,8 +40,8 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  #__methods_batch__#
 //  //endregion
 //}
-private val tmpl = getResource("/tmpl/dart/type_interface.dart.tmpl").readText()
-private val batchTmpl = getResource("/tmpl/dart/type_interface_batch.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/type_interface.dart.tmpl").readText() }
+private val batchTmpl by lazy { getResource("/tmpl/dart/type_interface_batch.dart.tmpl").readText() }
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName

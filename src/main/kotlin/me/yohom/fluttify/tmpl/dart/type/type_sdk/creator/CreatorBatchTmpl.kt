@@ -15,7 +15,7 @@ import me.yohom.fluttify.model.Type
 //  kNativeObjectPool.addAll(typedResult);
 //  return typedResult;
 //}
-private val tmpl = getResource("/tmpl/dart/creator_batch.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/creator_batch.mtd.dart.tmpl").readText() }
 
 fun CreatorBatchTmpl(type: Type): List<String> {
     return when (type.platform) {

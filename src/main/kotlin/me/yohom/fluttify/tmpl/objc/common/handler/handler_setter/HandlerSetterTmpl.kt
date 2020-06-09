@@ -27,8 +27,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRe
 //    ref.#__setter__# = #__field_value__#;
 //    methodResult(@"success");
 //},
-private val tmpl = getResource("/tmpl/objc/handler_setter.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_setter.stmt.m.tmpl").readText() }
 fun HandlerSetterTmpl(field: Field): String {
     val setter = field.setterName.depointer()
     val args = field.variable.run {

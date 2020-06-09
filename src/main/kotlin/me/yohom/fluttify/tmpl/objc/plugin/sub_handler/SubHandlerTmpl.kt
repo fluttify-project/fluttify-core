@@ -26,8 +26,8 @@ import me.yohom.fluttify.extensions.underscore2Camel
 //}
 //
 //@end
-private val hTmpl = getResource("/tmpl/objc/sub_handler.h.tmpl").readText()
-private val mTmpl = getResource("/tmpl/objc/sub_handler.m.tmpl").readText()
+private val hTmpl by lazy { getResource("/tmpl/objc/sub_handler.h.tmpl").readText() }
+private val mTmpl by lazy { getResource("/tmpl/objc/sub_handler.m.tmpl").readText() }
 
 fun SubHandlerTmpl(number: Int, handlers: List<String>): List<String> {
     // 编号

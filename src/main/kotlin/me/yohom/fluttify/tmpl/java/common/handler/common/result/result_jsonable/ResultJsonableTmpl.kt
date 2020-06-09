@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable
 import me.yohom.fluttify.extensions.*
 
 //#__type_name__# jsonableResult = #__result__#;
-private val tmpl = getResource("/tmpl/java/result_jsonable.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/result_jsonable.stmt.java.tmpl").readText() }
 
 fun ResultJsonableTmpl(returnType: String): String {
     val typeName = when {

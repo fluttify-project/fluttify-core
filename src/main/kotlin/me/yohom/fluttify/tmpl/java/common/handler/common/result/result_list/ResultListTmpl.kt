@@ -13,7 +13,7 @@ import me.yohom.fluttify.model.Method
 //        jsonableResult.add(System.identityHashCode(item));
 //    }
 //}
-private val tmpl = getResource("/tmpl/java/result_list.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/result_list.stmt.java.tmpl").readText() }
 
 fun ResultListTmpl(method: Method): String {
     val typeName = if (method.returnType.iterableLevel() > 1) {

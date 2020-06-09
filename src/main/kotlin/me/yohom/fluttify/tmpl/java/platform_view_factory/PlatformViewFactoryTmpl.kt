@@ -77,7 +77,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //        };
 //    }
 //}
-private val tmpl = getResource("/tmpl/java/platform_view_factory.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/platform_view_factory.java.tmpl").readText() }
 
 fun PlatformViewFactoryTmpl(viewType: Type): String {
     val packageName = "${ext.org}.${ext.projectName}"

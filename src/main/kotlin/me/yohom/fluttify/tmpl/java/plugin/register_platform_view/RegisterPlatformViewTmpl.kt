@@ -6,7 +6,7 @@ import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.model.Type
 
 //platformViewRegistry.registerViewFactory("#__view_type__#", new #__factory_name__#Factory(messenger));
-private val tmpl = getResource("/tmpl/java/register_platform_view.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/register_platform_view.stmt.java.tmpl").readText() }
 
 fun RegisterPlatformViewTmpl(viewType: Type): String {
     return tmpl

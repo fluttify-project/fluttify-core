@@ -91,7 +91,7 @@ open class AndroidDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this))
             }
 
-        val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
+        val typeOpTmpl = getResource("/tmpl/dart/type_op.dart.tmpl").readText()
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
             .flatMap { it.types }

@@ -10,7 +10,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 //  #__native_object_pool__#
 //  return #__result__#;
 //}
-private val tmpl = getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText() }
 
 fun GetterTmpl(field: Field): String {
     val dartType = field.variable.trueType.toDartType()

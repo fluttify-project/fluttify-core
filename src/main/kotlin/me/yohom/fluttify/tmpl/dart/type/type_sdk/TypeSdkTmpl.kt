@@ -58,7 +58,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  #__methods_batch__#
 //  //endregion
 //}
-private val tmpl = getResource("/tmpl/dart/type_sdk.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/type_sdk.dart.tmpl").readText() }
 
 fun TypeSdkTmpl(type: Type): String {
     type.mergeWithCategory()

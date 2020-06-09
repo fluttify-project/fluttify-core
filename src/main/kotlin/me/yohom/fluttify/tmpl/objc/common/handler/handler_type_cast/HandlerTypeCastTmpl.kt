@@ -16,8 +16,7 @@ import me.yohom.fluttify.model.Type
 //
 //    methodResult(@(refId));
 //},
-private val tmpl = getResource("/tmpl/objc/handler_type_cast.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_type_cast.stmt.m.tmpl").readText() }
 fun HandlerTypeCastTmpl(type: Type): String {
     return tmpl
         .replace("#__type_name__#", type.name.toUnderscore())

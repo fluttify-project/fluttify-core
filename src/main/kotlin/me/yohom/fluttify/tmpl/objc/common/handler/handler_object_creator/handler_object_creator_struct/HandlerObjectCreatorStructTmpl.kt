@@ -13,8 +13,7 @@ import me.yohom.fluttify.model.Type
 //
 //    methodResult(@(dataValue.hash));
 //},
-private val tmpl = getResource("/tmpl/objc/handler_object_creator_struct.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_object_creator_struct.stmt.m.tmpl").readText() }
 fun HandlerObjectFactoryStructTmpl(type: Type): String {
     return tmpl
         .replace("#__method_name__#", "ObjectFactory::create${type.name}")

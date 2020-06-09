@@ -117,7 +117,7 @@ open class AndroidJavaInterface : FluttifyTask() {
                 subHandlerOutputFile.replace("#__number__#", index.toString()).file().writeText(content)
             }
 
-        val subHandlerCustomTmpl = getResource("/tmpl/java/sub_handler_custom.java.tmpl").readText()
+        val subHandlerCustomTmpl by lazy { getResource("/tmpl/java/sub_handler_custom.java.tmpl").readText() }
         subHandlerCustomTmpl
             .replace("#__package_name__#", "${ext.org}.${ext.projectName}")
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))

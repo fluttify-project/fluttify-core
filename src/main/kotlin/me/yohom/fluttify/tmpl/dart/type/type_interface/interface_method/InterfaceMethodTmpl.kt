@@ -11,7 +11,7 @@ import me.yohom.fluttify.model.Method
 //    debugPrint('#__interface_method__#::kNativeObjectPool: $kNativeObjectPool');
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/interface_method.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/interface_method.mtd.dart.tmpl").readText() }
 
 fun InterfaceMethodTmpl(method: Method): String {
     val returnType = method.returnType.toDartType()

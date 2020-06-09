@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //          break;
 //      }
 //    });
-private val tmpl = getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText() }
 
 fun CallbackSetterTmpl(field: Field): String {
     if (!field.variable.trueType.findType().isCallback)

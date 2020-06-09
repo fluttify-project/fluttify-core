@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
 
 //#__invoke_target__#.#__method_name__#(#__actual_params__#);
-private val tmpl = getResource("/tmpl/java/invoke_void.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/invoke_void.stmt.java.tmpl").readText() }
 
 fun InvokeVoidTmpl(method: Method): String {
     return tmpl

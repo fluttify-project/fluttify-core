@@ -89,8 +89,8 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 ////endregion
 //
 //@end
-private val hTmpl = getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText()
-private val mTmpl = getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
+private val hTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText() }
+private val mTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText() }
 
 fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
     // 使用前先合并Category

@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_functions.function.TypeFunctionTmpl
 //#__foundation__#
 //
 //#__functions__#
-private val tmpl = getResource("/tmpl/dart/functions.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/functions.dart.tmpl").readText() }
 
 fun TypeFunctionsTmpl(functions: List<Type>): String {
     return tmpl

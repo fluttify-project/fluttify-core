@@ -8,7 +8,7 @@ import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Parameter
 
 //(#__arg_type_name__#()..refId = (args['#__arg_name__#'])..tag__ = '#__plugin_name__#')
-private val tmpl = getResource("/tmpl/dart/callback_case_arg_ref.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_ref.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgRefTmpl(param: Parameter): String {
     return tmpl

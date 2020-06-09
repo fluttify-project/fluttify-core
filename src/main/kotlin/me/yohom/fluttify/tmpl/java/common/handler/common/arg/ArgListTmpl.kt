@@ -10,7 +10,7 @@ import me.yohom.fluttify.model.Variable
 //for (int refId : #__arg_name__#RefIdList) {
 //    ((ArrayList<#__generic_type_name__#>) #__arg_name__#).add((#__generic_type_name__#) getHEAP().get(refId));
 //}
-private val tmpl = getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText() }
 
 fun ArgListTmpl(variable: Variable): String {
     // 只处理非列表和一维列表, 多维列表一律返回一个空的列表

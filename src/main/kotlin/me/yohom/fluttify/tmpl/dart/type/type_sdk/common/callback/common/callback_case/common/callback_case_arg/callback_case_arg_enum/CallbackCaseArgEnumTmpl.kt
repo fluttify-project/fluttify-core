@@ -6,7 +6,7 @@ import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Parameter
 
 //#__arg_type_name__#.values[(args['#__arg_name__#'])]
-private val tmpl = getResource("/tmpl/dart/callback_case_arg_enum.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_enum.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgEnumTmpl(param: Parameter): String {
     return tmpl

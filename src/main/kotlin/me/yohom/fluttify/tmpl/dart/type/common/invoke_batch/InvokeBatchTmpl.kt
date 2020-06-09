@@ -6,8 +6,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
 //final resultBatch = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
-private val tmpl = getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText() }
 fun InvokeBatchTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
         "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"

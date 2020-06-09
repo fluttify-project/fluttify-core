@@ -10,7 +10,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter
 //
 //  #__callback__#
 //}
-private val tmpl = getResource("/tmpl/dart/setter_batch.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/setter_batch.mtd.dart.tmpl").readText() }
 
 fun SetterBatchTmpl(field: Field): String {
     return field.variable.run {

@@ -5,7 +5,7 @@ import me.yohom.fluttify.model.Parameter
 
 //int arg#__arg_name__# = #__arg_name__#.hashCode();
 //getHEAP().put(arg#__arg_name__#, #__arg_name__#);
-private val tmpl = getResource("/tmpl/java/callback_arg_ref.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/callback_arg_ref.stmt.java.tmpl").readText() }
 
 fun CallbackArgRefTmpl(param: Parameter): String {
     return tmpl

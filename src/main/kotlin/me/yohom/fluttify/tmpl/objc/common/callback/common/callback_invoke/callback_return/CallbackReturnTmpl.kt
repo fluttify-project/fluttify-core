@@ -12,7 +12,7 @@ import me.yohom.fluttify.model.Method
 //NSLog(@"暂不支持有返回值的回调方法");
 //
 //#__stub_return__#;
-private val tmpl = getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText() }
 
 fun CallbackReturnTmpl(method: Method): String {
     val callbackMethod = "Callback::${method.nameWithClass()}"

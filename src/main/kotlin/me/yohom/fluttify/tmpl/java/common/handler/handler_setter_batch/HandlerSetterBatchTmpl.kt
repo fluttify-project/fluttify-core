@@ -23,7 +23,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //
 //    methodResult.success("success");
 //});
-private val tmpl = getResource("/tmpl/java/handler_setter_batch.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_setter_batch.stmt.java.tmpl").readText() }
 
 fun HandlerSetterBatchTmpl(field: Field): String {
     val setterName = field.setterMethodName

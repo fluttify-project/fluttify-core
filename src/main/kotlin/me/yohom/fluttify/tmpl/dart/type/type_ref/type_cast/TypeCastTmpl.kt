@@ -9,7 +9,7 @@ import me.yohom.fluttify.model.Type
 //  final result = await MethodChannel('#__method_channel__#').invokeMethod('RefClass::as#__type_name__#', {'refId': refId});
 //  return #__type_name__#()..refId = result;
 //}
-private val tmpl = getResource("/tmpl/dart/type_cast.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/type_cast.mtd.dart.tmpl").readText() }
 
 fun TypeCastTmpl(type: Type): String {
     return tmpl

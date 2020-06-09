@@ -5,7 +5,7 @@ import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 
 //#__type_name__#()..refId = result..tag = '#__tag__#'
-private val tmpl = getResource("/tmpl/dart/result_ref.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/result_ref.stmt.dart.tmpl").readText() }
 
 fun ResultRefTmpl(returnType: TYPE_NAME): String {
     val typeName = when {

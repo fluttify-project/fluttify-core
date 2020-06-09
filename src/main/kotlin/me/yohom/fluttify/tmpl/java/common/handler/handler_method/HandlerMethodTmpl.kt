@@ -37,7 +37,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //
 //    __methodResult__.success(jsonableResult);
 //});
-private val tmpl = getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText() }
 
 fun HandlerMethodTmpl(method: Method): String {
     val methodName = method.nameWithClass()

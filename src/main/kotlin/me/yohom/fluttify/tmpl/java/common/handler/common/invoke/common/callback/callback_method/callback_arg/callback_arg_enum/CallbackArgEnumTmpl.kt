@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Parameter
 
 //int arg#__arg_name__# = #__arg_name__#.ordinal();
-private val tmpl = getResource("/tmpl/java/callback_arg_enum.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/callback_arg_enum.stmt.java.tmpl").readText() }
 
 fun CallbackArgEnumTmpl(param: Parameter): String {
     return tmpl

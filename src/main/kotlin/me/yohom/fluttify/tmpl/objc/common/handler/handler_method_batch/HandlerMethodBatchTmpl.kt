@@ -37,8 +37,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //
 //    methodResult(jsonableResult);
 //},
-private val tmpl = getResource("/tmpl/objc/handler_method_batch.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_method_batch.stmt.m.tmpl").readText() }
 fun HandlerMethodBatchTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams

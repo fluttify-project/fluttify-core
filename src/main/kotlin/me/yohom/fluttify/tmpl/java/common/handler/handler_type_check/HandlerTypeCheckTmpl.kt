@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Method
 // todo 先实现objc的
 //val refId = args["refId"] as Int
 //val ref = HEAP[refId] as #__class_name__#
-private val tmpl = getResource("/tmpl/java/handler_type_check.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_type_check.stmt.java.tmpl").readText() }
 
 fun HandlerTypeCheckTmpl(method: Method): String {
     return if (method.isStatic)

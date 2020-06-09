@@ -6,8 +6,7 @@ import me.yohom.fluttify.model.Variable
 
 //// jsonable参数
 //#__type_name__# #__arg_name__# = #__right_value__#;
-private val tmpl = getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText() }
 fun ArgJsonableTmpl(variable: Variable): String {
     val typeName = variable.trueType
     val rightValue = if (variable.trueType.isValueType() || variable.isAliasType()) {

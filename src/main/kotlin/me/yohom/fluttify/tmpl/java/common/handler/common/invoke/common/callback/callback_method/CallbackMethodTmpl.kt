@@ -30,7 +30,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //    // method result
 //    #__return_stmt__#
 //}
-private val tmpl = getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText() }
 
 fun CallbackMethodTmpl(method: Method): String {
     val callbackMethod = method.name

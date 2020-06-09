@@ -16,7 +16,7 @@ import me.yohom.fluttify.model.Field
 //
 //    methodResult.success(#__result__#);
 //});
-private val tmpl = getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_getter.stmt.java.tmpl").readText() }
 
 fun HandlerGetterTmpl(field: Field): String {
     val getterName = field.getterMethodName

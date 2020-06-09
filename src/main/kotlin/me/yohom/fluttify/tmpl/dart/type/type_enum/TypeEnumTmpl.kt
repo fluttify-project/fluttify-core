@@ -11,7 +11,7 @@ import me.yohom.fluttify.model.Type
 /**
  * 生成普通类的dart接口
  */
-private val tmpl = getResource("/tmpl/dart/type_enum.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/type_enum.dart.tmpl").readText() }
 
 fun TypeEnumTmpl(type: Type): String {
     return tmpl

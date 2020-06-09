@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Variable
 //Future<#__type_name__#> get #__name__# async {
 //  return MethodChannel('#__channel_name__#').invoke('get#__name__#');
 //}
-private val tmpl = getResource("/tmpl/dart/constant.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/constant.mtd.dart.tmpl").readText() }
 
 fun TypeConstantTmpl(variable: Variable): String {
     return tmpl

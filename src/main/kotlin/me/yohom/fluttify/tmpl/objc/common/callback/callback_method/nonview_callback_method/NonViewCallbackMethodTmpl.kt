@@ -28,7 +28,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //
 //  #__callback__#
 //}
-private val tmpl = getResource("/tmpl/objc/callback_method.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/callback_method.stmt.m.tmpl").readText() }
 
 fun NonViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType

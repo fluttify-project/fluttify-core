@@ -108,7 +108,7 @@ import java.io.File
 //        void call(Map<String, Object> args, MethodChannel.Result methodResult) throws Exception;
 //    }
 //}
-private val tmpl = getResource("/tmpl/java/plugin.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/plugin.java.tmpl").readText() }
 
 fun JavaPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): String {
     // 包名

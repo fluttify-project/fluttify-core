@@ -9,8 +9,7 @@ import me.yohom.fluttify.extensions.getResource
 //    [jsonableResult addObject: @(object.hash)];
 //    HEAP[@([object hash])] = object;
 //}
-private val tmpl = getResource("/tmpl/objc/result_list.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/result_list.stmt.m.tmpl").readText() }
 fun ResultListTmpl(): String {
     return tmpl
 }

@@ -5,8 +5,7 @@ import me.yohom.fluttify.model.Variable
 
 //// 枚举参数
 //#__type_name__# #__arg_name__# = (#__type_name__#) [args[@"#__arg_name__#"] integerValue];
-private val tmpl = getResource("/tmpl/objc/arg_enum.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/arg_enum.stmt.m.tmpl").readText() }
 fun ArgEnumTmpl(variable: Variable): String {
     val typeName = variable.trueType
     val name = variable.name

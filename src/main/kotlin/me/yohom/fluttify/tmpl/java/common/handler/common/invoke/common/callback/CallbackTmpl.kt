@@ -14,7 +14,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //    // call dart method
 //    #__callback_methods__#
 //}
-private val tmpl = getResource("/tmpl/java/callback.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/callback.stmt.java.tmpl").readText() }
 
 fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
     val className = "${callbackType.name.replace("$", ".")}${callbackType.definedGenericTypes.joinToStringX(prefix = "<", suffix = ">")}"

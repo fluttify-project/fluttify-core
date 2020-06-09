@@ -14,8 +14,7 @@ import me.yohom.fluttify.model.Variable
 //    [#__arg_name__#Value getValue:&#__arg_name__#Item];
 //    #__arg_name__#[i] = #__arg_name__#Item;
 //}
-private val tmpl = getResource("/tmpl/objc/arg_list_struct.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/arg_list_struct.stmt.m.tmpl").readText() }
 fun ArgListStructTmpl(variable: Variable): String {
     val typeName = variable.trueType.depointer()
     val argName = variable.name.depointer()

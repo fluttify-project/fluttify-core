@@ -7,8 +7,7 @@ import me.yohom.fluttify.extensions.getResource
 //NSValue* resultValue = [NSValue value:&result withObjCType:@encode(#__result_type__#)];
 //HEAP[@(resultValue.hash)] = resultValue;
 //NSNumber* jsonableResult = @(resultValue.hash);
-private val tmpl = getResource("/tmpl/objc/result_struct.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/result_struct.stmt.m.tmpl").readText() }
 fun ResultStructTmpl(returnType: TYPE_NAME): String {
     return tmpl
         .replace("#__result_type__#", returnType)
