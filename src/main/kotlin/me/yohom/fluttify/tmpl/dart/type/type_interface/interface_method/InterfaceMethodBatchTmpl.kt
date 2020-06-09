@@ -70,6 +70,7 @@ fun InterfaceMethodBatchTmpl(method: Method): String {
 
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
+        .replace("#__static__#", "")
         .replace("#__return_type__#", returnType)
         .replace("#__method_name__#", methodName)
         .replace("#__formal_params__#", formalParams)

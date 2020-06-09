@@ -75,7 +75,7 @@ data class Field(
                     &&
                     variable.mustNot("lambda类型") { isLambda() }
                     &&
-                    variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) }
+                    variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
                     &&
                     variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() }
                     &&
@@ -103,7 +103,7 @@ data class Field(
                     &&
                     variable.mustNot("lambda类型") { isLambda() }
                     &&
-                    variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(\\)").matches(name) }
+                    variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
             println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
