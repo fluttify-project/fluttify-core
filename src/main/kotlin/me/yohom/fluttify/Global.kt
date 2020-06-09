@@ -132,6 +132,8 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "UIColor"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSData"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSOperation"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "UIBarStyle"; typeType = TypeType.Enum; platform = Platform.iOS },
+    Type().apply { name = "UIStatusBarStyle"; typeType = TypeType.Enum; platform = Platform.iOS },
 
     Type().apply { name = "CLAuthorizationStatus"; typeType = TypeType.Enum; platform = Platform.iOS }
 )
