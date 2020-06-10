@@ -34,6 +34,10 @@ data class Podspec(
 	@field:SerializedName("ios")
 	val ios: Ios? = null,
 
+	// 发现有的在顶层, 有的在ios下面, 这里两个都加进去
+	@field:SerializedName("vendored_frameworks")
+	val vendoredFrameworks: String? = null,
+
 	@field:SerializedName("version")
 	val version: String? = null,
 
@@ -53,7 +57,7 @@ data class Podspec(
 	val homepage: String? = null,
 
 	@field:SerializedName("authors")
-	val authors: Authors? = null
+	val authors: String? = null
 )
 
 data class Source(
@@ -69,12 +73,6 @@ data class License(
 
 	@field:SerializedName("type")
 	val type: String? = null
-)
-
-data class Authors(
-
-	@field:SerializedName("TencentLBS")
-	val tencentLBS: String? = null
 )
 
 data class Ios(

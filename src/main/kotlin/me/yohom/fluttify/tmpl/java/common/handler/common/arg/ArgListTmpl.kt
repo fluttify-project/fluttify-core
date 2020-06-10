@@ -13,14 +13,16 @@ import me.yohom.fluttify.model.Variable
 private val tmpl by lazy { getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText() }
 
 fun ArgListTmpl(variable: Variable): String {
+    val typeName = variable.trueType.replace("$", ".")
+    val genericType = if (typeName.genericTypes().isNotEmpty()) typeName.genericTypes()[0] else "Object"
+    val name = variable.name
     // 只处理非列表和一维列表, 多维列表一律返回一个空的列表
     return if (variable.getIterableLevel() <= 1) {
         tmpl
-            .replace("#__type_name__#", variable.trueType.replace("$", "."))
-            .replace("#__generic_type_name__#", variable.trueType.replace("$", ".").genericTypes()[0])
+            .replace("#__type_name__#", typeName)
+            .replace("#__generic_type_name__#", genericType)
             .replace("#__arg_name__#", variable.name)
     } else {
-        val typeName = variable.trueType.replace("$", ".")
-        "$typeName ${variable.name} = new ArrayList<>();"
+        "$typeName $name = new ArrayList<>();"
     }
 }
