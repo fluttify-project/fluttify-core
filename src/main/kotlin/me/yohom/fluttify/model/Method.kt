@@ -53,8 +53,8 @@ data class Method(
     val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
 
     val filter: Boolean get() {
-        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓方法↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        println("方法:\"${toString()}\"执行过滤开始")
+        if(METHOD_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓方法↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        if(METHOD_LOG) println("方法:\"${toString()}\"执行过滤开始")
         val result = (must("返回类型是jsonable类型") { returnType.jsonable() }
                 || must("返回类型是void") { returnType.isVoid() }
                 || must("返回类型是原始类型指针类型") { returnType.isPrimitivePointerType() }
@@ -126,6 +126,10 @@ data class Method(
                     }
                 }
                 &&
+                mustNot("形参类型里多层block") {
+                    formalParams.any { it.variable.isLambda() && it.variable.trueType.findType().formalParams.any { it.variable.isLambda() } }
+                }
+                &&
                 must("形参全部是静态类型") { formalParams.all { it.variable.trueType.findType().isStaticType } }
                 &&
                 must("形参中的lambda类型的所有参数是已知类型") {
@@ -147,8 +151,8 @@ data class Method(
                 mustNot("形参父类是混淆类") {
                     formalParams.any { it.variable.trueType.findType().superClass.isObfuscated() }
                 }
-        println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        if(METHOD_LOG) println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        if(METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         return result
     }
 

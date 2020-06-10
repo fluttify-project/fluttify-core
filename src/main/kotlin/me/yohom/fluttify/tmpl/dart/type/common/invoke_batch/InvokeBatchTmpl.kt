@@ -24,9 +24,10 @@ fun InvokeBatchTmpl(method: Method): String {
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter(method.className, "this")) else this }
         .map { it.variable }
         .toDartMapBatch(prefix = loopHeader) {
-            val type = if (it.isAliasType()) it.trueType.findType().aliasOf!! else it.trueType
+            val typeName = it.trueType
+            val type = typeName.findType()
             when {
-                type.findType().isEnum -> {
+                type.isEnum -> {
                     // 枚举列表
                     if (it.isIterable) {
                         "${it.name}[__i__].map((it) => it.index).toList()"
@@ -34,7 +35,13 @@ fun InvokeBatchTmpl(method: Method): String {
                         "${it.name}[__i__].index"
                     }
                 }
-                type.jsonable() -> "${it.name}[__i__]"
+                it.isIterable
+                        && typeName.genericTypes().isNotEmpty()
+                        && typeName.genericTypes()[0].findType().isEnum -> {
+                    // 枚举列表
+                    "${it.name}[__i__].map((__it__) => __it__.index + ${typeName.genericTypes()[0].findType().enumerators[0].value}).toList()"
+                }
+                typeName.jsonable() -> "${it.name}[__i__]"
                 (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
                 it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
                 else -> "${it.name}[__i__].refId"

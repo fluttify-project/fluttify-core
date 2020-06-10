@@ -26,9 +26,11 @@ fun InvokeTmpl(method: Method): String {
                 typeName.findType().isEnum -> {
                     "${it.name}.index + ${type.enumerators[0].value}"
                 }
-                typeName.findType().isEnum && it.isIterable -> {
+                it.isIterable
+                        && typeName.genericTypes().isNotEmpty()
+                        && typeName.genericTypes()[0].findType().isEnum -> {
                     // 枚举列表
-                    "${it.name}.map((__it__) => __it__.index + ${type.enumerators[0].value}).toList()"
+                    "${it.name}.map((__it__) => __it__.index + ${typeName.genericTypes()[0].findType().enumerators[0].value}).toList()"
                 }
                 typeName.jsonable() -> it.name
                 (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__.refId).toList()"

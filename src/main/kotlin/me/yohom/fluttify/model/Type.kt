@@ -144,8 +144,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val filter: Boolean by lazy {
-        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        println("类:\"${name}\"执行过滤开始")
+        if(TYPE_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        if(TYPE_LOG) println("类:\"${name}\"执行过滤开始")
         val result = must("已知类型") { isKnownType }
                 &&
                 must("公开类型") { isPublic }
@@ -172,8 +172,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 }
                 ||
                 must("是List") { /* Regexes.MAP.matches(name) ||*/ Regexes.ITERABLE.matches(name) }
-        println("类:\"${name}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        if(TYPE_LOG) println("类:\"${name}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        if(TYPE_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         result
     }
 
