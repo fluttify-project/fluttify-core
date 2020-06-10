@@ -616,7 +616,9 @@ fun String.stripQuotes(): String {
 fun String.objcSpecifierExpand(): String {
     return replace("__kindof", " __kindof ")
         .replace("_Nullable", "")
+        .replace("_nullable", "")
         .replace("_Nonnull", "")
+        .replace("_nonnull", "")
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
         .replace("unsignedlonglong", "unsigned long long")

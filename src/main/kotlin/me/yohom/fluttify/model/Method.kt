@@ -63,6 +63,8 @@ data class Method(
                 &&
                 mustNot("返回类型是混淆类") { returnType.isObfuscated() }
                 &&
+                mustNot("返回类型含有泛型") { returnType.genericTypes().isNotEmpty() }
+                &&
                 mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
                 &&
                 mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }

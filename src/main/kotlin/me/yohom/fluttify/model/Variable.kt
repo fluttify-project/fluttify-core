@@ -59,6 +59,10 @@ data class Variable(
         return trueType.jsonable()
     }
 
+    fun isVoid(): Boolean {
+        return trueType.isVoid()
+    }
+
     fun isAliasType(): Boolean {
         return trueType.findType().isAlias()
     }
@@ -133,7 +137,7 @@ data class Variable(
     fun toDartString(): String {
         return if (trueType.findType().isLambda) {
             val type = trueType.findType()
-            "${type.returnType} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
+            "${type.returnType.toDartType()} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
             "${trueType.toDartType()} $name"
         }

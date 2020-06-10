@@ -21,6 +21,7 @@ fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
                 when {
                     isEmpty() -> platform.objectType()
                     toDartType().isDynamic() -> "Ref"
+                    findType().isInterface -> "${toDartType()}.subInstance"
                     else -> this
                 }
             })

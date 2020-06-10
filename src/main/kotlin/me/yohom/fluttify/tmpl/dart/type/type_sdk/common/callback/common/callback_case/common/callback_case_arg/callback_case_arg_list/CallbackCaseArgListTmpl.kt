@@ -20,9 +20,8 @@ fun CallbackCaseArgListTmpl(param: Parameter): String {
                 if (param.variable.getIterableLevel() == 0) {
                     param.platform.objectType()
                 } else {
-                    genericTypes()[0]
+                    genericTypes()[0].toDartType()
                 }
-            }
-            .toDartType())
+            })
         .replace("#__plugin_name__#", ext.projectName)
 }

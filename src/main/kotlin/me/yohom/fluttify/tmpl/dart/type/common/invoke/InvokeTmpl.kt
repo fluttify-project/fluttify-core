@@ -21,15 +21,14 @@ fun InvokeTmpl(method: Method): String {
         .map { it.variable }
         .toDartMap {
             val typeName = it.trueType
+            val type = typeName.findType()
             when {
                 typeName.findType().isEnum -> {
-                    val type = typeName.findType()
+                    "${it.name}.index + ${type.enumerators[0].value}"
+                }
+                typeName.findType().isEnum && it.isIterable -> {
                     // 枚举列表
-                    if (it.isIterable) {
-                        "${it.name}.map((__it__) => __it__.index + ${type.enumerators[0].value}).toList()"
-                    } else {
-                        "${it.name}.index + ${type.enumerators[0].value}"
-                    }
+                    "${it.name}.map((__it__) => __it__.index + ${type.enumerators[0].value}).toList()"
                 }
                 typeName.jsonable() -> it.name
                 (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__.refId).toList()"

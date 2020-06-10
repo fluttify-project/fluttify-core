@@ -68,7 +68,7 @@ fun TypeInterfaceTmpl(type: Type): String {
         allSuperType.joinToString().toDartType()
     }
 
-    val subclass = if (!type.isCallback)
+    val subclass = if (!type.isCallback && !type.declaredGenericTypes.isNotEmpty())
         "class _${typeName}_SUB extends ${type.platform.objectType()} with $subSuperMixins$typeName {}"
     else
         ""
@@ -98,6 +98,13 @@ fun TypeInterfaceTmpl(type: Type): String {
         .filterMethod(true)
         .map { InterfaceMethodBatchTmpl(it) }
 
+    val typeInterfaceBatch = if (!type.isCallback && !type.declaredGenericTypes.isNotEmpty()) {
+        batchTmpl.replace("#__interface_type__#", typeName)
+            .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
+    } else {
+        ""
+    }
+
     return tmpl
         .replace("#__current_package__#", currentPackage)
         .replaceParagraph(
@@ -114,12 +121,5 @@ fun TypeInterfaceTmpl(type: Type): String {
         .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))
-        .replaceParagraph(
-            "#__type_interface_batch__#", if (type.isCallback || type.declaredGenericTypes.isNotEmpty()) {
-                ""
-            } else {
-                batchTmpl.replace("#__interface_type__#", typeName)
-                    .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
-            }
-        )
+        .replaceParagraph("#__type_interface_batch__#", typeInterfaceBatch)
 }
