@@ -84,7 +84,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     /**
      * 枚举值 枚举专用
      */
-    var constants: MutableList<String> = mutableListOf()
+    var enumerators: MutableList<Enumerator> = mutableListOf()
 
     /**
      * 返回值类型 Lambda/Function专用
@@ -420,7 +420,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$constants, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$enumerators, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {

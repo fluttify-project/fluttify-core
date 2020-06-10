@@ -6,15 +6,12 @@ import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Type
 
 //enum #__enum_name__# {
-//  #__enum_constant__#
+//  #__enumerators__#
 //}
-/**
- * 生成普通类的dart接口
- */
 private val tmpl by lazy { getResource("/tmpl/dart/type_enum.dart.tmpl").readText() }
 
 fun TypeEnumTmpl(type: Type): String {
     return tmpl
         .replace("#__enum_name__#", type.name.toDartType())
-        .replaceParagraph("#__enum_constant__#", type.constants.joinToString(",\n"))
+        .replaceParagraph("#__enumerators__#", type.enumerators.joinToString(",\n") { "${it.name} /* ${it.value} */" })
 }

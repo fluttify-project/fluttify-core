@@ -34,7 +34,7 @@ fun JAVA_FILE.javaType(): SourceFile {
     var genericTypes = listOf<TYPE_NAME>()
     val fields = mutableListOf<Field>()
     val constructors = mutableListOf<Constructor>()
-    val enumConstants = mutableListOf<String>()
+    val enumConstants = mutableListOf<Enumerator>()
     val methods = mutableListOf<Method>()
     var simpleName = ""
     var typeType: TypeType? = null
@@ -183,7 +183,7 @@ fun JAVA_FILE.javaType(): SourceFile {
         }
 
         override fun enterEnumConstant(ctx: EnumConstantContext) {
-            enumConstants.add(ctx.IDENTIFIER().text)
+            enumConstants.add(Enumerator(ctx.IDENTIFIER().text, 0))
         }
     })
 
@@ -202,7 +202,7 @@ fun JAVA_FILE.javaType(): SourceFile {
             it.superClass = superClass
             it.fields.addAll(fields)
             it.methods.addAll(methods)
-            it.constants.addAll(enumConstants)
+            it.enumerators.addAll(enumConstants)
             it.platform = Platform.Android
         }),
         listOf()
@@ -317,8 +317,12 @@ fun OBJC_FILE.objcType(): SourceFile {
             })
         }
 
-        override fun enterEnumeratorIdentifier(ctx: ObjectiveCParser.EnumeratorIdentifierContext) {
-            stack.peekOrNull()?.constants?.add(ctx.identifier().text)
+        override fun enterEnumerator(ctx: ObjectiveCParser.EnumeratorContext) {
+            stack.peekOrNull()?.run {
+                val enumName = ctx.enumeratorIdentifier().identifier().text
+                val enumValue = ctx.expression()?.text?.toIntOrNull() ?: 0
+                enumerators.add(Enumerator(enumName, enumValue))
+            }
         }
 
         override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
