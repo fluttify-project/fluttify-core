@@ -351,7 +351,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
     val type = replace("$", ".").substringAfterLast(".")
     val regex = Regex("[a-z|\\d]{1,2}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
-    return type !in ext.obfuscatedWhiteList && (regex.matches(type) || regex.matches(this)) && this != "id"
+    return this !in ext.obfuscatedWhiteList && (regex.matches(type) || regex.matches(this)) && this != "id"
 }
 
 /**
