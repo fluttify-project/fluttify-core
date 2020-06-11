@@ -10,7 +10,7 @@ var SUCCESS_LOG = false
 var CONSTRUCTOR_LOG = false
 var VARIABLE_LOG = false
 var FIELD_LOG = false
-var TYPE_LOG = false
+var TYPE_LOG = true
 var METHOD_LOG = true
 
 private var idSequence = 0
@@ -79,6 +79,8 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Bundle"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.os.Binder"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.view.SurfaceView"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.view.SurfaceHolder.Callback"; typeType = TypeType.Interface; platform = Platform.Android },
     Type().apply {
         name = "android.view.View.OnApplyWindowInsetsListener"; typeType = TypeType.Interface; platform =
         Platform.Android

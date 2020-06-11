@@ -36,6 +36,11 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     var homepage: String = "https://fluttify.com"
 
     /**
+     * 混淆白名单 在这里列表里的都不认为是混淆类
+     */
+    var obfuscatedWhiteList: List<String> = listOf()
+
+    /**
      * foundation版本
      */
     var foundationVersion: Map<String, String> = mapOf()

@@ -52,3 +52,8 @@ object Tmap {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_map/jr/tmap_map_fluttify.ios.json".file().readText().fromJson<SDK>()
 }
 
+object NeteaseLive {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/netease_live/jr/netease_live_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/netease_live/jr/netease_live_fluttify.ios.json".file().readText().fromJson<SDK>()
+}
+

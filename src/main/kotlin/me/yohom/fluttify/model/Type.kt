@@ -355,6 +355,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
             ancestorTypes.any {
                 it in listOf(
                     "android.view.View",
+                    "android.view.SurfaceView",
                     "android.view.ViewGroup",
                     "android.widget.FrameLayout",
                     "UIView"
