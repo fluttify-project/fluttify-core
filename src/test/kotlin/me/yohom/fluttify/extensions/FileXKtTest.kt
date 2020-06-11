@@ -1,8 +1,11 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.model.*
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
+import parser.objc.ObjectiveCParser
+import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
 
 class FileXKtTest {
@@ -10,7 +13,8 @@ class FileXKtTest {
     @Test
     fun moveFile() {
         val libDir = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/".file()
-        val framework = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Smart/SDK/TXLiteAVSDK_Smart.framework/".file()
+        val framework =
+            "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Smart/SDK/TXLiteAVSDK_Smart.framework/".file()
         FileUtils.copyDirectoryToDirectory(framework, libDir)
     }
 
@@ -92,5 +96,77 @@ class FileXKtTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun typedefTest() {
+        val text =
+            "typedef void(^NIMChatroomQueueInfoHandler)(NSError * __nullable error, NSArray<NSDictionary<NSString*, NSString*>*>* __nullable info);"
+        text.walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
+                val returnType = ctx
+                    .declarationSpecifiers()
+                    .typeSpecifier()[0]
+                    ?.text
+                val typeName = ctx
+                    .typeDeclaratorList()
+                    .typeDeclarator()[0]
+                    ?.directDeclarator()
+                    ?.identifier()
+                    ?.text
+                val formalParams = ctx
+                    .typeDeclaratorList()
+                    .typeDeclarator()[0]
+                    ?.directDeclarator()
+                    ?.blockParameters()
+                    ?.typeVariableDeclaratorOrName()
+                    ?.mapNotNull { it.typeVariableDeclarator() }
+                    ?.map {
+                        val argName = it.declarator().text.objcSpecifierExpand()
+                        val argType = it.declarationSpecifiers()
+                            .text
+                            .run { if (argName.startsWith("*")) enpointer() else this }
+                        Parameter(
+                            variable = Variable(
+                                argType,
+                                argName.depointer(),
+                                Platform.iOS
+                            ),
+                            platform = Platform.iOS
+                        )
+                    }
+
+                if (returnType != null && typeName != null) {
+                    // lambda
+                    if (formalParams != null) {
+                        Type().also {
+                            it.typeType = TypeType.Lambda
+                            it.isPublic = true
+                            it.isAbstract = false
+                            it.name = typeName
+                            it.isStaticType = true
+                            it.returnType = returnType
+                            it.formalParams = formalParams
+                            it.platform = Platform.iOS
+                        }
+                    }
+                    // 结构体
+                    else if (returnType.contains("struct")) {
+                    }
+                    // 别名不包含^, 说明不是函数别名
+                    else if (!typeName.contains("^")) {
+                        Type().also {
+                            it.typeType = TypeType.Alias
+                            it.isPublic = true
+                            it.isAbstract = false
+                            it.name = typeName
+                            it.isStaticType = true
+                            it.aliasOf = returnType
+                            it.platform = Platform.iOS
+                        }
+                    }
+                }
+            }
+        })
     }
 }

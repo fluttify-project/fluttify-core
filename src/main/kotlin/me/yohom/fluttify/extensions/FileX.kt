@@ -390,7 +390,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                         .run { if (argName.startsWith("*")) enpointer() else this }
                     Parameter(
                         variable = Variable(
-                            argType,
+                            argType.objcSpecifierExpand(),
                             argName.depointer(),
                             Platform.iOS
                         ),

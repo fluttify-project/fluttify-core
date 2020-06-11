@@ -292,7 +292,9 @@ fun TYPE_NAME.isValueType(): Boolean {
         "unsigned long long",
         "long long",
         "GLuint",
-        "CGFloat"
+        "CGFloat",
+        "NSUInteger",
+        "NSInteger"
     )) or (this in SYSTEM_TYPEDEF.keys && this !in SYSTEM_POINTER_TYPEDEF.keys) or findType().run { isEnum or isAlias() }
 }
 
@@ -631,6 +633,7 @@ fun String.objcSpecifierExpand(): String {
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
         .replace("unsignedlonglong", "unsigned long long")
+        .replace("longlong", "long long")
 }
 //
 ///**
