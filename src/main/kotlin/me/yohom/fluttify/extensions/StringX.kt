@@ -508,6 +508,13 @@ fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
 }
 
 /**
+ * 去除objc的限定词
+ */
+fun TYPE_NAME.removeObjcSpecifier(): TYPE_NAME {
+    return replace("__nullable", "").replaceParagraph("__nonnull", "")
+}
+
+/**
  * 获取泛型层数 用在List中 表示嵌套了几层
  */
 fun TYPE_NAME.iterableLevel(): Int {
@@ -616,9 +623,9 @@ fun String.stripQuotes(): String {
 fun String.objcSpecifierExpand(): String {
     return replace("__kindof", " __kindof ")
         .replace("_Nullable", "")
-        .replace("_nullable", "")
+        .replace("nullable", "")
         .replace("_Nonnull", "")
-        .replace("_nonnull", "")
+        .replace("nonnull", "")
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
         .replace("unsignedlonglong", "unsigned long long")
