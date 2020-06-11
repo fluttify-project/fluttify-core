@@ -280,7 +280,8 @@ fun ObjectiveCParser.BlockTypeContext.parameters(): String {
         .joinToString(",") {
             // lambda参数, 可以是只有类名, 所以这里的name有可能是空, 类名也可以是空, 如果类名是空的话就直接使用
             // it.typeName().text
-            val name = it.second?.typeVariableDeclarator()?.declarator()?.text?.objcSpecifierExpand() ?: "__arg_${it.first}__"
+            val name =
+                it.second?.typeVariableDeclarator()?.declarator()?.text?.objcSpecifierExpand() ?: "__arg_${it.first}__"
             val type = it.second?.typeVariableDeclarator()
                 ?.declarationSpecifiers()
                 ?.text

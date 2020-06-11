@@ -103,14 +103,14 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
         .run {
             // 所有的Framework
             val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
-                ?.flatMap { framework ->
-                    "$framework/Headers/"
-                        .file()
-                        .listFiles { _, name -> name.endsWith(".h") }
-                        ?.map { framework to it }
-                        ?: listOf()
-                }
-                ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
+//                ?.flatMap { framework ->
+//                    "$framework/Headers/"
+//                        .file()
+//                        .listFiles { _, name -> name.endsWith(".h") }
+//                        ?.map { framework to it }
+//                        ?: listOf()
+//                }
+                ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
                 ?: listOf()
             // 如果没有framework, 那么就遍历出所有的.h文件
             val directHeaders = mutableListOf<String>()

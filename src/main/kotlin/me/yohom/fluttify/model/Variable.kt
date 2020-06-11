@@ -29,7 +29,7 @@ data class Variable(
             return ext.ios.overrideElements[id]?.fromJson<Variable>()?.typeName
                 ?: ext.android.overrideElements[id]?.fromJson<Variable>()?.typeName
                 ?: alias?.run { typeName.replace(origin, this) }
-                ?: typeName
+                ?: typeName.objcSpecifierExpand()
         }
 
     val rawType: String

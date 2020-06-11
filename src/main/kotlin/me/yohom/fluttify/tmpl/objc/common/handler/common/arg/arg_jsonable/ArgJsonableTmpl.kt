@@ -37,7 +37,7 @@ fun ArgJsonableTmpl(variable: Variable): String {
         if (variable.trueType == "int64_t") {
             methodPrefix = "longLong"
         }
-        if (variable.trueType == "uint64_t") {
+        if (variable.trueType == "uint64_t" || variable.trueType == "unsigned long long") {
             methodPrefix = "unsignedLongLong"
         }
         "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value]"

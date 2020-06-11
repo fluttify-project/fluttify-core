@@ -405,7 +405,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                     val valueType = substringAfter(",").substringBefore("\u003e").toDartType()
                     "Map<$keyType,$valueType>"
                 }
-                Regex("NSArray\\u003c.+\\u003e\\*").matches(this) -> "List<${genericTypes()[0].toDartType()}>"
+                Regex("NSArray\\u003c.+\\u003e\\*?").matches(this) -> "List<${genericTypes()[0].toDartType()}>"
                 Regex("(float|double|int|void)\\*").matches(this) -> "NSValue/* $this */"
                 Regex("id\\u003c.+\\u003e").matches(this) -> removePrefix("id<").removeSuffix(">")
                 Regex("GLuint").matches(this) -> "int"
@@ -622,9 +622,11 @@ fun String.stripQuotes(): String {
  */
 fun String.objcSpecifierExpand(): String {
     return replace("__kindof", " __kindof ")
+        .replace("__nullable", "")
+        .replace("__nonnull", "")
         .replace("_Nullable", "")
-        .replace("nullable", "")
         .replace("_Nonnull", "")
+        .replace("nullable", "")
         .replace("nonnull", "")
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
