@@ -5,6 +5,10 @@ import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.model.Podspec
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.FalseFileFilter
+import org.apache.commons.io.filefilter.IOFileFilter
+import org.apache.commons.io.filefilter.TrueFileFilter
+import org.apache.commons.io.filefilter.WildcardFileFilter
 import org.gradle.api.tasks.TaskAction
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
@@ -70,8 +74,23 @@ open class DownloadIOSSDK : FluttifyTask() {
                         ZipUtil.unpack(archiveFile, archiveFile.parentFile)
                         // 如果包含vendored_frameworks, 那么需要再拿出framework
                         // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
-                        if (podspec.ios?.vendoredFrameworks != null) {
-                            val trueFramework = "${ext.ios.libDir}/${podspec.ios.vendoredFrameworks}"
+                        val vendoredFrameworkPath = podspec.ios?.vendoredFrameworks ?: podspec.vendoredFrameworks
+                        if (vendoredFrameworkPath != null) {
+                            val trueFramework = if (vendoredFrameworkPath.contains("**/")) {
+                                // 如果含有通配符, 那么从通配符开始查找目标framework
+                                val subPath = vendoredFrameworkPath.substringBefore("**/")
+                                val frameworkName = vendoredFrameworkPath.substringAfter("**/")
+                                FileUtils.iterateFilesAndDirs(
+                                    "${ext.ios.libDir}/$subPath".file(),
+                                    FalseFileFilter.INSTANCE,
+                                    TrueFileFilter.INSTANCE
+                                )
+                                    .asSequence()
+                                    .find { it.name.endsWith(frameworkName) }
+                                    ?.path!!
+                            } else {
+                                "${ext.ios.libDir}/$vendoredFrameworkPath"
+                            }
                             // 因为其实每个pod都会有vendored_frameworks字段, 所以这里判断一下顶层是否已经有这个framework, 如果有的
                             // 话就不需要拷贝了
                             // 拿出framework文件, 然后拷贝到顶层

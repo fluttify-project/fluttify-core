@@ -7,13 +7,31 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Variable
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.FalseFileFilter
+import org.apache.commons.io.filefilter.SuffixFileFilter
+import org.apache.commons.io.filefilter.TrueFileFilter
+import org.apache.commons.io.filefilter.WildcardFileFilter
 import org.junit.jupiter.api.Test
 
 class ListXKtTest : FluttifyTest() {
 
     @Test
     fun filterMethod() {
-        listOf(Field(true, true, true, "", Variable("", "", Platform.Android), "", platform = Platform.Android)).filterConstants()
+        // 如果含有通配符, 那么从通配符开始查找目标framework
+        val subPath = "**/NIMSDK.framework".substringBefore("**/")
+        val frameworkName = "**/NIMSDK.framework".substringAfter("**/")
+        val result = FileUtils.iterateFilesAndDirs(
+            "/Users/yohom/Github/Me/All/fluttify/3rd_party/nim/sdk/ios/$subPath".file(),
+            FalseFileFilter.INSTANCE,
+            TrueFileFilter.INSTANCE
+        )
+            .asSequence()
+            .find { it.name.endsWith(frameworkName) }
+            ?.path!!
+        println(result)
+
+//        listOf(Field(true, true, true, "", Variable("", "", Platform.Android), "", platform = Platform.Android)).filterConstants()
 //        Amap.androidSearchSDK.libs[1]
 //            .types.apply { println("types:$this") }
 //            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }

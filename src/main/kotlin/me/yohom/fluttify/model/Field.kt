@@ -1,5 +1,7 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.CONSTRUCTOR_LOG
+import me.yohom.fluttify.FIELD_LOG
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.extensions.*
 
@@ -61,8 +63,8 @@ data class Field(
 
     val filterGetters: Boolean
         get() {
-            println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-            println("属性:\"${toString()}\"执行getter过滤开始")
+            if (FIELD_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+            if (FIELD_LOG) println("属性:\"${toString()}\"执行getter过滤开始")
             val result = (must("jsonable类型") { variable.trueType.jsonable() }
                     // 关联类型不能超过2个, 即只能有一个泛型, 像Map<X, Y>这种就要过滤掉, 因为无法直接传递
                     || must("关联类型都通过过滤") { variable.trueType.allTypes().run { size <= 2 && all { it.filter } } })
@@ -80,15 +82,15 @@ data class Field(
                     variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() }
                     &&
                     variable.mustNot("回调类") { isCallback() }
-            println("属性:\"${toString()}\"执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-            println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+            if (FIELD_LOG) println("属性:\"${toString()}\"执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+            if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
         }
 
     val filterSetter: Boolean
         get() {
-            println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-            println("属性:${toString()}执行setter过滤开始")
+            if (FIELD_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓属性↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+            if (FIELD_LOG) println("属性:${toString()}执行setter过滤开始")
             val result = (must("jsonable类型") { variable.trueType.jsonable() }
                     // 关联类型不能超过2个, 即只能有一个泛型, 像Map<X, Y>这种就要过滤掉, 因为无法直接传递
                     || must("关联类型都通过过滤") { variable.trueType.allTypes().run { size <= 2 && all { it.filter } } })
@@ -104,8 +106,8 @@ data class Field(
                     variable.mustNot("lambda类型") { isLambda() }
                     &&
                     variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
-            println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-            println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+            if (FIELD_LOG) println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+            if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
         }
 

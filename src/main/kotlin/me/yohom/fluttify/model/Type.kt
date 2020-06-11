@@ -256,8 +256,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val constructable: Boolean by lazy {
-        println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓构造器↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        println("构造器:${name}执行过滤开始")
+        if(CONSTRUCTOR_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓构造器↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        if(CONSTRUCTOR_LOG) println("构造器:${name}执行过滤开始")
         val result = mustNot("抽象类型") { isAbstract }
                 &&
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
@@ -299,8 +299,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
                             || platform != Platform.iOS
                 }
-        println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-        println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        if(CONSTRUCTOR_LOG) println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        if(CONSTRUCTOR_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         result
     }
 
