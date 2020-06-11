@@ -28,13 +28,13 @@ fun ArgJsonableTmpl(variable: Variable): String {
         if (variable.trueType == "long long") {
             methodPrefix = "longLong"
         }
-        if (variable.trueType == "uint32_t") {
+        if (variable.trueType == "uint32_t" || variable.trueType == "unsigned int") {
             methodPrefix = "unsignedInt"
         }
-        if (variable.trueType == "int32_t") {
+        if (variable.trueType == "int32_t" || variable.trueType == "int") {
             methodPrefix = "int"
         }
-        if (variable.trueType == "int64_t") {
+        if (variable.trueType == "int64_t" || variable.trueType == "long long") {
             methodPrefix = "longLong"
         }
         if (variable.trueType == "uint64_t" || variable.trueType == "unsigned long long") {

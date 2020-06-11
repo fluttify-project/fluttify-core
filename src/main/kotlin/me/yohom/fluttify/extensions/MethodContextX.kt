@@ -276,6 +276,7 @@ fun ObjectiveCParser.BlockTypeContext.returnType(): String {
 fun ObjectiveCParser.BlockTypeContext.parameters(): String {
     return blockParameters()
         .typeVariableDeclaratorOrName()
+        .filter { it.typeName()?.text != "void" }
         .mapIndexed { index, context -> index to context }
         .joinToString(",") {
             // lambda参数, 可以是只有类名, 所以这里的name有可能是空, 类名也可以是空, 如果类名是空的话就直接使用

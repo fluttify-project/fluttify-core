@@ -29,10 +29,12 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //    #__callback__#
 //}
 private val tmpl by lazy { getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText() }
+
 fun CallbackLambdaTmpl(callerMethod: Method, callbackLambda: Type): String {
     val methodChannel = "${callerMethod.nameWithClass()}::Callback"
-    val formalParams =
-        callbackLambda.formalParams.joinToString { "${it.variable.objcType()} ${it.variable.name}" }
+    val formalParams = callbackLambda
+        .formalParams
+        .joinToString { "${it.variable.objcType()} ${it.variable.name}" }
     val localArgs = if (callbackLambda.returnType == "void") {
         // 只有没有返回值的方法需要设置, 因为目前有返回值的回调方法是不实现的, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
         callbackLambda

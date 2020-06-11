@@ -290,6 +290,8 @@ fun TYPE_NAME.isValueType(): Boolean {
         "BOOL",
         "bool",
         "unsigned long long",
+        "unsigned int",
+        "unsigned long",
         "long long",
         "GLuint",
         "CGFloat",

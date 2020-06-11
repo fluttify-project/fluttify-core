@@ -110,6 +110,7 @@ class SDK : IPlatform {
                     formalParams = finalTypeName
                         .substringAfter("|")
                         .split(",")
+                        .filter { it.contains("#") }
                         .map { it.trim().split("#") }
                         .map {
                             Parameter(

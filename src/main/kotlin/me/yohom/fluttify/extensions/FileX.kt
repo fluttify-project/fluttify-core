@@ -382,6 +382,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                 ?.directDeclarator()
                 ?.blockParameters()
                 ?.typeVariableDeclaratorOrName()
+                ?.filter { it.typeName()?.text != "void" } // void类型, 不占用参数
                 ?.mapNotNull { it.typeVariableDeclarator() }
                 ?.map {
                     val argName = it.declarator().text
