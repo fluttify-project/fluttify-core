@@ -79,8 +79,6 @@ data class Field(
                     &&
                     variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
                     &&
-                    variable.must("具体类型或者含有子类的抽象类") { isConcret() || hasConcretSubtype() }
-                    &&
                     variable.mustNot("回调类") { isCallback() }
             if (FIELD_LOG) println("属性:\"${toString()}\"执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
