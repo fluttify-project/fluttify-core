@@ -57,3 +57,8 @@ object NeteaseLive {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/netease_live/jr/netease_live_fluttify.ios.json".file().readText().fromJson<SDK>()
 }
 
+object Nim {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/nim/jr/nim_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/nim/jr/nim_fluttify.ios.json".file().readText().fromJson<SDK>()
+}
+

@@ -1,18 +1,20 @@
 package me.yohom.fluttify.tmpl.dart
 
-import me.yohom.fluttify.NeteaseLive
+import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.Nim
 import org.junit.jupiter.api.Test
 
 
-internal class MethodTmplTest {
+class MethodTmplTest : FluttifyTest() {
 
     @Test
     fun dartMethod() {
-        NeteaseLive.androidSDK
+        Nim.androidSDK
             .allTypes
-            .find { it.name == "com.netease.vcloud.video.render.NeteaseView" }
-            ?.ancestorTypes
-            ?.run { println("祖先类：$this") }
+            .find { it.name == "com.netease.nimlib.sdk.InvocationFuture" }
+            ?.methods
+            ?.filter { it.filter }
+            ?.run { println("过滤结果: $this") }
 //        val testMethod = Method(
 //            "String",
 //            "test",
