@@ -68,13 +68,14 @@ fun TypeInterfaceTmpl(type: Type): String {
         allSuperType.joinToString().toDartType()
     }
 
-    val subclass = if (!type.isCallback && !type.declaredGenericTypes.isNotEmpty())
-        "class _${typeName}_SUB extends ${type.platform.objectType()} with $subSuperMixins$typeName {}"
+    val containerType = typeName.containerType()
+    val subclass = if (!type.isCallback)
+        "class _${containerType}_SUB extends ${type.platform.objectType()} with $subSuperMixins$containerType {}"
     else
         ""
     // 给接口类型提供一个可供实例化的子类, mixin需要继承各平台Object类型, 并实现接口类
-    val subInstance = if (!type.isCallback && !type.declaredGenericTypes.isNotEmpty()) {
-        "static $typeName subInstance() => _${typeName}_SUB();"
+    val subInstance = if (!type.isCallback) {
+        "static $containerType subInstance() => _${containerType}_SUB();"
     } else {
         ""
     }

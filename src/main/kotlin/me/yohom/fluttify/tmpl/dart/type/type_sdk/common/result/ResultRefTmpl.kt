@@ -11,7 +11,7 @@ fun ResultRefTmpl(returnType: TYPE_NAME): String {
     val typeName = when {
         returnType.isPrimitivePointerType() -> returnType.toDartType()
         returnType.toDartType() == "dynamic" -> "Ref"
-        returnType.findType().isInterface -> "${returnType.toDartType()}.subInstance"
+        returnType.findType().isInterface -> "${returnType.toDartType().containerType()}.subInstance"
         else -> returnType.toDartType()
     }
     return tmpl

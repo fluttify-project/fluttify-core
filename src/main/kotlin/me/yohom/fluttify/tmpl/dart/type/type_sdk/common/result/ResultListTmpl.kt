@@ -12,17 +12,14 @@ fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
     return tmpl
         .replace("#__type_name__#", genericType
             .findType()
-            // 在上层已经把没有子类的抽象类过滤掉了
-            // 找出第一个具体类子类去实例化(1. 如果自身是具体类, 那么就是自己 2.逻辑上不合理但是不影响使用), 否则就直接使用类名
-            .run { firstConcretSubtype?.name ?: name }
+            .name
             .depointer()
-            .toDartType()
             .run {
                 when {
                     isEmpty() -> platform.objectType()
                     toDartType().isDynamic() -> "Ref"
-                    findType().isInterface -> "${toDartType()}.subInstance"
-                    else -> this
+                    findType().isInterface -> "${toDartType().containerType()}.subInstance"
+                    else -> this.toDartType()
                 }
             })
         .replace("#__tag__#", ext.projectName)
