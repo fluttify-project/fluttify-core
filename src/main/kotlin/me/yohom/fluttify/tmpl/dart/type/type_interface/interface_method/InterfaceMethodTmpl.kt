@@ -21,20 +21,12 @@ fun InterfaceMethodTmpl(method: Method): String {
         // 只有回调类的参数需要加入释放池
         method
             .formalParams
-            .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() } }
-            // 过滤掉泛型声明参数, 即类似
-            // class A<T> {
-            //   void b(T t) {}
-            // }
-            // 的情况
-            .filter { it.variable.trueType !in method.className.findType().declaredGenericTypes }
+            .filter { it.variable.run { !jsonable() && !isEnum() && !isAliasType() || this.trueType in method.className.findType().declaredGenericTypes } }
             .joinToString("\n") {
                 if (it.variable.isCollection()) {
                     "kNativeObjectPool.addAll(${it.variable.name});"
-                } else  if (it.variable.isDynamic()) {
-                    "if (${it.variable.name} is Ref) kNativeObjectPool.add(${it.variable.name});"
                 } else {
-                    "kNativeObjectPool.add(${it.variable.name});"
+                    "if (${it.variable.name} is Ref) kNativeObjectPool.add(${it.variable.name});"
                 }
             }
     } else {

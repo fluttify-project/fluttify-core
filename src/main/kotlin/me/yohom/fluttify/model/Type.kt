@@ -194,7 +194,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 // 必须公开
                 isPublic
                 &&
-                (interfaces.isEmpty() || interfaces.contains("NSObject"))
+                (interfaces.isEmpty() || interfaces.contains("NSObject") || interfaces.contains("java.io.Serializable"))
                 &&
                 constructors.isEmpty()
                 &&
