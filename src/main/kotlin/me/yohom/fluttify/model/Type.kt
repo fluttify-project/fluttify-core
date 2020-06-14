@@ -144,8 +144,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val filter: Boolean by lazy {
-        if(TYPE_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        if(TYPE_LOG) println("类:\"${name}\"执行过滤开始")
+        if (TYPE_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        if (TYPE_LOG) println("类:\"${name}\"执行过滤开始")
         val result = must("已知类型") { isKnownType }
                 &&
                 must("公开类型") { isPublic }
@@ -169,8 +169,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 }
                 ||
                 must("是List") { /* Regexes.MAP.matches(name) ||*/ Regexes.ITERABLE.matches(name) }
-        if(TYPE_LOG) println("类:\"${name}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-        if(TYPE_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        if (TYPE_LOG) println("类:\"${name}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        if (TYPE_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑类↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         result
     }
 
@@ -253,8 +253,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val constructable: Boolean by lazy {
-        if(CONSTRUCTOR_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓构造器↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-        if(CONSTRUCTOR_LOG) println("构造器:${name}执行过滤开始")
+        if (CONSTRUCTOR_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓构造器↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+        if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤开始")
         val result = mustNot("抽象类型") { isAbstract }
                 &&
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
@@ -296,8 +296,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
                             || platform != Platform.iOS
                 }
-        if(CONSTRUCTOR_LOG) println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-        if(CONSTRUCTOR_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+        if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+        if (CONSTRUCTOR_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         result
     }
 
@@ -348,17 +348,19 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val isView: Boolean by lazy {
-        must("祖宗类中有平台View类") {
-            ancestorTypes.any {
-                it in listOf(
-                    "android.view.View",
-                    "android.view.SurfaceView",
-                    "android.view.ViewGroup",
-                    "android.widget.FrameLayout",
-                    "UIView"
-                )
-            }
-        }
+        must("通过类型过滤") { filter }
+                &&
+                must("祖宗类中有平台View类") {
+                    ancestorTypes.any {
+                        it in listOf(
+                            "android.view.View",
+                            "android.view.SurfaceView",
+                            "android.view.ViewGroup",
+                            "android.widget.FrameLayout",
+                            "UIView"
+                        )
+                    }
+                }
                 && mustNot("抽象类型") { isAbstract }
                 && mustNot("混淆类型") { isObfuscated }
                 && must("可构造") { constructable }

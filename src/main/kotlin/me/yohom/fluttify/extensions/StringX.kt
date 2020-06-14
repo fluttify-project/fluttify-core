@@ -348,10 +348,16 @@ fun TYPE_NAME.isObfuscated(): Boolean {
     // 如果类名不包含`.`, 说明是泛型类型, 则不认为是混淆类
     if (!contains(".")) return false
 
-    val type = replace("$", ".").substringAfterLast(".")
+    val types = genericTypes()
+        .map { it.replace("$", ".").substringAfterLast(".") }
+        .union(listOf(containerType().replace("$", ".").substringAfterLast(".")))
     val regex = Regex("[a-z|\\d]{1,2}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
-    return this !in ext.obfuscatedWhiteList && (regex.matches(type) || regex.matches(this)) && this != "id"
+    return this !in ext.obfuscatedWhiteList
+            &&
+            types.any { (regex.matches(it) || regex.matches(this)) }
+            &&
+            this != "id"
 }
 
 /**

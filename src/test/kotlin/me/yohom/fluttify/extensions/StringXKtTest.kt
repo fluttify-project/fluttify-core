@@ -1,15 +1,16 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.FluttifyTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class StringXKtTest {
+class StringXKtTest : FluttifyTest() {
 
     @Nested
     @DisplayName("Test for genericLevel")
-    inner class GenericLevelTest {
+    inner class GenericLevelTest : FluttifyTest() {
         @Test
         fun genericLevel_level_0() {
 //            val level = "Abc".iterableLevel()
@@ -66,7 +67,7 @@ class StringXKtTest {
 
     @Nested
     @DisplayName("Test for underscore2Camel")
-    inner class Underscore2CamelTest {
+    inner class Underscore2CamelTest : FluttifyTest() {
         @Test
         fun underscore2Camel_normal() {
             val result = "under_score_name".underscore2Camel()
@@ -94,7 +95,7 @@ class StringXKtTest {
 
     @Nested
     @DisplayName("Test for camel2Underscore")
-    inner class Camel2UnderscoreTest {
+    inner class Camel2UnderscoreTest : FluttifyTest() {
         @Test
         fun camel2Underscore_normal() {
             val underscoreString = "ACamelString".camel2Underscore()
@@ -110,7 +111,7 @@ class StringXKtTest {
 
     @Nested
     @DisplayName("Test for toDartType")
-    inner class ToDartTypeTest {
+    inner class ToDartTypeTest : FluttifyTest() {
         @Test
         fun toDartType_non_jsonable_generic_should_as_container_type() {
             val result = "android_util_Pair<Integer,com_amap_api_maps_model_LatLng>".toDartType()
@@ -120,7 +121,7 @@ class StringXKtTest {
 
     @Nested
     @DisplayName("Test for genericType")
-    inner class GenericTypeTest {
+    inner class GenericTypeTest : FluttifyTest() {
         @Test
         fun genericType_normal_class_should_as_itself() {
             val result = "Abc".genericTypes()
@@ -142,7 +143,7 @@ class StringXKtTest {
 
     @Nested
     @DisplayName("Test for isObfuscated")
-    inner class IsObfuscatedTest {
+    inner class IsObfuscatedTest : FluttifyTest() {
         @Test
         fun isObfuscated_non_obfuscated() {
             assertFalse("com.amap.api.mapcore.util.test".isObfuscated())
@@ -150,13 +151,13 @@ class StringXKtTest {
 
         @Test
         fun isObfuscated_obfuscated() {
-            assertTrue("com.amap.api.mapcore.util.el".isObfuscated())
+            assertTrue("List<com.amap.api.mapcore.util.el>".isObfuscated())
         }
     }
 
     @Nested
     @DisplayName("Test for isArray")
-    inner class IsArrayTest {
+    inner class IsArrayTest : FluttifyTest() {
         @Test
         fun isArray_java_array() {
             assertTrue("String[]".isArray())
