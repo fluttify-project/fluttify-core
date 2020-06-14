@@ -23,7 +23,7 @@ extension TypeOp#__plugin_name__##__platform__# on Object {
   }
 
   // type cast
-  Future<T> as__<T>() async {
+  T as__<T>() {
     final typeName = T.toString();
     // jsonable 直接造型 返回
     if (RegExp('(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)').hasMatch(typeName)) {

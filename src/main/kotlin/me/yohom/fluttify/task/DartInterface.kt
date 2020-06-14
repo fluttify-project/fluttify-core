@@ -221,7 +221,7 @@ open class IOSDartInterface : FluttifyTask() {
             .filterNot { it.name == "NSObject" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
-            .filter { if (ext.pluginDependencies.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }
+            .filter { if (ext.foundationVersion.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }
         // 类型检查
         val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
