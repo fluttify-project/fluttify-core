@@ -107,6 +107,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterNot { it.isCallback }
             .filterNot { it.isEnum }
             .filterNot { it.name == "android.view.SurfaceHolder.Callback" }
+            .filterNot { it.name == "java.lang.Object" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
         // 类型检查
@@ -215,6 +216,7 @@ open class IOSDartInterface : FluttifyTask() {
             .filterNot { it.isAlias() }
             .filterNot { it.isCallback }
             .filterNot { it.isEnum }
+            .filterNot { it.name == "NSObject" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
             .filter { if (ext.pluginDependencies.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }

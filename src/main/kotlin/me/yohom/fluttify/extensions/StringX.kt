@@ -375,7 +375,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
-                Regex("java\\.lang\\.Object").matches(this) -> "java_lang_Object" // 这里为什么要转为dart的Object在36行有说明
+                Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 // 若是某种java的List, 那么去掉前缀, 然后转换泛型类型
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)\\u003c.*\\u003e").matches(this) -> {
                     val genericType = genericTypes()[0]
