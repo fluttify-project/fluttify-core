@@ -59,6 +59,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  //endregion
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/type_sdk.dart.tmpl").readText() }
+private val batchTmpl by lazy { getResource("/tmpl/dart/type_sdk_batch.dart.tmpl").readText() }
 
 fun TypeSdkTmpl(type: Type): String {
     type.mergeWithCategory()
@@ -119,6 +120,15 @@ fun TypeSdkTmpl(type: Type): String {
         .filterMethod(true)
         .map { MethodBatchTmpl(it) }
 
+    val typeSdkBatch = if (!type.isCallback && type.declaredGenericTypes.isEmpty()) {
+        batchTmpl.replace("#__class_name__#", className)
+            .replaceParagraph("#__getters_batch__#", gettersBatch.joinToString("\n"))
+            .replaceParagraph("#__setters_batch__#", settersBatch.joinToString("\n"))
+            .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
+    } else {
+        ""
+    }
+
     return tmpl
         .replace(
             "#__platform_import__#", when (type.platform) {
@@ -138,7 +148,5 @@ fun TypeSdkTmpl(type: Type): String {
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))
         .replaceParagraph("#__methods__#", methods.joinToString("\n"))
-        .replaceParagraph("#__getters_batch__#", gettersBatch.joinToString("\n"))
-        .replaceParagraph("#__setters_batch__#", settersBatch.joinToString("\n"))
-        .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
+        .replaceParagraph("#__type_sdk_batch__#", typeSdkBatch)
 }

@@ -107,6 +107,8 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterNot { it.isCallback }
             .filterNot { it.isEnum }
             .filterNot { it.name == "android.view.SurfaceHolder.Callback" }
+            .filterNot { it.name == "android.view.View.OnClickListener" }
+            .filterNot { it.name == "android.view.View.OnTouchListener" }
             .filterNot { it.name == "java.lang.Object" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }

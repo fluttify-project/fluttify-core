@@ -156,9 +156,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     ancestorTypes.all { it.findType().isKnownType } || ancestorTypes.isEmpty()
                 }
                 &&
-                // 换言之只支持接口的泛型
-                mustNot("不是接口且含有泛型") { !isInterface && declaredGenericTypes.isNotEmpty() }
-                &&
                 mustNot("混淆类型") { isObfuscated }
                 &&
                 mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
