@@ -97,19 +97,13 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
             RegisterPlatformViewTmpl(it)
         }
 
-    // 提取所有framework内的头文件
-    val imports = ext.ios.libDir
+    // 导入头文件
+    // 如果没有手动指定的话则拼接出一个
+    val imports = ext.ios.iosImportHeader ?: ext.ios.libDir
         .file()
         .run {
             // 所有的Framework
             val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
-//                ?.flatMap { framework ->
-//                    "$framework/Headers/"
-//                        .file()
-//                        .listFiles { _, name -> name.endsWith(".h") }
-//                        ?.map { framework to it }
-//                        ?: listOf()
-//                }
                 ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
                 ?: listOf()
             // 如果没有framework, 那么就遍历出所有的.h文件

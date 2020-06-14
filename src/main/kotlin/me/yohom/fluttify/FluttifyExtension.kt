@@ -116,6 +116,11 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     var noncallbackClasses = listOf<String>()
 
     /**
+     * ios头文件导入, 如果不指定, 则使用默认的头文件导出
+     */
+    var iosImportHeader: String? = null
+
+    /**
      * 元素替换
      */
     var overrideElements: Map<Int, String> = mapOf()
