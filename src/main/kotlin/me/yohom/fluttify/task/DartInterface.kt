@@ -1,7 +1,8 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.EXCLUDE_TYPES
+import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
 import me.yohom.fluttify.tmpl.dart.type.type_constants.TypeConstantsTmpl
@@ -95,20 +96,25 @@ open class AndroidDartInterface : FluttifyTask() {
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
             .flatMap { it.types }
+            .union(SYSTEM_TYPE.filter { it.platform == Platform.Android }) // 造型需要把系统类加上
+            .toList()
             .filterType()
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
             .filterNot { it.typeType == TypeType.Extension }
             .filterNot { it.isAlias() }
+            .filterNot { it.isCallback }
+            .filterNot { it.isEnum }
+            .filterNot { it.name == "android.view.SurfaceHolder.Callback" }
+            .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
-            .filter { !it.isInterface && !it.isEnum }
         // 类型检查
         val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
-            .replace("#__current_package__#", ext.projectName)
+            .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/android/android.export.g.dart';")
             .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "Android")
@@ -164,11 +170,7 @@ open class IOSDartInterface : FluttifyTask() {
 
                 if (resultDart.isNotBlank()) {
                     val resultFile =
-                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/${it.name.replace(
-                            ".",
-                            "/"
-                        )}.g.dart"
-
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/${it.name.replace(".", "/")}.g.dart"
                     resultFile.file().writeText(resultDart)
                 }
             }
@@ -203,20 +205,25 @@ open class IOSDartInterface : FluttifyTask() {
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
             .flatMap { it.types }
+            .union(SYSTEM_TYPE.filter { it.platform == Platform.iOS }) // 造型需要把系统类加上
+            .toList()
             .filterType()
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
             .filterNot { it.typeType == TypeType.Extension }
             .filterNot { it.isAlias() }
+            .filterNot { it.isCallback }
+            .filterNot { it.isEnum }
+            .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
-            .filter { !it.isInterface && !it.isEnum }
+            .filter { if (ext.pluginDependencies.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }
         // 类型检查
         val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
-            .replace("#__current_package__#", ext.projectName)
+            .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/ios/ios.export.g.dart';")
             .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "IOS")

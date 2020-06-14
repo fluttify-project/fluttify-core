@@ -111,7 +111,13 @@ fun TypeInterfaceTmpl(type: Type): String {
     }
 
     return tmpl
-        .replace("#__current_package__#", currentPackage)
+        .replace(
+            "#__platform_import__#", when (type.platform) {
+                Platform.iOS -> "import 'package:$currentPackage/src/ios/ios.export.g.dart';"
+                Platform.Android -> "import 'package:$currentPackage/src/android/android.export.g.dart';"
+                else -> ""
+            }
+        )
         .replaceParagraph(
             "#__foundation__#",
             ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })

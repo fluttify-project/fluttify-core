@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.getter_batch.GetterBatchTmpl
@@ -14,14 +15,13 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
 //import 'dart:typed_data';
 //
-//import 'package:#__current_package__#/src/ios/ios.export.g.dart';
-//import 'package:#__current_package__#/src/android/android.export.g.dart';
+//#__platform_import__#
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
 //#__foundation__#
 //
-//class #__class_name__# extends #__super_class__# #__mixins__# {
+//#__abstract__#class #__class_name__# extends #__super_class__# #__mixins__# {
 //  //region constants
 //  static const String name__ = '#__origin_class_name__#';
 //
@@ -120,9 +120,15 @@ fun TypeSdkTmpl(type: Type): String {
         .map { MethodBatchTmpl(it) }
 
     return tmpl
-        .replace("#__current_package__#", currentPackage)
+        .replace(
+            "#__platform_import__#", when (type.platform) {
+                Platform.iOS -> "import 'package:$currentPackage/src/ios/ios.export.g.dart';"
+                Platform.Android -> "import 'package:$currentPackage/src/android/android.export.g.dart';"
+                else -> ""
+            }
+        )
         .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
-        .replace("#__abstract__#", if(type.isAbstract) "/* abstract */ " else "")
+        .replace("#__abstract__#", if (type.isAbstract) "/* abstract */ " else "")
         .replace("#__class_name__#", className)
         .replace("#__origin_class_name__#", originClassName)
         .replace("#__super_class__#", superClass)
