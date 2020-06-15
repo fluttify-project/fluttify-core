@@ -1,6 +1,6 @@
 MethodChannel('#__callback_channel__#')
     .setMethodCallHandler((methodCall) async {
-      final args = methodCall.arguments as Map<String, Object>;
+      final args = methodCall.arguments as Map;
       switch (methodCall.method) {
         #__cases__#
         default:

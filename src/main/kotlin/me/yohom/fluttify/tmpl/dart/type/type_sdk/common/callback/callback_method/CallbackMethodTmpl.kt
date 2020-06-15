@@ -8,9 +8,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //MethodChannel('#__callback_channel__#')
 //    .setMethodCallHandler((methodCall) async {
 //      final args = methodCall.arguments as Map;
-//      // final refId = args['callerRefId'] as int;
-//      // if (refId != this.refId) return;
-//
 //      switch (methodCall.method) {
 //        #__cases__#
 //        default:
