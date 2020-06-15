@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.platform_view_factory
 
+import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
@@ -97,6 +98,8 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
                 param.variable.trueType !in listOf("android.content.Context", "android.util.AttributeSet", "int")
                         &&
                         param.variable.trueType.findType().isKnownType
+                        &&
+                        param.variable.trueType !in SYSTEM_TYPE.map { it.name }
             }
         }
 
