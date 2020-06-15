@@ -476,7 +476,12 @@ fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
  * 去除objc的限定词
  */
 fun TYPE_NAME.removeObjcSpecifier(): TYPE_NAME {
-    return replace("__nullable", "").replaceParagraph("__nonnull", "")
+    return replace("__nullable", "")
+        .replace("__nonnull", "")
+        .replace("_Nullable", "")
+        .replace("_Nonnull", "")
+        .replace("nullable", "")
+        .replace("nonnull", "")
 }
 
 /**

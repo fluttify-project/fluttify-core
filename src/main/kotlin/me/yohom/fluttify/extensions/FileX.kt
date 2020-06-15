@@ -392,7 +392,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                     Parameter(
                         variable = Variable(
                             argType.objcSpecifierExpand(),
-                            argName.depointer(),
+                            argName.depointer().removeObjcSpecifier(),
                             Platform.iOS
                         ),
                         platform = Platform.iOS

@@ -1,10 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_ref
 
 import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.findType
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Parameter
 
 //await (args['#__arg_name__#'] as Object).as__<#__arg_type_name__#>()
