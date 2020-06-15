@@ -6,7 +6,7 @@ import me.yohom.fluttify.extensions.isPrimitivePointerType
 import me.yohom.fluttify.model.Variable
 
 //// ref callback arg
-//NSNumber* arg#__arg_name__# = nil;
+//NSNumber* arg#__arg_name__# = [NSNull null];
 //if (#__arg__# != nil) {
 //    arg#__arg_name__# = @(#__arg__#.hash);
 //    HEAP[arg#__arg_name__#] = #__arg__#;

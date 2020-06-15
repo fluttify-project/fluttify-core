@@ -24,20 +24,21 @@ fun InvokeTmpl(method: Method): String {
             val type = typeName.findType()
             when {
                 typeName.findType().isEnum -> {
+                    // TODO 如果枚举有值的话直接使用值
                     "${it.name}.index + ${type.enumerators[0].value}"
                 }
                 it.isIterable
                         && typeName.genericTypes().isNotEmpty()
                         && typeName.genericTypes()[0].findType().isEnum -> {
                     // 枚举列表
-                    "${it.name}.map((__it__) => __it__.index + ${typeName.genericTypes()[0].findType().enumerators[0].value}).toList()"
+                    "${it.name}.map((__it__) => __it__?.index + ${typeName.genericTypes()[0].findType().enumerators[0].value})?.toList()"
                 }
                 typeName.jsonable() -> it.name
-                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__.refId).toList()"
+                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__?.refId).toList()"
                 it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
                 // dynamic类型需要根据是否是Ref类型来区分是直接传还是传refId
-                typeName.toDartType() == "dynamic" -> "${it.name} is Ref ? (${it.name} as Ref).refId : ${it.name}"
-                else -> "${it.name}.refId"
+                typeName.toDartType() == "dynamic" -> "${it.name} is Ref ? (${it.name} as Ref)?.refId : ${it.name}"
+                else -> "${it.name}?.refId"
             }
         }
     return tmpl
