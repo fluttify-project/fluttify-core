@@ -183,7 +183,7 @@ fun JAVA_FILE.javaType(): SourceFile {
         }
 
         override fun enterEnumConstant(ctx: EnumConstantContext) {
-            enumConstants.add(Enumerator(ctx.IDENTIFIER().text, null))
+            enumConstants.add(Enumerator(ctx.IDENTIFIER().text, 0))
         }
     })
 
@@ -320,7 +320,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         override fun enterEnumerator(ctx: ObjectiveCParser.EnumeratorContext) {
             stack.peekOrNull()?.run {
                 val enumName = ctx.enumeratorIdentifier().identifier().text
-                val enumValue = ctx.expression()?.text?.toIntOrNull()
+                val enumValue = ctx.expression()?.text?.toIntOrNull() ?: 0
                 enumerators.add(Enumerator(enumName, enumValue))
             }
         }
