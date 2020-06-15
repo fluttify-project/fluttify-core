@@ -31,7 +31,8 @@ fun JAVA_FILE.javaType(): SourceFile {
     val source = readText()
 
     var packageName = ""
-    var genericTypes = listOf<TYPE_NAME>()
+    var declaredGenericTypes = listOf<TYPE_NAME>()
+    val definedGenericTypes = mutableListOf<TYPE_NAME>()
     val fields = mutableListOf<Field>()
     val constructors = mutableListOf<Constructor>()
     val enumConstants = mutableListOf<Enumerator>()
@@ -55,7 +56,11 @@ fun JAVA_FILE.javaType(): SourceFile {
             simpleName = ctx.IDENTIFIER()?.text ?: ""
             isInnerType = simpleName.contains("$")
             typeType = TypeType.Class
-            genericTypes = ctx.genericTypes()
+            declaredGenericTypes = ctx.genericTypes()
+            // 默认给一个和声明泛型相同长度的Object定义泛型
+            for (item in declaredGenericTypes.indices) {
+                definedGenericTypes.add("java.lang.Object")
+            }
             isAbstract = ctx.isAbstract()
 
             // 列出所有的import
@@ -97,7 +102,11 @@ fun JAVA_FILE.javaType(): SourceFile {
             simpleName = ctx.IDENTIFIER().text
             isInnerType = simpleName.contains("$")
             typeType = TypeType.Interface
-            genericTypes = ctx.genericTypes()
+            declaredGenericTypes = ctx.genericTypes()
+            // 默认给一个和声明泛型相同长度的Object定义泛型
+            for (item in declaredGenericTypes.indices) {
+                definedGenericTypes.add("java.lang.Object")
+            }
             interfaces.addAll(ctx.superInterfaces())
             isAbstract = true
         }
@@ -195,7 +204,8 @@ fun JAVA_FILE.javaType(): SourceFile {
             it.isAbstract = isAbstract
             it.isInnerType = isInnerType
             it.isStaticType = isStaticType
-            it.declaredGenericTypes.addAll(genericTypes)
+            it.declaredGenericTypes.addAll(declaredGenericTypes)
+            it.definedGenericTypes.addAll(definedGenericTypes)
             it.constructors = constructors
             it.interfaces = interfaces
             it.name = "$packageName.$simpleName"

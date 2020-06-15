@@ -80,8 +80,6 @@ open class AndroidJavaInterface : FluttifyTask() {
         val methods = filteredTypes
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
-            // 含有泛型的类型不需要生成handler
-            .filter { it.declaredGenericTypes.isEmpty() }
             .flatMap { it.methods }
             .filterMethod()
             .map { HandlerMethodTmpl(it) }
@@ -89,8 +87,6 @@ open class AndroidJavaInterface : FluttifyTask() {
         val methodsBatch = filteredTypes
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
-            // 含有泛型的类型不需要生成handler
-            .filter { it.declaredGenericTypes.isEmpty() }
             .flatMap { it.methods }
             .filterMethod(batch = true)
             .map { HandlerMethodBatchTmpl(it) }

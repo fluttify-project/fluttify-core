@@ -1,9 +1,6 @@
 MethodChannel('#__callback_channel__#')
     .setMethodCallHandler((methodCall) async {
-      final args = methodCall.arguments as Map;
-      // final refId = args['callerRefId'] as int;
-      // if (refId != this.refId) return;
-
+      final args = methodCall.arguments as Map<String, Object>;
       switch (methodCall.method) {
         #__cases__#
         default:

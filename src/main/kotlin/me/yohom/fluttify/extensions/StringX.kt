@@ -186,7 +186,11 @@ fun TYPE_NAME.findType(): Type {
         // 要使用克隆对象, 因为定义的泛型类可能不止一个, 如果直接在原对象上操作的话, 那么后续的泛型类可能会受影响
         val clonedContainerType = containerType.toJson().fromJson<Type>()
 
-        val definedGenericTypes = type.genericTypes().toMutableList()
+        val definedGenericTypes = if (type.genericTypes().all { it in containerType.declaredGenericTypes }) {
+            containerType.definedGenericTypes
+        } else {
+            type.genericTypes().toMutableList()
+        }
         clonedContainerType.definedGenericTypes = definedGenericTypes
         // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
         clonedContainerType.methods
