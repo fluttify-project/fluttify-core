@@ -28,6 +28,14 @@ repositories {
     jcenter()
 }
 
+sourceSets {
+    test {
+        resources {
+            srcDirs = ["src/main/resources/"]
+        }
+    }
+}
+
 dependencies {
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0-M1'

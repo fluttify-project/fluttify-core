@@ -45,22 +45,21 @@ private val batchTmpl by lazy { getResource("/tmpl/dart/type_interface_batch.dar
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName
-    val typeName = if (type.declaredGenericTypes.isNotEmpty()) {
-        "${type.name.toDartType()}<${type.declaredGenericTypes.joinToString()}>"
-    } else {
-        type.name.toDartType()
-    }
+    val typeName = "${type.name.toDartType()}${type.declaredGenericTypes.joinToStringX(",", "<", ">")}"
 
     val constants = type.fields.filterConstants()
 
     val allSuperType = type.ancestorTypes
         .reversed()
+        .asSequence()
         .filter { it.isNotBlank() }
         .filter { it.findType().platform != Platform.Unknown }
         .filter { !it.isObfuscated() }
         // 去掉NSObject的继承, 下面会添加回去的, 由于objc的class和protocol不在一个命名空间内, 所以存在class NSObject和protocol NSObject
         // 在dart端不太好处理
         .filter { it != "NSObject" }
+        .map { "$it${it.findType().declaredGenericTypes.joinToStringX(",", "<", ">")}" }
+        .toList()
     val subSuperMixins = if (allSuperType.isEmpty()) "" else "${allSuperType.joinToString().toDartType()}, "
     val superMixins = if (allSuperType.isEmpty()) {
         type.platform.objectType()
@@ -69,13 +68,16 @@ fun TypeInterfaceTmpl(type: Type): String {
     }
 
     val containerType = typeName.containerType()
-    val subclass = if (!type.isCallback)
-        "class _${containerType}_SUB extends ${type.platform.objectType()} with $subSuperMixins$containerType {}"
-    else
+    val subclass = if (!type.isCallback) {
+        val genericType = type.declaredGenericTypes.joinToStringX(",", "<", ">")
+        "class _${containerType}_SUB$genericType extends ${type.platform.objectType()} with $subSuperMixins$typeName {}"
+    } else {
         ""
+    }
     // 给接口类型提供一个可供实例化的子类, mixin需要继承各平台Object类型, 并实现接口类
     val subInstance = if (!type.isCallback) {
-        "static $containerType subInstance() => _${containerType}_SUB();"
+        val genericType = type.declaredGenericTypes.joinToStringX(",", "<", ">")
+        "static $containerType$genericType subInstance$genericType() => _${containerType}_SUB$genericType();"
     } else {
         ""
     }
@@ -103,7 +105,7 @@ fun TypeInterfaceTmpl(type: Type): String {
         .filterMethod(true)
         .map { InterfaceMethodBatchTmpl(it) }
 
-    val typeInterfaceBatch = if (!type.isCallback && !type.declaredGenericTypes.isNotEmpty()) {
+    val typeInterfaceBatch = if (!type.isCallback && type.declaredGenericTypes.isEmpty()) {
         batchTmpl.replace("#__interface_type__#", typeName)
             .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
     } else {

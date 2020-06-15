@@ -1,7 +1,0 @@
-// 返回值: 列表
-NSMutableArray* jsonableResult = [NSMutableArray array];
-for (int __i__ = 0; __i__ < result.count; __i__++) {
-    NSObject* object = [result objectAtIndex:__i__];
-    [jsonableResult addObject: @(object.hash)];
-    HEAP[@([object hash])] = object;
-}

@@ -8,10 +8,11 @@ import me.yohom.fluttify.extensions.*
 private val tmpl by lazy { getResource("/tmpl/dart/result_ref.stmt.dart.tmpl").readText() }
 
 fun ResultRefTmpl(returnType: TYPE_NAME): String {
+    val genericTypes = returnType.findType().definedGenericTypes.joinToStringX(",", "<", ">").toDartType()
     val typeName = when {
         returnType.isPrimitivePointerType() -> returnType.toDartType()
         returnType.toDartType() == "dynamic" -> "Ref"
-        returnType.findType().isInterface -> "${returnType.toDartType().containerType()}.subInstance"
+        returnType.findType().isInterface -> "${returnType.toDartType().containerType()}.subInstance$genericTypes"
         else -> returnType.toDartType()
     }
     return tmpl
