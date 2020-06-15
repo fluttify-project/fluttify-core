@@ -110,6 +110,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterNot { it.name == "android.view.View.OnClickListener" }
             .filterNot { it.name == "android.view.View.OnTouchListener" }
             .filterNot { it.name == "java.lang.Object" }
+            .filterNot { it.name == "java.lang.Void" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
         // 类型检查

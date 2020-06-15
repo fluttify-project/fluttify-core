@@ -97,6 +97,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.graphics.Bitmap"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.widget.ImageView"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "java.lang.Object"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "java.lang.Void"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "java.io.Serializable"; typeType = TypeType.Interface; platform = Platform.Android },
     Type().apply { name = "java.io.Closeable"; typeType = TypeType.Interface; platform = Platform.Android },
     Type().apply { name = "java.io.File"; typeType = TypeType.Class; platform = Platform.Android },

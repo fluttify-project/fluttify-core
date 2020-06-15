@@ -92,17 +92,10 @@ fun TYPE_NAME.isString(): Boolean {
 }
 
 /**
- * 是否是集合类型
- */
-fun TYPE_NAME.isLinkedList(): Boolean {
-    return Regex("LinkedList<(\\w*|.*)>").matches(this)
-}
-
-/**
  * 是否是void类型
  */
 fun TYPE_NAME.isVoid(): Boolean {
-    return this.toLowerCase() == "void";
+    return this.toLowerCase() == "void" || this == "java.lang.Void"
 }
 
 /**
@@ -119,45 +112,6 @@ fun TYPE_NAME.enList(level: Int = 1): TYPE_NAME {
     var result = this
     for (i in 0 until level) {
         result = "List<$result>"
-    }
-    return result
-}
-
-/**
- * 套上Map<>
- */
-fun TYPE_NAME.enMap(): TYPE_NAME {
-    return "Map<$this>"
-}
-
-/**
- * 套上Collection<>
- */
-fun TYPE_NAME.enCollection(): TYPE_NAME {
-    return "Collection<$this>"
-}
-
-/**
- * 套上ArrayList<>
- */
-fun TYPE_NAME.enArrayList(): TYPE_NAME {
-    return "ArrayList<$this>"
-}
-
-/**
- * 套上[]
- */
-fun TYPE_NAME.enArray(): TYPE_NAME {
-    return "$this[]"
-}
-
-/**
- * 套上NSArray
- */
-fun TYPE_NAME.enNSArray(level: Int = 1): TYPE_NAME {
-    var result: String = this
-    for (index in 0 until level) {
-        result = "NSArray<$result>*"
     }
     return result
 }
@@ -382,6 +336,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
+                Regex("java\\.lang\\.Void").matches(this) -> "void"
                 // 若是某种java的List, 那么去掉前缀, 然后转换泛型类型
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)\\u003c.*\\u003e").matches(this) -> {
                     val genericType = genericTypes()[0]

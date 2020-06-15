@@ -40,6 +40,8 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
             "java.lang.Exception"
         } else if (typeName == "Iterable") {
             "java.lang.Iterable"
+        } else if (typeName == "Void") {
+            "java.lang.Void"
         } else if (typeName.jsonable() || typeName == "void") {
             typeName
         } else {
