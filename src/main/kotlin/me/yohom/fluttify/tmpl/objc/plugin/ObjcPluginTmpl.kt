@@ -99,7 +99,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
 
     // 导入头文件
     // 如果没有手动指定的话则拼接出一个
-    val imports = ext.ios.iosImportHeader ?: ext.ios.libDir
+    val imports = (if (ext.ios.iosImportHeader.isNotEmpty()) ext.ios.iosImportHeader else ext.ios.libDir
         .file()
         .run {
             // 所有的Framework
@@ -118,7 +118,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
                 }
             }
             frameworkHeaders.union(directHeaders)
-        }
+        })
         .union(platformViewHeader)
         .joinToString("\n")
 

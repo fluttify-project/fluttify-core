@@ -118,7 +118,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * ios头文件导入, 如果不指定, 则使用默认的头文件导出
      */
-    var iosImportHeader: String? = null
+    var iosImportHeader: List<String> = listOf()
 
     /**
      * 元素替换
