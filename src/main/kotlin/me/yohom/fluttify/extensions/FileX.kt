@@ -470,7 +470,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                             else -> this
                         }
                     },
-                    ctx.name().depointer(), // 统一把*号加到类名上去
+                    ctx.name().depointer().removeObjcSpecifier(), // 统一把*号加到类名上去
                     Platform.iOS
                 )
                 // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
@@ -482,8 +482,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                         ctx.getValue(),
                         variable,
                         name,
-                        ctx.getterName(),
-                        ctx.setterName(),
+                        ctx.getterName().removeObjcSpecifier(),
+                        ctx.setterName().removeObjcSpecifier(),
                         Platform.iOS,
                         ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                     )
