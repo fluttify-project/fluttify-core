@@ -10,10 +10,10 @@ import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.Interfac
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
+//
 //import 'dart:typed_data';
 //
-//import 'package:#__current_package__#/src/ios/ios.export.g.dart';
-//import 'package:#__current_package__#/src/android/android.export.g.dart';
+//#__platform_import__#
 //import 'package:flutter/foundation.dart';
 //import 'package:flutter/services.dart';
 //
@@ -34,12 +34,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //}
 //
 //#__type_interface_batch__#
-
-//extension #__interface_type__#_Batch on List<#__type_name__#> {
-//  //region methods
-//  #__methods_batch__#
-//  //endregion
-//}
 private val tmpl by lazy { getResource("/tmpl/dart/type_interface.dart.tmpl").readText() }
 private val batchTmpl by lazy { getResource("/tmpl/dart/type_interface_batch.dart.tmpl").readText() }
 
@@ -58,7 +52,7 @@ fun TypeInterfaceTmpl(type: Type): String {
         // 去掉NSObject的继承, 下面会添加回去的, 由于objc的class和protocol不在一个命名空间内, 所以存在class NSObject和protocol NSObject
         // 在dart端不太好处理
         .filter { it != "NSObject" }
-        .map { "$it${it.findType().declaredGenericTypes.joinToStringX(",", "<", ">")}" }
+        .map { "${it.containerType()}${it.findType().declaredGenericTypes.joinToStringX(",", "<", ">")}" }
         .toList()
     val subSuperMixins = if (allSuperType.isEmpty()) "" else "${allSuperType.joinToString().toDartType()}, "
     val superMixins = if (allSuperType.isEmpty()) {
