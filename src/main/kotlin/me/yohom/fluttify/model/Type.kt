@@ -182,35 +182,32 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     @delegate:Transient
     val isCallback: Boolean by lazy {
         // 是否在手动配置的回调类列表内
-        ((isInterface || isAbstract) // 必须是接口 或 抽象类
+        when (platform) {
+            Platform.General -> false
+            Platform.iOS -> ext.ios.callbackClasses.any { Regex(it).matches(name) }
+            Platform.Android -> ext.android.callbackClasses.any { Regex(it).matches(name) }
+            Platform.Unknown -> false
+        }
                 ||
-                when (platform) {
-                    Platform.General -> false
-                    Platform.iOS -> ext.ios.callbackClasses.any { Regex(it).matches(name) }
-                    Platform.Android -> ext.android.callbackClasses.any { Regex(it).matches(name) }
-                    Platform.Unknown -> false
-                }
-                ||
-                // 名字里含有Callback或Listener的类, 虽然比较粗暴, 但是效果应该不会差
-                (name.contains("Callback") || name.contains("Listener") || name.contains("Delegate")))
-                &&
-                // 必须公开
-                isPublic
-                &&
-                (interfaces.isEmpty() || interfaces.contains("NSObject") || interfaces.contains("java.io.Serializable"))
-                &&
-                constructors.isEmpty()
-                &&
-                // 必须没有子类
-                !hasSubtype
-                &&
-                // 不在手动配置的非回调类列表内
-                when (platform) {
-                    Platform.General -> true
-                    Platform.iOS -> ext.ios.noncallbackClasses.none { Regex(it).matches(name.depointer()) }
-                    Platform.Android -> ext.android.noncallbackClasses.none { Regex(it).matches(name.depointer()) }
-                    Platform.Unknown -> true
-                }
+                ((isInterface || isAbstract) // 必须是接口 或 抽象类
+                        &&
+                        // 必须公开
+                        isPublic
+                        &&
+                        (interfaces.isEmpty() || interfaces.contains("NSObject") || interfaces.contains("java.io.Serializable"))
+                        &&
+                        constructors.isEmpty()
+                        &&
+                        // 必须没有子类
+                        !hasSubtype
+                        &&
+                        // 不在手动配置的非回调类列表内
+                        when (platform) {
+                            Platform.General -> true
+                            Platform.iOS -> ext.ios.noncallbackClasses.none { Regex(it).matches(name.depointer()) }
+                            Platform.Android -> ext.android.noncallbackClasses.none { Regex(it).matches(name.depointer()) }
+                            Platform.Unknown -> true
+                        })
     }
 
     @delegate:Transient

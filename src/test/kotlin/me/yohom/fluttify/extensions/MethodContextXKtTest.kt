@@ -1,7 +1,7 @@
 package me.yohom.fluttify.extensions
 
-import me.yohom.fluttify.Amap.androidLocationSDK
-import me.yohom.fluttify.model.*
+import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Platform
 import org.junit.jupiter.api.Test
 import parser.java.JavaParser
 import parser.java.JavaParserBaseListener

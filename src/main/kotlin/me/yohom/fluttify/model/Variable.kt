@@ -35,8 +35,9 @@ data class Variable(
     val rawType: String
         get() = typeName
 
-    fun defineGenericType(definedTypeName: TYPE_NAME) {
+    fun defineGenericType(definedTypeName: TYPE_NAME): Variable {
         typeName = definedTypeName
+        return this
     }
 
     fun isStructPointer(): Boolean {
