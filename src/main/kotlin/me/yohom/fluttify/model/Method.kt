@@ -143,6 +143,12 @@ data class Method(
                             .any { it.findType().isUnknownType }
                     }
                     &&
+                    mustNot("形参祖宗类含有忽略类型") {
+                        formalParams
+                            .flatMap { it.variable.trueType.findType().ancestorTypes }
+                            .any { EXCLUDE_TYPES.any { type -> type.matches(it) } }
+                    }
+                    &&
                     mustNot("形参父类是混淆类") {
                         formalParams.any { it.variable.trueType.findType().superClass.isObfuscated() }
                     }

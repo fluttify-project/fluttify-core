@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
+import me.yohom.fluttify.Amap
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.Tim
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
@@ -27,6 +28,18 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
             .find { it.name == "com.tencent.imsdk.common.ICallback" }
             ?.run {
                 println(this.isCallback)
+//                Assert.assertTrue(this.isCallback)
+            }
+    }
+
+    @Test
+    fun typeSdkTmpl_amap_com_amap_api_maps_model_particle_VelocityGenerate() {
+        Amap.androidMapSDK
+            .allTypes
+//            .find { it.name == "com.amap.api.maps.model.particle.VelocityGenerate" }
+            .find { it.name == "com.amap.api.maps.model.particle.ColorGenerate" }
+            ?.run {
+                println(this.filter)
 //                Assert.assertTrue(this.isCallback)
             }
     }
