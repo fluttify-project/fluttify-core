@@ -182,14 +182,17 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     @delegate:Transient
     val isCallback: Boolean by lazy {
         // 是否在手动配置的回调类列表内
-        when (platform) {
-            Platform.General -> false
-            Platform.iOS -> ext.ios.callbackClasses.any { Regex(it).matches(name) }
-            Platform.Android -> ext.android.callbackClasses.any { Regex(it).matches(name) }
-            Platform.Unknown -> false
-        }
+        ((isInterface || isAbstract) // 必须是接口 或 抽象类
                 ||
-                (isInterface || isAbstract) // 必须是接口 或 抽象类
+                when (platform) {
+                    Platform.General -> false
+                    Platform.iOS -> ext.ios.callbackClasses.any { Regex(it).matches(name) }
+                    Platform.Android -> ext.android.callbackClasses.any { Regex(it).matches(name) }
+                    Platform.Unknown -> false
+                }
+                ||
+                // 名字里含有Callback或Listener的类, 虽然比较粗暴, 但是效果应该不会差
+                (name.contains("Callback") || name.contains("Listener") || name.contains("Delegate")))
                 &&
                 // 必须公开
                 isPublic
