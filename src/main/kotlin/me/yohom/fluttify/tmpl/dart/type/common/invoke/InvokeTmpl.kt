@@ -25,7 +25,8 @@ fun InvokeTmpl(method: Method): String {
             when {
                 typeName.findType().isEnum -> {
                     // TODO 如果枚举有值的话直接使用值
-                    "${it.name}.index + ${type.enumerators[0].value}"
+                    val offset = if(type.enumerators.isNotEmpty()) type.enumerators[0].value else 0
+                    "${it.name}.index + $offset"
                 }
                 it.isIterable
                         && typeName.genericTypes().isNotEmpty()

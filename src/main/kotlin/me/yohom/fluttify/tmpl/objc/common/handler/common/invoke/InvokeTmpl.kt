@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda.CallbackLambdaTmpl
 
-internal class InvokeTmpl private constructor(private val field: Field?, private val method: Method?) {
+class InvokeTmpl private constructor(private val field: Field?, private val method: Method?) {
 
     constructor(field: Field) : this(field, null)
 
