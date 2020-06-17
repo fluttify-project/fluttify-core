@@ -6,9 +6,7 @@ import me.yohom.fluttify.extensions.fromJson
 import me.yohom.fluttify.model.Podspec
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FalseFileFilter
-import org.apache.commons.io.filefilter.IOFileFilter
 import org.apache.commons.io.filefilter.TrueFileFilter
-import org.apache.commons.io.filefilter.WildcardFileFilter
 import org.gradle.api.tasks.TaskAction
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
@@ -17,7 +15,7 @@ import java.net.URI
 open class DownloadAndroidSDK : FluttifyTask() {
     @TaskAction
     fun process() {
-        if (ext.android.remote.run { "$org$name$version" }.isNotEmpty()) {
+        if (ext.android.remote.androidConfigured) {
             project.repositories.run {
                 maven { it.url = URI("http://maven.aliyun.com/nexus/content/groups/public/") }
                 maven { it.url = URI("https://oss.sonatype.org/content/groups/public") }
@@ -26,11 +24,11 @@ open class DownloadAndroidSDK : FluttifyTask() {
                 mavenCentral()
             }
             val config = project.configurations.create("targetJar")
-            val dep = project.dependencies.create(ext.android.remote.run { "$org:$name:$version" })
-            config.dependencies.add(dep)
+            val deps = ext.android.remote.androidCoordinate.map { project.dependencies.create(it) }
+            config.dependencies.addAll(deps)
             if (config.files.isNotEmpty()) {
-                config.files.first().run {
-                    FileUtils.copyFile(this, "${ext.android.libDir}/${name}".file())
+                config.files.forEach {
+                    FileUtils.copyFile(it, "${ext.android.libDir}/${it.name}".file())
                 }
             }
         }
@@ -41,15 +39,13 @@ open class DownloadIOSSDK : FluttifyTask() {
     @TaskAction
     fun process() {
         ext.ios.libDir.file().run {
-            if (list { _, name -> !name.startsWith(".") }?.isEmpty() == true
-                &&
-                ext.ios.remote.run { "$name$version" }.isNotEmpty()
-            ) {
+            if (list { _, name -> !name.startsWith(".") }?.isEmpty() == true && ext.ios.remote.iosConfigured) {
                 val iosArchiveSpec: File?
 
                 val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
-                val archiveName = ext.ios.remote.name
-                val archiveVersion = ext.ios.remote.version
+                // TODO iOS实现多pod依赖下载
+                val archiveName = ext.ios.remote.name[0]
+                val archiveVersion = ext.ios.remote.version[0]
                 // 找出目标pod所在的文件
                 // cocoapods的Specs文件夹分为三层0x0-0xf的文件夹, 最后一层文件夹下的分别存放着所有的pod, 找到目标pod后再根据版本号找到目标podspec.json
                 // 解析出下载地址后进行下载

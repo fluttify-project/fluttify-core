@@ -26,7 +26,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__project_id__#", "${ext.org}.${ext.projectName}")
                     .replaceParagraph("#__sdk_dependency__#", ext.android.remote.run {
                         if (androidConfigured) {
-                            setOf(androidCoordinate)
+                            androidCoordinate
                                 .union(transitiveDependencies)
                                 .joinToString("\n") { "api '$it'" }
                         } else {
@@ -56,7 +56,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__homepage__#", ext.homepage)
                     .replace("#__sdk_dependency__#", ext.ios.remote.run {
                         if (iosConfigured) {
-                            setOf(iosCoordinate)
+                            iosCoordinate
                                 .union(transitiveDependencies)
                                 .joinToString("\n") { "s.dependency $it" }
                         } else {

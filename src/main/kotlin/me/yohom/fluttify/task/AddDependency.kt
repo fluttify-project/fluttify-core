@@ -12,7 +12,7 @@ open class AndroidAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
         // 只有当不是远程依赖时才需要拷贝
-        if (ext.android.remote.run { "$org$name$version" }.isBlank()) {
+        if (!ext.android.remote.androidConfigured) {
             val archiveDir: File = ext.android.libDir.file()
             val libDir: File = "${project.projectDir}/output-project/${ext.projectName}/android/libs/".file()
 
@@ -28,7 +28,7 @@ open class IOSAddDependency : FluttifyTask() {
     @TaskAction
     fun process() {
         // 只有当不是远程依赖时才需要拷贝
-        if (ext.ios.remote.run { "$name$version" }.isBlank()) {
+        if (!ext.ios.remote.iosConfigured) {
             val libraryDir: File = ext.ios.libDir.file()
             val vendorDir: File = "${project.projectDir}/output-project/${ext.projectName}/ios/Vendors/".file()
 

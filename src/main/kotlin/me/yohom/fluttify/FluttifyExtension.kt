@@ -182,17 +182,17 @@ open class Remote {
     /**
      * 组织名 ios可不填
      */
-    var org: String = ""
+    var org: List<String> = listOf()
 
     /**
      * 依赖名称
      */
-    var name: String = ""
+    var name: List<String> = listOf()
 
     /**
      * 依赖版本
      */
-    var version: String = ""
+    var version: List<String> = listOf()
 
     /**
      * 间接远程依赖
@@ -202,7 +202,7 @@ open class Remote {
     /**
      * android maven 坐标
      */
-    val androidCoordinate get() = "$org:$name:$version"
+    val androidCoordinate get() = org.indices.map { "${org[it]}:${name[it]}:${version[it]}" }
 
     /**
      * android是否已配置
@@ -212,7 +212,7 @@ open class Remote {
     /**
      * ios pod 坐标
      */
-    val iosCoordinate get() = "'$name', '~> $version'"
+    val iosCoordinate get() = name.indices.map { "'${name[it]}', '~> ${version[it]}'" }
 
     /**
      * ios是否已配置
