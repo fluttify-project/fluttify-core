@@ -63,6 +63,7 @@ data class Method(
                     || must("返回类型是所在类声明泛型") { returnType in className.findType().declaredGenericTypes })
                     &&
                     mustNot("返回类型是混淆类") { returnType.isObfuscated() }
+                    mustNot("方法名为main") { name == "main" }
                     &&
                     mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
                     &&
