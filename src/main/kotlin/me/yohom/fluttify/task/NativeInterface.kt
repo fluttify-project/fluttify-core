@@ -44,7 +44,7 @@ open class AndroidJavaInterface : FluttifyTask() {
         val pluginOutputFile = "$packageDir/${ext.projectName.underscore2Camel()}Plugin.java"
         val subHandlerOutputDir = "$packageDir/sub_handler"
         val subHandlerOutputFile = "$subHandlerOutputDir/SubHandler#__number__#.java"
-        val subHandlerCustomOutputFile = "$subHandlerOutputDir/SubHandlerCustom.java"
+        val subHandlerCustomOutputFile = "$subHandlerOutputDir/custom/SubHandlerCustom.java"
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
@@ -157,8 +157,8 @@ open class IOSObjcInterface : FluttifyTask() {
         val subHandlerOutputHFile = "$subHandlerOutputDir/SubHandler#__number__#.h"
         val subHandlerOutputMFile = "$subHandlerOutputDir/SubHandler#__number__#.m"
 
-        val subHandlerCustomOutputHFile = "$subHandlerOutputDir/SubHandlerCustom.h"
-        val subHandlerCustomOutputMFile = "$subHandlerOutputDir/SubHandlerCustom.m"
+        val subHandlerCustomOutputHFile = "$subHandlerOutputDir/Custom/SubHandlerCustom.h"
+        val subHandlerCustomOutputMFile = "$subHandlerOutputDir/Custom/SubHandlerCustom.m"
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
