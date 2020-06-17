@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_method
 
+import me.yohom.fluttify.Bmap
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.Tim
 import org.junit.jupiter.api.Test
@@ -15,6 +16,19 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
             .find { it.name == "com.tencent.imsdk.common.ICallback" }
             ?.methods
             ?.find { it.name == "done" }
+            ?.run {
+                println(HandlerMethodTmpl(this))
+//                Assert.assertTrue(this.isCallback)
+            }
+    }
+
+    @Test
+    fun handlerMethodTmpl_bmap_com_baidu_mapapi_search_core_RouteLine_setSteps() {
+        Bmap.androidMapSDK
+            .allTypes
+            .find { it.name == "com.baidu.mapapi.search.core.RouteLine" }
+            ?.methods
+            ?.find { it.name == "setSteps" }
             ?.run {
                 println(HandlerMethodTmpl(this))
 //                Assert.assertTrue(this.isCallback)

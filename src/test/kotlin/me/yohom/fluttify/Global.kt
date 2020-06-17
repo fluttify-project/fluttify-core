@@ -22,8 +22,8 @@ object Bmap {
     val androidSearchSDK = "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_search_fluttify/jr/android/json_representation.json".file().readText().fromJson<SDK>()
     val iosSearchSDK = "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_search_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
 
-    val androidMapSDK = "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_map_fluttify/jr/android/json_representation.json".file().readText().fromJson<SDK>()
-    val iosMapSDK = "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_map_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
+    val androidMapSDK = "/Users/yohom/Github/Me/All/fluttify/baidu_map/bmap_map_fluttify/jr/bmap_map_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosMapSDK = "/Users/yohom/Github/Me/All/fluttify/baidu_map/bmap_map_fluttify/jr/bmap_map_fluttify.ios.json".file().readText().fromJson<SDK>()
 
     val androidLocationSDK = "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_location_fluttify/jr/android/json_representation.json".file().readText().fromJson<SDK>()
     val iosLocationSDK = "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_location_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
