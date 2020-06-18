@@ -23,9 +23,16 @@ class FileXKtTest {
 //        val file = "/Users/yohom/Github/Util/Kotlin/fluttify-core/src/main/resources/library/ios/BaiduMapAPI_Map.framework/Headers/BMKOfflineMapType.h".file()
 //        val file = "/Users/yohom/Github/Util/Kotlin/fluttify-core/src/main/resources/library/ios/BaiduMapAPI_Map.framework/Headers/BMKMapView.h".file()
 //        val file = "/Users/yohom/Github/Me/All/fluttify/amap_location_fluttify/output-project/amap_location_fluttify/ios/AMapLocationKit.framework/Headers/AMapLocationManager.h".file()
-        val dir =
-            "/Users/yohom/Github/Me/All/fluttify/3rd_party/baidu_asr/sdk/ios/BDSEventManager.h".file()
-        println(dir.objcType())
+//        val dir =
+//            "/Users/yohom/Github/Me/All/fluttify/3rd_party/baidu_asr/sdk/ios/BDSEventManager.h".file()
+//        println(dir.objcType())
+
+        "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/output-project/amap_map_fluttify/android/src/main/java/me/yohom/amap_map_fluttify/".file().iterate("java") {
+            println("文件路径: ${it.path}")
+            if (!it.path.contains("sub_handler/custom")) {
+                it.delete()
+            }
+        }
     }
 
     @Test

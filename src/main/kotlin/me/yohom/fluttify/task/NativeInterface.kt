@@ -20,6 +20,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_cast.HandlerTypeC
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.ObjcPluginTmpl
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 import me.yohom.fluttify.tmpl.java.platform_view_factory.PlatformViewFactoryTmpl as JavaPlatformViewFactory
 import me.yohom.fluttify.tmpl.java.plugin.sub_handler.SubHandlerTmpl as JavaSubHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
@@ -50,8 +51,8 @@ open class AndroidJavaInterface : FluttifyTask() {
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {
-            // TODO 删除除了custom之外的文件
-            packageDir.file().deleteRecursively()
+            // 删除除了custom之外的文件
+            packageDir.file().iterate("java") { if (!it.path.contains("sub_handler/custom")) it.delete() }
         }
 
         // 生成主plugin文件
@@ -115,11 +116,14 @@ open class AndroidJavaInterface : FluttifyTask() {
                 subHandlerOutputFile.replace("#__number__#", index.toString()).file().writeText(content)
             }
 
-        val subHandlerCustomTmpl by lazy { getResource("/tmpl/java/sub_handler_custom.java.tmpl").readText() }
-        subHandlerCustomTmpl
-            .replace("#__package_name__#", "${ext.org}.${ext.projectName}")
-            .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
-            .run { subHandlerCustomOutputFile.file().writeText(this) }
+        // 只有在自定义Handler不存在的时候再创建, 不然会覆盖之前写的内容
+        if (!File(subHandlerCustomOutputFile).exists()) {
+            val subHandlerCustomTmpl by lazy { getResource("/tmpl/java/sub_handler_custom.java.tmpl").readText() }
+            subHandlerCustomTmpl
+                .replace("#__package_name__#", "${ext.org}.${ext.projectName}")
+                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+                .run { subHandlerCustomOutputFile.file().writeText(this) }
+        }
 
         JavaPluginTmpl(sdk.directLibs, subHandlerOutputDir)
             .run {
@@ -166,8 +170,8 @@ open class IOSObjcInterface : FluttifyTask() {
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {
-            // TODO 删除除了custom之外的文件
-            projectRootDir.file().deleteRecursively()
+            // 删除除了custom之外的文件
+            projectRootDir.file().iterate("h", "m") { if (!it.path.contains("SubHandler/Custom")) it.delete() }
         }
 
         val types = sdk.directLibs.flatMap { it.types }
@@ -282,21 +286,25 @@ open class IOSObjcInterface : FluttifyTask() {
                 subHandlerOutputMFile.replace("#__number__#", index.toString()).file().writeText(content[1])
             }
 
-        val subHandlerCustomHTmpl = getResource("/tmpl/objc/sub_handler_custom.h.tmpl").readText()
-        val subHandlerCustomMTmpl = getResource("/tmpl/objc/sub_handler_custom.m.tmpl").readText()
-        subHandlerCustomHTmpl
-            .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
-            .run { subHandlerCustomOutputHFile.file().writeText(this) }
-        subHandlerCustomMTmpl
-            .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
-            .run { subHandlerCustomOutputMFile.file().writeText(this) }
+        // 只有在自定义Handler不存在的时候再创建, 不然会覆盖之前写的内容
+        if (!File(subHandlerCustomOutputHFile).exists() && !File(subHandlerCustomOutputMFile).exists()) {
+            val subHandlerCustomHTmpl = getResource("/tmpl/objc/sub_handler_custom.h.tmpl").readText()
+            val subHandlerCustomMTmpl = getResource("/tmpl/objc/sub_handler_custom.m.tmpl").readText()
+            subHandlerCustomHTmpl
+                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+                .run { subHandlerCustomOutputHFile.file().writeText(this) }
+            subHandlerCustomMTmpl
+                .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
+                .run { subHandlerCustomOutputMFile.file().writeText(this) }
 
-        // 生成主plugin文件
-        ObjcPluginTmpl(sdk.directLibs, subHandlerOutputDir)
-            .run {
-                pluginHFile.file().writeText(this[0])
-                pluginMFile.file().writeText(this[1])
-            }
+            // 生成主plugin文件
+            ObjcPluginTmpl(sdk.directLibs, subHandlerOutputDir)
+                .run {
+                    pluginHFile.file().writeText(this[0])
+                    pluginMFile.file().writeText(this[1])
+                }
+        }
+
 
         // 生成PlatformViewFactory文件
         sdk.directLibs
