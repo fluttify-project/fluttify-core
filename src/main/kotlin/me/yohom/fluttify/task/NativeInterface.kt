@@ -296,14 +296,14 @@ open class IOSObjcInterface : FluttifyTask() {
             subHandlerCustomMTmpl
                 .replace("#__plugin_name__#", ext.projectName.underscore2Camel(true))
                 .run { subHandlerCustomOutputMFile.file().writeText(this) }
-
-            // 生成主plugin文件
-            ObjcPluginTmpl(sdk.directLibs, subHandlerOutputDir)
-                .run {
-                    pluginHFile.file().writeText(this[0])
-                    pluginMFile.file().writeText(this[1])
-                }
         }
+
+        // 生成主plugin文件
+        ObjcPluginTmpl(sdk.directLibs, subHandlerOutputDir)
+            .run {
+                pluginHFile.file().writeText(this[0])
+                pluginMFile.file().writeText(this[1])
+            }
 
 
         // 生成PlatformViewFactory文件
