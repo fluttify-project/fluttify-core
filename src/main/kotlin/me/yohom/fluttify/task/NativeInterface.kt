@@ -50,8 +50,8 @@ open class AndroidJavaInterface : FluttifyTask() {
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {
-            // 删除除了custom之外的文件
-            packageDir.file().iterate() { if (!it.path.contains("sub_handler/custom")) it.delete() }
+            // TODO 删除除了custom之外的文件
+            packageDir.file().deleteRecursively()
         }
 
         // 生成主plugin文件
@@ -166,8 +166,8 @@ open class IOSObjcInterface : FluttifyTask() {
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {
-            // 删除除了custom之外的文件
-            projectRootDir.file().iterate() { if (!it.path.contains("SubHandler/Custom")) it.delete() }
+            // TODO 删除除了custom之外的文件
+            projectRootDir.file().deleteRecursively()
         }
 
         val types = sdk.directLibs.flatMap { it.types }

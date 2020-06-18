@@ -140,7 +140,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     val subHandlerDir = File(subHandlerOutputDir)
     val registerHandler = if (subHandlerDir.exists()) {
         subHandlerDir
-            .list { _, name -> name?.endsWith(".h") == true && !name.contains("SubHandlerCustom.h") }
+            .list { _, name -> name?.endsWith(".h") == true && !name.contains("Custom") }
             ?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }
             ?.joinToString("\n") ?: ""
     } else {
