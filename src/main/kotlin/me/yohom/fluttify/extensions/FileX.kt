@@ -558,13 +558,13 @@ fun OBJC_FILE.objcType(): SourceFile {
 }
 
 fun File.iterate(
-    fileSuffix: String?,
+    fileSuffix: String? = null,
     recursive: Boolean = true,
     fileFilter: IOFileFilter = TrueFileFilter.INSTANCE,
     forEach: (File) -> Unit
 ) {
     FileUtils
-        .iterateFiles(this, arrayOf(fileSuffix), recursive)
+        .iterateFiles(this, if (fileSuffix != null) arrayOf(fileSuffix) else arrayOf(), recursive)
         .forEach { if (fileFilter.accept(it)) forEach(it) }
 }
 

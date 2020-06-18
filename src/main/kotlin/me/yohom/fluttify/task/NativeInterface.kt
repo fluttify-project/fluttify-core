@@ -48,9 +48,11 @@ open class AndroidJavaInterface : FluttifyTask() {
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
-        // TODO 跳过SubHandlerCustom
         // 生成前先删除之前的文件
-        if (sdk.directLibs.isNotEmpty()) packageDir.file().deleteRecursively()
+        if (sdk.directLibs.isNotEmpty()) {
+            // 删除除了custom之外的文件
+            packageDir.file().iterate() { if (!it.path.contains("sub_handler/custom")) it.delete() }
+        }
 
         // 生成主plugin文件
         val types = sdk.directLibs.flatMap { it.types }
@@ -162,9 +164,11 @@ open class IOSObjcInterface : FluttifyTask() {
 
         val sdk = jrFile.readText().fromJson<SDK>()
 
-        // TODO 跳过SubHandlerCustom
         // 生成前先删除之前的文件
-        if (sdk.directLibs.isNotEmpty()) projectRootDir.file().deleteRecursively()
+        if (sdk.directLibs.isNotEmpty()) {
+            // 删除除了custom之外的文件
+            projectRootDir.file().iterate() { if (!it.path.contains("SubHandler/Custom")) it.delete() }
+        }
 
         val types = sdk.directLibs.flatMap { it.types }
         val filteredTypes = types.filterType()
