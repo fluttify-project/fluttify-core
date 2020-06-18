@@ -56,7 +56,7 @@ fun MethodTmpl(method: Method): String {
         when {
             jsonable() or findType().isEnum or isVoid() -> ""
             isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(__return__);"
-            else -> "if (__result__ is Ref) kNativeObjectPool.add(__return__ as Ref);"
+            else -> "if (__return__ is Ref) kNativeObjectPool.add(__return__);"
         }
     }
 
