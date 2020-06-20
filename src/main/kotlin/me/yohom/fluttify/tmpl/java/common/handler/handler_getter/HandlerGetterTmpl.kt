@@ -1,8 +1,12 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_getter
 
-import me.yohom.fluttify.extensions.enList
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.isVoid
 import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.ResultRefTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.ResultVoidTmpl
 
 //// getter
 //put("#__getter_name__#", (args, methodResult) -> {

@@ -48,4 +48,17 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
 //                Assert.assertTrue(this.isCallback)
             }
     }
+
+    @Test
+    fun handlerMethodTmpl_nim_com_netease_nimlib_sdk_uinfo_model_NimUserInfo_getGenderEnum() {
+        Nim.androidSDK
+            .allTypes
+            .find { it.name == "com.netease.nimlib.sdk.uinfo.model.NimUserInfo" }
+            ?.methods
+            ?.find { it.name == "getGenderEnum" }
+            ?.run {
+                println(HandlerMethodTmpl(this))
+//                Assert.assertTrue(this.isCallback)
+            }
+    }
 }

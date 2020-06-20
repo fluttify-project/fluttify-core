@@ -27,6 +27,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //    methodResult.success(resultList);
 //});
 private val tmpl by lazy { getResource("/tmpl/java/handler_getter_batch.stmt.java.tmpl").readText() }
+
 fun HandlerGetterBatchTmpl(field: Field): String {
     val getterName = field.getterMethodName
     val className = field.className.replace("$", ".")

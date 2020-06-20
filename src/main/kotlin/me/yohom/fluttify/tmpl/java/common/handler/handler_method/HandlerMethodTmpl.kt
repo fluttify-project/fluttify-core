@@ -11,6 +11,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_void.Invo
 import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogInstanceTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogStaticTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.ref.RefTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_enum.ResultEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.ResultRefTmpl
@@ -71,6 +72,7 @@ fun HandlerMethodTmpl(method: Method): String {
     // 这里的语句会产生一个叫jsonableResult的对象, 这个对象是最终返回给dart的对象
     val result = when {
         method.returnType.jsonable() -> ResultJsonableTmpl(method.returnType)
+        method.returnType.findType().isEnum -> ResultEnumTmpl()
         // jsonable已经把List<String>类似的类型挡掉了, 所以到这里的肯定是List<? extends Object>类型
         method.returnType.isIterable() -> ResultListTmpl(method)
         method.returnType.isVoid() -> ResultVoidTmpl()
