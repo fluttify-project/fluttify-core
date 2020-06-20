@@ -1,0 +1,7 @@
+// object arg
+final java.lang.Object arg#__arg_name__#;
+if (#__arg_name__# instanceof Number || #__arg_name__# instanceof String) {
+    arg#__arg_name__# = #__arg_name__#;
+} else {
+    arg#__arg_name__# = #__arg_name__#.hashCode();
+}

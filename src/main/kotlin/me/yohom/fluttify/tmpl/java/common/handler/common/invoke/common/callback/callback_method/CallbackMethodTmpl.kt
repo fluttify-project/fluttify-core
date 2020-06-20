@@ -6,6 +6,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_list.CallbackArgListTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_object.CallbackArgObjectTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_return.CallbackReturnTmpl
 
@@ -47,6 +48,7 @@ fun CallbackMethodTmpl(method: Method): String {
         .formalParams
         .joinToString("\n") {
             when {
+                it.variable.trueType == "java.lang.Object" -> CallbackArgObjectTmpl(it)
                 it.variable.jsonable() -> CallbackArgJsonableTmpl(it)
                 it.variable.isEnum() -> CallbackArgEnumTmpl(it)
                 it.variable.isIterable -> CallbackArgListTmpl(it)
