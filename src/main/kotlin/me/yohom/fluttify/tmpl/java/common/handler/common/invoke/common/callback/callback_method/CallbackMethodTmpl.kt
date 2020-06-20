@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method
 
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.ifIsGenericTypeConvertToObject
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
@@ -41,14 +42,14 @@ fun CallbackMethodTmpl(method: Method): String {
         .formalParams
         .map { it.variable }
         .joinToString {
-            "${it.trueType.replace("$", ".")} ${it.name}"
+            "${it.trueType.replace("$", ".").ifIsGenericTypeConvertToObject()} ${it.name}"
         }
     val returnType = method.returnType.replace("$", ".")
     val localArgs = method
         .formalParams
         .joinToString("\n") {
             when {
-                it.variable.trueType == "java.lang.Object" -> CallbackArgObjectTmpl(it)
+                it.variable.trueType.ifIsGenericTypeConvertToObject() == "java.lang.Object" -> CallbackArgObjectTmpl(it)
                 it.variable.jsonable() -> CallbackArgJsonableTmpl(it)
                 it.variable.isEnum() -> CallbackArgEnumTmpl(it)
                 it.variable.isIterable -> CallbackArgListTmpl(it)

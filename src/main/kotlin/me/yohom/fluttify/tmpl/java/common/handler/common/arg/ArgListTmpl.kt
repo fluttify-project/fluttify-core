@@ -14,8 +14,8 @@ import me.yohom.fluttify.model.Variable
 private val tmpl by lazy { getResource("/tmpl/java/arg_list.stmt.java.tmpl").readText() }
 
 fun ArgListTmpl(variable: Variable): String {
-    // TODO 对应参数类型是泛型的workaround, 判断类型名长度是否为1, 如果是的话, 则替换为Object, 这个需要后期完善一下
     val containerType = variable.trueType.containerType()
+    // TODO 对应参数类型是泛型的workaround, 判断类型名长度是否为1, 如果是的话, 则替换为Object, 这个需要后期完善一下
     val genericType = variable.trueType.genericTypes().run {
         if (isNotEmpty() && this[0].length != 1) {
             variable.trueType.genericTypes()[0]

@@ -26,9 +26,6 @@ fun CallbackCaseDelegateTmpl(callbackMethod: Method, callbackObject: String): St
     val callbackArgs = callbackMethod.formalParams
         .joinToString {
             when {
-//                // TODO 这里的逻辑有问题 判断是否的Ref根本没用 回调过来肯定都是int(refId)或者jsonable的
-//                it.variable.trueType.toDartType() == "dynamic" -> "args[\"${it.variable.name}\"] is Ref ? ${CallbackCaseArgRefTmpl(it)} : ${CallbackCaseArgJsonableTmpl(it)}"
-//                it.variable.trueType in callbackMethod.className.findType().declaredGenericTypes -> "args[\"${it.variable.name}\"].as__<${it.variable.trueType}>()"
                 it.variable.run { jsonable() || isAliasType() } -> CallbackCaseArgJsonableTmpl(it)
                 it.variable.isCollection() -> CallbackCaseArgListTmpl(it)
                 it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it)

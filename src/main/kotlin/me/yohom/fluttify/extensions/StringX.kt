@@ -64,13 +64,6 @@ fun TYPE_NAME.isIterable(): Boolean {
 }
 
 /**
- * 是否是ArrayList类型
- */
-fun TYPE_NAME.isArrayList(): Boolean {
-    return Regex("ArrayList<(\\w*|.*)>").matches(this)
-}
-
-/**
  * 是否是列表类型
  */
 fun TYPE_NAME.isList(): Boolean {
@@ -186,11 +179,7 @@ fun TYPE_NAME.findType(): Type {
         // 要使用克隆对象, 因为定义的泛型类可能不止一个, 如果直接在原对象上操作的话, 那么后续的泛型类可能会受影响
         val clonedContainerType = containerType.toJson().fromJson<Type>()
 
-        val definedGenericTypes = if (type.genericTypes().all { it in containerType.declaredGenericTypes }) {
-            containerType.definedGenericTypes
-        } else {
-            type.genericTypes().toMutableList()
-        }
+        val definedGenericTypes = type.genericTypes().toMutableList()
         clonedContainerType.definedGenericTypes = definedGenericTypes
         // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
         clonedContainerType.methods
@@ -227,6 +216,15 @@ fun TYPE_NAME.findType(): Type {
         } else {
             result
         }
+    }
+}
+
+fun TYPE_NAME.ifIsGenericTypeConvertToObject(): String {
+    // TODO 对应参数类型是泛型的workaround, 判断类型名长度是否为1, 如果是的话, 则替换为Object, 这个需要后期完善一下
+    return if (isNotEmpty() && length != 1) {
+        this
+    } else {
+        "java.lang.Object"
     }
 }
 

@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.handler_method
 
 import me.yohom.fluttify.Bmap
 import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.Nim
 import me.yohom.fluttify.Tim
 import org.junit.jupiter.api.Test
 
@@ -29,6 +30,19 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
             .find { it.name == "com.baidu.mapapi.search.core.RouteLine" }
             ?.methods
             ?.find { it.name == "setSteps" }
+            ?.run {
+                println(HandlerMethodTmpl(this))
+//                Assert.assertTrue(this.isCallback)
+            }
+    }
+
+    @Test
+    fun handlerMethodTmpl_nim_com_netease_nimlib_sdk_InvocationFuture_setCallback() {
+        Nim.androidSDK
+            .allTypes
+            .find { it.name == "com.netease.nimlib.sdk.InvocationFuture" }
+            ?.methods
+            ?.find { it.name == "setCallback" }
             ?.run {
                 println(HandlerMethodTmpl(this))
 //                Assert.assertTrue(this.isCallback)

@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.ifIsGenericTypeConvertToObject
 import me.yohom.fluttify.extensions.joinToStringX
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
@@ -19,7 +20,9 @@ private val tmpl by lazy { getResource("/tmpl/java/callback.stmt.java.tmpl").rea
 
 fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
     val containerType = callbackType.name.replace("$", ".")
-    val genericTypes = callbackType.definedGenericTypes.joinToStringX(prefix = "<", suffix = ">")
+    val genericTypes = callbackType.definedGenericTypes
+        .map { it.ifIsGenericTypeConvertToObject() }
+        .joinToStringX(prefix = "<", suffix = ">")
     val className = "${containerType}${genericTypes}"
     val callbackChannel = callerMethod.nameWithClass()
     val callbackMethods = callbackType.methods.joinToString("\n") { CallbackMethodTmpl(it) }
