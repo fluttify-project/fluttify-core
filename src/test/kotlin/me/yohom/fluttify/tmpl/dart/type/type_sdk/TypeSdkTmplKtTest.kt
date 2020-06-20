@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
 import me.yohom.fluttify.Amap
+import me.yohom.fluttify.Bmap
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.Tim
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
@@ -40,6 +41,17 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
             .find { it.name == "com.amap.api.maps.model.particle.ColorGenerate" }
             ?.run {
                 println(this.filter)
+//                Assert.assertTrue(this.isCallback)
+            }
+    }
+
+    @Test
+    fun typeSdkTmpl_bmap_com_baidu_mapapi_map_MyLocationConfiguration() {
+        Bmap.androidMapSDK
+            .allTypes
+            .find { it.name == "com.baidu.mapapi.map.MyLocationConfiguration" }
+            ?.run {
+                println(TypeSdkTmpl(this))
 //                Assert.assertTrue(this.isCallback)
             }
     }

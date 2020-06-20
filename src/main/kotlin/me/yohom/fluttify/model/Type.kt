@@ -269,8 +269,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("是已知类型或jsonable类型") { isKnownType }
                 &&
-                mustNot("枚举类型") { isEnum }
-                &&
                 mustNot("lambda类型") { isLambda }
                 &&
                 mustNot("函数类型") { isFunction }
@@ -286,7 +284,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
                 must("静态类的内部类") { (isInnerType && isStaticType) || !isInnerType }
                 &&
-                must("有公开构造器或没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
+                must("有公开构造器 或 没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
                 &&
                 must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
                 &&
@@ -296,6 +294,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
                             || platform != Platform.iOS
                 }
+                ||
+                must("公开枚举") { isPublic && isEnum }
         if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
         if (CONSTRUCTOR_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑构造器↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
         result
