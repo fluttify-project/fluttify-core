@@ -39,6 +39,7 @@ private val tmpl by lazy { getResource("/tmpl/objc/handler_method.stmt.m.tmpl").
 fun HandlerMethodTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams
+        .filterFormalParams()
         .joinToString("\n") {
             when {
                 it.variable.trueType == "id" -> ArgIdTmpl(it.variable)
