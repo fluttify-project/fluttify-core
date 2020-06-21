@@ -28,6 +28,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //  }
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/function.mtd.dart.tmpl").readText() }
+
 fun TypeFunctionTmpl(functionType: Type): String {
     val returnType = functionType.returnType.toDartType()
     val name = functionType.name
@@ -45,7 +46,11 @@ fun TypeFunctionTmpl(functionType: Type): String {
         }
     val log = LogTmpl(functionType.asMethod())
     val invoke = InvokeTmpl(functionType.asMethod())
-    val callback = CallbackMethodTmpl(functionType.asMethod())
+    val callbacks = functionType.formalParams
+        .filter { it.variable.isCallback() || it.variable.isLambda() }
+        .map { it.variable }
+        .map { CallbackMethodTmpl(it.trueType.findType(), it.name) }
+
     val returnStatement = ReturnTmpl(functionType.asMethod())
     val nativeObjectPool = functionType.returnType.run {
         when {
@@ -61,7 +66,7 @@ fun TypeFunctionTmpl(functionType: Type): String {
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
-        .replaceParagraph("#__callback__#", callback)
+        .replaceParagraph("#__callback__#", callbacks.joinToString("\n"))
         .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)
 }

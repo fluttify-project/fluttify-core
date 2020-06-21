@@ -6,6 +6,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda.CallbackLambdaTmpl
 
 //#__deprecated__#
 //#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
@@ -49,7 +50,10 @@ fun MethodTmpl(method: Method): String {
             }
         }
     val log = LogTmpl(method)
-    val callback = CallbackMethodTmpl(method)
+    val callback = method.formalParams
+        .filter { it.variable.isCallback() || it.variable.isLambda() }
+        .map { it.variable }
+        .map { CallbackMethodTmpl(it.trueType.findType(), it.name) }
     val invoke = InvokeTmpl(method)
     val returnStatement = ReturnTmpl(method)
     val nativeObjectPool = method.returnType.run {
@@ -68,7 +72,7 @@ fun MethodTmpl(method: Method): String {
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
-        .replaceParagraph("#__callback__#", callback)
+        .replaceParagraph("#__callback__#", callback.joinToString("\n"))
         .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)
 }

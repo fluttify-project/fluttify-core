@@ -37,9 +37,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 }
                 // 协议静态方法
                 else {
-                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") {
-                        param2arg(it)
-                    }}]"
+                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
                 }
 
                 if (method.returnType == "void") {
@@ -51,9 +49,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 if (method.returnType == "void") {
                     "[ref ${method.name} ${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 } else {
-                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") {
-                        param2arg(it)
-                    }}];"
+                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 }
             }
         }
@@ -63,7 +59,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
     private fun param2arg(it: Parameter, isFunction: Boolean = false): String {
         return if (isFunction) {
             if (it.variable.isLambda() && method != null) {
-                CallbackLambdaTmpl(method, it.variable.trueType.findType())
+                CallbackLambdaTmpl(it.variable.trueType.findType())
             } else {
                 when {
                     it.variable.isCallback() -> "self"
@@ -73,7 +69,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
             }
         } else {
             if (it.variable.isLambda() && method != null) {
-                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.trueType.findType())}"
+                "${it.named}: ${CallbackLambdaTmpl(it.variable.trueType.findType())}"
             } else {
                 "${it.named}: ${when {
                     it.variable.isCallback() -> "self"

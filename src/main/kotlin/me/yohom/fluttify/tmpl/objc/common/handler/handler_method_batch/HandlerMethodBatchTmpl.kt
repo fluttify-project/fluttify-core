@@ -41,7 +41,9 @@ private val tmpl by lazy { getResource("/tmpl/objc/handler_method_batch.stmt.m.t
 fun HandlerMethodBatchTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams
-        .filterFormalParams()
+        // 这里不过滤形参, dart端是会过滤形参的, 所以被过滤的传到原生这边是回变成null
+        // 由于过滤形参分成Callback和无法处理的类型两种情况, 所以这里不太好处理, 先统一不过滤了
+//        .filterFormalParams()
         .joinToString("\n") {
             when {
                 it.variable.trueType == "id" -> ArgIdTmpl(it.variable)
