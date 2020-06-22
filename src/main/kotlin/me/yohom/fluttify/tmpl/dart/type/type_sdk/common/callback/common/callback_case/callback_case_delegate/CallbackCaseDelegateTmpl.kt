@@ -8,10 +8,12 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_ref.CallbackCaseArgRefTmpl
 
 //case '#__callback_case__#':
-//  // 日志打印
-//  #__log__#
+//  // print log
+//  if (fluttifyLogEnabled) {
+//    #__log__#
+//  }
 //
-//    // 调用回调方法
+//  // handle the native call
 //  #__callback_handler__#(#__callback_args__#);
 //  break;
 private val tmpl by lazy { getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText() }
@@ -20,8 +22,7 @@ fun CallbackCaseDelegateTmpl(callbackMethod: Method, callbackObject: String): St
     val callbackMethodName = callbackMethod.signature
     val callbackCase = "Callback::${callbackMethod.nameWithClass()}"
     val log =
-        "debugPrint('fluttify-dart-callback: ${callbackMethodName}(${callbackMethod.formalParams.filter { it.variable.trueType.jsonable() }
-            .map { "\\'${it.variable.name}\\':\${args['${it.variable.name}']}" }})');"
+        "debugPrint('fluttify-dart-callback: ${callbackMethodName}(${callbackMethod.formalParams.map { "\\'${it.variable.name}\\':\${args['${it.variable.name}']}" }})');"
     val callbackHandler = "${callbackObject}?.${callbackMethodName}"
     val callbackArgs = callbackMethod.formalParams
         .joinToString {

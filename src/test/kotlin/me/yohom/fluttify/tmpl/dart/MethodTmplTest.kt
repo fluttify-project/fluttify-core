@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.dart
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.Nim
 import me.yohom.fluttify.SYSTEM_TYPE
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 import org.junit.jupiter.api.Test
 
 
@@ -29,5 +30,15 @@ class MethodTmplTest : FluttifyTest() {
 //        )
 //        val dartMethodString = MethodTmpl(testMethod).dartMethod()
 //        println(dartMethodString)
+    }
+
+    @Test
+    fun methodTmpl_nim_NIMLoginManager_addDelegate() {
+        Nim.iosSDK
+            .allTypes
+            .find { it.name == "NIMLoginManager" }
+            ?.methods
+            ?.find { it.name == "addDelegate" }
+            ?.run { println(MethodTmpl(this)) }
     }
 }
