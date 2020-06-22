@@ -1,16 +1,7 @@
-put("#__method_name__#", (args, methodResult) -> {
-    // args
-    #__args__#
+put("RefClass::isKindOf#__underscore_type_name__#", (__args__, __methodResult__) -> {
+    // 引用对象
+    int refId = (int) ((Map<String, Object>) __args__).get("refId");
+    Object ref = getHEAP().get(refId);
 
-    // ref
-    #__ref__#
-
-    // print log
-    #__log__#
-
-    // invoke native method
-    #__invoke__#
-
-    // result
-    #__result__#
+    __methodResult__.success(ref instanceof #__type_name__#);
 });

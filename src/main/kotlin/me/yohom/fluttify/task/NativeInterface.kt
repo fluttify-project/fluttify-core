@@ -16,8 +16,8 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref_batch.HandlerObjectFactoryRefBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct.HandlerObjectFactoryStructTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct_batch.HandlerObjectFactoryStructBatchTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_cast.HandlerTypeCastTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_type_check.HandlerTypeCheckTmpl as ObjcHandlerTypeCheckTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.handler_type_check.HandlerTypeCheckTmpl as JavaHandlerTypeCheckTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.ObjcPluginTmpl
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -94,6 +94,16 @@ open class AndroidJavaInterface : FluttifyTask() {
             .filterMethod(batch = true)
             .map { HandlerMethodBatchTmpl(it) }
 
+        val typeChecks = filteredTypes
+            .asSequence()
+            .filterNot { it.isLambda }
+            .filterNot { it.isFunction }
+            .filterNot { it.isAlias() }
+            .distinctBy { it.name }
+            .filter { !it.isInterface && !it.isEnum && !it.isStruct }
+            .map { JavaHandlerTypeCheckTmpl(it) }
+            .toList()
+
         val objectCreators = constructableTypes
             .flatMap { HandlerObjectFactoryTmpl(it) }
 
@@ -106,6 +116,7 @@ open class AndroidJavaInterface : FluttifyTask() {
             .union(settersBatch)
             .union(methods)
             .union(methodsBatch)
+            .union(typeChecks)
             .union(objectCreators)
             .union(objectCreatorsBatch)
             .toObservable()
@@ -225,16 +236,6 @@ open class IOSObjcInterface : FluttifyTask() {
             .filterMethod(batch = true)
             .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch.HandlerMethodBatchTmpl(it) }
 
-        val typeCasts = filteredTypes
-            .asSequence()
-            .filterNot { it.isLambda }
-            .filterNot { it.isFunction }
-            .filterNot { it.isAlias() }
-            .distinctBy { it.name }
-            .filter { !it.isInterface && !it.isEnum && !it.isStruct }
-            .map { HandlerTypeCastTmpl(it) }
-            .toList()
-
         val typeChecks = filteredTypes
             .asSequence()
             .filterNot { it.isLambda }
@@ -242,7 +243,7 @@ open class IOSObjcInterface : FluttifyTask() {
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface && !it.isEnum && !it.isStruct }
-            .map { HandlerTypeCheckTmpl(it) }
+            .map { ObjcHandlerTypeCheckTmpl(it) }
             .toList()
 
         val objectCreators = constructableTypes
@@ -273,7 +274,6 @@ open class IOSObjcInterface : FluttifyTask() {
             .union(setters)
             .union(settersBatch)
             .union(typeChecks)
-            .union(typeCasts)
             .union(objectCreators)
             .union(objectCreatorsBatch)
             .union(functions)
