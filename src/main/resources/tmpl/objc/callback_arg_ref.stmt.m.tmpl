@@ -1,6 +1,6 @@
 // ref callback arg
 NSNumber* arg#__arg_name__# = [NSNull null];
 if (#__arg__# != nil) {
-    arg#__arg_name__# = @(#__arg__#.hash);
+    arg#__arg_name__# = [NSNumber numberWithLong: #__arg__#.hash];
     HEAP[arg#__arg_name__#] = #__arg__#;
 }

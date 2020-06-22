@@ -6,6 +6,7 @@ import me.yohom.fluttify.extensions.getResource
 //// 返回值: Value
 //id jsonableResult = @(result);
 private val tmpl by lazy { getResource("/tmpl/objc/result_value.stmt.m.tmpl").readText() }
+
 fun ResultValueTmpl(): String {
     return tmpl
 }
