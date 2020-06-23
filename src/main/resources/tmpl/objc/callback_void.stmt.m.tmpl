@@ -1,1 +1,3 @@
-[channel invokeMethod:@"#__callback_method__#" arguments:@{#__callback_args__#}];
+dispatch_async(dispatch_get_main_queue(), ^{
+    [channel invokeMethod:@"#__callback_method__#" arguments:@{#__callback_args__#}];
+});
