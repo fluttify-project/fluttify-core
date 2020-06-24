@@ -307,7 +307,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
     val types = genericTypes()
         .map { it.replace("$", ".").substringAfterLast(".") }
         .union(listOf(containerType().replace("$", ".").substringAfterLast(".")))
-    val regex = Regex("[a-z|\\d]{1,2}")
+    val regex = Regex("[a-z|\\d]{0,2}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
     return this !in ext.obfuscatedWhiteList
             &&

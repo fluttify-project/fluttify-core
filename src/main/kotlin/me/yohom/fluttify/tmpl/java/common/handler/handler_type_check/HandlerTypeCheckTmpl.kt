@@ -19,5 +19,5 @@ private val tmpl by lazy { getResource("/tmpl/java/handler_type_check.stmt.java.
 fun HandlerTypeCheckTmpl(type: Type): String {
     return tmpl
         .replace("#__underscore_type_name__#", type.name.containerType().toDartType())
-        .replace("#__type_name__#", type.name.containerType())
+        .replace("#__type_name__#", type.name.containerType().replace("$", "."))
 }

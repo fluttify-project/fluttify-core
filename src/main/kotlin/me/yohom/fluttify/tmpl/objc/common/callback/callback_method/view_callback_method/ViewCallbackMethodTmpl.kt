@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_method.view_callback_method
 
+import me.yohom.fluttify.extensions.deprotocol
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.isMultiPointer
 import me.yohom.fluttify.extensions.replaceParagraph
@@ -37,7 +38,7 @@ fun ViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "[NSString stringWithFormat:@\"${method.className}::Callback@%@\", @(2147483647 - _viewId)]"
+    val methodChannel = "[NSString stringWithFormat:@\"${method.className.deprotocol().replace("$", ".")}::Callback@%@\", @(2147483647 - _viewId)]"
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
     val localArgs = if (method.formalParams.none { it.variable.trueType.isMultiPointer() }) {

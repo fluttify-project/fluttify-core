@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda
 
+import me.yohom.fluttify.extensions.deprotocol
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Type
@@ -30,7 +31,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 private val tmpl by lazy { getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText() }
 
 fun CallbackLambdaTmpl(callbackType: Type): String {
-    val methodChannel = "${callbackType.name}::Callback"
+    val methodChannel = "${callbackType.name.deprotocol().replace("$", ".")}::Callback"
     val formalParams = callbackType
         .formalParams
         .joinToString { "${it.variable.objcType()} ${it.variable.name}" }

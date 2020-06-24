@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 
-import me.yohom.fluttify.extensions.filterMethod
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.mustNot
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda.CallbackCaseLambdaTmpl
@@ -25,9 +22,9 @@ fun CallbackMethodTmpl(callbackType: Type, callbackObject: String): String {
     // 因为objc端的delegate方法无法区分调用方, 所以只有view类型的类能根据viewId区分
     val isView = callbackType.isView
     val callbackChannel = if (isView) {
-        "${callbackType.name}::Callback@\$refId"
+        "${callbackType.name.deprotocol().replace("$", ".")}::Callback@\$refId"
     } else {
-        "${callbackType.name}::Callback"
+        "${callbackType.name.deprotocol().replace("$", ".")}::Callback"
     }
 
     val callbackCases = if (callbackType.isLambda) {

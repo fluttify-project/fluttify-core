@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method
 
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.isMultiPointer
-import me.yohom.fluttify.extensions.objcSpecifierExpand
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgValueTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
@@ -35,7 +32,7 @@ fun NonViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "@\"${method.className}::Callback\""
+    val methodChannel = "@\"${method.className.deprotocol().replace("$", ".")}::Callback\""
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name.objcSpecifierExpand()}" }}"
     val localArgs = if (method.formalParams.none { it.variable.trueType.isMultiPointer() }) {
