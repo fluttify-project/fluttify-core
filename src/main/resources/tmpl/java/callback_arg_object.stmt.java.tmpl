@@ -8,4 +8,5 @@ if (#__arg_name__# instanceof Number || #__arg_name__# instanceof String) {
     } else {
         arg#__arg_name__# = null;
     }
+    getHEAP().put(#__arg_name__#.hashCode(), #__arg_name__#);
 }
