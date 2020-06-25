@@ -106,6 +106,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterNot { it.isAlias() }
             .filterNot { it.isCallback }
             .filterNot { it.isEnum }
+            .filterNot { ext.android.exclude.classes.contains(it.name) }
             .filterNot { it.name == "android.view.SurfaceHolder.Callback" }
             .filterNot { it.name == "android.view.View.OnClickListener" }
             .filterNot { it.name == "android.view.View.OnTouchListener" }
@@ -219,6 +220,7 @@ open class IOSDartInterface : FluttifyTask() {
             .filterNot { it.isAlias() }
             .filterNot { it.isCallback }
             .filterNot { it.isEnum }
+            .filterNot { ext.ios.exclude.classes.contains(it.name) }
             .filterNot { it.name == "NSObject" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
