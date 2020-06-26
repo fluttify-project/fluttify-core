@@ -1,6 +1,8 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Method
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda.CallbackCaseLambdaTmpl
@@ -16,15 +18,22 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //    });
 private val tmpl by lazy { getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText() }
 
-fun CallbackMethodTmpl(callbackType: Type, callbackObject: String): String {
+fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject: String): String {
     // 如果是View类型的类, 那么就加上当前的View代表的id
     // 如果参数的回调是lambda类型, 那么也不加入viewid, 因为不需要
     // 因为objc端的delegate方法无法区分调用方, 所以只有view类型的类能根据viewId区分
     val isView = callbackType.isView
+
+    // 由于objc端无法区分调用方, 所以ios端使用回调类的类名作为前缀, Java端使用调用方的签名作为前缀(防止使用相同回调类型参数时造成的覆盖)
+    val channelPrefix = when (callerMethod.platform) {
+        Platform.iOS -> callbackType.name
+        Platform.Android -> callerMethod.nameWithClass()
+        else -> ""
+    }
     val callbackChannel = if (isView) {
-        "${callbackType.name.deprotocol().replace("$", ".")}::Callback@\$refId"
+        "$channelPrefix::Callback@\$refId"
     } else {
-        "${callbackType.name.deprotocol().replace("$", ".")}::Callback"
+        "$channelPrefix::Callback"
     }
 
     val callbackCases = if (callbackType.isLambda) {

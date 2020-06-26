@@ -49,7 +49,7 @@ fun TypeFunctionTmpl(functionType: Type): String {
     val callbacks = functionType.formalParams
         .filter { it.variable.isCallback() || it.variable.isLambda() }
         .map { it.variable }
-        .map { CallbackMethodTmpl(it.trueType.findType(), it.name) }
+        .map { CallbackMethodTmpl(functionType.asMethod(), it.trueType.findType(), it.name) }
 
     val returnStatement = ReturnTmpl(functionType.asMethod())
     val nativeObjectPool = functionType.returnType.run {

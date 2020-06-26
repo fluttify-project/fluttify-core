@@ -22,12 +22,17 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //    #__local_args__#
 //
 //    // call dart method
-//    callbackChannel.invokeMethod(
-//            "Callback::#__callback_method_name__#",
-//            new HashMap<String, Object>() {{
-//                #__callback_args__#
-//            }}
-//    );
+//    handler.post(new Runnable() {
+//        @Override
+//        public void run() {
+//            callbackChannel.invokeMethod(
+//                "Callback::#__callback_method_name__#",
+//                new HashMap<String, Object>() {{
+//                    #__callback_args__#
+//                }}
+//            );
+//        }
+//    });
 //
 //    // method result
 //    #__return_stmt__#
@@ -37,7 +42,6 @@ private val tmpl by lazy { getResource("/tmpl/java/callback_method.mtd.java.tmpl
 fun CallbackMethodTmpl(method: Method): String {
     val callbackMethod = method.name
     val callbackMethodName = method.nameWithClass()
-    val methodChannel = "${method.className.replace("$", ".")}::Callback"
     val formalParams = method
         .formalParams
         .map { it.variable }
@@ -75,7 +79,6 @@ fun CallbackMethodTmpl(method: Method): String {
     return tmpl
         .replace("#__callback_method__#", callbackMethod)
         .replace("#__callback_method_name__#", callbackMethodName)
-        .replace("#__method_channel__#", methodChannel)
         .replace("#__formal_params__#", formalParams)
         .replace("#__return_type__#", returnType)
         .replaceParagraph("#__local_args__#", localArgs)

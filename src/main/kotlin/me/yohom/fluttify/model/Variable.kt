@@ -153,7 +153,7 @@ data class Variable(
             when {
                 isIterable -> "new ArrayList() /* 暂不支持列表回调 */"
                 containerType().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
-                else -> CallbackTmpl(trueType.findType())
+                else -> CallbackTmpl(hostMethod, trueType.findType())
             }
         } else {
             when {

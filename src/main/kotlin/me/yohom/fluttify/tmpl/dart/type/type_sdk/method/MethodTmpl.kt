@@ -53,7 +53,7 @@ fun MethodTmpl(method: Method): String {
     val callback = method.formalParams
         .filter { it.variable.isCallback() || it.variable.isLambda() }
         .map { it.variable }
-        .map { CallbackMethodTmpl(it.trueType.findType(), it.name) }
+        .map { CallbackMethodTmpl(method, it.trueType.findType(), it.name) }
     val invoke = InvokeTmpl(method)
     val returnStatement = ReturnTmpl(method)
     val nativeObjectPool = method.returnType.run {
