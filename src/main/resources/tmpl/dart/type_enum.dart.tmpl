@@ -6,3 +6,20 @@
 enum #__enum_name__# {
   #__enumerators__#
 }
+
+extension #__enum_name__#ToX on #__enum_name__# {
+  int toValue() {
+    switch (this) {
+      #__to_int_cases__#
+    }
+  }
+}
+
+extension #__enum_name__#FromX on int {
+  #__enum_name__# to#__enum_name__#() {
+    switch (this) {
+      #__to_enum_cases__#
+      default: return #__enum_name__#.values[this + #__offset__#];
+    }
+  }
+}

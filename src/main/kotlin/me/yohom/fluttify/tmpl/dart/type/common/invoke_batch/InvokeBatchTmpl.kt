@@ -30,16 +30,16 @@ fun InvokeBatchTmpl(method: Method): String {
                 type.isEnum -> {
                     // 枚举列表
                     if (it.isIterable) {
-                        "${it.name}[__i__].map((it) => it.index).toList()"
+                        "${it.name}[__i__].map((it) => it.toValue()).toList()"
                     } else {
-                        "${it.name}[__i__].index"
+                        "${it.name}[__i__].toValue()"
                     }
                 }
                 it.isIterable
                         && typeName.genericTypes().isNotEmpty()
                         && typeName.genericTypes()[0].findType().isEnum -> {
                     // 枚举列表
-                    "${it.name}[__i__].map((__it__) => __it__.index + ${typeName.genericTypes()[0].findType().enumerators[0].value}).toList()"
+                    "${it.name}[__i__].map((__it__) => __it__.toValue()).toList()"
                 }
                 typeName.jsonable() -> "${it.name}[__i__]"
                 (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
