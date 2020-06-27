@@ -6,7 +6,6 @@ import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.InvokeTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.log.LogTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method.CallbackMethodTmpl
-import me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda.CallbackLambdaTmpl
 
 //#__deprecated__#
 //#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {

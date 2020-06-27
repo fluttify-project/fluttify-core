@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
-//final #__result_type__# __result__ = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
+//final __result__ = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
 private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText() }
 
 fun InvokeTmpl(method: Method): String {
@@ -15,12 +15,6 @@ fun InvokeTmpl(method: Method): String {
         "'${ext.methodChannelName}'"
     }
     val methodName = method.nameWithClass()
-    // 如果jsonable, 那么直接使用, 如不是, 则使用int
-    val resultType = when {
-        method.returnType.jsonable() -> method.returnType.toDartType()
-        method.returnType.isVoid() -> "String"
-        else -> "int"
-    }
     val args = method.formalParams
         .filterFormalParams()
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter("int", "refId")) else this }
@@ -47,6 +41,5 @@ fun InvokeTmpl(method: Method): String {
     return tmpl
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
-        .replace("#__result_type__#", resultType)
         .replace("#__args__#", args)
 }
