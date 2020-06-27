@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.handler_getter_batch
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_enum.ResultEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.ResultRefTmpl
@@ -43,6 +44,7 @@ fun HandlerGetterBatchTmpl(field: Field): String {
     val fieldName = field.variable.name
     val result = when {
         field.variable.jsonable() -> ResultJsonableTmpl(fieldType)
+        field.variable.isEnum() -> ResultEnumTmpl()
         field.variable.isIterable -> ResultListTmpl(field.asGetterMethod())
         field.variable.trueType.isVoid() -> ResultVoidTmpl()
         else -> ResultRefTmpl()
