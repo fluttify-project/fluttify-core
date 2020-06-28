@@ -1,7 +1,7 @@
 ^(#__formal_params__#) {
     FlutterMethodChannel *channel = [FlutterMethodChannel
         methodChannelWithName:@"#__method_channel__#"
-              binaryMessenger:[[self registrar] messenger]];
+              binaryMessenger:[[weakSelf registrar] messenger]];
 
     // print log
     if (enableLog) {
