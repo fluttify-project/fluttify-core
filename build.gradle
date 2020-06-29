@@ -1,23 +1,26 @@
 buildscript {
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url "https://plugins.gradle.org/m2/" }
         mavenCentral()
         jcenter()
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.12.0"
     }
 }
 
 plugins {
     id 'java'
     id 'maven'
-    id 'maven-publish'
     id 'java-gradle-plugin'
     id 'org.jetbrains.kotlin.jvm' version '1.3.61'
-    id "com.jfrog.artifactory" version "4.13.0"
 }
+apply plugin: "com.gradle.plugin-publish"
 
 def GROUP_ID = 'me.yohom'
 def ARTIFACT_ID = 'fluttify-core'
-def VERSION_NAME = '0.5.0'
+def VERSION_NAME = '0.6.0'
 
 group GROUP_ID
 version VERSION_NAME
@@ -53,52 +56,16 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxjava:3.0.0"
 }
 
-publishing {
-    publications {
-        fluttify(MavenPublication) {
-            groupId = GROUP_ID
-            artifactId = ARTIFACT_ID
-            version = VERSION_NAME
+pluginBundle {
+    website = 'https://github.com/yohom/fluttify-core'
+    vcsUrl = 'https://github.com/yohom/fluttify-core.git'
+    description = 'A Compiler Generating Dart Bindings for Native SDK.'
+    tags = ['flutter', 'android', 'ios']
 
-            artifact("/Users/yohom/.m2/repository/me/yohom/fluttify-core/${VERSION_NAME}/fluttify-core-${VERSION_NAME}.jar")
-
-            pom.withXml {
-                def dependencies = asNode().appendNode('dependencies')
-                configurations.implementation.allDependencies.each {
-                    // 如果有compile fileTree()，group会为空，需要去除
-                    if (it.group != null) {
-                        def dependency = dependencies.appendNode('dependency')
-                        dependency.appendNode('groupId', it.group)
-                        dependency.appendNode('artifactId', it.name)
-                        dependency.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-}
-
-artifactory {
-    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
-    publish {
-        repository {
-            repoKey = 'gradle-dev-local'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
-        }
-
-        defaults {
-            publications('fluttify')
-            publishArtifacts = true
-        }
-    }
-    resolve {
-        repository {
-            repoKey = 'gradle-release'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
+    plugins {
+        fluttifyPlugin {
+            id = 'me.yohom.fluttify'
+            displayName = 'fluttify'
         }
     }
 }
