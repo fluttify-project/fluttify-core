@@ -35,6 +35,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val androidJavaInterface = project.tasks.create("androidJavaInterface", AndroidJavaInterface::class.java)
         val iOSObjcInterface = project.tasks.create("iOSObjcInterface", IOSObjcInterface::class.java)
         val export = project.tasks.create("export", Export::class.java)
+        val packagingJar = project.tasks.create("packagingJar", PackagingJar::class.java)
+        val packagingFramework = project.tasks.create("packagingFramework", PackagingFramework::class.java)
         val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
         // 可选任务
