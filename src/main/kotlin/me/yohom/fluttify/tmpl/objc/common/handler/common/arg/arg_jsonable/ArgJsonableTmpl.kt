@@ -6,36 +6,39 @@ import me.yohom.fluttify.model.Variable
 
 //// jsonable参数
 //#__type_name__# #__arg_name__# = #__right_value__#;
-private val tmpl = getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText() }
 fun ArgJsonableTmpl(variable: Variable): String {
-    val typeName = when {
-        variable.typeName.isValueType() -> variable.typeName.depointer()
-        variable.isIterable -> variable.typeName
-        else -> variable.typeName.enpointer()
-    }
-    val rightValue = if (variable.typeName.isValueType() || variable.isAliasType()) {
-        var methodPrefix = (SYSTEM_TYPEDEF[variable.typeName]
-            ?: variable.typeName.findType().aliasOf
-            ?: variable.typeName)
+    val typeName = variable.trueType
+    val rightValue = if (variable.trueType.isValueType() || variable.isAliasType()) {
+        var methodPrefix = (SYSTEM_TYPEDEF[variable.trueType]
+            ?: variable.trueType.findType().aliasOf
+            ?: variable.trueType)
             .depointer()
             .toLowerCase()
             .removePrefix("ns")
             .removePrefix("cg")
-        if (variable.typeName == "NSUInteger" || variable.typeName.findType().aliasOf == "NSUInteger") {
+        if (variable.trueType == "NSUInteger"
+            ||
+            variable.trueType.findType().aliasOf == "NSUInteger"
+            ||
+            variable.trueType == "GLuint"
+        ) {
             methodPrefix = "unsignedInteger"
         }
-        if (variable.typeName == "long long") {
-            methodPrefix = "longLongInteger"
+        if (variable.trueType == "long long") {
+            methodPrefix = "longLong"
         }
-        if (variable.typeName == "uint32_t") {
+        if (variable.trueType == "uint32_t" || variable.trueType == "unsigned int") {
             methodPrefix = "unsignedInt"
         }
-        if (variable.typeName == "int32_t") {
+        if (variable.trueType == "int32_t" || variable.trueType == "int") {
             methodPrefix = "int"
         }
-        if (variable.typeName == "int64_t") {
-            methodPrefix = "longLongInteger"
+        if (variable.trueType == "int64_t" || variable.trueType == "long long") {
+            methodPrefix = "longLong"
+        }
+        if (variable.trueType == "uint64_t" || variable.trueType == "unsigned long long") {
+            methodPrefix = "unsignedLongLong"
         }
         "[args[@\"${variable.name.depointer()}\"] ${methodPrefix}Value]"
     } else {

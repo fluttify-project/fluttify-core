@@ -34,14 +34,14 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //
 //    methodResult.success(resultList);
 //});
-private val tmpl = getResource("/tmpl/java/handler_object_creator_batch.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_object_creator_batch.stmt.java.tmpl").readText() }
 
 fun HandlerObjectFactoryBatchTmpl(type: Type): List<String> {
     return type.constructors
         .filterConstructor()
         .map {
             val args = it.formalParams
-                .filter { !it.variable.typeName.findType().isCallback() }
+                .filter { !it.variable.trueType.findType().isCallback }
                 .joinToString("\n") {
                     when {
                         it.variable.jsonable() -> ArgJsonableTmpl(it.variable)

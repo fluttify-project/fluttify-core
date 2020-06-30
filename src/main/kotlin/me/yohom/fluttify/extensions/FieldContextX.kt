@@ -116,7 +116,13 @@ fun ObjectiveCParser.FieldDeclarationContext.getValue(): String {
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.type(): String {
-    return specifierQualifierList().text
+    val typeName = specifierQualifierList().text
+    return if (typeName == "longlong") {
+        // 手动替换一下
+        "long long"
+    } else {
+        typeName
+    }
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.name(): String {

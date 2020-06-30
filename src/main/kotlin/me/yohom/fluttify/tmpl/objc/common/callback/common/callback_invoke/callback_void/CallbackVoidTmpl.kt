@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
 
 //[channel invokeMethod:@"#__callback_method__#" arguments:@{#__callback_args__#}];
-private val tmpl = getResource("/tmpl/objc/callback_void.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/callback_void.stmt.m.tmpl").readText() }
 
 fun CallbackVoidTmpl(method: Method): String {
     val callbackMethod = "Callback::${method.nameWithClass()}"

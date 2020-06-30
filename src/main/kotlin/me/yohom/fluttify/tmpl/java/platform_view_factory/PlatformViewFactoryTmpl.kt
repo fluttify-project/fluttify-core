@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.platform_view_factory
 
+import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
@@ -77,7 +78,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //        };
 //    }
 //}
-private val tmpl = getResource("/tmpl/java/platform_view_factory.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/platform_view_factory.java.tmpl").readText() }
 
 fun PlatformViewFactoryTmpl(viewType: Type): String {
     val packageName = "${ext.org}.${ext.projectName}"
@@ -94,7 +95,11 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
         .constructors
         .filter {
             it.formalParams.any { param ->
-                param.variable.typeName !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+                param.variable.trueType !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+                        &&
+                        param.variable.trueType.findType().isKnownType
+                        &&
+                        param.variable.trueType !in SYSTEM_TYPE.map { it.name }
             }
         }
 
@@ -103,8 +108,8 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
         // 去掉Context的参数列表, 不需要Context
         val formalParamsExcludeContext = constructor
             .formalParams
-            .filter { it.variable.typeName != "android.content.Context" }
-            .filter { it.variable.typeName != "android.app.Activity" }
+            .filter { it.variable.trueType != "android.content.Context" }
+            .filter { it.variable.trueType != "android.app.Activity" }
 
         // 反序列化参数
         val args = formalParamsExcludeContext
@@ -119,7 +124,7 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
         // 传入参数
         val creationArgs = constructor.formalParams.joinToString {
             // 如果是Context或者Activity直接传入activity变量
-            if (it.variable.typeName.run { this == "android.content.Context" || this == "android.app.Activity" }) {
+            if (it.variable.trueType.run { this == "android.content.Context" || this == "android.app.Activity" }) {
                 "activity"
             } else {
                 it.variable.name

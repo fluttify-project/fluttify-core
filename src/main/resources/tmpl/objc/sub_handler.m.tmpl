@@ -13,6 +13,7 @@ extern BOOL enableLog;
 
 @implementation #__plugin_name__#Plugin (SubHandler#__number__#)
 - (NSDictionary<NSString*, Handler>*) getSubHandler#__number__# {
+    __weak __typeof(self)weakSelf = self;
     return @{
         #__handlers__#
     };

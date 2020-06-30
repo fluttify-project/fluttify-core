@@ -11,13 +11,14 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_void.Invo
 import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogInstanceTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogStaticTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.ref.RefTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_enum.ResultEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.ResultRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.ResultVoidTmpl
 
 //// method
-//put("#__method_name__#", (args, methodResult) -> {
+//put("#__method_name__#", (__args__, __methodResult__) -> {
 //    // args
 //    #__args__#
 //
@@ -35,14 +36,14 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //    // convert result to jsonable result
 //    #__result__#
 //
-//    methodResult.success(jsonableResult);
+//    __methodResult__.success(jsonableResult);
 //});
-private val tmpl = getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText() }
 
 fun HandlerMethodTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams
-        .filter { !it.variable.typeName.findType().isCallback() }
+        .filter { !it.variable.trueType.findType().isCallback }
         .joinToString("\n") {
             when {
                 it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
@@ -71,6 +72,7 @@ fun HandlerMethodTmpl(method: Method): String {
     // 这里的语句会产生一个叫jsonableResult的对象, 这个对象是最终返回给dart的对象
     val result = when {
         method.returnType.jsonable() -> ResultJsonableTmpl(method.returnType)
+        method.returnType.findType().isEnum -> ResultEnumTmpl()
         // jsonable已经把List<String>类似的类型挡掉了, 所以到这里的肯定是List<? extends Object>类型
         method.returnType.isIterable() -> ResultListTmpl(method)
         method.returnType.isVoid() -> ResultVoidTmpl()

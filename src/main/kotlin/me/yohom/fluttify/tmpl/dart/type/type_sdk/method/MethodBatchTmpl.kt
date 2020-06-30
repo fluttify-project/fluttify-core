@@ -5,7 +5,8 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.dart.type.common.`return`.ReturnTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 
-//Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
+//#__deprecated__#
+//#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
 //  if (#__check_param_size__#) {
 //    return Future.error('all args must have same length!');
 //  }
@@ -22,7 +23,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 //    return typedResult;
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText() }
 
 /**
  * 方法批处理
@@ -30,14 +31,10 @@ private val tmpl = getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText
  * 不接受有回调的方法
  */
 fun MethodBatchTmpl(method: Method): String {
-    val returnType = if (method.returnType.findType().isStructPointer()) {
-        // 返回类型是结构体指针
-        method.returnType.toDartType().enList().enList()
-    } else {
-        val dartType = method.returnType.toDartType()
-        if (dartType == "void") "void" else dartType.enList()
-    }
-    val methodName = "${method.signature()}_batch"
+    val static = if (method.isStatic) "static " else ""
+    val returnType = method.returnType.toDartType().enList()
+
+    val methodName = "${method.signature}_batch"
 
     // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda和callback参数
     val formalParams = method
@@ -45,7 +42,7 @@ fun MethodBatchTmpl(method: Method): String {
         .joinToString { it.variable.toDartStringBatch() }
         .run {
             // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
-            if (method.className.findType().isView()) {
+            if (method.className.findType().isView) {
                 if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
             } else {
                 this
@@ -66,13 +63,15 @@ fun MethodBatchTmpl(method: Method): String {
 
     val nativeObjectPool = method.returnType.run {
         when {
-            jsonable() or findType().isEnum() or isVoid() -> ""
+            jsonable() or findType().isEnum or isVoid() -> ""
             isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
             else -> "kNativeObjectPool.addAll(typedResult);"
         }
     }
 
     return tmpl
+        .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
+        .replace("#__static__#", static)
         .replace("#__return_type__#", returnType)
         .replace("#__method_name__#", methodName)
         .replace("#__formal_params__#", formalParams)

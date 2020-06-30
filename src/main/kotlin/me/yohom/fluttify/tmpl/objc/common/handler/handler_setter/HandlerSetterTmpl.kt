@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_setter
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_id.ArgIdTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_ref.ArgListRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
@@ -26,12 +27,12 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRe
 //    ref.#__setter__# = #__field_value__#;
 //    methodResult(@"success");
 //},
-private val tmpl = getResource("/tmpl/objc/handler_setter.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_setter.stmt.m.tmpl").readText() }
 fun HandlerSetterTmpl(field: Field): String {
     val setter = field.setterName.depointer()
     val args = field.variable.run {
         when {
+            trueType == "id" -> ArgIdTmpl(field.variable)
             jsonable() || isAliasType() -> ArgJsonableTmpl(field.variable)
             isIterable -> ArgListRefTmpl(field.variable)
             isEnum() -> ArgEnumTmpl(field.variable)
@@ -44,7 +45,7 @@ fun HandlerSetterTmpl(field: Field): String {
     val fieldName = field.variable.name
 
     // 获取当前调用方法的对象引用
-    val ref = if (field.className.findType().isStruct()) {
+    val ref = if (field.className.findType().isStruct) {
         StructRefTmpl(field.asGetterMethod())
     } else {
         RefRefTmpl(field.asGetterMethod())
@@ -53,19 +54,19 @@ fun HandlerSetterTmpl(field: Field): String {
     // 如果setter的是一个delegate, 那么就认定是当前类作为delegate处理
     val fieldValue =field.variable.run {
         when {
-            typeName.findType().isCallback() -> "self"
-            typeName.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
+            trueType.findType().isCallback -> "weakSelf"
+            trueType.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
             else -> fieldName.depointer()
         }
     }
-    val className = if (field.className.findType().isInterface()) {
+    val className = if (field.className.findType().isInterface) {
         "id<${field.className}>"
     } else {
         field.className.enpointer()
     }
 
     return tmpl
-        .replace("#__method_name__#", field.setterMethodName())
+        .replace("#__method_name__#", field.setterMethodName)
         .replaceParagraph("#__args__#", args)
         .replaceParagraph("#__ref__#", ref)
         .replace("#__setter__#", setter)

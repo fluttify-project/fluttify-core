@@ -10,17 +10,17 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter
 //
 //  #__callback__#
 //}
-private val tmpl = getResource("/tmpl/dart/setter_batch.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/setter_batch.mtd.dart.tmpl").readText() }
 
 fun SetterBatchTmpl(field: Field): String {
     return field.variable.run {
-        val typeName = field.variable.typeName.toDartType()
+        val typeName = field.variable.trueType.toDartType()
         val name = name.depointer()
 
         val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
         val normalMethodChannel = ext.methodChannelName
         // 只有当前类是View的时候, 才需要区分普通channel和View channel
-        val methodChannel = if (field.className.findType().isView()) {
+        val methodChannel = if (field.className.findType().isView) {
             "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
         } else {
             "'$normalMethodChannel'"
@@ -28,13 +28,13 @@ fun SetterBatchTmpl(field: Field): String {
 
         val argValue = when {
             isEnum() -> "$name[__i__].index"
-            field.variable.typeName.jsonable() -> "$name[__i__]"
+            field.variable.trueType.jsonable() -> "$name[__i__]"
             (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "$name[__i__].map((it) => it.refId).toList()"
             getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
             else -> "$name[__i__].refId"
         }
-        val setterMethodName = field.setterMethodName()
-        val viewChannel = if (field.className.findType().isView()) ", {bool viewChannel = true}" else ""
+        val setterMethodName = field.setterMethodName
+        val viewChannel = if (field.className.findType().isView) ", {bool viewChannel = true}" else ""
 
         val callback = CallbackSetterTmpl(field)
 

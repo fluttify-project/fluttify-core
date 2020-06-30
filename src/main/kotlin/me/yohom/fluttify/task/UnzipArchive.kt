@@ -53,6 +53,8 @@ open class UnzipArchive : FluttifyTask() {
                             br = BufferedReader(InputStreamReader(libsJarProcess.inputStream))
                             br.lines().forEach(::println)
                         }
+                    // 结束后删除解压的aar
+                    aarUnzipDirPath.file().deleteRecursively()
                 }
             }
         }

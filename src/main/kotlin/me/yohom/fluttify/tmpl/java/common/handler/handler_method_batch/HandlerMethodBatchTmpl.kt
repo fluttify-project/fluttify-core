@@ -38,7 +38,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //
 //    methodResult.success(resultList);
 //});
-private val tmpl = getResource("/tmpl/java/handler_method_batch.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_method_batch.stmt.java.tmpl").readText() }
 
 fun HandlerMethodBatchTmpl(method: Method): String {
     val methodName = method.nameWithClass()
@@ -49,7 +49,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
         else -> "Integer"
     }
     val args = method.formalParams
-        .filter { !it.variable.typeName.findType().isCallback() }
+        .filter { !it.variable.trueType.findType().isCallback }
         .joinToString("\n") {
             when {
                 it.variable.jsonable() -> ArgJsonableTmpl(it.variable)

@@ -5,8 +5,8 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.isIterable
 import me.yohom.fluttify.extensions.toDartType
 
-//#__type_name__#.values[result]
-private val tmpl = getResource("/tmpl/dart/result_enum.stmt.dart.tmpl").readText()
+//__result__.to#__type_name__#()
+private val tmpl by lazy { getResource("/tmpl/dart/result_enum.stmt.dart.tmpl").readText() }
 
 fun ResultEnumTmpl(returnType: TYPE_NAME): String {
     val enumResult = tmpl.replace("#__type_name__#", returnType.toDartType())

@@ -7,14 +7,29 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:#__current_package__#/src/android/android.export.g.dart';
-import 'package:#__current_package__#/src/ios/ios.export.g.dart';
+#__platform_import__#
 
-import 'package:foundation_fluttify/foundation_fluttify.dart';
+#__foundation__#
 
 // ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
-extension TypeOp#__plugin_name__##__platform__# on Ref {
-  #__type_check__#
+extension TypeOp#__plugin_name__##__platform__# on Object {
+  // type check
+  Future<bool> is__<T>() async {
+    final typeName = T.toString();
+    if (RegExp('(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)').hasMatch(typeName)) {
+      return this is T;
+    }
+    #__type_check__#
+  }
 
-  #__type_cast__#
+  // type cast
+  T as__<T>() {
+    final typeName = T.toString();
+    // jsonable 直接造型 返回
+    if (RegExp('(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)').hasMatch(typeName)) {
+      return this as T;
+    }
+    // 如果是Ref类的cast, 那么取其refId, 如果本身是refId, 那么直接使用(int)
+    #__type_cast__#
+  }
 }

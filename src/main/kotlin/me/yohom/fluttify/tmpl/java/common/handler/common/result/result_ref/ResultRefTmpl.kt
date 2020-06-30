@@ -7,7 +7,7 @@ import me.yohom.fluttify.extensions.getResource
 //    jsonableResult = result.hashCode();
 //    getHEAP().put(returnRefId, result);
 //}
-private val tmpl = getResource("/tmpl/java/result_ref.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/result_ref.stmt.java.tmpl").readText() }
 
 fun ResultRefTmpl(): String {
     return tmpl

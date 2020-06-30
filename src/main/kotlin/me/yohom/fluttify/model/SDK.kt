@@ -3,7 +3,6 @@ package me.yohom.fluttify.model
 import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.SYSTEM_TYPEDEF
 import me.yohom.fluttify.extensions.depointer
-import me.yohom.fluttify.extensions.jsonable
 
 class SDK : IPlatform {
 
@@ -40,7 +39,7 @@ class SDK : IPlatform {
      */
     @delegate:Transient
     val allFilteredMethods: List<Method> by lazy {
-        directLibs.flatMap { it.types }.flatMap { it.methods }.filter { it.filter() }
+        directLibs.flatMap { it.types }.flatMap { it.methods }.filter { it.filter }
     }
 
     /**
@@ -48,7 +47,7 @@ class SDK : IPlatform {
      */
     @delegate:Transient
     val allConstants: List<Field> by lazy {
-        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterConstants() }
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterConstants }
     }
 
     /**
@@ -56,7 +55,15 @@ class SDK : IPlatform {
      */
     @delegate:Transient
     val allProperties: List<Field> by lazy {
-        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters() || it.filterSetter() }
+        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters || it.filterSetter }
+    }
+
+    /**
+     * 所有类型
+     */
+    @delegate:Transient
+    val allTypes: List<Type> by lazy {
+        directLibs.flatMap { it.types }
     }
 
     override fun toString(): String {
@@ -73,21 +80,28 @@ class SDK : IPlatform {
             get() = sdks.firstOrNull { it.platform == Platform.iOS }
 
         fun findType(fullName: String): Type {
-            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
+            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf())
+                .flatMap { it.types }
+                .filter { it.typeType != TypeType.Extension } // extension会跟宿主class重复, 这里要去掉
             val finalTypeName = (SYSTEM_TYPEDEF[fullName] ?: fullName)
             return when {
                 // 如果是空字符串那么返回NO_TYPE
                 finalTypeName.isEmpty() -> Type.NO_TYPE
                 // 查找的类型在sdk内, 那么直接过滤出目标类型
-                allTypes.map { it.name.depointer() }.contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
+                allTypes.map { it.name.depointer() }
+                    .contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
                 // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
                 SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(finalTypeName) } -> SYSTEM_TYPE.first {
                     Regex(it.name).matches(finalTypeName)
                 }
                 // 是objc的id指针
-                finalTypeName == "id" -> Type().apply { name = "id"; typeType = TypeType.Class; platform = Platform.iOS }
+                finalTypeName == "id" -> Type().apply {
+                    name = "id"; typeType = TypeType.Class; platform = Platform.iOS
+                }
                 // void*类型
-                finalTypeName == "void*" -> Type().apply { name = "NSValue"; typeType = TypeType.Class; platform = Platform.iOS }
+                finalTypeName == "void*" -> Type().apply {
+                    name = "NSValue"; typeType = TypeType.Class; platform = Platform.iOS
+                }
                 // lambda
                 finalTypeName.contains("|") -> Type().apply {
                     typeType = TypeType.Lambda
@@ -96,18 +110,23 @@ class SDK : IPlatform {
                     formalParams = finalTypeName
                         .substringAfter("|")
                         .split(",")
+                        .filter { it.contains("#") }
                         .map { it.trim().split("#") }
                         .map {
                             Parameter(
-                                variable = Variable(it[0], it[1], platform = Platform.General),
-                                platform = Platform.General
+                                variable = Variable(it[0], it[1], platform = Platform.iOS),
+                                platform = Platform.iOS
                             )
                         }
                     platform = Platform.iOS
                 }
-                // 其他情况一律认为不认识的类
                 else -> Type().apply { name = finalTypeName }
             }
+        }
+
+        fun findExtensions(fullName: String): List<Type> {
+            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
+            return allTypes.filter { it.typeType == TypeType.Extension && it.name == fullName }
         }
     }
 }
@@ -121,15 +140,26 @@ class Lib {
     /**
      * 类
      */
-    var types: MutableList<Type> = mutableListOf()
+    var sourceFiles: MutableList<SourceFile> = mutableListOf()
+
+    /**
+     * 类
+     */
+    val types: List<Type>
+        get() = sourceFiles.flatMap { it.types }
+
+    /**
+     * 顶层常量
+     */
+    val topLevelConstants: List<Variable>
+        get() = sourceFiles.flatMap { it.topLevelConstants }.distinctBy { it.name }
 
     /**
      * 是否是依赖
      */
     var isDependency: Boolean = false
-
     override fun toString(): String {
-        return "Lib(name='$name', types=$types, isDependency=$isDependency)"
+        return "Lib(name='$name', types=$types, topLevelConstants=$topLevelConstants, isDependency=$isDependency)"
     }
 }
 
@@ -141,6 +171,15 @@ enum class Platform {
             General -> "Object"
             iOS -> "NSObject"
             Android -> "java_lang_Object"
+            Unknown -> "Object"
+        }
+    }
+
+    fun nativeObjectType(): String {
+        return when (this) {
+            General -> "Object"
+            iOS -> "NSObject*"
+            Android -> "java.lang.Object"
             Unknown -> "Object"
         }
     }

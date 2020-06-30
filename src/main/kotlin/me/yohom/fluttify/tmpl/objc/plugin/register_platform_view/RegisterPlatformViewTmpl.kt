@@ -6,8 +6,7 @@ import me.yohom.fluttify.extensions.simpleName
 import me.yohom.fluttify.model.Type
 
 //[registrar registerViewFactory: [[#__factory_name__#Factory alloc] init] withId: @"#__view_type__#"];
-private val tmpl = getResource("/tmpl/objc/register_platform_view.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/register_platform_view.stmt.m.tmpl").readText() }
 fun RegisterPlatformViewTmpl(viewType: Type): String {
     val viewTypeName = "${ext.org}/${viewType.name}"
     val factoryName = viewType.name.simpleName()

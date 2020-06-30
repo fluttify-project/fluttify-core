@@ -1,11 +1,13 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method
 
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.ifIsGenericTypeConvertToObject
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_list.CallbackArgListTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_object.CallbackArgObjectTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_return.CallbackReturnTmpl
 
@@ -20,33 +22,38 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //    #__local_args__#
 //
 //    // call dart method
-//    callbackChannel.invokeMethod(
-//            "Callback::#__callback_method_name__#",
-//            new HashMap<String, Object>() {{
-//                #__callback_args__#
-//            }}
-//    );
+//    handler.post(new Runnable() {
+//        @Override
+//        public void run() {
+//            callbackChannel.invokeMethod(
+//                "Callback::#__callback_method_name__#",
+//                new HashMap<String, Object>() {{
+//                    #__callback_args__#
+//                }}
+//            );
+//        }
+//    });
 //
 //    // method result
 //    #__return_stmt__#
 //}
-private val tmpl = getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText() }
 
 fun CallbackMethodTmpl(method: Method): String {
     val callbackMethod = method.name
     val callbackMethodName = method.nameWithClass()
-    val methodChannel = "${method.className.replace("$", ".")}::Callback"
     val formalParams = method
         .formalParams
         .map { it.variable }
         .joinToString {
-            "${it.typeName.replace("$", ".")} ${it.name}"
+            "${it.trueType.replace("$", ".").ifIsGenericTypeConvertToObject()} ${it.name}"
         }
     val returnType = method.returnType.replace("$", ".")
     val localArgs = method
         .formalParams
         .joinToString("\n") {
             when {
+                it.variable.trueType.ifIsGenericTypeConvertToObject() == "java.lang.Object" -> CallbackArgObjectTmpl(it)
                 it.variable.jsonable() -> CallbackArgJsonableTmpl(it)
                 it.variable.isEnum() -> CallbackArgEnumTmpl(it)
                 it.variable.isIterable -> CallbackArgListTmpl(it)
@@ -72,7 +79,6 @@ fun CallbackMethodTmpl(method: Method): String {
     return tmpl
         .replace("#__callback_method__#", callbackMethod)
         .replace("#__callback_method_name__#", callbackMethodName)
-        .replace("#__method_channel__#", methodChannel)
         .replace("#__formal_params__#", formalParams)
         .replace("#__return_type__#", returnType)
         .replaceParagraph("#__local_args__#", localArgs)

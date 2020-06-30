@@ -1,3 +1,4 @@
+#__deprecated__#
 #__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
   // print log
   if (fluttifyLogEnabled) {
@@ -14,7 +15,8 @@
   if (__result__ == null) {
     return null;
   } else {
+    final __return__ = #__return_statement__#;
     #__native_object_pool__#
-    return #__return_statement__#;
+    return __return__;
   }
 }

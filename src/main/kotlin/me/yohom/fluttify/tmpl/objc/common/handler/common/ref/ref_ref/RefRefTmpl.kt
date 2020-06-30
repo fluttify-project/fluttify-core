@@ -6,8 +6,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
 
 //#__type_name__# ref = (#__type_name__#) HEAP[(NSNumber*) ((NSDictionary<NSString*, NSObject*>*) args)[@"refId"]];
-private val tmpl = getResource("/tmpl/objc/ref_ref.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/ref_ref.stmt.m.tmpl").readText() }
 fun RefRefTmpl(method: Method): String {
     val empty = ""
     val protocol = "id<${method.className}>"
@@ -15,7 +14,7 @@ fun RefRefTmpl(method: Method): String {
 
     return when {
         method.isStatic -> empty
-        method.className.findType().isInterface() -> tmpl.replace("#__type_name__#", protocol)
+        method.className.findType().isInterface -> tmpl.replace("#__type_name__#", protocol)
         else -> tmpl.replace("#__type_name__#", `class`)
     }
 }

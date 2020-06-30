@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_method
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_id.ArgIdTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_ref.ArgListRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
@@ -34,13 +35,14 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //
 //    methodResult(jsonableResult);
 //},
-private val tmpl = getResource("/tmpl/objc/handler_method.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_method.stmt.m.tmpl").readText() }
 fun HandlerMethodTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams
+//        .filterFormalParams()
         .joinToString("\n") {
             when {
+                it.variable.trueType == "id" -> ArgIdTmpl(it.variable)
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
                 it.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(it.variable)
                 it.variable.isStructPointer() -> ArgListStructTmpl(it.variable)
@@ -53,7 +55,7 @@ fun HandlerMethodTmpl(method: Method): String {
     val log = LogTmpl(method)
 
     // 获取当前调用方法的对象引用
-    val ref = if (method.className.findType().isStruct()) {
+    val ref = if (method.className.findType().isStruct) {
         StructRefTmpl(method)
     } else {
         RefRefTmpl(method)
@@ -67,7 +69,7 @@ fun HandlerMethodTmpl(method: Method): String {
             isValueType() -> ResultValueTmpl()
             jsonable() -> ResultJsonableTmpl()
             isIterable() -> ResultListTmpl()
-            findType().isStruct() -> ResultStructTmpl(method.returnType)
+            findType().isStruct -> ResultStructTmpl(method.returnType)
             isVoid() -> ResultVoidTmpl()
             isPrimitivePointerType() -> ResultValuePointerTmpl()
             else -> ResultRefTmpl(method.returnType)

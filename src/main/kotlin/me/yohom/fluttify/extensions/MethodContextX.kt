@@ -205,6 +205,8 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
         }
         // 有些方法在返回类型后面会跟一些宏, 去掉这些宏
         .run { removeSuffix(substringAfterLast("*", "")) }
+        // 去掉nonnull前缀
+        .run { removePrefix("nonnull").removePrefix("nullable") }
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isStatic(): Boolean {
@@ -272,16 +274,24 @@ fun ObjectiveCParser.BlockTypeContext.returnType(): String {
 }
 
 fun ObjectiveCParser.BlockTypeContext.parameters(): String {
-    return blockParameters().typeVariableDeclaratorOrName().joinToString(",") {
-        val name = it.typeVariableDeclarator().declarator().text
-        val type = it.typeVariableDeclarator()
-            .declarationSpecifiers()
-            .text
-            .run {
-                // 如果变量名上面有*号, 那么需要把*号移到类型名上面来
-                if (name.startsWith("*")) enpointer() else this
-            }
-        "$type#${name.depointer()}"
-    }
+    return blockParameters()
+        .typeVariableDeclaratorOrName()
+        .filter { it.typeName()?.text != "void" }
+        .mapIndexed { index, context -> index to context }
+        .joinToString(",") {
+            // lambda参数, 可以是只有类名, 所以这里的name有可能是空, 类名也可以是空, 如果类名是空的话就直接使用
+            // it.typeName().text
+            val name =
+                it.second?.typeVariableDeclarator()?.declarator()?.text?.objcSpecifierExpand() ?: "__arg_${it.first}__"
+            val type = it.second?.typeVariableDeclarator()
+                ?.declarationSpecifiers()
+                ?.text
+                ?.run {
+                    // 如果变量名上面有*号, 那么需要把*号移到类型名上面来
+                    if (name.startsWith("*")) enpointer() else this
+                }
+                ?: it.second?.typeName()?.text
+            "$type#${name.depointer()}"
+        }
 }
 //endregion

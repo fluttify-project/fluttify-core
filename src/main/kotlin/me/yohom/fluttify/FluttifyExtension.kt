@@ -4,7 +4,7 @@ import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
-open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
+open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * 项目名称
      */
@@ -36,14 +36,14 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     var homepage: String = "https://fluttify.com"
 
     /**
-     * 单价 元/方法
+     * 混淆白名单 在这里列表里的都不认为是混淆类
      */
-    var unitPrice: Double = 0.1
+    var obfuscatedWhiteList: List<String> = listOf()
 
     /**
      * foundation版本
      */
-    var foundationVersion: String = ""
+    var foundationVersion: Map<String, String> = mapOf()
 
     /**
      * 插件依赖
@@ -53,18 +53,18 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * android端配置
      */
-    var android: PlatformSpec = objectFactory.newInstance(PlatformSpec::class.java)
+    var android: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
-    fun android(action: Action<PlatformSpec>) {
+    fun android(action: Action<PlatformSpec?>) {
         action.execute(android)
     }
 
     /**
      * ios端配置
      */
-    var ios: PlatformSpec = objectFactory.newInstance(PlatformSpec::class.java)
+    var ios: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
-    fun ios(action: Action<PlatformSpec>) {
+    fun ios(action: Action<PlatformSpec?>) {
         action.execute(ios)
     }
 
@@ -95,16 +95,45 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory) {
     }
 }
 
-open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
+open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * library所在路径
      */
     var libDir: String = ""
 
     /**
+     * 手动指定的回调类
+     *
+     * 会存在一些情况, 本身的回调类, 但是SDK中有其实体子类, 这里手动指定一下
+     */
+    var callbackClasses = listOf<String>()
+
+    /**
+     * 手动指定的非回调类
+     *
+     * 会存在一些情况, 本身是接口且没有子类, 但不是回调类的情况
+     */
+    var noncallbackClasses = listOf<String>()
+
+    /**
+     * ios头文件导入, 如果不指定, 则使用默认的头文件导出
+     */
+    var iosImportHeader: List<String> = listOf()
+
+    /**
+     * 元素替换
+     */
+    var overrideElements: Map<Int, String> = mapOf()
+//        get() {
+//            val packedMethods = field.map { entry -> Pair(entry.key.pack(), entry.key.pack()) }.toMap()
+//            println("packedMethods: $packedMethods")
+//            return packedMethods
+//        }
+
+    /**
      * 远程依赖配置
      */
-    val remote: Remote = objectFactory.newInstance(Remote::class.java)
+    val remote: Remote = objectFactory?.newInstance(Remote::class.java) ?: Remote()
 
     fun remote(action: Action<Remote>) {
         action.execute(remote)
@@ -113,7 +142,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 本地依赖配置
      */
-    val local: Local = objectFactory.newInstance(Local::class.java)
+    val local: Local = objectFactory?.newInstance(Local::class.java) ?: Local()
 
     fun local(action: Action<Local>) {
         action.execute(local)
@@ -122,7 +151,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory) {
     /**
      * 排除的成员
      */
-    val exclude: Exclude = objectFactory.newInstance(Exclude::class.java)
+    val exclude: Exclude = objectFactory?.newInstance(Exclude::class.java) ?: Exclude()
 
     fun exclude(action: Action<Exclude>) {
         action.execute(exclude)
@@ -153,17 +182,17 @@ open class Remote {
     /**
      * 组织名 ios可不填
      */
-    var org: String = ""
+    var org: List<String> = listOf()
 
     /**
      * 依赖名称
      */
-    var name: String = ""
+    var name: List<String> = listOf()
 
     /**
      * 依赖版本
      */
-    var version: String = ""
+    var version: List<String> = listOf()
 
     /**
      * 间接远程依赖
@@ -173,7 +202,7 @@ open class Remote {
     /**
      * android maven 坐标
      */
-    val androidCoordinate get() = "$org:$name:$version"
+    val androidCoordinate get() = org.indices.map { "${org[it]}:${name[it]}:${version[it]}" }
 
     /**
      * android是否已配置
@@ -183,7 +212,7 @@ open class Remote {
     /**
      * ios pod 坐标
      */
-    val iosCoordinate get() = "'$name', '~> $version'"
+    val iosCoordinate get() = name.indices.map { "'${name[it]}', '~> ${version[it]}'" }
 
     /**
      * ios是否已配置

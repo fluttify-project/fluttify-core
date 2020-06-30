@@ -2,10 +2,11 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callbac
 
 import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.removeObjcSpecifier
 import me.yohom.fluttify.model.Parameter
 
 //args['#__arg_name__#']
-private val tmpl = getResource("/tmpl/dart/callback_case_arg_jsonable.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_jsonable.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgJsonableTmpl(param: Parameter): String {
     return tmpl

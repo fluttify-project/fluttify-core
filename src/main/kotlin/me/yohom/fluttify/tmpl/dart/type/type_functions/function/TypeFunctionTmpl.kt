@@ -27,7 +27,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //    return #__return_statement__#;
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/function.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/function.mtd.dart.tmpl").readText() }
 
 fun TypeFunctionTmpl(functionType: Type): String {
     val returnType = functionType.returnType.toDartType()
@@ -38,7 +38,7 @@ fun TypeFunctionTmpl(functionType: Type): String {
         .joinToString { it.variable.toDartString() }
         .run {
             // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
-            if (functionType.isView()) {
+            if (functionType.isView) {
                 if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
             } else {
                 this
@@ -46,11 +46,15 @@ fun TypeFunctionTmpl(functionType: Type): String {
         }
     val log = LogTmpl(functionType.asMethod())
     val invoke = InvokeTmpl(functionType.asMethod())
-    val callback = CallbackMethodTmpl(functionType.asMethod())
+    val callbacks = functionType.formalParams
+        .filter { it.variable.isCallback() || it.variable.isLambda() }
+        .map { it.variable }
+        .map { CallbackMethodTmpl(functionType.asMethod(), it.trueType.findType(), it.name) }
+
     val returnStatement = ReturnTmpl(functionType.asMethod())
     val nativeObjectPool = functionType.returnType.run {
         when {
-            jsonable() or findType().isEnum() or isVoid() -> ""
+            jsonable() or findType().isEnum or isVoid() -> ""
             isIterable() -> "kNativeObjectPool.addAll($returnStatement);"
             else -> "kNativeObjectPool.add($returnStatement);"
         }
@@ -62,7 +66,7 @@ fun TypeFunctionTmpl(functionType: Type): String {
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
-        .replaceParagraph("#__callback__#", callback)
+        .replaceParagraph("#__callback__#", callbacks.joinToString("\n"))
         .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)
 }

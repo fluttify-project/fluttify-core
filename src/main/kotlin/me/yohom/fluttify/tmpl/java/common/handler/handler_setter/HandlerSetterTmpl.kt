@@ -18,10 +18,10 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //    ref.#__field_name__# = #__field_value__#;
 //    methodResult.success("success");
 //});
-private val tmpl = getResource("/tmpl/java/handler_setter.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_setter.stmt.java.tmpl").readText() }
 
 fun HandlerSetterTmpl(field: Field): String {
-    val setterName = field.setterMethodName()
+    val setterName = field.setterMethodName
     val fieldName = field.variable.name
     val arg = when {
         field.variable.jsonable() -> ArgJsonableTmpl(field.variable)

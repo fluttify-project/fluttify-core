@@ -108,9 +108,9 @@ import java.io.File
 //        void call(Map<String, Object> args, MethodChannel.Result methodResult) throws Exception;
 //    }
 //}
-private val tmpl = getResource("/tmpl/java/plugin.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/plugin.java.tmpl").readText() }
 
-fun JavaPluginTmpl(lib: Lib, subHandlerOutputDir: String): String {
+fun JavaPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): String {
     // 包名
     val packageName = "${ext.org}.${ext.projectName}"
 
@@ -123,7 +123,7 @@ fun JavaPluginTmpl(lib: Lib, subHandlerOutputDir: String): String {
     val subHandlerDir = File(subHandlerOutputDir)
     val registerHandler = if (subHandlerDir.exists()) {
         subHandlerDir
-            .list { _, name -> name?.contains("SubHandlerCustom.java") != true }
+            .list { _, name -> name?.contains("custom") != true }
             ?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }
             ?.joinToString("\n") ?: ""
     } else {
@@ -131,9 +131,9 @@ fun JavaPluginTmpl(lib: Lib, subHandlerOutputDir: String): String {
     }
 
     // 注册PlatformView
-    val registerPlatformViews = lib
-        .types
-        .filter { it.isView() && !it.isObfuscated() }
+    val registerPlatformViews = libs
+        .flatMap { it.types }
+        .filter { it.isView }
         .joinToString("\n") { RegisterPlatformViewTmpl(it) }
 
     return tmpl

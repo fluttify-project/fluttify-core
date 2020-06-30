@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_method_batch
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_enum.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_id.ArgIdTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_jsonable.ArgJsonableTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_ref.ArgListRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.arg.arg_list.arg_list_struct.ArgListStructTmpl
@@ -36,13 +37,16 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //
 //    methodResult(jsonableResult);
 //},
-private val tmpl = getResource("/tmpl/objc/handler_method_batch.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_method_batch.stmt.m.tmpl").readText() }
 fun HandlerMethodBatchTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val args = method.formalParams
+        // 这里不过滤形参, dart端是会过滤形参的, 所以被过滤的传到原生这边是回变成null
+        // 由于过滤形参分成Callback和无法处理的类型两种情况, 所以这里不太好处理, 先统一不过滤了
+//        .filterFormalParams()
         .joinToString("\n") {
             when {
+                it.variable.trueType == "id" -> ArgIdTmpl(it.variable)
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
                 it.variable.run { jsonable() || isAliasType() } -> ArgJsonableTmpl(it.variable)
                 it.variable.isStructPointer() -> ArgListStructTmpl(it.variable)
@@ -54,7 +58,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
         }
 
     // 获取当前调用方法的对象引用
-    val ref = if (method.className.findType().isStruct()) {
+    val ref = if (method.className.findType().isStruct) {
         StructRefTmpl(method)
     } else {
         RefRefTmpl(method)
@@ -68,7 +72,7 @@ fun HandlerMethodBatchTmpl(method: Method): String {
             isValueType() -> ResultValueTmpl()
             jsonable() -> ResultJsonableTmpl()
             isIterable() -> ResultListTmpl()
-            findType().isStruct() -> ResultStructTmpl(method.returnType)
+            findType().isStruct -> ResultStructTmpl(method.returnType)
             isVoid() -> ResultVoidTmpl()
             isPrimitivePointerType() -> ResultValuePointerTmpl()
             else -> ResultRefTmpl(method.returnType)

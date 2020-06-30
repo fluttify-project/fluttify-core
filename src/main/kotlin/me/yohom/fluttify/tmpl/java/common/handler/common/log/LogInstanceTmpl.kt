@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
 
 //println("fluttify-kotlin: #__class_name__#@$refId::#__method_name__#(#__args__#)")
-private val tmpl = getResource("/tmpl/java/log_instance.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/log_instance.stmt.java.tmpl").readText() }
 
 fun LogInstanceTmpl(method: Method): String {
     val className = method.className.replace("$", ".")

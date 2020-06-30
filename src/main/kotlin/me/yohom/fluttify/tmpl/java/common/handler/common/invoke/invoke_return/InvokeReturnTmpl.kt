@@ -3,8 +3,18 @@ package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_return
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
 
-//#__return_type__# result = #__invoke_target__#.#__method_name__#(#__actual_params__#);
-private val tmpl = getResource("/tmpl/java/invoke_return.stmt.java.tmpl").readText()
+//#__return_type__# __result__;
+//try {
+//    __result__ = #__invoke_target__#.#__method_name__#(#__actual_params__#);
+//} catch (Throwable throwable) {
+//    throwable.printStackTrace();
+//    if (getEnableLog()) {
+//        Log.d("Current HEAP: ", getHEAP().toString());
+//    }
+//    __methodResult__.error(throwable.getMessage(), null, null);
+//    return;
+//}
+private val tmpl by lazy { getResource("/tmpl/java/invoke_return.stmt.java.tmpl").readText() }
 
 fun InvokeReturnTmpl(method: Method): String {
     // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void

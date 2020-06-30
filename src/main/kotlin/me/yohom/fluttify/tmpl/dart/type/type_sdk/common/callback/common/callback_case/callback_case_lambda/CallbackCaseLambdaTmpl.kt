@@ -1,8 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda
 
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.model.Parameter
+import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_enum.CallbackCaseArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_jsonable.CallbackCaseArgJsonableTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_list.CallbackCaseArgListTmpl
@@ -17,20 +16,16 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //  // handle the native call
 //  #__callback_handler__#(#__callback_args__#);
 //  break;
-private val tmpl = getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText() }
 
-fun CallbackCaseLambdaTmpl(lambdaParam: Parameter): String {
-    val callbackCase = "Callback::${lambdaParam.variable.typeName.replace("$", ".")}::${lambdaParam.variable.typeName}"
+fun CallbackCaseLambdaTmpl(lambdaType: Type, lambdaName: String): String {
+    val callbackCase = "Callback::${lambdaType.name.replace("$", ".")}::${lambdaType.name}"
     val log = ""
-    val callbackHandler = lambdaParam.variable.name
-    val callbackArgs = lambdaParam
-        .variable
-        .typeName
-        .findType()
+    val callbackArgs = lambdaType
         .formalParams
         .joinToString {
             when {
-                it.variable.jsonable() -> CallbackCaseArgJsonableTmpl(it)
+                it.variable.isVoid() || it.variable.jsonable() -> CallbackCaseArgJsonableTmpl(it)
                 it.variable.isIterable -> CallbackCaseArgListTmpl(it)
                 it.variable.isEnum() -> CallbackCaseArgEnumTmpl(it)
                 else -> CallbackCaseArgRefTmpl(it)
@@ -40,6 +35,6 @@ fun CallbackCaseLambdaTmpl(lambdaParam: Parameter): String {
     return tmpl
         .replace("#__callback_case__#", callbackCase)
         .replace("#__log__#", log)
-        .replace("#__callback_handler__#", callbackHandler)
+        .replace("#__callback_handler__#", "if ($lambdaName != null) $lambdaName")
         .replace("#__callback_args__#", callbackArgs)
 }

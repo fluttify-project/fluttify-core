@@ -14,10 +14,10 @@ import me.yohom.fluttify.model.Variable
 //    // 放到HEAP中的数据
 //    HEAP[@(item.hash)] = item;
 //}
-private val tmpl = getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readText() }
 
 fun CallbackArgListTmpl(variable: Variable): String {
     return tmpl
-        .replace("#__type_name__#", variable.typeName.enpointer())
+        .replace("#__type_name__#", variable.trueType.enpointer())
         .replace("#__arg_name__#", variable.name.depointer())
 }

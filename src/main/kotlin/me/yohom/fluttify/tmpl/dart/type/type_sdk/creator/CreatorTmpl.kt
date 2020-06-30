@@ -12,7 +12,7 @@ import me.yohom.fluttify.model.Type
 //  kNativeObjectPool.add(object);
 //  return object;
 //}
-private val tmpl = getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText() }
 
 fun CreatorTmpl(type: Type): List<String> {
     return when (type.platform) {
@@ -25,7 +25,7 @@ fun CreatorTmpl(type: Type): List<String> {
                         "#__signature__#",
                         it.formalParams.joinToString("__") {
                             it.variable
-                                .typeName
+                                .trueType
                                 .replace("[]", "Array")
                                 .enList(it.variable.getIterableLevel())
                                 .toUnderscore()
@@ -37,7 +37,7 @@ fun CreatorTmpl(type: Type): List<String> {
                     .replace("#__separator__#", if (it.formalParams.isEmpty()) "" else ", ")
                     .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap {
                         when {
-                            it.typeName.jsonable() -> it.name
+                            it.trueType.jsonable() -> it.name
                             it.isEnum() -> "${it.name}.index"
                             it.isIterable -> if (it.getIterableLevel() <= 1) "${it.name}.map((it) => it.refId).toList()" else "[] /* 暂不支持嵌套列表 */"
                             else -> "${it.name}.refId"

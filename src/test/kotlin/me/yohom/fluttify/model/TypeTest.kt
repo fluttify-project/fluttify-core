@@ -1,10 +1,9 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.Amap
-import me.yohom.fluttify.Bmap
+import me.yohom.fluttify.*
 import org.junit.jupiter.api.Test
 
-class TypeTest {
+class TypeTest : FluttifyTest() {
 
     @Test
     fun constructable() {
@@ -12,7 +11,7 @@ class TypeTest {
 //            .libs[1]
 //            .types
 //            .find { it.name == "com.amap.api.services.route.RouteSearch.DriveRouteQuery" }
-//            ?.constructable()
+//            ?.constructable
 //            ?.run {
 //                println("结果: $this")
 //            }
@@ -20,14 +19,14 @@ class TypeTest {
             .libs[3]
             .types
             .forEach {
-                println("${it.name} constructable: ${it.constructable()}")
+                println("${it.name} constructable: ${it.constructable}")
             }
 //
 //        iosSDK
 //            .libs[1]
 //            .types
 //            .find { it.name == "AMapNearbySearchManager" }
-//            ?.constructable()
+//            ?.constructable
 //            ?.run {
 //                println("结果: $this")
 //            }
@@ -43,16 +42,13 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        Amap.androidMapSDK
-            .libs[2]
-            .types
-            .find { it.name == "com.amap.api.maps.model.TileProvider" }
-//            .find { it.name == "com.amap.api.maps.AMap.CancelableCallback" }
-//            .find { it.name == "com.amap.api.maps.AMap.InfoWindowAdapter" }
-            ?.firstConcretSubtype()
+        Tmap.androidSDK
+            .allTypes
+            .find { it.name == "com.tencent.tencentmap.mapsdk.maps.model.IOverlay" }
+            ?.firstConcretSubtype
             ?.run {
                 println("结果: $this")
-            }
+            } ?: println("没有子类")
     }
 
     @Test
@@ -65,13 +61,13 @@ class TypeTest {
 //            ?.run {
 //                println("结果: $this")
 //            }
-        Amap.androidMapSDK
-            .libs[2]
+        BaiduAsr.androidAsrSDK
+            .libs[1]
             .types
-            .find { it.name.contains("com.amap.api.maps.AMap.InfoWindowAdapter") }
-            ?.hasSubtype()
+            .find { it.name == "com.baidu.speech.EventManager" }
+            ?.subtypes
             ?.run {
-                println("结果: $this")
+                println("结果: ${this.joinToString { it.name }}")
             }
     }
 
@@ -90,6 +86,17 @@ class TypeTest {
             .types
             .find { it.name == "MAGroundOverlay" }
             ?.ancestorTypes
+            ?.run {
+                println("结果: $this")
+            }
+    }
+
+    @Test
+    fun isView() {
+        Tmap.iosSDK
+            .allTypes
+            .find { it.name == "QMapView" && it.typeType == TypeType.Class }
+            ?.isView
             ?.run {
                 println("结果: $this")
             }

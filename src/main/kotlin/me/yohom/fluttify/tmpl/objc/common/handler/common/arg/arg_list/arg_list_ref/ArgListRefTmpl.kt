@@ -13,14 +13,13 @@ import me.yohom.fluttify.model.Variable
 //    #__type_name__# item = (#__type_name__#) HEAP[[#__arg_name__#RefArray objectAtIndex:i]];
 //    [#__arg_name__# addObject:item];
 //}
-private val tmpl = getResource("/tmpl/objc/arg_list_ref.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/arg_list_ref.stmt.m.tmpl").readText() }
 fun ArgListRefTmpl(variable: Variable): String {
     val typeName = variable.run {
         if (isInterface()) {
-            typeName.enprotocol()
+            trueType.enprotocol()
         } else {
-            typeName.enpointer()
+            trueType.enpointer()
         }
     }
     val argName = variable.name.depointer()

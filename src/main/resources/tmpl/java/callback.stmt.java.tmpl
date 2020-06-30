@@ -1,7 +1,8 @@
 new #__callback_class_name__#() {
-    // method channel
-    MethodChannel callbackChannel = new MethodChannel(messenger, "#__callback_channel__#::Callback");
+        // method channel
+        MethodChannel callbackChannel = new MethodChannel(messenger, "#__callback_channel__#");
+        android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
 
-    // call dart method
-    #__callback_methods__#
+        // call dart method
+        #__callback_methods__#
 }

@@ -1,13 +1,37 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.Amap
+import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.Tmap
+import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.model.Variable
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.FalseFileFilter
+import org.apache.commons.io.filefilter.SuffixFileFilter
+import org.apache.commons.io.filefilter.TrueFileFilter
+import org.apache.commons.io.filefilter.WildcardFileFilter
 import org.junit.jupiter.api.Test
 
-class ListXKtTest {
+class ListXKtTest : FluttifyTest() {
 
     @Test
     fun filterMethod() {
+        // 如果含有通配符, 那么从通配符开始查找目标framework
+        val subPath = "**/NIMSDK.framework".substringBefore("**/")
+        val frameworkName = "**/NIMSDK.framework".substringAfter("**/")
+        val result = FileUtils.iterateFilesAndDirs(
+            "/Users/yohom/Github/Me/All/fluttify/3rd_party/nim/sdk/ios/$subPath".file(),
+            FalseFileFilter.INSTANCE,
+            TrueFileFilter.INSTANCE
+        )
+            .asSequence()
+            .find { it.name.endsWith(frameworkName) }
+            ?.path!!
+        println(result)
+
+//        listOf(Field(true, true, true, "", Variable("", "", Platform.Android), "", platform = Platform.Android)).filterConstants()
 //        Amap.androidSearchSDK.libs[1]
 //            .types.apply { println("types:$this") }
 //            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
@@ -16,25 +40,32 @@ class ListXKtTest {
 //            ?.filterMethod()
 //            ?.apply { println("after:$this") }
 
-        val sdk = "/Users/yohom/Github/Me/All/fluttify/3rd_party/xftts/jr/xftts_fluttify.ios.json"
-            .file()
-            .readText()
-            .fromJson<SDK>()
-
-        sdk.libs
-            .flatMap { it.types }
-            .find { it.name == "IFlySpeechRecognizerDelegate" }
-            ?.methods
-            ?.apply { println("before:$this") }
-            ?.filterMethod()
-            ?.apply { println("after:$this") }
+//        val sdk = "/Users/yohom/Github/Me/All/fluttify/3rd.party/xftts/jr/xftts.fluttify.ios.json"
+//            .file()
+//            .readText()
+//            .fromJson<SDK>()
+//
+//        sdk.libs
+//            .flatMap { it.types }
+//            .find { it.name == "IFlySpeechRecognizerDelegate" }
+//            ?.methods
+//            ?.apply { println("before:$this") }
+//            ?.filterMethod()
+//            ?.apply { println("after:$this") }
     }
 
     @Test
     fun filterGetters() {
-        Amap.iosSearchSDK.libs[1]
-            .types.apply { println("types:$this") }
-            .find { it.name == "AMapPOISearchResponse" }
+//        Amap.iosSearchSDK.libs[1]
+//            .types.apply { println("types:$this") }
+//            .find { it.name == "AMapPOISearchResponse" }
+//            ?.fields
+//            ?.apply { println("before:$this") }
+//            ?.filterGetters()
+//            ?.apply { println("after:$this") }
+        Tmap.androidSDK
+            .allTypes
+            .find { it.name == "com.tencent.tencentmap.mapsdk.maps.model.CamerParameter" }
             ?.fields
             ?.apply { println("before:$this") }
             ?.filterGetters()

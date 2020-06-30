@@ -1,5 +1,5 @@
 // method
-put("#__method_name__#", (args, methodResult) -> {
+put("#__method_name__#", (__args__, __methodResult__) -> {
     // args
     #__args__#
 
@@ -17,5 +17,5 @@ put("#__method_name__#", (args, methodResult) -> {
     // convert result to jsonable result
     #__result__#
 
-    methodResult.success(jsonableResult);
+    __methodResult__.success(jsonableResult);
 });

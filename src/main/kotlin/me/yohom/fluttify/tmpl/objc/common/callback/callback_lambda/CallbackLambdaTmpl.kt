@@ -1,9 +1,8 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda
 
-import me.yohom.fluttify.extensions.depointer
+import me.yohom.fluttify.extensions.deprotocol
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgValueTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
@@ -29,15 +28,16 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //
 //    #__callback__#
 //}
-private val tmpl = getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText() }
 
-fun CallbackLambdaTmpl(callerMethod: Method, callbackLambda: Type): String {
-    val methodChannel = "${callerMethod.nameWithClass()}::Callback"
-    val formalParams =
-        callbackLambda.formalParams.joinToString { "${it.variable.objcType()} ${it.variable.name.depointer()}" }
-    val localArgs = if (callbackLambda.returnType == "void") {
+fun CallbackLambdaTmpl(callbackType: Type): String {
+    val methodChannel = "${callbackType.name.deprotocol().replace("$", ".")}::Callback"
+    val formalParams = callbackType
+        .formalParams
+        .joinToString { "${it.variable.objcType()} ${it.variable.name}" }
+    val localArgs = if (callbackType.returnType == "void") {
         // 只有没有返回值的方法需要设置, 因为目前有返回值的回调方法是不实现的, 不然的话会把不需要的对象放到HEAP中去, dart端又无法释放, 造成泄露
-        callbackLambda
+        callbackType
             .formalParams
             .map { it.variable }
             .joinToString("\n") {
@@ -55,8 +55,8 @@ fun CallbackLambdaTmpl(callerMethod: Method, callbackLambda: Type): String {
         ""
     }
     val callback = when {
-        callbackLambda.returnType == "void" -> CallbackVoidTmpl(callbackLambda.asMethod())
-        else -> CallbackReturnTmpl(callbackLambda.asMethod())
+        callbackType.returnType == "void" -> CallbackVoidTmpl(callbackType.asMethod())
+        else -> CallbackReturnTmpl(callbackType.asMethod())
     }
 
     return tmpl

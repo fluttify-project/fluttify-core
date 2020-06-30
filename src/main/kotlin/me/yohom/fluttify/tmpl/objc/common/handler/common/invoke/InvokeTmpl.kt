@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda.CallbackLambdaTmpl
 
-internal class InvokeTmpl private constructor(private val field: Field?, private val method: Method?) {
+class InvokeTmpl private constructor(private val field: Field?, private val method: Method?) {
 
     constructor(field: Field) : this(field, null)
 
@@ -15,9 +15,9 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     fun objcInvoke(): String {
         val invokeGetter = field?.run {
             val typeName = variable.run {
-                when (typeName) {
+                when (trueType) {
                     "id" -> "NSObject*"
-                    else -> typeName
+                    else -> trueType
                 }
             }
 
@@ -32,14 +32,12 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                     "${method.name}(${method.formalParams.joinToString { param2arg(it, true) }})"
                 }
                 // 类静态方法
-                else if (!method.className.findType().isInterface()) {
+                else if (!method.className.findType().isInterface) {
                     "[${method.className} ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
                 }
                 // 协议静态方法
                 else {
-                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") {
-                        param2arg(it)
-                    }}]"
+                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
                 }
 
                 if (method.returnType == "void") {
@@ -51,9 +49,7 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
                 if (method.returnType == "void") {
                     "[ref ${method.name} ${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 } else {
-                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") {
-                        param2arg(it)
-                    }}];"
+                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 }
             }
         }
@@ -63,21 +59,21 @@ internal class InvokeTmpl private constructor(private val field: Field?, private
     private fun param2arg(it: Parameter, isFunction: Boolean = false): String {
         return if (isFunction) {
             if (it.variable.isLambda() && method != null) {
-                CallbackLambdaTmpl(method, it.variable.typeName.findType())
+                CallbackLambdaTmpl(it.variable.trueType.findType())
             } else {
                 when {
                     it.variable.isCallback() -> "self"
-                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }
             }
         } else {
             if (it.variable.isLambda() && method != null) {
-                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.typeName.findType())}"
+                "${it.named}: ${CallbackLambdaTmpl(it.variable.trueType.findType())}"
             } else {
                 "${it.named}: ${when {
                     it.variable.isCallback() -> "self"
-                    it.variable.typeName.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }}"
             }

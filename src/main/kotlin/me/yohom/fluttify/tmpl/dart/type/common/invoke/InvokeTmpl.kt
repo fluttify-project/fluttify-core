@@ -5,11 +5,11 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
-//final result = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
-private val tmpl = getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText()
+//final __result__ = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
+private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText() }
 
 fun InvokeTmpl(method: Method): String {
-    val channel = if (method.className.findType().isView()) {
+    val channel = if (method.className.findType().isView) {
         "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
     } else {
         "'${ext.methodChannelName}'"
@@ -20,20 +20,22 @@ fun InvokeTmpl(method: Method): String {
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter("int", "refId")) else this }
         .map { it.variable }
         .toDartMap {
-            val type = if (it.isAliasType()) it.typeName.findType().aliasOf!! else it.typeName
+            val typeName = it.trueType
+            val type = typeName.findType()
             when {
-                type.findType().isEnum() -> {
+                typeName.findType().isEnum -> "${it.name}.toValue()" // toValue是配合枚举生成的扩展方法
+                it.isIterable
+                        && typeName.genericTypes().isNotEmpty()
+                        && typeName.genericTypes()[0].findType().isEnum -> {
                     // 枚举列表
-                    if (it.isIterable) {
-                        "${it.name}.map((__it__) => __it__.index).toList()"
-                    } else {
-                        "${it.name}.index"
-                    }
+                    "${it.name}.map((__it__) => __it__?.toValue())?.toList()"
                 }
-                type.jsonable() -> it.name
-                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__.refId).toList()"
+                typeName.jsonable() -> it.name
+                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name}.map((__it__) => __it__?.refId).toList()"
                 it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
-                else -> "${it.name}.refId"
+                // dynamic类型需要根据是否是Ref类型来区分是直接传还是传refId
+                typeName.toDartType() == "dynamic" -> "${it.name} is Ref ? (${it.name} as Ref)?.refId : ${it.name}"
+                else -> "${it.name}?.refId"
             }
         }
     return tmpl

@@ -26,18 +26,17 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //
 //    methodResult(resultList);
 //},
-private val tmpl = getResource("/tmpl/objc/handler_getter_batch.stmt.m.tmpl").readText()
-
+private val tmpl by lazy { getResource("/tmpl/objc/handler_getter_batch.stmt.m.tmpl").readText() }
 fun HandlerGetterBatchTmpl(field: Field): String {
-    val methodName = field.getterMethodName()
+    val methodName = field.getterMethodName
     val className = when {
         field.className == "id" -> "NSObject*" // 如果是id类型, 就强转成NSObject*
-        field.className.findType().isInterface() -> field.className.enprotocol()
+        field.className.findType().isInterface -> field.className.enprotocol()
         else -> field.className.enpointer()
     }
 
     // 获取当前调用方法的对象引用
-    val ref = if (field.className.findType().isStruct()) {
+    val ref = if (field.className.findType().isStruct) {
         StructRefTmpl(field.asGetterMethod())
     } else {
         RefRefTmpl(field.asGetterMethod())
@@ -50,8 +49,8 @@ fun HandlerGetterBatchTmpl(field: Field): String {
         field.variable.jsonable() -> ResultJsonableTmpl()
         field.variable.isIterable -> ResultListTmpl()
         field.variable.isValuePointerType() -> ResultValuePointerTmpl()
-        field.variable.isStruct() -> ResultStructTmpl(field.variable.typeName)
-        else -> ResultRefTmpl(field.variable.typeName)
+        field.variable.isStruct() -> ResultStructTmpl(field.variable.trueType)
+        else -> ResultRefTmpl(field.variable.trueType)
     }
     return tmpl
         .replace("#__method_name__#", methodName)

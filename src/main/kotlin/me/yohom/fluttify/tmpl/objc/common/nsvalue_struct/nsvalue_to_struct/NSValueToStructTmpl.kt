@@ -5,7 +5,7 @@ import me.yohom.fluttify.extensions.getResource
 
 //#__struct_type__# _structValue;
 //[#__nsvalue_variable_name__# getValue:&_structValue];
-private val hTmpl = getResource("/tmpl/objc/nsvalue_to_struct.stmt.m.tmpl").readText()
+private val hTmpl by lazy { getResource("/tmpl/objc/nsvalue_to_struct.stmt.m.tmpl").readText() }
 
 fun NSValueToStructTmpl(structType: TYPE_NAME, nsvalueVar: String): String {
     return hTmpl

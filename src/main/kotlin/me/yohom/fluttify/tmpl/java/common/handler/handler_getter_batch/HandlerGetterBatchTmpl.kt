@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.handler_getter_batch
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_enum.ResultEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.ResultRefTmpl
@@ -26,25 +27,26 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //
 //    methodResult.success(resultList);
 //});
-private val tmpl = getResource("/tmpl/java/handler_getter_batch.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/handler_getter_batch.stmt.java.tmpl").readText() }
 
 fun HandlerGetterBatchTmpl(field: Field): String {
-    val getterName = field.getterMethodName()
+    val getterName = field.getterMethodName
     val className = field.className.replace("$", ".")
     val resultType = field.variable.run {
         when {
-            jsonable() -> typeName.boxedType().stringArray2List()
-            typeName.isVoid() -> "String"
+            jsonable() -> trueType.boxedType().stringArray2List()
+            trueType.isVoid() -> "String"
             isIterable -> "Integer".enList(getIterableLevel())
             else -> "Integer"
         }
     }
-    val fieldType = field.variable.typeName.replace("$", ".")
+    val fieldType = field.variable.trueType.replace("$", ".")
     val fieldName = field.variable.name
     val result = when {
         field.variable.jsonable() -> ResultJsonableTmpl(fieldType)
+        field.variable.isEnum() -> ResultEnumTmpl()
         field.variable.isIterable -> ResultListTmpl(field.asGetterMethod())
-        field.variable.typeName.isVoid() -> ResultVoidTmpl()
+        field.variable.trueType.isVoid() -> ResultVoidTmpl()
         else -> ResultRefTmpl()
     }
 

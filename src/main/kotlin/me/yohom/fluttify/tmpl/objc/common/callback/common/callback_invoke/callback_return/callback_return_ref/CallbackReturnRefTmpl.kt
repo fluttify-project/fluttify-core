@@ -5,7 +5,7 @@ import me.yohom.fluttify.model.Method
 
 //NSInteger refId = (NSInteger) result;
 //_callbackResult = (#__ref_type__#) HEAP[@(refId)];
-private val tmpl = getResource("/tmpl/objc/return_ref.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/return_ref.stmt.m.tmpl").readText() }
 
 fun CallbackReturnRefTmpl(method: Method): String {
     return tmpl

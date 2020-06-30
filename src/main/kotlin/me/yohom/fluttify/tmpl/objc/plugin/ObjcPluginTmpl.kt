@@ -6,6 +6,8 @@ import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method.NonViewCallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_handler.RegisterHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.IOFileFilter
 import java.io.File
 
 //#import <Flutter/Flutter.h>
@@ -75,9 +77,8 @@ import java.io.File
 //#__delegate_methods__#
 //
 //@end
-private val hTmpl = getResource("/tmpl/objc/plugin.h.tmpl").readText()
-private val mTmpl = getResource("/tmpl/objc/plugin.m.tmpl").readText()
-
+private val hTmpl by lazy { getResource("/tmpl/objc/plugin.h.tmpl").readText() }
+private val mTmpl by lazy { getResource("/tmpl/objc/plugin.m.tmpl").readText() }
 fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     // 插件名称
     val pluginClassName = ext.projectName.underscore2Camel(true)
@@ -90,26 +91,20 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     // 注册PlatformView
     val registerPlatformViews = libs
         .flatMap { it.types }
-        .filter { it.isView() }
+        .filter { it.isView }
         .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
         .joinToString("\n") {
             RegisterPlatformViewTmpl(it)
         }
 
-    // 提取所有framework内的头文件
-    val imports = ext.ios.libDir
+    // 导入头文件
+    // 如果没有手动指定的话则拼接出一个
+    val imports = (if (ext.ios.iosImportHeader.isNotEmpty()) ext.ios.iosImportHeader else ext.ios.libDir
         .file()
         .run {
             // 所有的Framework
             val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
-                ?.flatMap { framework ->
-                    "$framework/Headers/"
-                        .file()
-                        .listFiles { _, name -> name.endsWith(".h") }
-                        ?.map { framework to it }
-                        ?: listOf()
-                }
-                ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
+                ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
                 ?: listOf()
             // 如果没有framework, 那么就遍历出所有的.h文件
             val directHeaders = mutableListOf<String>()
@@ -123,13 +118,13 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
                 }
             }
             frameworkHeaders.union(directHeaders)
-        }
+        })
         .union(platformViewHeader)
         .joinToString("\n")
 
     val protocols = libs
         .flatMap { it.types }
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .map { it.name }
         .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
         .joinToString(", ")
@@ -137,7 +132,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     val callbackMethods = libs
         .flatMap { it.types }
         .filterType()
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .flatMap { it.methods }
         .distinctBy { it.exactName }
         .map { NonViewCallbackMethodTmpl(it) }
@@ -145,7 +140,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     val subHandlerDir = File(subHandlerOutputDir)
     val registerHandler = if (subHandlerDir.exists()) {
         subHandlerDir
-            .list { _, name -> name?.endsWith(".h") == true && !name.contains("SubHandlerCustom.h") }
+            .list { _, name -> name?.endsWith(".h") == true && !name.contains("Custom") }
             ?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }
             ?.joinToString("\n") ?: ""
     } else {

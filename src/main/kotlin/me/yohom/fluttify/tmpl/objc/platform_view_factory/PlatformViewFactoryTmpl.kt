@@ -89,40 +89,51 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 ////endregion
 //
 //@end
-private val hTmpl = getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText()
-private val mTmpl = getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText()
+private val hTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.h.tmpl").readText() }
+private val mTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText() }
 
 fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
-    // 先尝试导入framework里的头文件, 如果没有framework而是.h+.a的情况, 那么就导入所有的.h文件
-    val imports = ext.ios.libDir
+    // 使用前先合并Category
+    viewType.mergeWithCategory()
+
+    // 导入头文件
+    // 如果没有手动指定的话则拼接出一个
+    val imports = (if (ext.ios.iosImportHeader.isNotEmpty()) ext.ios.iosImportHeader else ext.ios.libDir
         .file()
         .run {
-            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") } // 所有的Framework
-                ?.flatMap { framework ->
-                    "$framework/Headers/"
-                        .file()
-                        .listFiles { _, name -> name.endsWith(".h") }
-                        ?.map { framework to it }
-                        ?: listOf()
+            // 所有的Framework
+            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
+                ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
+                ?: listOf()
+            // 如果没有framework, 那么就遍历出所有的.h文件
+            val directHeaders = mutableListOf<String>()
+            if (list()?.none { it.endsWith(".framework") } == true) {
+                // 所有的.h
+                iterate("h") {
+                    // 不导入隐藏文件
+                    if (!it.name.startsWith(".")) {
+                        directHeaders.add("#import \"${it.name}\"")
+                    }
                 }
-                ?.map { "#import <${it.first.nameWithoutExtension}/${it.second.nameWithoutExtension}.h>" }
-                ?: listOf()
-            val directHeaders = listFiles { _, name -> name.endsWith(".h") } // 所有的.h
-                ?.map { "#import \"${it.name}\"" }
-                ?: listOf()
+            }
             frameworkHeaders.union(directHeaders)
-        }
+        })
         .joinToString("\n")
 
     val nativeView = viewType.name
     val protocols = lib
         .types
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .map { it.name }
         .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
         .joinToString(", ")
 
     val plugin = ext.projectName.underscore2Camel()
+
+    val methodHandlers = viewType
+        .methods
+        .filterMethod()
+        .map { HandlerMethodTmpl(it) }
 
     val getters = viewType
         .fields
@@ -134,16 +145,11 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
 
-    val methodHandlers = viewType
-        .methods
-        .filterMethod()
-        .map { HandlerMethodTmpl(it) }
-
     val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
     val delegateMethods = lib
         .types
-        .filter { it.isCallback() }
+        .filter { it.isCallback }
         .flatMap { it.methods }
         .distinctBy { it.exactName }
         .joinToString("\n") { ViewCallbackMethodTmpl(it) }

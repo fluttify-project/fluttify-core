@@ -37,7 +37,7 @@ import me.yohom.fluttify.extensions.underscore2Camel
 //        }};
 //    }
 //}
-private val tmpl = getResource("/tmpl/java/sub_handler.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/sub_handler.java.tmpl").readText() }
 
 fun SubHandlerTmpl(number: Int, handlers: List<String>): String {
     // 包名

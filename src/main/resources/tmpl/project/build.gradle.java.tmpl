@@ -8,6 +8,7 @@ buildscript {
         maven { url 'http://download.flutter.io' }
         maven { url "https://oss.sonatype.org/content/groups/public" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "https://dl.bintray.com/aweme-open-sdk-team/public" }
     }
 
     dependencies {
@@ -22,6 +23,7 @@ rootProject.allprojects {
         maven { url 'http://download.flutter.io' }
         maven { url "https://oss.sonatype.org/content/groups/public" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "https://dl.bintray.com/aweme-open-sdk-team/public" }
     }
 }
 
@@ -45,11 +47,19 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        merge 'res/values/values.xml'
+        merge 'AndroidManifest.xml'
+        merge 'R.txt'
+        merge 'classes.jar'
+        merge 'proguard.txt'
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     compileOnly rootProject.findProject(":foundation_fluttify")
     // flutter plugin dependency
     #__plugin_dependency__#

@@ -12,7 +12,6 @@ lateinit var ext: FluttifyExtension
 //     2. 包下的其他元素只能是子包, 这些子包下的类是当前包下类的组成部分, 其他类推
 //   2. 包下面没有类, 只有子包
 //     1. 当包下面没有类, 只有并列的子包时, 代表这些子包是相同组成部分的不同情况
-// todo 可以提供一些启动Activity的方法, 就是以`迁移原生平台的代码`为场景的功能
 open class FluttifyCorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         ext = project.extensions.create("fluttify", FluttifyExtension::class.java, project.objects)
@@ -36,18 +35,13 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val androidJavaInterface = project.tasks.create("androidJavaInterface", AndroidJavaInterface::class.java)
         val iOSObjcInterface = project.tasks.create("iOSObjcInterface", IOSObjcInterface::class.java)
         val export = project.tasks.create("export", Export::class.java)
-        val cost = project.tasks.create("cost", Cost::class.java)
         val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
         // 可选任务
         val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
 
         // assembly
-//        fluttify.dependsOn(cost)
         fluttify.dependsOn(export)
-
-        // 计算费用
-        cost.dependsOn(export)
 
         // 导出
         export.dependsOn(iOSObjcInterface, androidJavaInterface)

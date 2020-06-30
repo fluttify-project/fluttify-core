@@ -10,10 +10,10 @@ import me.yohom.fluttify.model.Parameter
 //    getHEAP().put(item.hashCode(), item);
 //    arg#__arg_name__#.add(item.hashCode());
 //}
-private val tmpl = getResource("/tmpl/java/callback_arg_list.stmt.java.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/java/callback_arg_list.stmt.java.tmpl").readText() }
 
 fun CallbackArgListTmpl(param: Parameter): String {
     return tmpl
         .replace("#__arg_name__#", param.variable.name)
-        .replace("#__type_name__#", param.variable.typeName.replace("$", ".").dearray().genericTypes()[0])
+        .replace("#__type_name__#", param.variable.trueType.replace("$", ".").dearray().genericTypes()[0])
 }

@@ -6,22 +6,21 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
 
 //(result as List).cast<int>().map((it) => #__type_name__#()..refId = it..tag = '#__tag__#').toList()
-private val tmpl = getResource("/tmpl/dart/result_list.stmt.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/result_list.stmt.dart.tmpl").readText() }
 
 fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
     return tmpl
         .replace("#__type_name__#", genericType
             .findType()
-            // 在上层已经把没有子类的抽象类过滤掉了
-            // 找出第一个具体类子类去实例化(1. 如果自身是具体类, 那么就是自己 2.逻辑上不合理但是不影响使用), 否则就直接使用类名
-            .run { firstConcretSubtype()?.name ?: name }
+            .name
             .depointer()
-            .toDartType()
             .run {
-                if (isEmpty()) {
-                    platform.objectType()
-                } else {
-                    this
+                val genericTypes = findType().definedGenericTypes.joinToStringX(",", "<", ">").toDartType()
+                when {
+                    isEmpty() -> platform.objectType()
+                    toDartType().isDynamic() -> "Ref"
+                    findType().isInterface -> "${toDartType().containerType()}.subInstance$genericTypes"
+                    else -> this.toDartType()
                 }
             })
         .replace("#__tag__#", ext.projectName)

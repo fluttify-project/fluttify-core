@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.view.android_view
 
 import me.yohom.fluttify.Regexes
+import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
@@ -15,7 +16,7 @@ import me.yohom.fluttify.model.Type
 //import 'package:flutter/rendering.dart';
 //import 'package:flutter/services.dart';
 //
-//import 'package:foundation_fluttify/foundation_fluttify.dart';
+//#__foundation__#
 //
 //typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
 //typedef Future<void> _OnAndroidViewDispose();
@@ -57,7 +58,8 @@ import me.yohom.fluttify.model.Type
 //  }
 //
 //  void _onViewCreated(int id) {
-//    _controller = #__view__#()..refId = id;
+//    // 碰到一个对象返回的hashCode为0的情况, 造成和这个id冲突了, 这里用一个magic number避免一下
+//    _controller = #__view__#()..refId = 2147483647 - id;
 //    if (widget.onViewCreated != null) {
 //      widget.onViewCreated(_controller);
 //    }
@@ -66,12 +68,12 @@ import me.yohom.fluttify.model.Type
 //  @override
 //  void dispose() {
 //    if (widget.onDispose != null) {
-//      widget.onDispose().then((_) => _controller.release());
+//      widget.onDispose().then((_) => _controller.release__());
 //    }
 //    super.dispose();
 //  }
 //}
-private val tmpl = getResource("/tmpl/dart/android_view.dart.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/dart/android_view.dart.tmpl").readText() }
 
 fun AndroidViewTmpl(viewType: Type): String {
     val currentPackage = ext.projectName
@@ -86,7 +88,11 @@ fun AndroidViewTmpl(viewType: Type): String {
         .constructors
         .filter {
             it.formalParams.any { param ->
-                param.variable.typeName !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+                param.variable.trueType !in listOf("android.content.Context", "android.util.AttributeSet", "int")
+                        &&
+                        param.variable.trueType.findType().isKnownType
+                        &&
+                        param.variable.trueType !in SYSTEM_TYPE.map { it.name }
             }
         }
 
@@ -95,7 +101,7 @@ fun AndroidViewTmpl(viewType: Type): String {
         // 去掉Context的参数列表, 不需要Context
         val formalParamsExcludeContext = constructor
             .formalParams
-            .filter { it.variable.typeName != "android.content.Context" }
+            .filter { it.variable.trueType != "android.content.Context" }
 
         // 参数
         val params = formalParamsExcludeContext
@@ -105,7 +111,7 @@ fun AndroidViewTmpl(viewType: Type): String {
         // 属性
         val fields = formalParamsExcludeContext
             .joinToString("\n") {
-                "final ${it.variable.typeName.toDartType()} ${it.variable.name};"
+                "final ${it.variable.trueType.toDartType()} ${it.variable.name};"
             }
         // 传入参数
         val creationArgs = formalParamsExcludeContext
@@ -116,7 +122,7 @@ fun AndroidViewTmpl(viewType: Type): String {
                     it.jsonable() -> "widget.${it.name.depointer()}"
                     (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "widget.${it.name.depointer()}?.map((it) => it.refId)?.toList() ?? []"
                     it.getIterableLevel() > 1 -> "[] /* 多维数组暂不处理 */" // 多维数组暂不处理
-                    Regexes.MAP.matches(it.typeName) -> "{} /* Map类型暂不处理 */" // 多维数组暂不处理
+                    Regexes.MAP.matches(it.trueType) -> "{} /* Map类型暂不处理 */" // 多维数组暂不处理
                     else -> "widget.${it.name.depointer()}?.refId ?? -1"
                 }
             }
@@ -128,6 +134,7 @@ fun AndroidViewTmpl(viewType: Type): String {
             .replace("#__creation_fields__#", "")
             .replace("#__creation_args__#", "")
     }.replace("#__current_package__#", currentPackage)
+        .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__view__#", view.toDartType())
         .replace("#__org__#", org)

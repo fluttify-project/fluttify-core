@@ -26,7 +26,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__project_id__#", "${ext.org}.${ext.projectName}")
                     .replaceParagraph("#__sdk_dependency__#", ext.android.remote.run {
                         if (androidConfigured) {
-                            setOf(androidCoordinate)
+                            androidCoordinate
                                 .union(transitiveDependencies)
                                 .joinToString("\n") { "api '$it'" }
                         } else {
@@ -56,7 +56,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__homepage__#", ext.homepage)
                     .replace("#__sdk_dependency__#", ext.ios.remote.run {
                         if (iosConfigured) {
-                            setOf(iosCoordinate)
+                            iosCoordinate
                                 .union(transitiveDependencies)
                                 .joinToString("\n") { "s.dependency $it" }
                         } else {
@@ -81,7 +81,10 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
-                    .replace("#__foundation_version__#", "foundation_fluttify: ${ext.foundationVersion}")
+                    .replaceParagraph(
+                        "#__foundation_version__#",
+                        ext.foundationVersion.map { "${it.key}: ${it.value}" }.joinToString("\n")
+                    )
                     .replaceParagraph(
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")

@@ -1,7 +1,6 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method
 
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgValueTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
@@ -27,32 +26,37 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //
 //  #__callback__#
 //}
-private val tmpl = getResource("/tmpl/objc/callback_method.stmt.m.tmpl").readText()
+private val tmpl by lazy { getResource("/tmpl/objc/callback_method.stmt.m.tmpl").readText() }
 
 fun NonViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "@\"${method.className}::Callback\""
+    val methodChannel = "@\"${method.className.deprotocol().replace("$", ".")}::Callback\""
     val formalParams =
-        " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
-    val localArgs = method
-        .formalParams
-        .map { it.variable }
-        .joinToString("\n") {
-            when {
-                // !顺序很重要
-                it.isEnum() -> CallbackArgEnumTmpl(it)
-                it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
-                it.jsonable() -> CallbackArgJsonableTmpl(it)
-                it.isIterable -> CallbackArgListTmpl(it)
-                it.isStruct() -> CallbackArgStructTmpl(it)
-                else -> CallbackArgRefTmpl(it)
+        " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name.objcSpecifierExpand()}" }}"
+    val localArgs = if (method.formalParams.none { it.variable.trueType.isMultiPointer() }) {
+        method
+            .formalParams
+            .map { it.variable }
+            .joinToString("\n") {
+                when {
+                    // !顺序很重要
+                    it.isEnum() -> CallbackArgEnumTmpl(it)
+                    it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
+                    it.jsonable() -> CallbackArgJsonableTmpl(it)
+                    it.isIterable -> CallbackArgListTmpl(it)
+                    it.isStruct() -> CallbackArgStructTmpl(it)
+                    else -> CallbackArgRefTmpl(it)
+                }
             }
-        }
-    val callback = when {
-        method.returnType == "void" -> CallbackVoidTmpl(method)
-        else -> CallbackReturnTmpl(method)
+    } else {
+        ""
+    }
+    val callback = if (method.returnType == "void") {
+        CallbackVoidTmpl(method)
+    } else {
+        CallbackReturnTmpl(method)
     }
 
     return tmpl

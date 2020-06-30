@@ -12,9 +12,14 @@ fun <T : Any> RuleContext.isChildOf(parentClass: KClass<T>): Boolean {
     }
 }
 
+fun <T : Any> RuleContext.isDirectChildOf(parentClass: KClass<T>): Boolean {
+    return parent.javaClass == parentClass.java
+}
+
 @Throws(IllegalArgumentException::class)
 fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
     return when {
+        this.javaClass == target.java -> this as T
         parent == null -> null
         parent.javaClass == target.java -> parent as? T // 匹配到目标类型, 说明是[parentClass]的子节点
         else -> parent.ancestorOf(target) // 其他情况继续向上搜索
@@ -23,8 +28,10 @@ fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
 
 fun RuleContext.typeFullName(typeSimpleName: String): String {
     fun nonGenericTypeFullName(typeName: String): String {
-        return if (typeName.jsonable() || typeName == "void") {
-            typeName
+        return if (typeName == "List") {
+            "java.util.List"
+        } else if (typeName == "Map") {
+            "java.util.Map"
         } else if (typeName == "Object") {
             "java.lang.Object"
         } else if (typeName == "Throwable") {
@@ -33,6 +40,10 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
             "java.lang.Exception"
         } else if (typeName == "Iterable") {
             "java.lang.Iterable"
+        } else if (typeName == "Void") {
+            "java.lang.Void"
+        } else if (typeName.jsonable() || typeName == "void") {
+            typeName
         } else {
             ancestorOf(JavaParser.CompilationUnitContext::class)
                 ?.importDeclaration()
@@ -50,7 +61,18 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
                         text
                     }
                 }
-            // 如果不是import进来的说明这个类是当前文件的主类或者相同包下的类, 直接拼接package和类名
+            // 去类型定义里找一下泛型声明, 看下当前类型是否在泛型列表中 这两句没有效果 先注释了
+                ?: ancestorOf(JavaParser.ClassDeclarationContext::class)
+                    ?.typeParameters()
+                    ?.typeParameter()
+                    ?.map { it.IDENTIFIER().text }
+                    ?.find { it == typeName }
+                ?: ancestorOf(JavaParser.InterfaceDeclarationContext::class)
+                    ?.typeParameters()
+                    ?.typeParameter()
+                    ?.map { it.IDENTIFIER().text }
+                    ?.find { it == typeName }
+                // 如果不是import进来的说明这个类是当前文件的主类或者相同包下的类, 直接拼接package和类名
                 ?: ancestorOf(JavaParser.CompilationUnitContext::class)
                     ?.packageDeclaration()
                     ?.qualifiedName()?.text + "." + typeName

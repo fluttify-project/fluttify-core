@@ -5,14 +5,13 @@
 
 import 'dart:typed_data';
 
-import 'package:#__current_package__#/src/ios/ios.export.g.dart';
-import 'package:#__current_package__#/src/android/android.export.g.dart';
+#__platform_import__#
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'package:foundation_fluttify/foundation_fluttify.dart';
+#__foundation__#
 
-class #__class_name__# extends #__super_class__# #__mixins__# {
+#__abstract__#class #__class_name__# extends #__super_class__# #__mixins__# {
   //region constants
   static const String name__ = '#__origin_class_name__#';
 
@@ -36,16 +35,4 @@ class #__class_name__# extends #__super_class__# #__mixins__# {
   //endregion
 }
 
-extension #__class_name__#_Batch on List<#__class_name__#> {
-  //region getters
-  #__getters_batch__#
-  //endregion
-
-  //region setters
-  #__setters_batch__#
-  //endregion
-
-  //region methods
-  #__methods_batch__#
-  //endregion
-}
+#__type_sdk_batch__#

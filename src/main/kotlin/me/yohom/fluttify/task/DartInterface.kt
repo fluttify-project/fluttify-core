@@ -1,8 +1,11 @@
 package me.yohom.fluttify.task
 
+import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
+import me.yohom.fluttify.tmpl.dart.type.type_constants.TypeConstantsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_functions.TypeFunctionsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
@@ -28,7 +31,7 @@ open class AndroidDartInterface : FluttifyTask() {
         // 处理View, 生成AndroidView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView() && !it.isObfuscated() }
+            .filter { it.isView }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it)
                 val viewName = it.name.replace("$", ".").simpleName()
@@ -47,6 +50,7 @@ open class AndroidDartInterface : FluttifyTask() {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
+                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> ""
                     TypeType.Alias -> ""
@@ -62,10 +66,24 @@ open class AndroidDartInterface : FluttifyTask() {
                 }
             }
 
+        // 顶层常量类
+        sdk.directLibs
+            .flatMap { it.topLevelConstants }
+            .run {
+                val resultDart = TypeConstantsTmpl(this)
+
+                if (resultDart.isNotBlank()) {
+                    val resultFile =
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/constants.g.dart"
+
+                    resultFile.file().writeText(resultDart)
+                }
+            }
+
         // 处理所有的函数 但是java其实没有顶层函数, 所以这里的结果一定是空字符串
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isKnownFunction() }
+            .filter { it.isKnownFunction }
             .distinctBy { it.name }
             .run {
                 val functionsFile =
@@ -74,25 +92,35 @@ open class AndroidDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this))
             }
 
-        // todo 增加打开Activity的函数
-
-        val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
+        val typeOpTmpl = getResource("/tmpl/dart/type_op.dart.tmpl").readText()
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
             .flatMap { it.types }
+            .union(SYSTEM_TYPE.filter { it.platform == Platform.Android }) // 造型需要把系统类加上
+            .toList()
             .filterType()
             .asSequence()
-            .filterNot { it.isLambda() }
-            .filterNot { it.isFunction() }
+            .filterNot { it.isLambda }
+            .filterNot { it.isFunction }
+            .filterNot { it.typeType == TypeType.Extension }
             .filterNot { it.isAlias() }
+            .filterNot { it.isCallback }
+            .filterNot { it.isEnum }
+            .filterNot { ext.android.exclude.classes.contains(it.name) }
+            .filterNot { it.name == "android.view.SurfaceHolder.Callback" }
+            .filterNot { it.name == "android.view.View.OnClickListener" }
+            .filterNot { it.name == "android.view.View.OnTouchListener" }
+            .filterNot { it.name == "java.lang.Object" }
+            .filterNot { it.name == "java.lang.Void" }
+            .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
-            .filter { !it.isInterface() && !it.isEnum() }
         // 类型检查
         val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
-            .replace("#__current_package__#", ext.projectName)
+            .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/android/android.export.g.dart';")
+            .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "Android")
             .replaceParagraph("#__type_check__#", typeChecks)
@@ -120,7 +148,7 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理View, 生成UiKitView
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isView() && !it.isObfuscated() }
+            .filter { it.isView }
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it)
                 val uiKitViewFile =
@@ -138,6 +166,7 @@ open class IOSDartInterface : FluttifyTask() {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
+                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> "" // 函数要单独处理, 全部放到一个文件里去
                     TypeType.Alias -> ""
@@ -146,10 +175,20 @@ open class IOSDartInterface : FluttifyTask() {
 
                 if (resultDart.isNotBlank()) {
                     val resultFile =
-                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/${it.name.replace(
-                            ".",
-                            "/"
-                        )}.g.dart"
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/${it.name.replace(".", "/")}.g.dart"
+                    resultFile.file().writeText(resultDart)
+                }
+            }
+
+        // 顶层常量类
+        sdk.directLibs
+            .flatMap { it.topLevelConstants }
+            .run {
+                val resultDart = TypeConstantsTmpl(this)
+
+                if (resultDart.isNotBlank()) {
+                    val resultFile =
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/constants.g.dart"
 
                     resultFile.file().writeText(resultDart)
                 }
@@ -158,7 +197,7 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理所有的函数
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isKnownFunction() }
+            .filter { it.isKnownFunction }
             .distinctBy { it.name }
             .run {
                 val functionsFile =
@@ -171,19 +210,28 @@ open class IOSDartInterface : FluttifyTask() {
         val targetTypes = sdk.directLibs
             .filterNot { it.isDependency }
             .flatMap { it.types }
+            .union(SYSTEM_TYPE.filter { it.platform == Platform.iOS }) // 造型需要把系统类加上
+            .toList()
             .filterType()
             .asSequence()
-            .filterNot { it.isLambda() }
-            .filterNot { it.isFunction() }
+            .filterNot { it.isLambda }
+            .filterNot { it.isFunction }
+            .filterNot { it.typeType == TypeType.Extension }
             .filterNot { it.isAlias() }
+            .filterNot { it.isCallback }
+            .filterNot { it.isEnum }
+            .filterNot { ext.ios.exclude.classes.contains(it.name) }
+            .filterNot { it.name == "NSObject" }
+            .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
-            .filter { !it.isInterface() && !it.isEnum() }
+            .filter { if (ext.foundationVersion.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }
         // 类型检查
         val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
         // 类型造型
         val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
         typeOpTmpl
-            .replace("#__current_package__#", ext.projectName)
+            .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/ios/ios.export.g.dart';")
+            .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "IOS")
             .replaceParagraph("#__type_check__#", typeChecks)
