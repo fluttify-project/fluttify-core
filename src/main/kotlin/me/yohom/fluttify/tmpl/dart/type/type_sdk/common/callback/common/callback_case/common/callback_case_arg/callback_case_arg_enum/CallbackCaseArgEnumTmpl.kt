@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Parameter
 
-//#__arg_type_name__#.values[args['#__arg_name__#'].to#__arg_type_name__#()]
+//(args['#__arg_name__#'] as int).to#__arg_type_name__#()
 private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_enum.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgEnumTmpl(param: Parameter): String {
