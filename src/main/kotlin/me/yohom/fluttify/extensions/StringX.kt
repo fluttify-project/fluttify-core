@@ -64,6 +64,13 @@ fun TYPE_NAME.isIterable(): Boolean {
 }
 
 /**
+ * 是否是枚举集合类型
+ */
+fun TYPE_NAME.isEnumList(): Boolean {
+    return isIterable() && genericTypes().isNotEmpty() && genericTypes()[0].findType().isEnum
+}
+
+/**
  * 是否是列表类型
  */
 fun TYPE_NAME.isList(): Boolean {

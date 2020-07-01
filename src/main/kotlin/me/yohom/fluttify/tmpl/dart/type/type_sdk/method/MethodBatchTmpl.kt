@@ -63,7 +63,7 @@ fun MethodBatchTmpl(method: Method): String {
 
     val nativeObjectPool = method.returnType.run {
         when {
-            jsonable() or findType().isEnum or isVoid() -> ""
+            jsonable() or findType().isEnum or isEnumList() or isVoid() -> ""
             isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
             else -> "kNativeObjectPool.addAll(typedResult);"
         }
