@@ -267,6 +267,12 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     } && constructors.isNotEmpty()
                 }
                 &&
+                // class A { A(A a) {} }
+                mustNot("构造器含有自身类型的参数") {
+                    constructors.any { it.formalParams.map { it.variable.trueType }.contains(name) }
+                            && constructors.isNotEmpty()
+                }
+                &&
                 must("是已知类型或jsonable类型") { isKnownType }
                 &&
                 mustNot("lambda类型") { isLambda }

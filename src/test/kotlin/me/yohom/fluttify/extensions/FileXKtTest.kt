@@ -1,5 +1,7 @@
 package me.yohom.fluttify.extensions
 
+import me.yohom.fluttify.EaseMob
+import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.model.*
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Test
@@ -8,7 +10,7 @@ import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
 
-class FileXKtTest {
+class FileXKtTest: FluttifyTest() {
 
     @Test
     fun moveFile() {
@@ -175,5 +177,15 @@ class FileXKtTest {
                 }
             }
         })
+    }
+
+    @Test
+    fun constructable() {
+        EaseMob.androidSDK
+            .allTypes
+            .find { it.name == "com.hyphenate.chat.adapter.EMARHttpCallback" }
+            ?.run {
+                println(constructable)
+            }
     }
 }

@@ -62,3 +62,8 @@ object Nim {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/nim/jr/nim_fluttify.ios.json".file().readText().fromJson<SDK>()
 }
 
+object EaseMob {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/easemob_im/jr/easemob_im_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/easemob_im/jr/easemob_im_fluttify.ios.json".file().readText().fromJson<SDK>()
+}
+
