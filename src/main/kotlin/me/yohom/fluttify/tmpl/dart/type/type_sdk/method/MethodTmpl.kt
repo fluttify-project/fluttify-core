@@ -57,7 +57,7 @@ fun MethodTmpl(method: Method): String {
     val returnStatement = ReturnTmpl(method)
     val nativeObjectPool = method.returnType.run {
         when {
-            jsonable() or findType().isEnum or isVoid() -> ""
+            jsonable() or findType().isEnum or isEnumList() or isVoid() -> ""
             isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(__return__);"
             else -> "if (__return__ is Ref) kNativeObjectPool.add(__return__);"
         }

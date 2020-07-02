@@ -17,7 +17,7 @@ fun ReturnTmpl(method: Method): String {
         when {
             returnType.jsonable() || returnType.isVoid() -> ResultJsonableTmpl(returnType, method.platform)
             // 返回枚举类型
-            returnType.findType().isEnum -> ResultEnumTmpl(returnType)
+            returnType.run { findType().isEnum || isEnumList() } -> ResultEnumTmpl(returnType)
             // 返回列表类型
             returnType.isIterable() -> {
                 val type = if (returnType.iterableLevel() != 0) {

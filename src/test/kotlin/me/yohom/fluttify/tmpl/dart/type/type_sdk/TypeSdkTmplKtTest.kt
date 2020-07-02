@@ -1,9 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
-import me.yohom.fluttify.Amap
-import me.yohom.fluttify.Bmap
-import me.yohom.fluttify.FluttifyTest
-import me.yohom.fluttify.Tim
+import me.yohom.fluttify.*
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import org.gradle.internal.impldep.org.junit.Assert
 import org.junit.jupiter.api.Test
@@ -53,6 +50,16 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
             ?.run {
                 println(TypeSdkTmpl(this))
 //                Assert.assertTrue(this.isCallback)
+            }
+    }
+
+    @Test
+    fun typeSdkTmpl_easemob_com_hyphenate_cloud_HttpClientController_HttpParams() {
+        EaseMob.androidSDK
+            .allTypes
+            .find { it.name == "com.hyphenate.cloud.HttpClientController\$HttpParams" }
+            ?.run {
+                println(filter)
             }
     }
 }

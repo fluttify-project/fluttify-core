@@ -109,8 +109,8 @@ data class Method(
                         var result = type.isPublic
                         while (type.isInnerType) {
                             if (type.isPublic) {
-                                result = true
                                 type = type.name.substringBeforeLast("$").containerType().findType()
+                                result = type.isPublic
                             } else {
                                 result = false
                                 break

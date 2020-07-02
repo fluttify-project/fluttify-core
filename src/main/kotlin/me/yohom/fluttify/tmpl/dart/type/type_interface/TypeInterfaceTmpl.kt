@@ -52,7 +52,16 @@ fun TypeInterfaceTmpl(type: Type): String {
         // 去掉NSObject的继承, 下面会添加回去的, 由于objc的class和protocol不在一个命名空间内, 所以存在class NSObject和protocol NSObject
         // 在dart端不太好处理
         .filter { it != "NSObject" }
-        .map { "${it.containerType()}${it.findType().declaredGenericTypes.joinToStringX(",", "<", ">")}" }
+        .map {
+            // 如果当前类有声明泛型, 那么祖宗类里的泛型就用当前类型的声明泛型
+            if (type.declaredGenericTypes.isNotEmpty()) {
+                "${it.containerType()}${it.findType().declaredGenericTypes.joinToStringX(",", "<", ">")}"
+            }
+            // 否则使用祖宗类自己的定义泛型
+            else {
+                "${it.containerType()}${it.findType().definedGenericTypes.joinToStringX(",", "<", ">")}"
+            }
+        }
         .toList()
     val subSuperMixins = if (allSuperType.isEmpty()) "" else "${allSuperType.joinToString().toDartType()}, "
     val superMixins = if (allSuperType.isEmpty()) {

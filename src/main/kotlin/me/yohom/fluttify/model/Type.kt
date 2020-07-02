@@ -148,7 +148,22 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
         if (TYPE_LOG) println("类:\"${name}\"执行过滤开始")
         val result = must("已知类型") { isKnownType }
                 &&
-                must("公开类型") { isPublic }
+                must("公开类型") {
+                    // 这里需要把内部类的所有外部类都判断过去, 只要碰到一个外部类不是public的, 那当前内部类就认为不是public的
+                    // 碰到了三层内部类的情况, 然后最内一层是public的, 上面两层不是public的
+                    var tmp = this
+                    var result = tmp.isPublic
+                    while (tmp.isInnerType) {
+                        if (tmp.isPublic) {
+                            tmp = tmp.name.substringBeforeLast("$").containerType().findType()
+                            result = tmp.isPublic
+                        } else {
+                            result = false
+                            break
+                        }
+                    }
+                    result
+                }
                 &&
                 must("类名不能为空") { name.isNotBlank() }
                 &&
@@ -265,6 +280,12 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                             it.variable.containerType().constructors.any { it.formalParams.any { it.variable.trueType == name } }
                         }
                     } && constructors.isNotEmpty()
+                }
+                &&
+                // class A { A(A a) {} }
+                mustNot("构造器含有自身类型的参数") {
+                    constructors.any { it.formalParams.map { it.variable.trueType }.contains(name) }
+                            && constructors.isNotEmpty()
                 }
                 &&
                 must("是已知类型或jsonable类型") { isKnownType }

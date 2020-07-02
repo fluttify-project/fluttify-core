@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart
 
+import me.yohom.fluttify.EaseMob
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.Nim
 import me.yohom.fluttify.SYSTEM_TYPE
@@ -39,6 +40,16 @@ class MethodTmplTest : FluttifyTest() {
             .find { it.name == "NIMLoginManager" }
             ?.methods
             ?.find { it.name == "addDelegate" }
+            ?.run { println(MethodTmpl(this)) }
+    }
+
+    @Test
+    fun methodTmpl_easemob_im_com_hyphenate_push_EMPushConfig_getEnabledPushTypes() {
+        EaseMob.androidSDK
+            .allTypes
+            .find { it.name == "com.hyphenate.push.EMPushConfig" }
+            ?.methods
+            ?.find { it.name == "getEnabledPushTypes" }
             ?.run { println(MethodTmpl(this)) }
     }
 }

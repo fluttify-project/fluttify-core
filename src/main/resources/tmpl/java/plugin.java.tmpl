@@ -50,7 +50,7 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
         handlerMapList = new ArrayList<>();
         #__register_handler__#
-        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger));
+        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger, registrar.activity()));
 
         channel.setMethodCallHandler(plugin);
 
@@ -75,7 +75,6 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
 
         handlerMapList = new ArrayList<>();
         #__register_handler__#
-        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger));
 
         channel.setMethodCallHandler(this);
     }
@@ -93,6 +92,8 @@ public class #__plugin_name__#Plugin implements FlutterPlugin, MethodChannel.Met
             Log.d("fluttify-java", "#__plugin_name__#Plugin::onAttachedToActivity@" + binding);
         }
         Activity activity = binding.getActivity();
+
+        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger, activity));
 
         // register platform view
         #__register_platform_views__#
