@@ -284,7 +284,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 // class A { A(A a) {} }
                 mustNot("构造器含有自身类型的参数") {
-                    constructors.any { it.formalParams.map { it.variable.trueType }.contains(name) }
+                    constructors.all { it.formalParams.map { it.variable.trueType }.contains(name) }
                             && constructors.isNotEmpty()
                 }
                 &&
