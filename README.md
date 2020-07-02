@@ -12,9 +12,24 @@ Fluttify形态上是一个gradle插件, 利用了gradle提供的基础设施, �
 以高德地图SDK为例, 为了生成高德地图的Flutter插件, 需要编写对应的build.gradle文件. 如下:
 ```groovy
 // 应用fluttify插件
+// 这个是已经上传到gradle官方插件仓库的版本
 plugins {
   id "me.yohom.fluttify" version "0.6.0"
 }
+// 如果是要依赖自己编译的fluttify-core, 那么使用如下方式引入
+// buildscript {
+//     repositories {
+//         // maven本地仓库, 先执行`gradle install`把fluttify-core安装在本地
+//         mavenLocal()
+//         jcenter()
+//     }
+// 
+//     dependencies {
+//         classpath('me.yohom:fluttify-core:0.+')
+//     }
+// }
+// 
+// apply plugin: 'me.yohom.fluttify'
 
 // 开始配置编译器参数
 fluttify {
