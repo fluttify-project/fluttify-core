@@ -91,7 +91,9 @@ open class DownloadIOSSDK : FluttifyTask() {
                             // 因为其实每个pod都会有vendored_frameworks字段, 所以这里判断一下顶层是否已经有这个framework, 如果有的
                             // 话就不需要拷贝了
                             // 拿出framework文件, 然后拷贝到顶层
-                            FileUtils.copyDirectoryToDirectory(trueFramework.file(), ext.ios.libDir.file())
+                            if (trueFramework.file().parent != ext.ios.libDir.removeSuffix("/")) {
+                                FileUtils.copyDirectoryToDirectory(trueFramework.file(), ext.ios.libDir.file())
+                            }
                             ext.ios.libDir.file()
                                 .listFiles()
                                 ?.filter { it.name != trueFramework.file().name }
