@@ -16,8 +16,9 @@ data class Podspec(
 	@field:SerializedName("source_files")
 	val sourceFiles: String? = null,
 
+	// 可能是List<String>或String
 	@field:SerializedName("libraries")
-	val libraries: List<String?>? = null,
+	val libraries: Any? = null,
 
 	@field:SerializedName("description")
 	val description: String? = null,

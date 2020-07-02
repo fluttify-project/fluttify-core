@@ -9,7 +9,7 @@ Fluttify形态上是一个gradle插件, 利用了gradle提供的基础设施, �
 第一个阶段, Fluttify会把原生SDK解析为一个json表示; 第二个阶段, 使用这个json表示生成最终的插件代码.
 
 ### build.gradle
-以高德地图SDK为例, 为了生成高德地图的Flutter插件, 需要编写对应的build.gradle文件. 如下:
+以高德定位SDK为例, 为了生成高德定位的Flutter插件, 需要编写对应的build.gradle文件. 如下:
 ```groovy
 // 应用fluttify插件
 // 这个是已经上传到gradle官方插件仓库的版本
@@ -33,42 +33,35 @@ plugins {
 
 // 开始配置编译器参数
 fluttify {
-    projectName = "amap_map_fluttify" // 输出工程名称
+    projectName = "amap_location_fluttify" // 输出工程名称
     org = "me.yohom" // 输出工程组织名称
-    desc = "An `Amap` Map Component, Powered By `Fluttify` Compiler, A Dart Bindings Generator For Native SDK." // 输出工程描述
+    desc = desc = "An `Amap` Location Component, Powered By `Fluttify`, A Compiler Generating Dart Bindings For Native SDK." // 输出工程描述
     author = "yohom" // 作者
     email = "yohombao@qq.com" // 作者邮箱
-    homepage = "https://github.com/fluttify-project/amap_map_fluttify" // 项目主页
+    homepage = "https://github.com/fluttify-project/amap_location_fluttify" // 项目主页
     // foundation插件的版本, 目前foundation包括foundation_fluttify和core_location_fluttify. 包含了系统类的实现
     foundationVersion = [
         "foundation_fluttify": "^0.8.10",
         "core_location_fluttify": "^0.2.1",
     ]
     // 其他插件依赖
-    pluginDependencies = ["amap_core_fluttify": "^0.9.4",
-                          "url_launcher": "^5.4.2"]
+    pluginDependencies = ["amap_core_fluttify": "^0.9.5"]
+
     // android端配置
     android {
         // 远程仓库配置
         remote {
             org = ["com.amap.api"] // 这里参数是一个数组, 所以可以指定多个远程仓库
-            name = ["3dmap"]
-            version = ["6.9.2"]
-        }
-        // 可以手动指定忽略的类, 以避免生成不需要的类
-        exclude {
-            classes = [
-                "java\\.io\\.Closeable",
-                "com\\.autonavi.*"
-            ]
+            name = ["location"]
+            version = ["4.7.2"]
         }
     }
 
     // ios端配置
     ios {
         remote {
-            name = ["AMap3DMap"]
-            version = ["6.9.0"]
+            name = ["AMapLocation"]
+            version = ["2.6.3"]
         }
     }
 }
