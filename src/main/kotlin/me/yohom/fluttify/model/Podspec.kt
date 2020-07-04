@@ -58,13 +58,19 @@ data class Podspec(
 	val homepage: String? = null,
 
 	@field:SerializedName("authors")
-	val authors: String? = null
+	val authors: Any? = null
 )
 
 data class Source(
 
 	@field:SerializedName("http")
-	val http: String? = null
+	val http: String? = null,
+
+	@field:SerializedName("git")
+	val git: String? = null,
+
+	@field:SerializedName("tag")
+	val tag: String? = null
 )
 
 data class License(
