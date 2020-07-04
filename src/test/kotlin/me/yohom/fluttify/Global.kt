@@ -67,3 +67,8 @@ object EaseMob {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/easemob_im/jr/easemob_im_fluttify.ios.json".file().readText().fromJson<SDK>()
 }
 
+object AliRtc {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_rtc_fluttify/jr/ali_rtc_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_rtc_fluttify/jr/ali_rtc_fluttify.ios.json".file().readText().fromJson<SDK>()
+}
+

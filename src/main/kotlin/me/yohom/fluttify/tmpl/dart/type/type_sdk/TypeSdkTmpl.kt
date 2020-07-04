@@ -71,11 +71,12 @@ fun TypeSdkTmpl(type: Type): String {
         type.name.toDartType()
     }
     val originClassName = type.name.replace("$", ".")
-    // 如果父类是混淆类, 那么直接继承Object类
-    val superClass = if (type.superClass.run { isEmpty() || isObfuscated() })
+    // 如果父类是混淆类或非公开类, 那么直接继承Object类
+    val superClass = if (type.superClass.run { isEmpty() || isObfuscated() || !findType().isPublic }) {
         type.platform.objectType()
-    else
+    } else {
         type.superClass.toDartType()
+    }
 
     // 如果含有非混淆类的接口, 再以mixin的方式集成
     val mixins = if (type.ancestorInterfaces(false).isNotEmpty()) {
@@ -137,7 +138,9 @@ fun TypeSdkTmpl(type: Type): String {
                 else -> ""
             }
         )
-        .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+        .replaceParagraph(
+            "#__foundation__#",
+            ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__abstract__#", if (type.isAbstract) "/* abstract */ " else "")
         .replace("#__class_name__#", className)
         .replace("#__origin_class_name__#", originClassName)

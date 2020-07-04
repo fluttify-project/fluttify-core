@@ -5,7 +5,7 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-var SUCCESS_LOG = false
+var SUCCESS_LOG = true
 
 var CONSTRUCTOR_LOG = true
 var VARIABLE_LOG = false
@@ -142,7 +142,7 @@ val SYSTEM_TYPE = listOf(
 )
 
 object Regexes {
-    val MAP = Regex("(\\w*Map|NS(Mutable)?Dictionary)(<.+,.+>)?")
+    val MAP = Regex("(\\w*Map|NS(Mutable)?Dictionary)(<(int|double|String),((List<)?int|double|String(>)?)>)?")
 
     // Regex("\\w*List<(\\w*|.*)>").matches(this)
     //            || Regex("Iterable<(\\w*|.*)>").matches(this)

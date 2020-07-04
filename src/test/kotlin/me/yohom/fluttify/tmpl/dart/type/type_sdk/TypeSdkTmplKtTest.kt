@@ -62,4 +62,14 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
                 println(filter)
             }
     }
+
+    @Test
+    fun typeSdkTmpl_ali_rtc_org_webrtc_ali_RTCStatsReport() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "org.webrtc.ali.RTCStatsReport" }
+            ?.run {
+                println(TypeSdkTmpl(this))
+            }
+    }
 }

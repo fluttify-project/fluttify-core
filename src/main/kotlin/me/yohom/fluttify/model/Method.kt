@@ -78,11 +78,9 @@ data class Method(
                     &&
                     must("参数类型全部通过类型过滤") {
                         formalParams.all {
-                            it.variable.isKnownType()
-                                    ||
-                                    it.variable
-                                        .allTypes()
-                                        .all { it.filter || it.name in className.findType().declaredGenericTypes } // 类型通过过滤或者是声明的泛型类`
+                            it.variable
+                                .allTypes()
+                                .all { it.filter || it.name in className.findType().declaredGenericTypes } // 类型通过过滤或者是声明的泛型类`
                                     ||
                                     it.variable.trueType in className.findType().declaredGenericTypes
                         }

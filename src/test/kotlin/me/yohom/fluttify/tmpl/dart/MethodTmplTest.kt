@@ -1,9 +1,7 @@
 package me.yohom.fluttify.tmpl.dart
 
-import me.yohom.fluttify.EaseMob
-import me.yohom.fluttify.FluttifyTest
-import me.yohom.fluttify.Nim
-import me.yohom.fluttify.SYSTEM_TYPE
+import me.yohom.fluttify.*
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 import org.junit.jupiter.api.Test
 
@@ -51,5 +49,13 @@ class MethodTmplTest : FluttifyTest() {
             ?.methods
             ?.find { it.name == "getEnabledPushTypes" }
             ?.run { println(MethodTmpl(this)) }
+    }
+
+    @Test
+    fun methodTmpl_ali_rtc_com_serenegiant_usb_UVCCamera_open() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "com.serenegiant.usb.UVCCamera" }
+            ?.run { println(TypeSdkTmpl(this)) }
     }
 }
