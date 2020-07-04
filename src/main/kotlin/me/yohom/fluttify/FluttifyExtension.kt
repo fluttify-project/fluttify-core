@@ -124,11 +124,6 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
      * 元素替换
      */
     var overrideElements: Map<Int, String> = mapOf()
-//        get() {
-//            val packedMethods = field.map { entry -> Pair(entry.key.pack(), entry.key.pack()) }.toMap()
-//            println("packedMethods: $packedMethods")
-//            return packedMethods
-//        }
 
     /**
      * 远程依赖配置

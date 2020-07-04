@@ -22,7 +22,7 @@ val NEXT_ID
  */
 val EXCLUDE_METHODS
     get() =
-        listOf("toString", "equals", "writeToParcel", "describeContents", "recycle", "hashCode", "addView", "removeView")
+        listOf(".*::toString()", ".*::equals.*", ".*::writeToParcel.*", ".*::describeContents.*", "recycle.*", ".*::hashCode()", ".*::addView.*", ".*::removeView.*")
             .union(ext.ios.exclude.methods)
             .union(ext.android.exclude.methods)
             .map { Regex(it) }
