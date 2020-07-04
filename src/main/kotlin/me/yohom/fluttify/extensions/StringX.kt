@@ -250,6 +250,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "int",
         "float",
         "double",
+        "long",
         "BOOL",
         "bool",
         "unsigned long long",
