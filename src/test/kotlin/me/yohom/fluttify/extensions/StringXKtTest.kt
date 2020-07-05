@@ -195,6 +195,11 @@ class StringXKtTest : FluttifyTest() {
         }
 
         @Test
+        fun isObfuscated_com_tencent_lbssearch_object_param() {
+            println("com.tencent.lbssearch.object.param.SearchParam\$a".isObfuscated())
+        }
+
+        @Test
         fun isObfuscated_obfuscated() {
             assertTrue("List<com.amap.api.mapcore.util.el>".isObfuscated())
         }
