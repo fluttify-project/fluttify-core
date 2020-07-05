@@ -146,7 +146,9 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     val filter: Boolean by lazy {
         if (TYPE_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         if (TYPE_LOG) println("类:\"${name}\"执行过滤开始")
-        val result = must("已知类型") { isKnownType }
+        val result = mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
+                &&
+                must("已知类型") { isKnownType }
                 &&
                 must("公开类型") {
                     // 这里需要把内部类的所有外部类都判断过去, 只要碰到一个外部类不是public的, 那当前内部类就认为不是public的
@@ -172,8 +174,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 }
                 &&
                 mustNot("混淆类型") { isObfuscated }
-                &&
-                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
                 &&
                 mustNot("祖宗类含有忽略类型") {
                     ancestorTypes.isNotEmpty() && EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } }
