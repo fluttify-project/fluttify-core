@@ -31,6 +31,17 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
     }
 
     @Test
+    fun typeSdkTmpl_nim_com_netease_nimlib_sdk_auth_LoginInfo() {
+        Nim.androidSDK
+            .allTypes
+            .find { it.name == "com.netease.nimlib.sdk.auth.LoginInfo" }
+            ?.run {
+                println(TypeSdkTmpl(this))
+//                Assert.assertTrue(this.isCallback)
+            }
+    }
+
+    @Test
     fun typeSdkTmpl_amap_com_amap_api_maps_model_particle_VelocityGenerate() {
         Amap.androidMapSDK
             .allTypes
