@@ -8,16 +8,22 @@ import me.yohom.fluttify.model.Parameter
 private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_ref.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgRefTmpl(param: Parameter): String {
-    return tmpl
-        .replace("#__arg_type_name__#", param
-            .variable
-            .trueType
-            .findType()
-            .name
-            .toDartType()
-        )
-        .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
-        .replace("#__platform__#", param.platform.name.capitalize())
-        .replace("#__arg_name__#", param.variable.name.depointer())
-        .replace("#__plugin_name__#", ext.projectName)
+    return if (param.variable.trueType.isVoid()) {
+        "null"
+    } else {
+        tmpl
+            .replace(
+                "#__arg_type_name__#", param
+                    .variable
+                    .trueType
+                    .findType()
+                    .name
+                    .toDartType()
+            )
+            .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
+            .replace("#__platform__#", param.platform.name.capitalize())
+            .replace("#__arg_name__#", param.variable.name.depointer())
+            .replace("#__plugin_name__#", ext.projectName)
+
+    }
 }
