@@ -298,11 +298,10 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 mustNot("混淆类型") { isObfuscated }
                 &&
-                mustNot("所有构造器的参数都含有混淆类型 或 未知类") {
+                must("存在参数都不为`混淆类型 或 未知类`的构造器") {
                     constructors
-                        .flatMap { it.formalParams }
-                        .map { it.variable.trueType }
-                        .all { it.isObfuscated() || it.findType().isUnknownType }
+                        .any { it.formalParams.map { it.variable.trueType }.all { !it.isObfuscated() && it.findType().isKnownType } }
+                            || constructors.isEmpty()
                 }
                 &&
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉

@@ -37,7 +37,16 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
             .find { it.name == "com.netease.nimlib.sdk.auth.LoginInfo" }
             ?.run {
                 println(TypeSdkTmpl(this))
-//                Assert.assertTrue(this.isCallback)
+            }
+    }
+
+    @Test
+    fun typeSdkTmpl_nim_NIMMessage() {
+        Nim.iosSDK
+            .allTypes
+            .find { it.name == "NIMMessage" }
+            ?.run {
+                println(TypeSdkTmpl(this))
             }
     }
 

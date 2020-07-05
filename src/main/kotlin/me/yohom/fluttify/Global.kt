@@ -5,13 +5,13 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-var SUCCESS_LOG = true
+var SUCCESS_LOG = false
 
 var CONSTRUCTOR_LOG = true
 var VARIABLE_LOG = false
 var FIELD_LOG = false
-var TYPE_LOG = true
-var METHOD_LOG = true
+var TYPE_LOG = false
+var METHOD_LOG = false
 
 private var idSequence = 0
 val NEXT_ID
