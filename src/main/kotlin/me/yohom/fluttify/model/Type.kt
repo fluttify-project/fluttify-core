@@ -52,11 +52,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     var isStaticType: Boolean = true
 
     /**
-     * 是否jsonable
-     */
-    var isJsonable: Boolean = false
-
-    /**
      * 父类全名
      */
     var superClass: String = ""
@@ -311,7 +306,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
                 &&
-                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter } || constructors.isEmpty() || isJsonable }
+                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter } || constructors.isEmpty() }
                 &&
                 must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
@@ -443,7 +438,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$enumerators, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$enumerators, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {

@@ -92,4 +92,43 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
                 println(TypeSdkTmpl(this))
             }
     }
+
+    @Test
+    fun typeSdkTmpl_ali_rtc_AliRenderView_filter() {
+        ext.ios.exclude.classes = listOf(
+            "AliRtcMessageResponse",
+            "AliRtcMessage",
+            "AliRTCRenderView"
+        )
+        ext.ios.overrideElements = mapOf(
+            950619 to """{
+              "platform": "iOS",
+              "name": "AliRenderView",
+              "declaredGenericTypes": [],
+              "definedGenericTypes": [],
+              "typeType": "Class",
+              "isPublic": true,
+              "isAbstract": false,
+              "isInnerType": false,
+              "isStaticType": true,
+              "isJsonable": false,
+              "superClass": "UIView",
+              "interfaces": [],
+              "constructors": [],
+              "fields": [],
+              "methods": [],
+              "enumerators": [],
+              "returnType": "",
+              "formalParams": [],
+              "deprecated": false,
+              "id": 950619
+            }"""
+        )
+        AliRtc.iosSDK
+            .allTypes
+            .find { it.name == "AliRenderView" }
+            ?.run {
+                println(filter)
+            }
+    }
 }

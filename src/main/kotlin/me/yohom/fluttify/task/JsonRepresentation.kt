@@ -38,7 +38,7 @@ open class AndroidJsonRepresentation : FluttifyTask() {
         // 把依赖插件的libs都添加到当前插件的jr文件中去, 并标注为依赖
         sdk.libs.addAll(
             dependenciesJrFiles
-                .map { it.readText().fromJson<SDK>() }
+                .map { it.readText().parseSDK() }
                 .flatMap { it.libs }
                 .map { it.apply { isDependency = true } }
         )
@@ -90,7 +90,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
         // 把依赖插件的libs都添加到当前插件的jr文件中去, 并标注为依赖
         sdk.libs.addAll(
             dependenciesJrFiles
-                .map { it.readText().fromJson<SDK>() }
+                .map { it.readText().parseSDK() }
                 .flatMap { it.libs }
                 .map { it.apply { isDependency = true } }
         )

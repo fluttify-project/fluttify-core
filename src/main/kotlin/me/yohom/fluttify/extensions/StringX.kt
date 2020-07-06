@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -30,7 +31,6 @@ fun TYPE_NAME.jsonable(): Boolean {
         "Map<String,Uint32List>",
         "Map<String,Uint64List>",
         "Map<String,dynamic>",
-        "Map",
         "null",
         "List<int>",
         "List<double>",
@@ -179,7 +179,7 @@ fun TYPE_NAME.simpleName(): String {
  */
 fun TYPE_NAME.findType(): Type {
     val type = depointer().deprotocol()
-    return if (type.genericTypes().isNotEmpty()) {
+    val result = if (type.genericTypes().isNotEmpty()) {
         // 说明有泛型, 合成一个新的类
         val containerType = SDK.findType(type.containerType())
 
@@ -205,7 +205,7 @@ fun TYPE_NAME.findType(): Type {
         val result = SDK.findType(type)
 
         // 如果类型没有指定泛型, 却发现是泛型类, 那么把泛型类型全部替换成Object类
-        return if (result.declaredGenericTypes.isNotEmpty()) {
+        if (result.declaredGenericTypes.isNotEmpty()) {
             val clonedContainerType = result.toJson().fromJson<Type>()
 
             clonedContainerType.definedGenericTypes.replaceAll { result.platform.nativeObjectType() }
@@ -223,6 +223,12 @@ fun TYPE_NAME.findType(): Type {
         } else {
             result
         }
+    }
+    // 如果在override元素内, 则替换掉
+    return when (result.platform) {
+        Platform.iOS -> ext.ios.overrideElements[result.id]?.fromJson<Type>() ?: result
+        Platform.Android -> ext.android.overrideElements[result.id]?.fromJson<Type>() ?: result
+        else -> result
     }
 }
 
@@ -633,4 +639,18 @@ fun String.isDynamic(): Boolean {
  */
 fun String.isMultiPointer(): Boolean {
     return contains("**")
+}
+
+/**
+ * 解析SDK
+ */
+fun String.parseSDK(): SDK {
+    val sdk = fromJson<SDK>()
+    val allOverrideElements: MutableMap<Int, String> = mutableMapOf()
+    allOverrideElements.putAll(ext.android.overrideElements)
+    allOverrideElements.putAll(ext.ios.overrideElements)
+    sdk.allTypes.replaceAll {
+        allOverrideElements[it.id]?.fromJson<Type>() ?: it
+    }
+    return sdk
 }

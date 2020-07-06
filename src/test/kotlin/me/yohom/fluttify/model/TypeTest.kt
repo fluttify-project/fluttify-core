@@ -92,13 +92,34 @@ class TypeTest : FluttifyTest() {
     }
 
     @Test
-    fun isView() {
+    fun isView_tmap_QMapView() {
         Tmap.iosSDK
             .allTypes
             .find { it.name == "QMapView" && it.typeType == TypeType.Class }
             ?.isView
             ?.run {
                 println("结果: $this")
+            }
+    }
+
+    @Test
+    fun isView_ali_rtc_SophonSurfaceView() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "org.webrtc.sdk.SophonSurfaceView" }
+            ?.isView
+            ?.run {
+                println("结果: $this")
+            }
+    }
+
+    @Test
+    fun constructable_ali_rtc_org_webrtc_ali_RTCStatsReport() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "org.webrtc.ali.RTCStatsReport" }
+            ?.run {
+                println("结果: $constructable")
             }
     }
 }

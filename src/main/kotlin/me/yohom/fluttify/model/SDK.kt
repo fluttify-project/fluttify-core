@@ -62,8 +62,8 @@ class SDK : IPlatform {
      * 所有类型
      */
     @delegate:Transient
-    val allTypes: List<Type> by lazy {
-        directLibs.flatMap { it.types }
+    val allTypes: MutableList<Type> by lazy {
+        directLibs.flatMap { it.types }.toMutableList()
     }
 
     override fun toString(): String {

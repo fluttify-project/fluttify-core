@@ -23,14 +23,13 @@ open class AndroidDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
-        val sdk = jrFile.readText().fromJson<SDK>()
+        val sdk = jrFile.readText().parseSDK()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/".file().deleteRecursively()
 
         // 处理View, 生成AndroidView
-        sdk.directLibs
-            .flatMap { it.types }
+        sdk.allTypes
             .filter { it.isView }
             .forEach {
                 val dartAndroidView = AndroidViewTmpl(it)
@@ -42,8 +41,7 @@ open class AndroidDartInterface : FluttifyTask() {
             }
 
         // 处理普通类
-        sdk.directLibs
-            .flatMap { it.types }
+        sdk.allTypes
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {
@@ -81,8 +79,7 @@ open class AndroidDartInterface : FluttifyTask() {
             }
 
         // 处理所有的函数 但是java其实没有顶层函数, 所以这里的结果一定是空字符串
-        sdk.directLibs
-            .flatMap { it.types }
+        sdk.allTypes
             .filter { it.isKnownFunction }
             .distinctBy { it.name }
             .run {
@@ -140,14 +137,13 @@ open class IOSDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
-        val sdk = jrFile.readText().fromJson<SDK>()
+        val sdk = jrFile.readText().parseSDK()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/".file().deleteRecursively()
 
         // 处理View, 生成UiKitView
-        sdk.directLibs
-            .flatMap { it.types }
+        sdk.allTypes
             .filter { it.isView }
             .forEach {
                 val dartUiKitView = UiKitViewTmpl(it)
@@ -158,8 +154,7 @@ open class IOSDartInterface : FluttifyTask() {
             }
 
         // 处理普通类
-        sdk.directLibs
-            .flatMap { it.types }
+        sdk.allTypes
             .filterType()
             .forEach {
                 val resultDart = when (it.typeType) {

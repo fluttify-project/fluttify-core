@@ -2,6 +2,7 @@ package me.yohom.fluttify
 
 import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.fromJson
+import me.yohom.fluttify.extensions.parseSDK
 import me.yohom.fluttify.model.SDK
 
 object Amap {
@@ -68,7 +69,7 @@ object EaseMob {
 }
 
 object AliRtc {
-    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_rtc_fluttify/jr/ali_rtc_fluttify.android.json".file().readText().fromJson<SDK>()
-    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_rtc_fluttify/jr/ali_rtc_fluttify.ios.json".file().readText().fromJson<SDK>()
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_rtc_fluttify/jr/ali_rtc_fluttify.android.json".file().readText().parseSDK()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_rtc_fluttify/jr/ali_rtc_fluttify.ios.json".file().readText().parseSDK()
 }
 
