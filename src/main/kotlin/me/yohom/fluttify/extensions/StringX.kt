@@ -31,6 +31,7 @@ fun TYPE_NAME.jsonable(): Boolean {
         "Map<String,Uint32List>",
         "Map<String,Uint64List>",
         "Map<String,dynamic>",
+        "Map",
         "null",
         "List<int>",
         "List<double>",
