@@ -365,7 +365,6 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                     "List"
                 )
                 Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
-                Regex("java\\.io\\.Serializable").matches(this) -> "String /* java.io.Serializable */"
 
                 // objc
                 Regex("NSString\\*?").matches(this) -> "String"
