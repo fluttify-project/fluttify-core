@@ -1,0 +1,9 @@
+// map arg
+java.util.Map<#__key_type__#, #__value_type__#> __#__arg_name__#Map__ = (java.util.Map<#__key_type__#, #__value_type__#>) ((Map<String, Object>) __args__).get("#__arg_name__#");
+#__type_name__# #__arg_name__# = new HashMap<>();
+if (__#__arg_name__#Map__ != null) {
+    java.util.Map<#__key_type__#, #__value_type__#> map = (java.util.Map<#__key_type__#, #__value_type__#>) getHEAP().get(__#__arg_name__#Map__);
+    for (Entry<#__key_type__#, #__value_type__#> entry : map.entrySet()) {
+        #__arg_name__#.put(#__key__#, #__value__#);
+    }
+}

@@ -2,10 +2,7 @@ package me.yohom.fluttify.tmpl.java.common.handler.handler_method
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.*
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_return.InvokeReturnTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_void.InvokeVoidTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogInstanceTmpl
@@ -49,6 +46,7 @@ fun HandlerMethodTmpl(method: Method): String {
                 it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
                 it.variable.isIterable -> ArgListTmpl(it.variable)
+                it.variable.isMap() -> ArgMapTmpl(it.variable)
                 else -> ArgRefTmpl(it.variable)
             }
         }
