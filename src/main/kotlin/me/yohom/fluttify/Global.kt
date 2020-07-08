@@ -7,7 +7,7 @@ import java.io.File
 
 var SUCCESS_LOG = false
 
-var CONSTRUCTOR_LOG = true
+var CONSTRUCTOR_LOG = false
 var VARIABLE_LOG = false
 var FIELD_LOG = false
 var TYPE_LOG = false
@@ -22,7 +22,7 @@ val NEXT_ID
  */
 val EXCLUDE_METHODS
     get() =
-        listOf(".*::toString()", ".*::equals.*", ".*::writeToParcel.*", ".*::describeContents.*", "recycle.*", ".*::hashCode()", ".*::addView.*", ".*::removeView.*")
+        listOf(".*::toString()", ".*::equals.*", ".*::writeToParcel.*", ".*::describeContents.*", ".*::recycle.*", ".*::hashCode()", ".*::addView.*", ".*::removeView.*")
             .union(ext.ios.exclude.methods)
             .union(ext.android.exclude.methods)
             .map { Regex(it) }

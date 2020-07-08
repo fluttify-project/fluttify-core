@@ -140,7 +140,7 @@ data class Variable(
             val type = trueType.findType()
             "${type.returnType.toDartType()} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
         } else {
-            "${trueType.toDartType()} ${name.removeObjcSpecifier()}"
+            "${trueType.toDartType().serializableToString()} ${name.removeObjcSpecifier()}"
         }
     }
 
