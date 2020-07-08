@@ -58,4 +58,15 @@ class MethodTmplTest : FluttifyTest() {
             .find { it.name == "com.serenegiant.usb.UVCCamera" }
             ?.run { println(TypeSdkTmpl(this)) }
     }
+
+    @Test
+    fun methodTmpl_nim_com_netease_nimlib_sdk_team_TeamService_createTeam() {
+        ext.android.noncallbackClasses = listOf()
+        Nim.androidSDK
+            .allTypes
+            .find { it.name == "com.netease.nimlib.sdk.team.TeamService" }
+            ?.methods
+            ?.find { it.name == "createTeam" }
+            ?.run { println(MethodTmpl(this)) }
+    }
 }

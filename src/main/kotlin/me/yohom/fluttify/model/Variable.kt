@@ -103,8 +103,7 @@ data class Variable(
 
     fun isKnownType(): Boolean {
         // 只有当类型不是Map且包含类型都是已知类, 碰到了Map<String,NSData>类型, 虽然所有成分都是已知类, 但应该过滤掉的
-        return (!trueType.isMap() && trueType.allTypes().all { it.isKnownType })
-                || trueType.jsonable()
+        return trueType.allTypes().all { it.isKnownType } || trueType.jsonable()
     }
 
     fun isPublicType(): Boolean {
@@ -133,6 +132,10 @@ data class Variable(
 
     fun getIterableLevel(): Int {
         return trueType.iterableLevel()
+    }
+
+    fun isMap(): Boolean {
+        return trueType.isMap()
     }
 
     fun toDartString(): String {

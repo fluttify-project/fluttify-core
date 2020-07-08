@@ -7,6 +7,7 @@ import me.yohom.fluttify.model.Parameter
 
 //final resultBatch = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
 private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText() }
+
 fun InvokeBatchTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
         "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
@@ -19,6 +20,7 @@ fun InvokeBatchTmpl(method: Method): String {
     } else {
         "[for (int __i__ = 0; __i__ < this.length; __i__++) {"
     }
+    // TODO 参照普通方法 处理一下复杂Map的传递
     val args = method.formalParams
         .filterFormalParams()
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter(method.className, "this")) else this }

@@ -415,7 +415,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
  * 传参时, 可以把Serializable替换为String, 以实现传递参数, 不然dart这边没法传递
  */
 fun TYPE_NAME.serializableToString(): String {
-    return replace(Regex("java\\.io\\.Serializable"), "String /* java.io.Serializable */")
+    return replace(Regex("java.io.Serializable"), "String /* java.io.Serializable */")
 }
 
 fun TYPE_NAME.toUnderscore(): String {
