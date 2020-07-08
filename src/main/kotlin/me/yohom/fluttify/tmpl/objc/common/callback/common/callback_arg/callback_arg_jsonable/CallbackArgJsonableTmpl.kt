@@ -6,8 +6,8 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.isValueType
 import me.yohom.fluttify.model.Variable
 
-//// jsonable回调参数
-//#__type_name__# arg#__arg_name__# = #__arg_name__#;
+//// jsonable callback arg
+//#__type_name__# arg#__arg_name__# = #__arg_name__# == nil ? [NSNull null] : #__arg_name__#;
 private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_jsonable.stmt.m.tmpl").readText() }
 
 fun CallbackArgJsonableTmpl(variable: Variable): String {
