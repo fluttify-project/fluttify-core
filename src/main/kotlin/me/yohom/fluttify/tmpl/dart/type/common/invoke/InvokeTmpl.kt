@@ -7,6 +7,7 @@ import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum_list.ArgEnumListTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_jsonable.ArgJsonableTmpl
+import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_list.ArgListTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_map.ArgMapTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_ref.ArgRefTmpl
 
@@ -38,7 +39,7 @@ fun InvokeTmpl(method: Method): String {
                 // jsonable
                 typeName.jsonable() -> ArgJsonableTmpl(it)
                 // Ref列表
-                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> ArgRefTmpl(it)
+                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> ArgListTmpl(it)
                 // 多维列表不处理
                 it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
                 // 非jsonable的Map
