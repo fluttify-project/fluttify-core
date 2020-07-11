@@ -2,6 +2,7 @@ package me.yohom.fluttify.model
 
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 
 data class Constructor(
@@ -29,6 +30,8 @@ data class Constructor(
             return must("必须是公开构造器") { isPublic }
                     &&
                     mustNot("有混淆类型参数") { formalParams.any { it.variable.trueType.isObfuscated() } }
+                    &&
+                    mustNot("含有忽略类型的参数") { formalParams.any { it.variable.trueType.isExcludedType() } }
                     &&
                     (must("构造器没有参数") { formalParams.isEmpty() }
                             ||

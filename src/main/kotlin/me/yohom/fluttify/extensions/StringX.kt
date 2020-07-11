@@ -441,6 +441,13 @@ fun String.deprotocol(): String {
 }
 
 /**
+ * 是否是排除类
+ */
+fun String.isExcludedType(): Boolean {
+    return ext.android.exclude.classes.union(ext.ios.exclude.classes).any { Regex(it).matches(this) }
+}
+
+/**
  * 加上协议类型的id<>
  */
 fun String.enprotocol(): String {
