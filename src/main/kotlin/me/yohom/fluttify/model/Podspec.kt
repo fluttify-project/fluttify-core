@@ -24,7 +24,7 @@ data class Podspec(
 	val description: String? = null,
 
 	@field:SerializedName("resources")
-	val resources: String? = null,
+	val resources: Any? = null,
 
 	@field:SerializedName("compiler_flags")
 	val compilerFlags: String? = null,
