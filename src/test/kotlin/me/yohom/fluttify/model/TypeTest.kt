@@ -1,6 +1,7 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.*
+import me.yohom.fluttify.extensions.filterConstructable
 import org.junit.jupiter.api.Test
 
 class TypeTest : FluttifyTest() {
@@ -30,6 +31,27 @@ class TypeTest : FluttifyTest() {
 //            ?.run {
 //                println("结果: $this")
 //            }
+    }
+
+    @Test
+    fun constructable_amap_AMapNaviDriveManager() {
+        Amap.iosMapSDK
+            .allTypes
+            .find { it.name == "AMapNaviDriveManager" }
+            ?.run {
+                println("结果: ${constructable}")
+            }
+    }
+
+    @Test
+    fun filterConstructable_amap() {
+        Amap.iosMapSDK
+            .allTypes
+            .filterConstructable()
+            .map { it.name }
+            .run {
+                println("结果: ${contains("AMapNaviDriveManager")}")
+            }
     }
 
     @Test
