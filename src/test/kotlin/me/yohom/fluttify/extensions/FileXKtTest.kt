@@ -108,6 +108,48 @@ class FileXKtTest: FluttifyTest() {
     }
 
     @Test
+    fun functionSig() {
+        val text =
+            """
+                UIKIT_STATIC_INLINE BMKCoordinateSpan BMKCoordinateSpanMake(CLLocationDegrees latitudeDelta, CLLocationDegrees longitudeDelta) {
+                    BMKCoordinateSpan span;
+                    span.latitudeDelta = latitudeDelta;
+                    span.longitudeDelta = longitudeDelta;
+                    return span;
+                }
+            """.trimIndent()
+        text.walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext) {
+                val returnType = ctx
+                    .declarationSpecifiers()
+                    .typeSpecifier()
+                    .last()
+                    ?.text
+                val typeName = ctx
+                    .identifier()
+                    ?.text
+                val formalParams = ctx
+                    .parameterList()
+                    ?.parameterDeclarationList()
+                    ?.parameterDeclaration()
+                    ?.takeIf { it.all { it.declarationSpecifiers() != null && it.declarator() != null } }
+                    ?.map {
+                        Parameter(
+                            variable = Variable(
+                                typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
+                                    if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
+                                },
+                                platform = Platform.iOS,
+                                name = (it.declarator()?.text ?: it.VOID().text).depointer()
+                            ),
+                            platform = Platform.iOS
+                        )
+                    }
+            }
+        })
+    }
+
+    @Test
     fun typedefTest() {
         val text =
             "typedef void(^NIMChatroomQueueInfoHandler)(NSError * __nullable error, NSArray<NSDictionary<NSString*, NSString*>*>* __nullable info);"
