@@ -10,7 +10,7 @@ import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
 
-class FileXKtTest: FluttifyTest() {
+class FileXKtTest : FluttifyTest() {
 
     @Test
     fun moveFile() {
@@ -29,12 +29,13 @@ class FileXKtTest: FluttifyTest() {
 //            "/Users/yohom/Github/Me/All/fluttify/3rd_party/baidu_asr/sdk/ios/BDSEventManager.h".file()
 //        println(dir.objcType())
 
-        "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/output-project/amap_map_fluttify/android/src/main/java/me/yohom/amap_map_fluttify/".file().iterate("java") {
-            println("文件路径: ${it.path}")
-            if (!it.path.contains("sub_handler/custom")) {
-                it.delete()
+        "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/output-project/amap_map_fluttify/android/src/main/java/me/yohom/amap_map_fluttify/".file()
+            .iterate("java") {
+                println("文件路径: ${it.path}")
+                if (!it.path.contains("sub_handler/custom")) {
+                    it.delete()
+                }
             }
-        }
     }
 
     @Test
@@ -217,6 +218,26 @@ class FileXKtTest: FluttifyTest() {
                         }
                     }
                 }
+            }
+        })
+    }
+
+    @Test
+    fun enumTest() {
+        val text =
+            """
+                typedef NS_OPTIONS(NSUInteger, AMapGeoFenceActiveAction)
+                {
+                    AMapGeoFenceActiveActionNone     = 0,       ///< 不进行监听
+                    AMapGeoFenceActiveActionInside   = 1 << 0,  ///< 在范围内
+                    AMapGeoFenceActiveActionOutside  = 1 << 1,  ///< 在范围外
+                    AMapGeoFenceActiveActionStayed   = 1 << 2,  ///< 停留(在范围内超过10分钟)
+                };
+            """.trimIndent()
+        text.walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterEnumerator(ctx: ObjectiveCParser.EnumeratorContext) {
+                val enumName = ctx.enumeratorIdentifier().identifier().text
+                val enumValue = ctx.expression()?.text
             }
         })
     }

@@ -330,7 +330,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         override fun enterEnumerator(ctx: ObjectiveCParser.EnumeratorContext) {
             stack.peekOrNull()?.run {
                 val enumName = ctx.enumeratorIdentifier().identifier().text
-                val enumValue = ctx.expression()?.text?.toIntOrNull()
+                val enumValue = ctx.expression()?.text
                 enumerators.add(Enumerator(enumName, enumValue))
             }
         }
