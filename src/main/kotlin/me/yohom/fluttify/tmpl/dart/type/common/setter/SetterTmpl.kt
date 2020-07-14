@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.dart.type.common.setter
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
+import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
 
 //Future<void> set_#__name__#(#__type__# #__name__##__view_channel__#) async {
@@ -27,7 +28,7 @@ fun SetterTmpl(field: Field): String {
 
         val argValue = field.variable.trueType.run {
             when {
-                isEnum() -> "$name.index"
+                isEnum() -> ArgEnumTmpl(field.variable)
                 jsonable() -> name
                 (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "$name.map((it) => it.refId).toList()"
                 getIterableLevel() > 1 -> "[]" // 多维数组暂不处理

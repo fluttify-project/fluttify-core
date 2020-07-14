@@ -27,7 +27,7 @@ fun SetterBatchTmpl(field: Field): String {
         }
 
         val argValue = when {
-            isEnum() -> "$name[__i__].index"
+            isEnum() -> "$name[__i__].toValue()"
             field.variable.trueType.jsonable() -> "$name[__i__]"
             (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "$name[__i__].map((it) => it.refId).toList()"
             getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
