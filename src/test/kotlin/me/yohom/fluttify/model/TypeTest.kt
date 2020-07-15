@@ -2,6 +2,7 @@ package me.yohom.fluttify.model
 
 import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.filterConstructable
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import org.junit.jupiter.api.Test
 
 class TypeTest : FluttifyTest() {
@@ -157,6 +158,16 @@ class TypeTest : FluttifyTest() {
             .find { it.name == "bu_safe_dispatch_sync_main_queue" }
             ?.run {
                 println("结果: $filter")
+            }
+    }
+
+    @Test
+    fun locationClient() {
+        Bmap.androidMapSDK
+            .allTypes
+            .find { it.name == "com.baidu.location.LocationClient" }
+            ?.run {
+                println("结果: ${TypeSdkTmpl(this)}")
             }
     }
 }

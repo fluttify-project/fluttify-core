@@ -84,6 +84,8 @@ data class Field(
                     &&
                     variable.mustNot("回调类") { isCallback() }
                     &&
+                    variable.mustNot("常量") { filterConstants }
+                    &&
                     variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
             if (FIELD_LOG) println("属性:\"${toString()}\"执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
@@ -107,6 +109,8 @@ data class Field(
                     variable.mustNot("lambda类型") { isLambda() }
                     &&
                     variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
+                    &&
+                    variable.mustNot("常量") { filterConstants }
                     &&
                     variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
             if (FIELD_LOG) println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")

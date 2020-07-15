@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk
 
+import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
@@ -72,7 +73,16 @@ fun TypeSdkTmpl(type: Type): String {
     }
     val originClassName = type.name.replace("$", ".")
     // 如果父类是混淆类或非公开类, 那么直接继承Object类
-    val superClass = if (type.superClass.run { isEmpty() || isObfuscated() || !findType().isPublic }) {
+    val superClass = if (type.superClass.run {
+            isEmpty()
+                    ||
+                    isObfuscated()
+                    ||
+                    EXCLUDE_TYPES.any { it.matches(this) }
+                    ||
+                    findType().isUnknownType
+                    ||
+                    !findType().isPublic }) {
         type.platform.objectType()
     } else {
         type.superClass.toDartType()
