@@ -62,6 +62,8 @@ data class Method(
                     || must("返回类型关联类型都通过过滤") { !returnType.isMap() && returnType.allTypes().all { it.filter } }
                     || must("返回类型是所在类声明泛型") { returnType in className.findType().declaredGenericTypes })
                     &&
+                    mustNot("方法名为空") { name.isEmpty() }
+                    &&
                     mustNot("返回类型是混淆类") { returnType.isObfuscated() }
                     &&
                     mustNot("方法名为main") { name == "main" }
