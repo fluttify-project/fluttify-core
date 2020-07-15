@@ -198,7 +198,7 @@ fun JAVA_FILE.javaType(): SourceFile {
 
     return SourceFile().also {
         it.fileName = nameWithoutExtension
-        it.types = listOf(Type().also {type ->
+        it.types = listOf(Type().also { type ->
             type.typeType = typeType
             type.isPublic = isPublic
             type.isAbstract = isAbstract
@@ -280,7 +280,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
-            types.add(stack.pop())
+            if (stack.isNotEmpty()) types.add(stack.pop())
         }
         //endregion
 
@@ -492,7 +492,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
-            stack.peek().run {
+            stack.peekOrNull()?.run {
                 methods.add(
                     Method(
                         ctx.returnType(),
