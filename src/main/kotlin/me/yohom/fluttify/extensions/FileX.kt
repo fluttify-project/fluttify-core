@@ -67,7 +67,7 @@ fun JAVA_FILE.javaType(): SourceFile {
             val imports = ctx
                 .ancestorOf(CompilationUnitContext::class)
                 ?.importDeclaration()
-                ?.map { it.qualifiedName().text } ?: listOf()
+                ?.map { it.qualifiedName()?.text ?: "" } ?: listOf()
             // 从这些import中找出extends后面的类
             // 同接口会碰到的问题, 如果父类是同包下面的类, 那么就
             // 遍历当前文件夹, 如果找到当前父类名字的类, 那么就加上当前包名, 否则就认为是java.lang的类
@@ -99,7 +99,7 @@ fun JAVA_FILE.javaType(): SourceFile {
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {
             isPublic = ctx.isPublic()
-            simpleName = ctx.IDENTIFIER().text
+            simpleName = ctx.IDENTIFIER()?.text ?: ""
             isInnerType = simpleName.contains("$")
             typeType = TypeType.Interface
             declaredGenericTypes = ctx.genericTypes()
@@ -113,7 +113,7 @@ fun JAVA_FILE.javaType(): SourceFile {
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
             isPublic = ctx.isPublic() == true
-            simpleName = ctx.IDENTIFIER().text
+            simpleName = ctx.IDENTIFIER()?.text ?: ""
             isInnerType = simpleName.contains("$")
             isStaticType = true
             typeType = TypeType.Enum

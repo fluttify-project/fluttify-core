@@ -28,6 +28,8 @@ import me.yohom.fluttify.model.Type
 private val tmpl by lazy { getResource("/tmpl/dart/type_enum.dart.tmpl").readText() }
 
 fun TypeEnumTmpl(type: Type): String {
+    if (type.enumerators.isEmpty()) return ""
+
     val typeName = type.name.toDartType()
     val enumerators = type.enumerators.joinToString(",\n") { "${it.name} /* ${it.value} */" }
     val offset = type.enumerators[0].value ?: 0
