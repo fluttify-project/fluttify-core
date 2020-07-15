@@ -337,8 +337,9 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  * 规则为判断文件名长度是否是1或者2且仅包含小写字母
  */
 fun String.isObfuscatedFile(): Boolean {
+    val parts = split("$")
     val regex = Regex("[a-zA-Z|\\d]{0,2}|int|do|new|if|for")
-    return regex.matches(this)
+    return parts.any { regex.matches(it) }
 }
 
 /**

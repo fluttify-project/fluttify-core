@@ -4,11 +4,12 @@ import me.yohom.fluttify.FILE_LOG
 import me.yohom.fluttify.extensions.isObfuscatedFile
 import me.yohom.fluttify.extensions.mustNot
 
-data class SourceFile(
-    val fileName: String,
-    val types: List<Type>,
-    val topLevelConstants: List<Variable>
-) {
+class SourceFile {
+
+    var fileName: String = ""
+    var types: List<Type> = listOf()
+    var topLevelConstants: List<Variable> = listOf()
+
     @delegate:Transient
     val filter: Boolean by lazy {
         if (FILE_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓文件↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")

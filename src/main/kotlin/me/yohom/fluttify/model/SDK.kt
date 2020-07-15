@@ -146,18 +146,19 @@ class Lib {
      * 类
      */
     val types: List<Type>
-        get() = sourceFiles.flatMap { it.types }
+        get() = sourceFiles.filter { it.filter }.flatMap { it.types }
 
     /**
      * 顶层常量
      */
     val topLevelConstants: List<Variable>
-        get() = sourceFiles.flatMap { it.topLevelConstants }.distinctBy { it.name }
+        get() = sourceFiles.filter { it.filter }.flatMap { it.topLevelConstants }.distinctBy { it.name }
 
     /**
      * 是否是依赖
      */
     var isDependency: Boolean = false
+
     override fun toString(): String {
         return "Lib(name='$name', types=$types, topLevelConstants=$topLevelConstants, isDependency=$isDependency)"
     }
