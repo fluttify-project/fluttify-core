@@ -42,7 +42,10 @@ val EXCLUDE_METHODS
  * 排除生成的类
  */
 val EXCLUDE_TYPES
-    get() = ext.ios.exclude.classes
+    get() = listOf(
+        "android.app.Fragment",
+        "android.support.v4.app.Fragment"
+    ).union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
         .map { Regex(it) }
 
