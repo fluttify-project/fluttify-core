@@ -168,8 +168,13 @@ open class Exclude {
      */
     var methods: List<String> = listOf()
 
+    /**
+     * 排除的库
+     */
+    var libs: List<String> = listOf()
+
     override fun toString(): String {
-        return "Exclude(classes=$classes, methods=$methods)"
+        return "Exclude(classes=$classes, methods=$methods, libs=$libs)"
     }
 }
 

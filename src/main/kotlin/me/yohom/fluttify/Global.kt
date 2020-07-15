@@ -44,7 +44,14 @@ val EXCLUDE_METHODS
 val EXCLUDE_TYPES
     get() = ext.ios.exclude.classes
         .union(ext.android.exclude.classes)
-//        .union(listOf(".+\\.R"))
+        .map { Regex(it) }
+
+/**
+ * 排除生成的类
+ */
+val EXCLUDE_LIBS
+    get() = ext.ios.exclude.libs
+        .union(ext.android.exclude.libs)
         .map { Regex(it) }
 
 /**

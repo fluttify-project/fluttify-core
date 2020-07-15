@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.EXCLUDE_LIBS
 import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.SYSTEM_TYPEDEF
 import me.yohom.fluttify.extensions.depointer
@@ -32,7 +33,7 @@ class SDK : IPlatform {
      * 非间接依赖的库
      */
     val directLibs: List<Lib>
-        get() = libs.filterNot { it.isDependency }
+        get() = libs.filterNot { it.isDependency }.filter { lib -> EXCLUDE_LIBS.none { it.matches(lib.name) } }
 
     /**
      * 所有通过过滤的方法
