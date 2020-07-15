@@ -23,7 +23,16 @@ val NEXT_ID
  */
 val EXCLUDE_METHODS
     get() =
-        listOf(".*::toString()", ".*::equals.*", ".*::writeToParcel.*", ".*::describeContents.*", ".*::recycle.*", ".*::hashCode()", ".*::addView.*", ".*::removeView.*")
+        listOf(
+            ".*::toString()",
+            ".*::equals.*",
+            ".*::writeToParcel.*",
+            ".*::describeContents.*",
+            ".*::recycle.*",
+            ".*::hashCode()",
+            ".*::addView.*",
+            ".*::removeView.*"
+        )
             .union(ext.ios.exclude.methods)
             .union(ext.android.exclude.methods)
             .map { Regex(it) }
@@ -81,7 +90,9 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Binder"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.SurfaceView"; typeType = TypeType.Class; platform = Platform.Android },
-    Type().apply { name = "android.view.SurfaceHolder.Callback"; typeType = TypeType.Interface; platform = Platform.Android },
+    Type().apply {
+        name = "android.view.SurfaceHolder.Callback"; typeType = TypeType.Interface; platform = Platform.Android
+    },
     Type().apply {
         name = "android.view.View.OnApplyWindowInsetsListener"; typeType = TypeType.Interface; platform =
         Platform.Android
@@ -166,3 +177,22 @@ typealias PATH = String
 
 typealias JAVA_FILE = File
 typealias OBJC_FILE = File
+
+val dartReserved = listOf(
+    "abstract", "dynamic", "implements", "show", "as", "else",
+    "import", "static", "assert", "enum", "in", "super", "async",
+    "export", "interface", "switch", "await", "extends", "is", "sync",
+    "break", "external", "library", "this", "case", "factory", "mixin",
+    "throw", "catch", "false", "new", "true", "class", "final", "null", "try",
+    "const", "finally", "on", "typedef", "continue", "for", "operator", "var",
+    "covariant", "Function", "part", "void", "default", "get", "rethrow",
+    "while", "deferred", "hide", "return", "with", "do", "if", "set", "yield"
+)
+
+val JAVA_RESERVED = listOf(
+    "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
+    "continue", "default", "do", "double", "else", "enum", "extends", "final", "finally", "float",
+    "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long", "native",
+    "new", "package", "private", "protected", "public", "return", "strictfp", "short", "static", "super",
+    "switch", "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile", "while"
+)

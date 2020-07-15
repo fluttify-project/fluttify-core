@@ -1,8 +1,6 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.CONSTRUCTOR_LOG
-import me.yohom.fluttify.FIELD_LOG
-import me.yohom.fluttify.NEXT_ID
+import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
 
 data class Field(
@@ -51,14 +49,21 @@ data class Field(
 
     val filterConstants: Boolean
         get() {
-            return must("公开field") { isPublic } &&
-                    must("静态field") { isStatic == true } &&
-                    must("不可变变量") { isFinal == true } &&
+            return must("公开field") { isPublic }
+                    &&
+                    must("静态field") { isStatic == true }
+                    &&
+                    must("不可变变量") { isFinal == true }
+                    &&
                     variable.must("数字或字符串类型") {
                         trueType in listOf("int", "double", "String") && (value.isNumber() || value.isString())
-                    } &&
-                    must("有值") { value.isNotEmpty() } &&
+                    }
+                    &&
+                    must("有值") { value.isNotEmpty() }
+                    &&
                     mustNot("包含new关键字") { value.startsWith("new") }
+                    &&
+                    variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
         }
 
     val filterGetters: Boolean
@@ -80,6 +85,8 @@ data class Field(
                     variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
                     &&
                     variable.mustNot("回调类") { isCallback() }
+                    &&
+                    variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
             if (FIELD_LOG) println("属性:\"${toString()}\"执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
@@ -104,6 +111,8 @@ data class Field(
                     variable.mustNot("lambda类型") { isLambda() }
                     &&
                     variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
+                    &&
+                    variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
             if (FIELD_LOG) println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
