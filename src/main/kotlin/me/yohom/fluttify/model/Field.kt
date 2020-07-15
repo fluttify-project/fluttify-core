@@ -76,8 +76,6 @@ data class Field(
                     && // 必须先通过类型的过滤
                     must("公开field") { isPublic }
                     &&
-                    mustNot("静态field") { isStatic }
-                    &&
                     variable.mustNot("多维列表") { getIterableLevel() > 1 }
                     &&
                     variable.mustNot("lambda类型") { isLambda() }
@@ -103,8 +101,6 @@ data class Field(
                     must("公开field") { isPublic }
                     &&
                     mustNot("不可改field") { isFinal }
-                    &&
-                    mustNot("静态field") { isStatic }
                     &&
                     variable.mustNot("多维列表") { getIterableLevel() > 1 }
                     &&

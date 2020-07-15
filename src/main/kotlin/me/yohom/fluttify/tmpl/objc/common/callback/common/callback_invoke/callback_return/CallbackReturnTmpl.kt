@@ -27,6 +27,7 @@ fun CallbackReturnTmpl(method: Method): String {
         .run {
             when {
                 isVoid() -> ""
+                isMap() -> "return @{};"
                 isBoolean() -> "return NO;"
                 isValueType() -> "${method.returnType} result = 0; return result;"
                 findType().isStruct -> "$this value; return value;"

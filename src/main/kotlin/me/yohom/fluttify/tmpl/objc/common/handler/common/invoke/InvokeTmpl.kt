@@ -21,7 +21,17 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 }
             }
 
-            "$typeName result = ref.${variable.name};"
+            if (isStatic == true) {
+                if (!className.findType().isInterface) {
+                    "$typeName result = [$className ${variable.name}];"
+                }
+                // 协议静态方法
+                else {
+                    "$typeName result = [[NSObject<$className> class] ${variable.name}];"
+                }
+            } else {
+                "$typeName result = ref.${variable.name};"
+            }
         }
 
         val invokeMethod = method?.run {
@@ -37,7 +47,9 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 }
                 // 协议静态方法
                 else {
-                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
+                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") {
+                        param2arg(it)
+                    }}]"
                 }
 
                 if (method.returnType == "void") {
@@ -49,7 +61,11 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 if (method.returnType == "void") {
                     "[ref ${method.name} ${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 } else {
-                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}];"
+                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") {
+                        param2arg(
+                            it
+                        )
+                    }}];"
                 }
             }
         }

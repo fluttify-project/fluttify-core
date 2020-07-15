@@ -5,8 +5,8 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
-//Future<#__type__#> get_#__name__#(#__view_channel__#) async {
-//  final __result__ = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#", {'refId': refId});
+//#__static__#Future<#__type__#> get_#__name__#(#__view_channel__#) async {
+//  final __result__ = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#", #__ref_id__#);
 //  #__native_object_pool__#
 //  return #__result__#;
 //}
@@ -51,11 +51,13 @@ fun GetterTmpl(field: Field): String {
     return field.variable.run {
         tmpl
             .replace("#__type__#", dartType)
+            .replace("#__static__#", if (field.isStatic == true) "static " else "")
             .replace("#__name__#", name)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__method_channel__#", methodChannel)
             .replace("#__getter_method__#", getter)
             .replace("#__native_object_pool__#", nativeObjectPool)
+            .replace("#__ref_id__#", if (field.isStatic == true) "" else "{'refId': refId}")
             .replace("#__result__#", result)
     }
 }

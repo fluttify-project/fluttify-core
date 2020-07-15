@@ -478,7 +478,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                     Field(
                         true,
                         ctx.isFinal(),
-                        false,
+                        ctx.isStatic(),
                         ctx.getValue(),
                         variable,
                         name,
