@@ -173,8 +173,13 @@ open class Exclude {
      */
     var libs: List<String> = listOf()
 
+    /**
+     * 排除的常量
+     */
+    var constants: List<String> = listOf()
+
     override fun toString(): String {
-        return "Exclude(classes=$classes, methods=$methods, libs=$libs)"
+        return "Exclude(classes=$classes, methods=$methods, libs=$libs, constants=$constants)"
     }
 }
 

@@ -524,6 +524,7 @@ fun TYPE_NAME.removeObjcSpecifier(): TYPE_NAME {
         .replace("_Nonnull", "")
         .replace("nullable", "")
         .replace("nonnull", "")
+        .replace("__autoreleasing", "")
 }
 
 /**

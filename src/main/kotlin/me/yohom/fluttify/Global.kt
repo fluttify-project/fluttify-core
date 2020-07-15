@@ -55,6 +55,14 @@ val EXCLUDE_LIBS
         .map { Regex(it) }
 
 /**
+ * 排除生成的常量
+ */
+val EXCLUDE_CONSTANTS
+    get() = ext.ios.exclude.constants
+        .union(ext.android.exclude.constants)
+        .map { Regex(it) }
+
+/**
  * 系统别名
  */
 val SYSTEM_TYPEDEF = mapOf(

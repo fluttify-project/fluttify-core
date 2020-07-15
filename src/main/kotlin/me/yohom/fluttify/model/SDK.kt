@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.EXCLUDE_CONSTANTS
 import me.yohom.fluttify.EXCLUDE_LIBS
 import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.SYSTEM_TYPEDEF
@@ -153,7 +154,10 @@ class Lib {
      * 顶层常量
      */
     val topLevelConstants: List<Variable>
-        get() = sourceFiles.filter { it.filter }.flatMap { it.topLevelConstants }.distinctBy { it.name }
+        get() = sourceFiles.filter { it.filter }
+            .flatMap { it.topLevelConstants }
+            .distinctBy { it.name }
+            .filter { lib -> EXCLUDE_CONSTANTS.none { it.matches(lib.name) } }
 
     /**
      * 是否是依赖
