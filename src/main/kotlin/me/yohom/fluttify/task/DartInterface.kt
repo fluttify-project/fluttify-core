@@ -80,7 +80,8 @@ open class AndroidDartInterface : FluttifyTask() {
 
         // 处理所有的函数 但是java其实没有顶层函数, 所以这里的结果一定是空字符串
         sdk.allTypes
-            .filter { it.isKnownFunction }
+            .filterType()
+            .filter { it.isKnownFunction && it.formalParams.all { !it.variable.isLambda() } }
             .distinctBy { it.name }
             .run {
                 val functionsFile =
@@ -192,7 +193,8 @@ open class IOSDartInterface : FluttifyTask() {
         // 处理所有的函数
         sdk.directLibs
             .flatMap { it.types }
-            .filter { it.isKnownFunction }
+            .filterType()
+            .filter { it.isKnownFunction && it.formalParams.all { !it.variable.isLambda() } }
             .distinctBy { it.name }
             .run {
                 val functionsFile =

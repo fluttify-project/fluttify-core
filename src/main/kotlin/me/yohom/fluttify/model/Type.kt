@@ -170,6 +170,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 mustNot("混淆类型") { isObfuscated }
                 &&
+                mustNot("函数类型且含有lambda") { isFunction && formalParams.any { it.variable.isLambda() } }
+                &&
                 mustNot("祖宗类含有忽略类型") {
                     ancestorTypes.isNotEmpty() && EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } }
                 }

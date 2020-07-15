@@ -147,5 +147,16 @@ class TypeTest : FluttifyTest() {
 
     @Test
     fun baoqu() {
+        ext.ios.exclude.classes = listOf(
+            "[BU|bu].*",
+            "SD.*",
+            "Pangle.*"
+        )
+        CmGame.iosSDK
+            .allTypes
+            .find { it.name == "bu_safe_dispatch_sync_main_queue" }
+            ?.run {
+                println("结果: $filter")
+            }
     }
 }

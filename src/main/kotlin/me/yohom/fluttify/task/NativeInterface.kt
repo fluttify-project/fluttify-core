@@ -1,5 +1,6 @@
 package me.yohom.fluttify.task
 
+import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
@@ -214,6 +215,7 @@ open class IOSObjcInterface : FluttifyTask() {
             .map { me.yohom.fluttify.tmpl.objc.common.handler.handler_setter_batch.HandlerSetterBatchTmpl(it) }
 
         val functions = types
+            .filterType()
             // 暂时先不处理含有lambda的函数
             .filter { it.isKnownFunction && it.formalParams.all { !it.variable.isLambda() } }
             .map { it.asMethod() }
