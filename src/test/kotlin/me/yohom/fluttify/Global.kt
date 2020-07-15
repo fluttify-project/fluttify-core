@@ -73,3 +73,8 @@ object AliRtc {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_rtc_fluttify/jr/ali_rtc_fluttify.ios.json".file().readText().parseSDK()
 }
 
+object CmGame {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/baoqu/jr/cm_game_fluttify.android.json".file().readText().parseSDK()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/baoqu/jr/cm_game_fluttify.ios.json".file().readText().parseSDK()
+}
+

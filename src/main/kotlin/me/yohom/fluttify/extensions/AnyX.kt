@@ -12,6 +12,7 @@ fun Any.toJson(): String {
 fun <T> T.must(message: String = "", mapper: T.() -> Boolean?): Boolean {
     return if (mapper() != true) {
         when (this) {
+            is SourceFile -> if (FILE_LOG) println("SourceFile::${fileName}由于不是`$message`, 未通过条件")
             is Variable -> if (VARIABLE_LOG) println("Variable::${trueType}::${name}由于不是`$message`, 未通过条件")
             is Field -> if (FIELD_LOG) println("${className}::Field::${variable.trueType}::${variable.name}由于不是`$message`, 未通过条件")
             is Type -> if (TYPE_LOG) println("Type::${name}由于不是`$message`, 未通过条件")
@@ -23,6 +24,7 @@ fun <T> T.must(message: String = "", mapper: T.() -> Boolean?): Boolean {
     } else {
         if (SUCCESS_LOG) {
             when (this) {
+                is SourceFile -> if (FILE_LOG) println("SourceFile::${fileName}通过条件`$message`")
                 is Variable -> if (VARIABLE_LOG) println("Variable::${trueType}::${name}通过条件`$message`")
                 is Field -> if (FIELD_LOG) println("${className}::Field::${variable.trueType}::${variable.name}通过条件`$message`")
                 is Type -> if (TYPE_LOG) println("Type::${name}通过条件`$message`")
@@ -38,6 +40,7 @@ fun <T> T.must(message: String = "", mapper: T.() -> Boolean?): Boolean {
 fun <T> T.mustNot(message: String = "", mapper: T.() -> Boolean?): Boolean {
     return if (mapper() != false) {
         when (this) {
+            is SourceFile -> if (FILE_LOG) println("SourceFile::${fileName}由于是`$message`, 未通过条件")
             is Variable -> if (VARIABLE_LOG) println("Variable::${trueType}::${name}由于是`$message`, 未通过条件")
             is Field -> if (FIELD_LOG) println("${className}::Field::${variable.trueType}::${variable.name}由于是`$message`, 未通过条件")
             is Type -> if (TYPE_LOG) println("Type::${name}由于是`$message`, 未通过条件")
@@ -49,6 +52,7 @@ fun <T> T.mustNot(message: String = "", mapper: T.() -> Boolean?): Boolean {
     } else {
         if (SUCCESS_LOG) {
             when (this) {
+                is SourceFile -> if (FILE_LOG) println("SourceFile::${fileName}通过条件`$message`")
                 is Variable -> if (VARIABLE_LOG) println("Variable::${trueType}::${name}通过条件`$message`")
                 is Field -> if (FIELD_LOG) println("${className}::Field::${variable.trueType}::${variable.name}通过条件`$message`")
                 is Type -> if (TYPE_LOG) println("Type::${name}通过条件`$message`")

@@ -332,6 +332,16 @@ fun TYPE_NAME.isObfuscated(): Boolean {
 }
 
 /**
+ * 判断一个文件是否是被混淆过的
+ *
+ * 规则为判断文件名长度是否是1或者2且仅包含小写字母
+ */
+fun String.isObfuscatedFile(): Boolean {
+    val regex = Regex("[a-zA-Z|\\d]{0,2}|int|do|new|if|for")
+    return regex.matches(this)
+}
+
+/**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME.toDartType(): TYPE_NAME {

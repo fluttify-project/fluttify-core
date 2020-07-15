@@ -144,4 +144,14 @@ class TypeTest : FluttifyTest() {
                 println("结果: $constructable")
             }
     }
+
+    @Test
+    fun baoqu() {
+        CmGame.androidSDK
+            .allFiles
+            .find { it.fileName == "com.cmcm.cmgame.com" }
+            ?.run {
+                println("结果: $filter")
+            }
+    }
 }
