@@ -55,6 +55,8 @@ data class Field(
                     &&
                     must("不可变变量") { isFinal == true }
                     &&
+                    variable.mustNot("名为CREATOR") { name == "CREATOR" }
+                    &&
                     variable.must("数字或字符串类型") {
                         trueType in listOf("int", "double", "String") && (value.isNumber() || value.isString())
                     }
@@ -77,6 +79,8 @@ data class Field(
                     must("公开field") { isPublic }
                     &&
                     variable.mustNot("多维列表") { getIterableLevel() > 1 }
+                    &&
+                    variable.mustNot("名为CREATOR") { name == "CREATOR" }
                     &&
                     variable.mustNot("lambda类型") { isLambda() }
                     &&
@@ -105,6 +109,8 @@ data class Field(
                     mustNot("不可改field") { isFinal }
                     &&
                     variable.mustNot("多维列表") { getIterableLevel() > 1 }
+                    &&
+                    variable.mustNot("名为CREATOR") { name == "CREATOR" }
                     &&
                     variable.mustNot("lambda类型") { isLambda() }
                     &&
