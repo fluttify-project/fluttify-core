@@ -15,7 +15,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").
 
 fun GetterBatchTmpl(field: Field): String {
     val dartType = field.variable.trueType.toDartType()
-    val name = field.variable.name.depointer()
+    val name = if (field.isStatic == true) "static_${field.variable.name.depointer()}" else field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
 
     val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"

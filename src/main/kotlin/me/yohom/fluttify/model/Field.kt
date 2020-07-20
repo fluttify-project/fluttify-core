@@ -88,6 +88,10 @@ data class Field(
                     &&
                     variable.mustNot("回调类") { isCallback() }
                     &&
+                    variable.mustNot("类方法中包含同名的合成方法") {
+                        className.findType().methods.map { name }.contains("get_$name")
+                    }
+                    &&
                     variable.mustNot("常量") { filterConstants }
                     &&
                     variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
@@ -117,6 +121,12 @@ data class Field(
                     variable.mustNot("匿名lambda类型") { Regex("\\(\\^\\w+\\)\\(.*\\)").matches(name) }
                     &&
                     variable.mustNot("常量") { filterConstants }
+                    &&
+                    variable.mustNot("静态") { isStatic == true }
+                    &&
+                    variable.mustNot("类方法中包含同名的合成方法") {
+                        className.findType().methods.map { name }.contains("set_$name")
+                    }
                     &&
                     variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
             if (FIELD_LOG) println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
