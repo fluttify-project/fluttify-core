@@ -75,7 +75,6 @@ fun List<Method>.filterMethod(batch: Boolean = false): List<Method> {
 fun List<Field>.filterGetters(): List<Field> {
     return asSequence()
         .filter { it.filterGetters }
-        .distinctBy { it.variable.name }
         .filter { println("Field::${it.variable.name}通过Getter过滤"); true }
         .toList()
 }
@@ -86,7 +85,6 @@ fun List<Field>.filterGetters(): List<Field> {
 fun List<Field>.filterSetters(batch: Boolean = false): List<Field> {
     return asSequence()
         .filter { if (batch) it.filterSetterBatch else it.filterSetter }
-        .distinctBy { it.variable.name }
         .filter { println("Field::${it.variable.name}通过Setter过滤"); true }
         .toList()
 }

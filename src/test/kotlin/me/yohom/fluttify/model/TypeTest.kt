@@ -3,6 +3,7 @@ package me.yohom.fluttify.model
 import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.filterConstructable
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import org.junit.jupiter.api.Test
 
 class TypeTest : FluttifyTest() {
@@ -168,6 +169,16 @@ class TypeTest : FluttifyTest() {
             .find { it.name == "com.baidu.location.LocationClient" }
             ?.run {
                 println("结果: ${TypeSdkTmpl(this)}")
+            }
+    }
+
+    @Test
+    fun amap_AMapGeoFenceCircleRegion() {
+        Amap.iosLocationSDK
+            .allTypes
+            .find { it.name == "AMapGeoFenceRegion" }
+            ?.run {
+                println("结果: ${filter}")
             }
     }
 }
