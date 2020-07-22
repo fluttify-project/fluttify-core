@@ -81,6 +81,7 @@ val SYSTEM_TYPEDEF = mapOf(
     "int32_t" to "int",
     "int64_t" to "long long",
     "uint32_t" to "unsigned int",
+    "UInt32" to "unsigned int",
     "uint64_t" to "unsigned long long"
 )
 

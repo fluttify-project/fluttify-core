@@ -265,8 +265,9 @@ fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
-    return macro()?.primaryExpression()?.any { it.text.contains("unavailable") } == true
-            || attributeSpecifier()?.text?.contains("unavailable") == true
+    return macro()?.text?.contains("unavailable", true)  == true
+            || macro()?.primaryExpression()?.any { it.text.contains("unavailable", true) } == true
+            || attributeSpecifier()?.text?.contains("unavailable", true) == true
 }
 
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {

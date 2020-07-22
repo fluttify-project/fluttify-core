@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.EaseMob
 import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.TencentLive
 import me.yohom.fluttify.model.*
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Test
@@ -1036,5 +1037,28 @@ class FileXKtTest : FluttifyTest() {
             ?.run {
                 println(constructable)
             }
+    }
+
+    @Test
+    fun isPublic() {
+        val source = """
+            
+            @interface TXAudioEffectManager : NSObject
+
+            /// TXAudioEffectManager对象不可直接创建
+            /// 要通过 `TRTCCloud` 或 `TXLivePush` 的 `getAudioEffectManager` 接口获取
+            - (instancetype)init NS_UNAVAILABLE;
+            @end
+        """.trimIndent()
+        source.walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
+                ctx.returnType()
+                ctx.name()
+                ctx.formalParams()
+                ctx.isChildOf(ObjectiveCParser.ClassMethodDeclarationContext::class)
+                !ctx.isUnavailable() // 如果不可用就认为是私有的
+                ctx.isDeprecated()
+            }
+        })
     }
 }

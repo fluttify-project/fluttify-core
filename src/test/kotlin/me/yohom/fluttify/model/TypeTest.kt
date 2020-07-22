@@ -181,4 +181,29 @@ class TypeTest : FluttifyTest() {
                 println("结果: ${filter}")
             }
     }
+
+    @Test
+    fun tencent_live_TRTCCloudDelegate() {
+        ext.ios.exclude.classes = listOf("TRTCMediaDeviceType")
+        TencentLive.iosSDK
+            .allTypes
+            .find { it.name == "TRTCCloudDelegate" }
+            ?.methods
+            ?.find { it.name.contains("onDevice") }
+            ?.run {
+                println("结果 ${nameWithClass()}: ${filter}")
+            }
+    }
+
+    @Test
+    fun tencent_live_TXAudioEffectManager() {
+        TencentLive.iosSDK
+            .allTypes
+            .find { it.name == "TXAudioEffectManager" }
+            ?.methods
+            ?.find { it.name.contains("init") }
+            ?.run {
+                println("结果 $isPublic")
+            }
+    }
 }

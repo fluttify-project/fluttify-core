@@ -343,6 +343,16 @@ fun String.isObfuscatedFile(): Boolean {
 }
 
 /**
+ * 判断一个方法名是否是被混淆过的
+ *
+ * 规则为判断文件名长度是否是1或者2且仅包含小写字母
+ */
+fun String.isObfuscatedMethod(): Boolean {
+    val regex = Regex("[a-zA-Z|\\d]{0,2}")
+    return regex.matches(this)
+}
+
+/**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
 fun TYPE_NAME.toDartType(): TYPE_NAME {
@@ -680,4 +690,11 @@ fun String.parseSDK(): SDK {
         allOverrideElements[it.id]?.fromJson<Type>() ?: it
     }
     return sdk
+}
+
+/**
+ * 变量名为id的情况
+ */
+fun String.objcId(): String {
+    return if (this == "id") "id__" else this
 }

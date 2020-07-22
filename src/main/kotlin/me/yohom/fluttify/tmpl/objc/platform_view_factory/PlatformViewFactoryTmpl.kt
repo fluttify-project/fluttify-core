@@ -151,6 +151,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .types
         .filter { it.isCallback }
         .flatMap { it.methods }
+        .filterMethod() // 过滤一下方法 Java不能过滤, objc这边没事
         .distinctBy { it.exactName }
         .joinToString("\n") { ViewCallbackMethodTmpl(it) }
 
