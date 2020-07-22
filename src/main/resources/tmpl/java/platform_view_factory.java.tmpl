@@ -35,19 +35,19 @@ class #__factory_name__#Factory extends PlatformViewFactory {
         this.activity = activity;
 
         new MethodChannel(messenger, "#__method_channel__#").setMethodCallHandler((methodCall, methodResult) -> {
-                Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
-                #__plugin_class__#.Handler handler = handlerMap.get(methodCall.method);
-                if (handler != null) {
-                    try {
-                        handler.call(args, methodResult);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        methodResult.error(e.getMessage(), null, null);
-                    }
-                } else {
-                    methodResult.notImplemented();
+            Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
+            #__plugin_class__#.Handler handler = handlerMap.get(methodCall.method);
+            if (handler != null) {
+                try {
+                    handler.call(args, methodResult);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    methodResult.error(e.getMessage(), null, null);
                 }
-            });
+            } else {
+                methodResult.notImplemented();
+            }
+        });
     }
 
     private BinaryMessenger messenger;
@@ -60,9 +60,13 @@ class #__factory_name__#Factory extends PlatformViewFactory {
     @Override
     public PlatformView create(Context __, int id, Object params) {
         Map<String, Object> __args__ = (Map<String, Object>) params;
-        #__args__#
 
-        #__native_view__# view = new #__native_view__#(#__creation_args__#);
+        ////////////////////////////////初始化AndroidView////////////////////////////////////////
+
+        ////////////////////////////////初始化AndroidView////////////////////////////////////////
+
+        #__native_view__# view = new #__native_view__#(activity);
+
         getHEAP().put(Integer.MAX_VALUE - id, view);
         return new PlatformView() {
 

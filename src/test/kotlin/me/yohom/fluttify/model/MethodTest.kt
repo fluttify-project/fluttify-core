@@ -1,9 +1,11 @@
 package me.yohom.fluttify.model
 
+import me.yohom.fluttify.Amap
+import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.Tim
 import org.junit.jupiter.api.Test
 
-class MethodTest {
+class MethodTest: FluttifyTest() {
 
     @Test
     fun filter() {
@@ -16,6 +18,18 @@ class MethodTest {
             ?.filter
             ?.run {
                 println("通过过滤: $this")
+            }
+    }
+
+    @Test
+    fun amap_map_filter_mapView_regionDidChangeAnimated_wasUserAction() {
+        Amap.iosMapSDK
+            .allTypes
+            .find { it.name == "MAMapViewDelegate" }
+            ?.methods
+            ?.filter { it.filter }
+            ?.run {
+                println(joinToString("\n") { "${it.nameWithClass()} 通过过滤: ${it.filter}" })
             }
     }
 }

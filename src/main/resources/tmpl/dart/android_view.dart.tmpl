@@ -23,13 +23,12 @@ class #__view__#_Android extends StatefulWidget {
     Key key,
     this.onViewCreated,
     this.onDispose,
-    #__creation_params__#
+    this.params = const <String, dynamic>{},
   }) : super(key: key);
 
   final #__view_simple_name__#CreatedCallback onViewCreated;
   final _OnAndroidViewDispose onDispose;
-
-  #__creation_fields__#
+  final Map<String, dynamic> params;
 
   @override
   _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
@@ -50,7 +49,7 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
       creationParamsCodec: messageCodec,
-      #__creation_args__#
+      creationParams: widget.params,
     );
   }
 

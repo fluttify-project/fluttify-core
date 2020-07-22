@@ -23,10 +23,12 @@ class #__view__#_iOS extends StatefulWidget {
     Key key,
     this.onViewCreated,
     this.onDispose,
+    this.params = const <String, dynamic>{},
   }) : super(key: key);
 
   final #__view_simple_name__#CreatedCallback onViewCreated;
   final _OnUiKitViewDispose onDispose;
+  final Map<String, dynamic> params;
 
   @override
   _#__view__#_iOSState createState() => _#__view__#_iOSState();
@@ -47,6 +49,7 @@ class _#__view__#_iOSState extends State<#__view__#_iOS> {
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
       creationParamsCodec: messageCodec,
+      creationParams: widget.params,
     );
   }
 

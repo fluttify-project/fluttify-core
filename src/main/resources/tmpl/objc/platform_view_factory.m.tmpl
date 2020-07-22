@@ -14,19 +14,48 @@ extern NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
 extern BOOL enableLog;
 
 @implementation #__native_view__#Factory {
+  NSDictionary<NSString *, Handler>* _handlerMap;
 }
 
 - (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
   self = [super init];
   if (self) {
     _registrar = registrar;
+
+    __weak __typeof(self)weakSelf = self;
+    //region method call handler
+    FlutterMethodChannel *channel = [FlutterMethodChannel
+        methodChannelWithName:@"#__method_channel__#"
+              binaryMessenger:[_registrar messenger]];
+
+    [channel setMethodCallHandler:^(FlutterMethodCall *methodCall, FlutterResult methodResult) {
+      NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
+
+      __strong __typeof(weakSelf) strongSelf = weakSelf;
+      if (strongSelf != nil && strongSelf->_handlerMap[methodCall.method] != nil) {
+        strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
+      } else {
+        methodResult(FlutterMethodNotImplemented);
+      }
+    }];
+    //endregion
+
+    //region handlers
+    _handlerMap = @{
+        #__handlers__#
+    };
+    //endregion
   }
 
   return self;
 }
 
+- (NSObject<FlutterMessageCodec>*)createArgsCodec {
+  return [FlutterStandardMessageCodec sharedInstance];
+}
+
 - (NSObject <FlutterPlatformView> *)createWithFrame:(CGRect)frame viewIdentifier:(int64_t)viewId arguments:(id _Nullable)args {
-  return [[#__native_view__#PlatformView alloc] initWithViewId:viewId frame: frame registrar:_registrar];
+  return [[#__native_view__#PlatformView alloc] initWithViewId:viewId frame: frame registrar:_registrar arguments: args];
 }
 
 @end
@@ -36,49 +65,34 @@ extern BOOL enableLog;
   CGRect _frame;
   NSDictionary<NSString *, Handler>* _handlerMap;
   #__native_view__#* _view;
+  id _args;
 }
 
-- (instancetype)initWithViewId:(int64_t)viewId frame:(CGRect)frame registrar:(NSObject <FlutterPluginRegistrar> *)registrar {
+- (instancetype)initWithViewId:(int64_t)viewId frame:(CGRect)frame registrar:(NSObject <FlutterPluginRegistrar> *)registrar arguments:(id _Nullable)args {
   self = [super init];
   if (self) {
     _viewId = viewId;
     _registrar = registrar;
     _frame = frame;
+    _args = args;
   }
 
   return self;
 }
 
 - (UIView *)view {
-  __weak __typeof(self)weakSelf = self;
   if (_view == nil) {
+    NSDictionary<NSString*, id>* params = (NSDictionary<NSString*, id>*) _args;
+
     _view = [[#__native_view__# alloc] initWithFrame:_frame];
+
+    ////////////////////////////////初始化UiKitView////////////////////////////////////////
+
+    ////////////////////////////////初始化UiKitView////////////////////////////////////////
+
     // 这里用一个magic number调整一下id
     HEAP[@(2147483647 - _viewId)] = _view;
   }
-
-  //region method call handler
-  FlutterMethodChannel *channel = [FlutterMethodChannel
-      methodChannelWithName:@"#__method_channel__#"
-            binaryMessenger:[_registrar messenger]];
-
-  [channel setMethodCallHandler:^(FlutterMethodCall *methodCall, FlutterResult methodResult) {
-    NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
-
-    __strong __typeof(weakSelf) strongSelf = weakSelf;
-    if (strongSelf != nil && strongSelf->_handlerMap[methodCall.method] != nil) {
-      strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
-    } else {
-      methodResult(FlutterMethodNotImplemented);
-    }
-  }];
-  //endregion
-
-  //region handlers
-  _handlerMap = @{
-      #__handlers__#
-  };
-  //endregion
   return _view;
 }
 
