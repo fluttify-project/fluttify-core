@@ -14,37 +14,12 @@ extern NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
 extern BOOL enableLog;
 
 @implementation #__native_view__#Factory {
-  NSDictionary<NSString *, Handler>* _handlerMap;
 }
 
 - (instancetype)initWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
   self = [super init];
   if (self) {
     _registrar = registrar;
-
-    __weak __typeof(self)weakSelf = self;
-    //region method call handler
-    FlutterMethodChannel *channel = [FlutterMethodChannel
-        methodChannelWithName:@"#__method_channel__#"
-              binaryMessenger:[_registrar messenger]];
-
-    [channel setMethodCallHandler:^(FlutterMethodCall *methodCall, FlutterResult methodResult) {
-      NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
-
-      __strong __typeof(weakSelf) strongSelf = weakSelf;
-      if (strongSelf != nil && strongSelf->_handlerMap[methodCall.method] != nil) {
-        strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
-      } else {
-        methodResult(FlutterMethodNotImplemented);
-      }
-    }];
-    //endregion
-
-    //region handlers
-    _handlerMap = @{
-        #__handlers__#
-    };
-    //endregion
   }
 
   return self;
@@ -81,6 +56,7 @@ extern BOOL enableLog;
 }
 
 - (UIView *)view {
+  __weak __typeof(self)weakSelf = self;
   if (_view == nil) {
     NSDictionary<NSString*, id>* params = (NSDictionary<NSString*, id>*) _args;
 
@@ -93,6 +69,29 @@ extern BOOL enableLog;
     // 这里用一个magic number调整一下id
     HEAP[@(2147483647 - _viewId)] = _view;
   }
+
+  //region method call handler
+  FlutterMethodChannel *channel = [FlutterMethodChannel
+      methodChannelWithName:@"#__method_channel__#"
+            binaryMessenger:[_registrar messenger]];
+
+  [channel setMethodCallHandler:^(FlutterMethodCall *methodCall, FlutterResult methodResult) {
+    NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
+
+    __strong __typeof(weakSelf) strongSelf = weakSelf;
+    if (strongSelf != nil && strongSelf->_handlerMap[methodCall.method] != nil) {
+      strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
+    } else {
+      methodResult(FlutterMethodNotImplemented);
+    }
+  }];
+  //endregion
+
+  //region handlers
+  _handlerMap = @{
+      #__handlers__#
+  };
+  //endregion
   return _view;
 }
 
