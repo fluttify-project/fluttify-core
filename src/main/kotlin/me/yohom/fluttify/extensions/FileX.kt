@@ -13,7 +13,10 @@ import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
-import java.io.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.cert.CertificateException
@@ -44,7 +47,7 @@ fun JAVA_FILE.javaType(): SourceFile {
     var isPublic = false
     var isAbstract = false
     var isInnerType = false
-    var isStaticType = true
+    var isStaticType: Boolean? = null
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext) {
@@ -123,7 +126,11 @@ fun JAVA_FILE.javaType(): SourceFile {
         override fun enterConstructorDeclaration(ctx: ConstructorDeclarationContext) {
             if (ctx.IDENTIFIER().text.isObfuscated()) return
 
-            isStaticType = ctx.isStaticType()
+            // 如果已经确认是静态类型, 就不需要再往下判断构造器的情况了
+            // 碰到一个静态内部类, 有一个无参构造器和一个参数外外部类的构造器, 第二个构造器的判断覆盖了第一个构造器
+            if (isStaticType != true) {
+                isStaticType = ctx.isStaticType()
+            }
 
             constructors.add(
                 Constructor(
@@ -203,7 +210,7 @@ fun JAVA_FILE.javaType(): SourceFile {
             type.isPublic = isPublic
             type.isAbstract = isAbstract
             type.isInnerType = isInnerType
-            type.isStaticType = isStaticType
+            type.isStaticType = isStaticType ?: true
             type.declaredGenericTypes.addAll(declaredGenericTypes)
             type.definedGenericTypes.addAll(definedGenericTypes)
             type.constructors = constructors
