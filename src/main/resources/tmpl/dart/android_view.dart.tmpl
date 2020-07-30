@@ -30,7 +30,7 @@ class #__view__#_Android extends StatefulWidget {
   final #__view_simple_name__#CreatedCallback onViewCreated;
   final _OnAndroidViewDispose onDispose;
   final Map<String, dynamic> params;
-  final List<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   @override
   _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
@@ -41,9 +41,9 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
 
   @override
   Widget build(BuildContext context) {
-    final gestureRecognizers = widget.gestureRecognizers ?? <Factory<OneSequenceGestureRecognizer>>[
+    final gestureRecognizers = widget.gestureRecognizers ?? <Factory<OneSequenceGestureRecognizer>>{
       Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-    ].toSet();
+    };
 
     final messageCodec = StandardMessageCodec();
     return AndroidView(
