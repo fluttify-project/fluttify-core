@@ -24,11 +24,13 @@ class #__view__#_iOS extends StatefulWidget {
     this.onViewCreated,
     this.onDispose,
     this.params = const <String, dynamic>{},
+    this.gestureRecognizers,
   }) : super(key: key);
 
   final #__view_simple_name__#CreatedCallback onViewCreated;
   final _OnUiKitViewDispose onDispose;
   final Map<String, dynamic> params;
+  final List<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   @override
   _#__view__#_iOSState createState() => _#__view__#_iOSState();
@@ -39,7 +41,7 @@ class _#__view__#_iOSState extends State<#__view__#_iOS> {
 
   @override
   Widget build(BuildContext context) {
-    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
+    final gestureRecognizers = widget.gestureRecognizers ?? <Factory<OneSequenceGestureRecognizer>>[
       Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
     ].toSet();
 
