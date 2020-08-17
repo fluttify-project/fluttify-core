@@ -13,7 +13,15 @@ import me.yohom.fluttify.model.Parameter
 private val tmpl by lazy { getResource("/tmpl/java/callback_arg_list.stmt.java.tmpl").readText() }
 
 fun CallbackArgListTmpl(param: Parameter): String {
+    val argName = param.variable.name
+    val typeName = param.variable.trueType.replace("$", ".").dearray().genericTypes().run {
+        if (isNotEmpty()) {
+            this[0]
+        } else {
+            "Object"
+        }
+    }
     return tmpl
-        .replace("#__arg_name__#", param.variable.name)
-        .replace("#__type_name__#", param.variable.trueType.replace("$", ".").dearray().genericTypes()[0])
+        .replace("#__arg_name__#", argName)
+        .replace("#__type_name__#", typeName)
 }
