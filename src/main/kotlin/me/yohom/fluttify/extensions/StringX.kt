@@ -150,6 +150,7 @@ fun TYPE_NAME.boxedType(): TYPE_NAME {
         "float" -> "Float"
         "double" -> "Double"
         "boolean" -> "Boolean"
+        "void" -> "Void"
         else -> this
     }
 }

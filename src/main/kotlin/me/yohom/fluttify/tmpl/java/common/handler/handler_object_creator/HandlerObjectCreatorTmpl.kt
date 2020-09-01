@@ -38,9 +38,7 @@ fun HandlerObjectFactoryTmpl(type: Type): List<String> {
                 .filter { !it.variable.trueType.findType().isCallback }
                 .joinToString("\n") {
                     when {
-                        it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
                         it.variable.isEnum() -> ArgEnumTmpl(it.variable)
-                        it.variable.isIterable -> ArgListTmpl(it.variable)
                         else -> ArgRefTmpl(it.variable)
                     }
                 }

@@ -5,10 +5,9 @@ put("#__setter_name__#_batch", (__argsBatch__, __methodResult__) -> {
 
         #__arg__#;
 
-        int refId = (int) ((Map<String, Object>) __args__).get("refId");
-        #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
+        #__class_name__# __this__ = (#__class_name__#) __args__.get("__this__");
 
-        ref.#__field_name__# = #__field_value__#;
+        __this__.#__field_name__# = #__field_value__#;
     }
 
     __methodResult__.success("success");

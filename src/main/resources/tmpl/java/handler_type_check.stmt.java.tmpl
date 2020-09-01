@@ -1,7 +1,6 @@
 put("RefClass::isKindOf#__underscore_type_name__#", (__args__, __methodResult__) -> {
     // 引用对象
-    int refId = (int) ((Map<String, Object>) __args__).get("refId");
-    Object ref = getHEAP().get(refId);
+    Object __this__ = ((Map<String, Object>) __args__).get("__this__");
 
-    __methodResult__.success(ref instanceof #__type_name__#);
+    __methodResult__.success(__this__ instanceof #__type_name__#);
 });

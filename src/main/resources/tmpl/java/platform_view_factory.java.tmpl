@@ -34,7 +34,7 @@ class #__factory_name__#Factory extends PlatformViewFactory {
         this.messenger = messenger;
         this.activity = activity;
 
-        new MethodChannel(messenger, "#__method_channel__#").setMethodCallHandler((methodCall, methodResult) -> {
+        new MethodChannel(messenger, "#__method_channel__#", new StandardMethodCodec(new FluttifyMessageCodec())).setMethodCallHandler((methodCall, methodResult) -> {
             Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
             #__plugin_class__#.Handler handler = handlerMap.get(methodCall.method);
             if (handler != null) {

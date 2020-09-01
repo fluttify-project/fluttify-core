@@ -9,7 +9,7 @@ import me.yohom.fluttify.model.Type
 //  if (#__check_param_size__#) {
 //    return Future.error('all args must have same length!');
 //  }
-//  final List resultBatch = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create_batch#__creator_name__#', #__args__#);
+//  final List resultBatch = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('ObjectFactory::create_batch#__creator_name__#', #__args__#);
 //
 //  final List<#__class_name__#> typedResult = resultBatch.map((result) => #__class_name__#()..refId = result..tag = '#__tag__#').toList();
 //  kNativeObjectPool.addAll(typedResult);
@@ -52,22 +52,7 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                             if (isEmpty()) {
                                 "{'length': length}"
                             } else {
-                                toDartMapBatch("[for (int __i__ = 0; __i__ < ${it.formalParams.firstOrNull()?.variable?.name}.length; __i__++) {") {
-                                    when {
-                                        it.trueType.findType().isEnum -> {
-                                            // 枚举列表
-                                            if (it.isIterable) {
-                                                "${it.name}[__i__].map((it) => it.index).toList()"
-                                            } else {
-                                                "${it.name}[__i__].index"
-                                            }
-                                        }
-                                        it.trueType.jsonable() -> "${it.name}[__i__]"
-                                        (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
-                                        it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
-                                        else -> "${it.name}[__i__].refId"
-                                    }
-                                }
+                                toDartMapBatch("[for (int __i__ = 0; __i__ < ${it.formalParams.firstOrNull()?.variable?.name}.length; __i__++) {")
                             }
                         })
                     .replace("#__tag__#", ext.projectName)

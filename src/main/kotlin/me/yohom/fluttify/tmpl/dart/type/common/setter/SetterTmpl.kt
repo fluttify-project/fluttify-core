@@ -7,7 +7,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
 
 //Future<void> set_#__name__#(#__type__# #__name__##__view_channel__#) async {
-//  await MethodChannel(#__method_channel__#).invokeMethod('#__setter_method__#', {'refId': refId, "#__name__#": #__arg_value__#});
+//  await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('#__setter_method__#', {'refId': refId, "#__name__#": #__arg_value__#});
 //
 //  #__callback__#
 //}

@@ -1,3 +1,2 @@
 // ref arg
-Integer __#__arg_name__#RefId__ = (Integer) ((Map<String, Object>) __args__).get("#__arg_name__#");
-#__type_name__# #__arg_name__# = __#__arg_name__#RefId__ != null ? (#__type_name__#) getHEAP().get(__#__arg_name__#RefId__) : null;
+#__type_name__# #__arg_name__# = (#__type_name__#) ((Map<String, Object>) __args__).get("#__arg_name__#");

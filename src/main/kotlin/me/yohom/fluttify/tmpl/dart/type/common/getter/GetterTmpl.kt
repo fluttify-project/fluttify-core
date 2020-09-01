@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //#__static__#Future<#__type__#> get_#__name__#(#__view_channel__#) async {
-//  final __result__ = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#", #__ref_id__#);
+//  final __result__ = await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod("#__getter_method__#", #__ref_id__#);
 //  #__native_object_pool__#
 //  return #__result__#;
 //}

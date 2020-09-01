@@ -19,7 +19,6 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 //    return null;
 //  } else {
 //    final typedResult = #__return_statement__#;
-//    #__native_object_pool__#
 //    return typedResult;
 //  }
 //}
@@ -60,15 +59,6 @@ fun MethodBatchTmpl(method: Method): String {
         }
     }
     val returnStatement = "(resultBatch as List).cast<$resultType>().map((__result__) => ${ReturnTmpl(method)}).toList()"
-
-    val nativeObjectPool = method.returnType.run {
-        when {
-            jsonable() or findType().isEnum or isEnumList() or isVoid() -> ""
-            isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
-            else -> "kNativeObjectPool.addAll(typedResult);"
-        }
-    }
-
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
         .replace("#__static__#", static)
@@ -77,6 +67,5 @@ fun MethodBatchTmpl(method: Method): String {
         .replace("#__formal_params__#", formalParams)
         .replace("#__check_param_size__#", checkParamSize)
         .replaceParagraph("#__invoke__#", invoke)
-        .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)
 }

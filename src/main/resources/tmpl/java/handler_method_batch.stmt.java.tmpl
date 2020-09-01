@@ -12,12 +12,10 @@ put("#__method_name__#_batch", (__argsBatch__, __methodResult__) -> {
         #__ref__#
 
         // invoke native method
+        #__result_type__# __result__ = null;
         #__invoke__#
 
-        // convert result to jsonable result
-        #__result__#
-
-        __resultList__.add(jsonableResult);
+        __resultList__.add(__result__);
     }
 
     __methodResult__.success(__resultList__);

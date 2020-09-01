@@ -28,25 +28,21 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //    }
 //
 //    // invoke native method
+//    #__result_type__# __result__ = null;
 //    #__invoke__#
 //
-//    // convert result to jsonable result
-//    #__result__#
-//
-//    __methodResult__.success(jsonableResult);
+//    __methodResult__.success(__result__);
 //});
 private val tmpl by lazy { getResource("/tmpl/java/handler_method.stmt.java.tmpl").readText() }
 
 fun HandlerMethodTmpl(method: Method): String {
     val methodName = method.nameWithClass()
+    val resultType = method.returnType.replace("$", ".").boxedType()
     val args = method.formalParams
         .filter { !it.variable.trueType.findType().isCallback }
         .joinToString("\n") {
             when {
-                it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
                 it.variable.isEnum() -> ArgEnumTmpl(it.variable)
-                it.variable.isIterable -> ArgListTmpl(it.variable)
-                it.variable.isMap() -> ArgMapTmpl(it.variable)
                 else -> ArgRefTmpl(it.variable)
             }
         }
@@ -65,22 +61,11 @@ fun HandlerMethodTmpl(method: Method): String {
     else
         InvokeReturnTmpl(method)
 
-    // 把方法调用返回的对象result转化成可以在channel中传输的对象
-    // 调用结果 分为void, (jsonable, ref)两种情况 void时返回"success", jsonable返回本身, ref返回refId
-    // 这里的语句会产生一个叫jsonableResult的对象, 这个对象是最终返回给dart的对象
-    val result = when {
-        method.returnType.jsonable() -> ResultJsonableTmpl(method.returnType)
-        method.returnType.findType().isEnum -> ResultEnumTmpl()
-        // jsonable已经把List<String>类似的类型挡掉了, 所以到这里的肯定是List<? extends Object>类型
-        method.returnType.isIterable() -> ResultListTmpl(method)
-        method.returnType.isVoid() -> ResultVoidTmpl()
-        else -> ResultRefTmpl()
-    }
     return tmpl
         .replace("#__method_name__#", methodName)
         .replaceParagraph("#__args__#", args)
+        .replace("#__result_type__#", resultType)
         .replaceParagraph("#__ref__#", ref)
         .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
-        .replaceParagraph("#__result__#", result)
 }

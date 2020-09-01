@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.Resu
 //        Map<String, Object> args = ((List<Map<String, Object>>) argsBatch).get(i);
 //
 //        // ref object
-//        #__class_name__# ref = (#__class_name__#) getHEAP().get((int) args.get("refId"));
+//        #__class_name__# ref = (#__class_name__#) getHEAP().get((int) args.get("__this__"));
 //
 //        #__field_type__# result = ref.#__field_name__#;
 //
@@ -42,13 +42,6 @@ fun HandlerGetterBatchTmpl(field: Field): String {
     }
     val fieldType = field.variable.trueType.replace("$", ".")
     val fieldName = field.variable.name
-    val result = when {
-        field.variable.jsonable() -> ResultJsonableTmpl(fieldType)
-        field.variable.isEnum() -> ResultEnumTmpl()
-        field.variable.isIterable -> ResultListTmpl(field.asGetterMethod())
-        field.variable.trueType.isVoid() -> ResultVoidTmpl()
-        else -> ResultRefTmpl()
-    }
 
     return tmpl
         .replace("#__getter_name__#", getterName)
@@ -56,5 +49,4 @@ fun HandlerGetterBatchTmpl(field: Field): String {
         .replace("#__result_type__#", resultType)
         .replace("#__field_type__#", fieldType)
         .replace("#__field_name__#", fieldName)
-        .replace("#__result__#", result)
 }

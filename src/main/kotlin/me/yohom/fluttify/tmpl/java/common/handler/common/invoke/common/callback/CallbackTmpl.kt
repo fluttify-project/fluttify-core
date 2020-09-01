@@ -7,7 +7,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 
 //new #__callback_class_name__#() {
 //        // method channel
-//        MethodChannel callbackChannel = new MethodChannel(messenger, "#__callback_channel__#");
+//        MethodChannel callbackChannel = new MethodChannel(messenger, "#__callback_channel__#", new StandardMethodCodec(new FluttifyMessageCodec()));
 //        android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
 //
 //        // call dart method

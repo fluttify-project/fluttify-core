@@ -12,10 +12,8 @@ put("#__method_name__#", (__args__, __methodResult__) -> {
     }
 
     // invoke native method
+    #__result_type__# __result__ = null;
     #__invoke__#
 
-    // convert result to jsonable result
-    #__result__#
-
-    __methodResult__.success(jsonableResult);
+    __methodResult__.success(__result__);
 });
