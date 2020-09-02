@@ -31,7 +31,7 @@ fun CallbackReturnTmpl(method: Method): String {
                 isBoolean() -> "return NO;"
                 isValueType() -> "${method.returnType} result = 0; return result;"
                 findType().isStruct -> "$this value; return value;"
-                else -> "return nil;"
+                else -> "return (${method.returnType.enpointer()}) nil;"
             }
         }
 
