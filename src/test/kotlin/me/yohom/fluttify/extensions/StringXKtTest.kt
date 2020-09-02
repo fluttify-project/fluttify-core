@@ -201,7 +201,7 @@ class StringXKtTest : FluttifyTest() {
 
         @Test
         fun isObfuscated_obfuscated() {
-            assertTrue("List<com.amap.api.mapcore.util.el>".isObfuscated())
+            assertTrue("com.google.android.gms.common.internal.GmsClientSupervisor\$zza".isObfuscated())
         }
     }
 

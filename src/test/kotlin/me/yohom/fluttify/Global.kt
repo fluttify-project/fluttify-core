@@ -78,3 +78,8 @@ object CmGame {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/baoqu/jr/cm_game_fluttify.ios.json".file().readText().parseSDK()
 }
 
+object GoogleMap {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/google_map/google_map_fluttify/jr/google_map_fluttify.android.json".file().readText().parseSDK()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/google_map/google_map_fluttify/jr/google_map_fluttify.ios.json".file().readText().parseSDK()
+}
+

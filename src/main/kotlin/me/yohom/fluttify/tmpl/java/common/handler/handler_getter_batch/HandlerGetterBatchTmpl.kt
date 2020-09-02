@@ -32,14 +32,7 @@ private val tmpl by lazy { getResource("/tmpl/java/handler_getter_batch.stmt.jav
 fun HandlerGetterBatchTmpl(field: Field): String {
     val getterName = field.getterMethodName
     val className = field.className.replace("$", ".")
-    val resultType = field.variable.run {
-        when {
-            jsonable() -> trueType.boxedType().stringArray2List()
-            trueType.isVoid() -> "String"
-            isIterable -> "Integer".enList(getIterableLevel())
-            else -> "Integer"
-        }
-    }
+    val resultType = field.variable.trueType.boxedType()
     val fieldType = field.variable.trueType.replace("$", ".")
     val fieldName = field.variable.name
 
