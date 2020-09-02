@@ -10,9 +10,9 @@ var SUCCESS_LOG = false
 var CONSTRUCTOR_LOG = false
 var VARIABLE_LOG = false
 var FIELD_LOG = false
-var TYPE_LOG = true
+var TYPE_LOG = false
 var FILE_LOG = false
-var METHOD_LOG = true
+var METHOD_LOG = false
 
 private var idSequence = 0
 val NEXT_ID

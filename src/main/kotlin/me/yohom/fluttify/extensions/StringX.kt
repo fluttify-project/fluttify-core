@@ -200,7 +200,11 @@ fun TYPE_NAME.findType(): Type {
                 // 找出当前声明泛型在泛型列表中的位置
                 val genericTypePosition = clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
                 // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
-                it.defineGenericType(definedGenericTypes[genericTypePosition])
+                if (genericTypePosition < definedGenericTypes.size) {
+                    it.defineGenericType(definedGenericTypes[genericTypePosition])
+                } else {
+                    it.defineGenericType(it.platform.objectType())
+                }
             }
         clonedContainerType
     } else {
@@ -323,11 +327,12 @@ fun TYPE_NAME.isObfuscated(): Boolean {
     val types = genericTypes()
         .map { it.replace("$", ".").substringAfterLast(".") }
         .union(listOf(containerType().replace("$", ".").substringAfterLast(".")))
-    val regex = Regex("[a-zA-Z|\\d]{0,2}")
+    val regex1 = Regex("[a-zA-Z|\\d]{0,2}")
+    val regex2 = Regex("[a-z|\\d]{0,4}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
     return this !in ext.obfuscatedWhiteList
             &&
-            types.any { (regex.matches(it) || regex.matches(this)) }
+            types.any { regex1.matches(it) || regex1.matches(this) || regex2.matches(it) || regex2.matches(this) }
             &&
             this != "id"
 }
