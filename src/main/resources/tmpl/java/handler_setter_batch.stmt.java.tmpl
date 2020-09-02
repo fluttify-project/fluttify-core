@@ -5,7 +5,7 @@ put("#__setter_name__#_batch", (__argsBatch__, __methodResult__) -> {
 
         #__arg__#;
 
-        #__class_name__# __this__ = (#__class_name__#) __args__.get("__this__");
+        #__class_name__# __this__ = (#__class_name__#) ((Map<String, Object>) __args__).get("__this__");
 
         __this__.#__field_name__# = #__field_value__#;
     }

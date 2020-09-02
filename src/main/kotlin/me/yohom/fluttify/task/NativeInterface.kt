@@ -101,7 +101,6 @@ open class AndroidJavaInterface : FluttifyTask() {
             .filterNot { it.isFunction }
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
-            .filterNot { ext.android.exclude.classes.contains(it.name) }
             .filter { !it.isInterface && !it.isEnum && !it.isStruct }
             .map { JavaHandlerTypeCheckTmpl(it) }
             .toList()

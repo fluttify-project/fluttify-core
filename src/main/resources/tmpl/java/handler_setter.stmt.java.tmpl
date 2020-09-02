@@ -1,8 +1,7 @@
 // setter
 put("#__setter_name__#", (__args__, __methodResult__) -> {
     #__arg__#;
-
-    #__class_name__# __this__ = (#__class_name__#) __args__.get("__this__");
+    #__class_name__# __this__ = (#__class_name__#) ((Map<String, Object>) __args__).get("__this__");
 
     __this__.#__field_name__# = #__field_value__#;
     __methodResult__.success("success");

@@ -1,6 +1,6 @@
 // factory
 put("ObjectFactory::create_batch#__creator_name__#", (__argsBatch__, __methodResult__) -> {
-    List<Integer> __resultList__ = new ArrayList<>();
+    List<#__class_name__#> __resultList__ = new ArrayList<>();
 
     int __length__ = 0;
     // when batch size is 0, dart side will put a map with key 'length' to indicate the length
