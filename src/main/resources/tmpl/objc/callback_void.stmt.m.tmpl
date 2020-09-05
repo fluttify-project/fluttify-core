@@ -1,3 +1,8 @@
 dispatch_async(dispatch_get_main_queue(), ^{
-    [channel invokeMethod:@"#__callback_method__#" arguments:@{#__callback_args__#}];
+  FlutterMethodChannel *channel = [FlutterMethodChannel
+        methodChannelWithName:#__method_channel__#
+              binaryMessenger:[[self registrar] messenger]
+                        codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
+
+  [channel invokeMethod:@"#__callback_method__#" arguments:@{#__callback_args__#}];
 });
