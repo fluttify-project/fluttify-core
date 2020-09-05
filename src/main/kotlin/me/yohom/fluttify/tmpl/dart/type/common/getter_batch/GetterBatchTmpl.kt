@@ -32,7 +32,7 @@ fun GetterBatchTmpl(field: Field): String {
         when {
             jsonable() -> toDartType()
             isVoid() -> "String"
-            else -> "int"
+            else -> "String"
         }
     }
     val result = field.variable.run {

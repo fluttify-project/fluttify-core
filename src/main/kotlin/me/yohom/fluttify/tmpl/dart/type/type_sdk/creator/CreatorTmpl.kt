@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
 //static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
-//  final int refId = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
+//  final refId = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
 //  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
 //
 //  kNativeObjectPool.add(object);

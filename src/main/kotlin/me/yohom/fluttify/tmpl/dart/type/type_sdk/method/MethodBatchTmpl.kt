@@ -55,7 +55,7 @@ fun MethodBatchTmpl(method: Method): String {
         when {
             jsonable() -> toDartType()
             isVoid() -> "String"
-            else -> "int"
+            else -> "String"
         }
     }
     val returnStatement = "(resultBatch as List).cast<$resultType>().map((__result__) => ${ReturnTmpl(method)}).toList()"

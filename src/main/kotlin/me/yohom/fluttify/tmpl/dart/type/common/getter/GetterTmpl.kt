@@ -7,7 +7,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //#__static__#Future<#__type__#> get_#__name__#(#__view_channel__#) async {
 //  final __result__ = await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod("#__getter_method__#", #__ref_id__#);
-//  #__native_object_pool__#
 //  return #__result__#;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText() }
@@ -40,13 +39,6 @@ fun GetterTmpl(field: Field): String {
             else -> ResultRefTmpl(trueType)
         }
     }
-    val nativeObjectPool = field.variable.run {
-        when {
-            jsonable() or isEnum() or isAliasType() -> ""
-            isIterable || isStructPointer() -> "kNativeObjectPool.addAll($result);"
-            else -> "kNativeObjectPool.add($result);"
-        }
-    }
 
     return field.variable.run {
         tmpl
@@ -56,8 +48,7 @@ fun GetterTmpl(field: Field): String {
             .replace("#__view_channel__#", viewChannel)
             .replace("#__method_channel__#", methodChannel)
             .replace("#__getter_method__#", getter)
-            .replace("#__native_object_pool__#", nativeObjectPool)
-            .replace("#__ref_id__#", if (field.isStatic == true) "" else "{'refId': refId}")
+            .replace("#__ref_id__#", if (field.isStatic == true) "" else "{'__this__': this}")
             .replace("#__result__#", result)
     }
 }
