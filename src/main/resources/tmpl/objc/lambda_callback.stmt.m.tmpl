@@ -1,7 +1,8 @@
 ^(#__formal_params__#) {
     FlutterMethodChannel *channel = [FlutterMethodChannel
-        methodChannelWithName:@"#__method_channel__#"
-              binaryMessenger:[[weakSelf registrar] messenger]];
+          methodChannelWithName:@"#__method_channel__#"
+                binaryMessenger:[[weakSelf registrar] messenger]
+                          codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
 
     // print log
     if (enableLog) {

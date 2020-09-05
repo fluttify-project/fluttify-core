@@ -12,7 +12,7 @@ fun CallbackVoidTmpl(method: Method): String {
 
     val callbackArgs = method
         .formalParams
-        .joinToString { "@\"${it.variable.name.depointer()}\": arg${it.variable.name.depointer()}" }
+        .joinToString { "@\"${it.variable.name.depointer()}\": arg${it.variable.name.depointer()} == nil ? [NSNull null] : arg${it.variable.name.depointer()}" }
 
     return tmpl
         .replace("#__callback_method__#", callbackMethod)
