@@ -10,6 +10,7 @@ import me.yohom.fluttify.extensions.getResource
 //    HEAP[@([object hash])] = object;
 //}
 private val tmpl by lazy { getResource("/tmpl/objc/result_list.stmt.m.tmpl").readText() }
+
 fun ResultListTmpl(): String {
     return tmpl
 }
