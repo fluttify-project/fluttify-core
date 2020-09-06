@@ -6,8 +6,6 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 
 //// factory

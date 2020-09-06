@@ -3,16 +3,10 @@ package me.yohom.fluttify.tmpl.java.common.handler.handler_method_batch
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_return.InvokeReturnTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_void.InvokeVoidTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.ref.RefTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.ResultRefTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.ResultVoidTmpl
 
 //// method
 //put("#__method_name__#_batch", (argsBatch, methodResult) -> {
