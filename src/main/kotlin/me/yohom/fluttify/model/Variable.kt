@@ -161,12 +161,6 @@ data class Variable(
             }
         } else {
             when {
-                // 字符串数组需要转换
-                isStringArray() -> "$name.toArray(new ${trueType.dearray()}[$name.size()])"
-                // 基本类型数组不需要转换, 直接使用
-                isArray() -> name
-                // 自定义类列表需要转换成ArrayList
-                isIterable -> "(ArrayList) $name"
                 trueType.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
                 else -> name
             }
