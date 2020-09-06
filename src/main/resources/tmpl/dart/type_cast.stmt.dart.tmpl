@@ -1,3 +1,3 @@
 else if (T == #__type_name__#) {
-  return (#__constructor__#()..refId = (this is Ref ? (this as Ref).refId : this as String)) as T;
+  return (#__constructor__#()..refId = (this is Ref ? (this as Ref).refId : this as String)..tag__ = '#__plugin_name__#') as T;
 }
