@@ -12,7 +12,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 //put("#__setter_name__#", (args, methodResult) -> {
 //    #__arg__#;
 //
-//    int refId = (int) args.get("refId");
+//    int refId = (int) args.get("__this__");
 //    #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
 //
 //    ref.#__field_name__# = #__field_value__#;
@@ -24,9 +24,7 @@ fun HandlerSetterTmpl(field: Field): String {
     val setterName = field.setterMethodName
     val fieldName = field.variable.name
     val arg = when {
-        field.variable.jsonable() -> ArgJsonableTmpl(field.variable)
         field.variable.isEnum() -> ArgEnumTmpl(field.variable)
-        field.variable.isIterable -> ArgListTmpl(field.variable)
         else -> ArgRefTmpl(field.variable)
     }
     val className = field.className.replace("$", ".")

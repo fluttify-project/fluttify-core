@@ -8,7 +8,7 @@ private val tmpl by lazy { getResource("/tmpl/java/invoke_void.stmt.java.tmpl").
 
 fun InvokeVoidTmpl(method: Method): String {
     return tmpl
-        .replace("#__invoke_target__#", if (method.isStatic) method.className.replace("$", ".") else "ref")
+        .replace("#__invoke_target__#", if (method.isStatic) method.className.replace("$", ".") else "__this__")
         .replace("#__method_name__#", method.name)
         .replace("#__actual_params__#", method.formalParams.joinToString { it.variable.var2Args(method) })
 }

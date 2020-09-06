@@ -5,9 +5,8 @@
     }
 
     #__type_name__#* ref = [[#__type_name__# alloc] init];
-    HEAP[[NSNumber numberWithLong: ref.hash]] = ref;
 
-    methodResult([NSNumber numberWithLong: ref.hash]);
+    methodResult(ref);
 
     if (enableLog) NSLog(@"HEAP: %@", HEAP);
 },

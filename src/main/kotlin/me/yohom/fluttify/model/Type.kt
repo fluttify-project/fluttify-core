@@ -413,7 +413,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
      */
     fun ancestorInterfaces(includeObfuscated: Boolean = true): List<String> {
         return ancestorTypes
-            .filter { it.findType().typeType == TypeType.Interface }
+            .filter { it.findType().run { typeType == TypeType.Interface && filter } }
             .filter { if (!includeObfuscated) !it.isObfuscated() else true }
     }
 

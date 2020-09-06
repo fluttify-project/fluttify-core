@@ -8,7 +8,7 @@ import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Type
 
 //else if (T == #__type_name__#) {
-//  final result = await MethodChannel('#__method_channel__#').invokeMethod('RefClass::isKindOf#__type_name__#', {'refId': (this as Ref).refId});
+//  final result = await MethodChannel('#__method_channel__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('RefClass::isKindOf#__type_name__#', {'refId': (this as Ref).refId});
 //  return result;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/type_check.stmt.dart.tmpl").readText() }

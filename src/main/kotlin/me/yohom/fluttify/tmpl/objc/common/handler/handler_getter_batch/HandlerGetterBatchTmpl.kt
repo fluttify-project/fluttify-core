@@ -7,26 +7,26 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
-//@"#__method_name__#_batch": ^(NSObject <FlutterPluginRegistrar>* registrar, NSDictionary<NSString*, id>* argsBatch, FlutterResult methodResult) {
-//    NSMutableArray<#__result_type__#>* resultList = [NSMutableArray array];
+//@"#__method_name__#_batch": ^(NSObject <FlutterPluginRegistrar>* registrar, id argsBatch, FlutterResult methodResult) {
+//    NSMutableArray* resultList = [NSMutableArray array];
 //
-//    for (int i = 0; i < ((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch).count; i++) {
-//        NSDictionary<NSString*, NSObject*>* args = [((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch) objectAtIndex:i];
+//    for (int __i__ = 0; __i__ < ((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch).count; __i__++) {
+//        NSDictionary<NSString*, id>* args = [((NSArray<NSDictionary<NSString*, id>*>*) argsBatch) objectAtIndex:__i__];
 //
 //        // ref object
-//        NSNumber* refId = (NSNumber*) args[@"refId"];
 //        #__ref__#
 //
 //        #__invoke__#
 //
 //        #__result__#
 //
-//        resultList.add(jsonableResult);
+//        [resultList addObject:__result__];
 //    }
 //
 //    methodResult(resultList);
 //},
 private val tmpl by lazy { getResource("/tmpl/objc/handler_getter_batch.stmt.m.tmpl").readText() }
+
 fun HandlerGetterBatchTmpl(field: Field): String {
     val methodName = field.getterMethodName
     val className = when {

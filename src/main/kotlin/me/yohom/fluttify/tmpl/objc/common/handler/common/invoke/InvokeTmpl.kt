@@ -62,9 +62,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                     "[ref ${method.name} ${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 } else {
                     "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") {
-                        param2arg(
-                            it
-                        )
+                        param2arg(it)
                     }}];"
                 }
             }

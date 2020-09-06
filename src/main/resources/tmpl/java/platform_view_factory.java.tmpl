@@ -19,8 +19,11 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.common.StandardMessageCodec;
+import io.flutter.plugin.common.StandardMethodCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
+
+import me.yohom.foundation_fluttify.core.FluttifyMessageCodec;
 
 import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
 import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableLog;
@@ -34,7 +37,7 @@ class #__factory_name__#Factory extends PlatformViewFactory {
         this.messenger = messenger;
         this.activity = activity;
 
-        new MethodChannel(messenger, "#__method_channel__#").setMethodCallHandler((methodCall, methodResult) -> {
+        new MethodChannel(messenger, "#__method_channel__#", new StandardMethodCodec(new FluttifyMessageCodec())).setMethodCallHandler((methodCall, methodResult) -> {
             Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
             #__plugin_class__#.Handler handler = handlerMap.get(methodCall.method);
             if (handler != null) {

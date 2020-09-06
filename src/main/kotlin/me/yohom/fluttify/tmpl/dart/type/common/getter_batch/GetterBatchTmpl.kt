@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //Future<List<#__type__#>> get_#__name__#_batch(#__view_channel__#) async {
-//  final resultBatch = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'refId': __item__.refId}]);
+//  final resultBatch = await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'refId': __item__.refId}]);
 //  final typedResult = (resultBatch as List).cast<#__result_type__#>.map((__result__) => #__result__#).toList();
 //  #__native_object_pool__#
 //  return typedResult;
@@ -32,7 +32,7 @@ fun GetterBatchTmpl(field: Field): String {
         when {
             jsonable() -> toDartType()
             isVoid() -> "String"
-            else -> "int"
+            else -> "String"
         }
     }
     val result = field.variable.run {

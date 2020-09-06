@@ -25,7 +25,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //    return null;
 //  } else {
 //    final __return__ = #__return_statement__#;
-//    #__native_object_pool__#
 //    return __return__;
 //  }
 //}
@@ -55,13 +54,6 @@ fun MethodTmpl(method: Method): String {
         .map { CallbackMethodTmpl(method, it.trueType.findType(), it.name) }
     val invoke = InvokeTmpl(method)
     val returnStatement = ReturnTmpl(method)
-    val nativeObjectPool = method.returnType.run {
-        when {
-            jsonable() or findType().isEnum or isEnumList() or isVoid() -> ""
-            isIterable() || isStructPointer() -> "kNativeObjectPool.addAll(__return__);"
-            else -> "if (__return__ is Ref) kNativeObjectPool.add(__return__);"
-        }
-    }
 
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
@@ -72,6 +64,5 @@ fun MethodTmpl(method: Method): String {
         .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
         .replaceParagraph("#__callback__#", callback.joinToString("\n"))
-        .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)
 }

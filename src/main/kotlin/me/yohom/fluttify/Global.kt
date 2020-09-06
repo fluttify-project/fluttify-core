@@ -10,9 +10,9 @@ var SUCCESS_LOG = false
 var CONSTRUCTOR_LOG = false
 var VARIABLE_LOG = false
 var FIELD_LOG = false
-var TYPE_LOG = true
-var FILE_LOG = false
-var METHOD_LOG = true
+var TYPE_LOG = false
+var FILE_LOG = true
+var METHOD_LOG = false
 
 private var idSequence = 0
 val NEXT_ID
@@ -55,6 +55,14 @@ val EXCLUDE_TYPES
 val EXCLUDE_LIBS
     get() = ext.ios.exclude.libs
         .union(ext.android.exclude.libs)
+        .map { Regex(it) }
+
+/**
+ * 排除生成的文件
+ */
+val EXCLUDE_FILES
+    get() = ext.ios.exclude.files
+        .union(ext.android.exclude.files)
         .map { Regex(it) }
 
 /**

@@ -13,7 +13,10 @@ fun List<Variable>.toDartMap(
     valueBuilder: ((Variable) -> String) = { it.name }
 ): String {
     if (isEmpty()) return ""
-    return joinToString(prefix = prefix, postfix = postfix) { "\"${it.name.depointer()}\": ${valueBuilder(it)}" }
+    return joinToString(
+        prefix = prefix,
+        postfix = postfix
+    ) { "\"${if (it.name == "this") "__this__" else it.name.depointer()}\": ${valueBuilder(it)}" }
 }
 
 /**
@@ -22,13 +25,13 @@ fun List<Variable>.toDartMap(
 fun List<Variable>.toDartMapBatch(
     prefix: String = "[for (int __i__ = 0; __i__ < this.length; __i__++) {",
     suffix: String = "}]",
-    valueBuilder: ((Variable) -> String) = { it.name }
+    valueBuilder: ((Variable) -> String) = { "${it.name}[__i__]" }
 ): String {
     if (isEmpty()) return ""
     return joinToStringX(
         prefix = prefix,
         suffix = suffix
-    ) { "\"${if (it.name == "this") "refId" else it.name.depointer()}\": ${valueBuilder(it)}" }
+    ) { "\"${if (it.name == "this") "__this__" else it.name.depointer()}\": ${valueBuilder(it)}" }
 }
 
 /**

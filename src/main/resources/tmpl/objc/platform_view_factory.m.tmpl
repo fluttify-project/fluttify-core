@@ -72,8 +72,9 @@ extern BOOL enableLog;
 
   //region method call handler
   FlutterMethodChannel *channel = [FlutterMethodChannel
-      methodChannelWithName:@"#__method_channel__#"
-            binaryMessenger:[_registrar messenger]];
+        methodChannelWithName:@"#__method_channel__#"
+              binaryMessenger:[_registrar messenger]
+                        codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
 
   [channel setMethodCallHandler:^(FlutterMethodCall *methodCall, FlutterResult methodResult) {
     NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];

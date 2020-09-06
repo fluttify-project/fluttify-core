@@ -164,6 +164,13 @@ open class Exclude {
     var classes: List<String> = listOf()
 
     /**
+     * 排除的文件 接受正则表达式
+     *
+     * 文件名, 不需要路径
+     */
+    var files: List<String> = listOf()
+
+    /**
      * 排除的方法 接受正则表达式
      */
     var methods: List<String> = listOf()

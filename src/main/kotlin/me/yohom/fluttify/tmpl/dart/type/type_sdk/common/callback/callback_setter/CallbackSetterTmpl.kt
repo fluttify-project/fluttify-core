@@ -4,16 +4,18 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
 
-//MethodChannel('#__callback_channel__#')
+//MethodChannel('#__callback_channel__#', StandardMethodCodec(FluttifyMessageCodec()))
 //    .setMethodCallHandler((methodCall) async {
-//      final args = methodCall.arguments as Map;
-//      // final refId = args['callerRefId'] as int;
-//      // if (refId != this.refId) return;
-//
-//      switch (methodCall.method) {
-//        #__cases__#
-//        default:
-//          break;
+//      try {
+//        final args = methodCall.arguments as Map;
+//        switch (methodCall.method) {
+//          #__cases__#
+//          default:
+//            break;
+//        }
+//      } catch (e) {
+//        debugPrint(e);
+//        throw e;
 //      }
 //    });
 private val tmpl by lazy { getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText() }

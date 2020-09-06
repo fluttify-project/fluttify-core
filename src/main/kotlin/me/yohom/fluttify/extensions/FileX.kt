@@ -401,17 +401,17 @@ fun OBJC_FILE.objcType(): SourceFile {
                 ?.typeVariableDeclaratorOrName()
                 ?.filter { it.typeName()?.text != "void" } // void类型, 不占用参数
                 ?.mapNotNull { it.typeVariableDeclarator() }
-                ?.map {
+                ?.mapIndexed { index, it ->
                     val argName = it.declarator().text
+                        .depointer()
+                        .removeObjcSpecifier()
+                        .run { if(isEmpty()) "__arg${index}__" else this }
                     val argType = it.declarationSpecifiers()
                         .text
-                        .run { if (argName.startsWith("*")) enpointer() else this }
+                        .run { if (it.declarator().text.startsWith("*")) enpointer() else this }
+                        .objcSpecifierExpand()
                     Parameter(
-                        variable = Variable(
-                            argType.objcSpecifierExpand(),
-                            argName.depointer().removeObjcSpecifier(),
-                            Platform.iOS
-                        ),
+                        variable = Variable(argType, argName, Platform.iOS),
                         platform = Platform.iOS
                     )
                 }

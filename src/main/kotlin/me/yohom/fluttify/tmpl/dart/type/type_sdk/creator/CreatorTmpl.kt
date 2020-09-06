@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
 //static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
-//  final int refId = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
+//  final refId = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
 //  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
 //
 //  kNativeObjectPool.add(object);
@@ -35,14 +35,7 @@ fun CreatorTmpl(type: Type): List<String> {
                     .replace("#__formal_params__#", it.formalParams.joinToString { it.variable.toDartString() })
                     .replace("#__channel_name__#", ext.methodChannelName)
                     .replace("#__separator__#", if (it.formalParams.isEmpty()) "" else ", ")
-                    .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap {
-                        when {
-                            it.trueType.jsonable() -> it.name
-                            it.isEnum() -> "${it.name}.index"
-                            it.isIterable -> if (it.getIterableLevel() <= 1) "${it.name}.map((it) => it.refId).toList()" else "[] /* 暂不支持嵌套列表 */"
-                            else -> "${it.name}.refId"
-                        }
-                    })
+                    .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap())
                     .replace("#__tag__#", ext.projectName)
             }
         Platform.iOS -> listOf(

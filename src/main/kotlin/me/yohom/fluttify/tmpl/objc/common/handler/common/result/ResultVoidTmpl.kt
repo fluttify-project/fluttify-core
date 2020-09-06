@@ -4,6 +4,7 @@ import me.yohom.fluttify.extensions.getResource
 
 //methodResult(@"success");
 private val tmpl by lazy { getResource("/tmpl/objc/result_void.stmt.m.tmpl").readText() }
+
 fun ResultVoidTmpl(): String {
     return tmpl
 }

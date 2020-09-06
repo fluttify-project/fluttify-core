@@ -1,9 +1,14 @@
-MethodChannel('#__callback_channel__#')
+MethodChannel('#__callback_channel__#', StandardMethodCodec(FluttifyMessageCodec()))
     .setMethodCallHandler((methodCall) async {
-      final args = methodCall.arguments as Map;
-      switch (methodCall.method) {
-        #__cases__#
-        default:
-          break;
+      try {
+        final args = methodCall.arguments as Map;
+        switch (methodCall.method) {
+          #__cases__#
+          default:
+            break;
+        }
+      } catch (e) {
+        debugPrint(e);
+        throw e;
       }
     });

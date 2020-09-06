@@ -5,14 +5,12 @@ import me.yohom.fluttify.extensions.enpointer
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Variable
 
-//// 列表回调参数
-//NSMutableArray<NSNumber*>* arg#__arg_name__# = [NSMutableArray arrayWithCapacity:#__arg_name__#.count];
-//for (int i = 0; i < #__arg_name__#.count; i++) {
-//    NSObject* item = ((NSObject*) [#__arg_name__# objectAtIndex:i]);
-//    // 返回给dart端的数据
-//    arg#__arg_name__#[i] = @(item.hash);
-//    // 放到HEAP中的数据
-//    HEAP[@(item.hash)] = item;
+//// list callback arg
+//NSMutableArray<NSObject*>* arg#__arg_name__# = [NSMutableArray arrayWithCapacity:#__arg_name__#.count];
+//for (int __i__ = 0; __i__ < #__arg_name__#.count; __i__++) {
+//    NSObject* item = ((NSObject*) [#__arg_name__# objectAtIndex:__i__]);
+//    // return to dart side data
+//    arg#__arg_name__#[__i__] = item;
 //}
 private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readText() }
 

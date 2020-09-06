@@ -1,10 +1,8 @@
 // setter
 put("#__setter_name__#", (__args__, __methodResult__) -> {
     #__arg__#;
+    #__class_name__# __this__ = (#__class_name__#) ((Map<String, Object>) __args__).get("__this__");
 
-    int refId = (int) ((Map<String, Object>) __args__).get("refId");
-    #__class_name__# ref = (#__class_name__#) getHEAP().get(refId);
-
-    ref.#__field_name__# = #__field_value__#;
+    __this__.#__field_name__# = #__field_value__#;
     __methodResult__.success("success");
 });
