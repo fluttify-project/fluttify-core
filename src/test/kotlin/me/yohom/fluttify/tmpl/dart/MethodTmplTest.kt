@@ -2,6 +2,7 @@ package me.yohom.fluttify.tmpl.dart
 
 import me.yohom.fluttify.*
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 import org.junit.jupiter.api.Test
 
@@ -39,6 +40,16 @@ class MethodTmplTest : FluttifyTest() {
             ?.methods
             ?.find { it.name == "addDelegate" }
             ?.run { println(MethodTmpl(this)) }
+    }
+
+    @Test
+    fun methodBatchTmpl_amap() {
+        Amap.iosMapSDK
+            .allTypes
+            .find { it.name == "MAParticleColorGenerate" }
+            ?.methods
+            ?.find { it.name == "getColor" }
+            ?.run { println(MethodBatchTmpl(this)) }
     }
 
     @Test
