@@ -49,6 +49,7 @@ fun GetterTmpl(field: Field): String {
             .replace("#__method_channel__#", methodChannel)
             .replace("#__getter_method__#", getter)
             .replace("#__ref_id__#", if (field.isStatic == true) "" else "{'__this__': this}")
+            .replace("#__tag__#", ext.projectName)
             .replace("#__result__#", result)
     }
 }

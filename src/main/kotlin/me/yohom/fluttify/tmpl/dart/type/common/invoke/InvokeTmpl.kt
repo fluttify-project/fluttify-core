@@ -42,4 +42,5 @@ fun InvokeTmpl(method: Method): String {
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
         .replace("#__args__#", args)
+        .replace("#__tag__#", ext.projectName)
 }

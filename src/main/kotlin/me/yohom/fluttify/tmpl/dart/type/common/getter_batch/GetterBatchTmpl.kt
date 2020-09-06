@@ -65,6 +65,7 @@ fun GetterBatchTmpl(field: Field): String {
             .replace("#__getter_method__#", getter)
             .replace("#__result_type__#", resultType)
             .replace("#__native_object_pool__#", nativeObjectPool)
+            .replace("#__tag__#", ext.projectName)
             .replace("#__result__#", result)
     }
 }
