@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.arg
 
+import me.yohom.fluttify.extensions.boxedType
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.ifIsGenericTypeConvertToObject
 import me.yohom.fluttify.model.Variable
@@ -13,7 +14,11 @@ fun ArgRefTmpl(variable: Variable): String {
         .replace("$", ".")
         .ifIsGenericTypeConvertToObject()
         .run {
-            if (this.toLowerCase() == "float") "Double" else this
+            when(toLowerCase()) {
+                "float" -> "Double"
+                "long" -> "Integer" // 先统一使用Integer
+                else -> this
+            }
         }
     return tmpl
         .replace("#__type_name__#", typeName)
