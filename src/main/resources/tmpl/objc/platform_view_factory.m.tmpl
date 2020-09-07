@@ -5,6 +5,7 @@
 #import "#__native_view__#Factory.h"
 #import "#__plugin__#Plugin.h"
 #import <objc/runtime.h>
+#import "FluttifyMessageCodec.h"
 
 // Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
 extern NSMutableDictionary<NSString*, NSObject*>* STACK;
@@ -67,7 +68,7 @@ extern BOOL enableLog;
     ////////////////////////////////初始化UiKitView////////////////////////////////////////
 
     // 这里用一个magic number调整一下id
-    HEAP[@(2147483647 - _viewId)] = _view;
+    HEAP[[NSString stringWithFormat:@"%@", @(2147483647 - _viewId)]] = _view;
   }
 
   //region method call handler
