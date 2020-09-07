@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
 
 //Future<void> set_#__name__#_batch(List<#__type__#> #__name__##__view_channel__#) async {
-//  await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('#__setter_method__#_batch', [for (int i = 0; i < this.length; i++) {'refId': this[i].refId, "#__name__#": #__arg_value__#}]);
+//  await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('#__setter_method__#_batch', [for (int __i__ = 0; __i__ < this.length; __i__++) {'__this__': this[__i__], "#__name__#": #__arg_value__#}]);
 //
 //  #__callback__#
 //}
@@ -28,10 +28,7 @@ fun SetterBatchTmpl(field: Field): String {
 
         val argValue = when {
             isEnum() -> "$name[__i__].toValue()"
-            field.variable.trueType.jsonable() -> "$name[__i__]"
-            (isIterable && getIterableLevel() <= 1) || isStructPointer() -> "$name[__i__].map((it) => it.refId).toList()"
-            getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
-            else -> "$name[__i__].refId"
+            else -> "$name[__i__]"
         }
         val setterMethodName = field.setterMethodName
         val viewChannel = if (field.className.findType().isView) ", {bool viewChannel = true}" else ""
