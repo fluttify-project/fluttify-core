@@ -135,10 +135,6 @@ data class Variable(
         return trueType.iterableLevel()
     }
 
-    fun isMap(): Boolean {
-        return trueType.isMap()
-    }
-
     fun toDartString(): String {
         return if (trueType.findType().isLambda) {
             val type = trueType.findType()
@@ -169,7 +165,7 @@ data class Variable(
 
     fun isStringArray(): Boolean = trueType.isStringArray()
 
-    fun isArray(): Boolean = trueType.isArray()
+    fun isRefArray(): Boolean = trueType.isRefArray()
 
     fun isCollection(): Boolean = trueType.isIterable()
 

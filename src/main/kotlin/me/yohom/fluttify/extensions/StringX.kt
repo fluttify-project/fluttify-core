@@ -125,6 +125,15 @@ fun TYPE_NAME.isArray(): Boolean {
 }
 
 /**
+ * 是否是数组
+ */
+fun TYPE_NAME.isRefArray(): Boolean {
+    return isArray()
+            &&
+            this != "byte[]" && this != "int[]" && this != "long[]" && this != "double[]" && this != "float[]" && this != "char[]"
+}
+
+/**
  * 是否是Map类型
  */
 fun TYPE_NAME.isMap(): Boolean {

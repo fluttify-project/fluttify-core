@@ -25,7 +25,7 @@ fun InvokeTmpl(method: Method): String {
             val typeName = it.trueType
             when {
                 // 数组
-                it.isArray() -> "Array.ofList(${it.name})"
+                it.isRefArray() -> "Array.ofList(${it.name})"
                 // 枚举
                 typeName.findType().isEnum -> ArgEnumTmpl(it) // toValue是配合枚举生成的扩展方法
                 // 枚举列表

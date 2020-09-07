@@ -210,7 +210,7 @@ class StringXKtTest : FluttifyTest() {
     inner class IsArrayTest : FluttifyTest() {
         @Test
         fun isArray_java_array() {
-            assertTrue("String[]".isArray())
+            assertTrue("String[]".isRefArray())
         }
     }
 }

@@ -70,7 +70,7 @@ data class Method(
                     &&
                     mustNot("方法名被混淆") { name.isObfuscatedMethod() }
                     &&
-                    mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
+                    mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isRefArray()) } }
                     &&
                     mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
                     &&
