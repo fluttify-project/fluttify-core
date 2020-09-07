@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
@@ -56,5 +57,6 @@ fun CallbackSetterTmpl(field: Field): String {
 
     return tmpl
         .replace("#__callback_channel__#", callbackChannel)
+        .replace("#__tag__#", ext.projectName)
         .replaceParagraph("#__cases__#", callbackDelegateCases)
 }

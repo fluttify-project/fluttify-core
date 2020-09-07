@@ -17,8 +17,9 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //- (#__return_type__#)#__method_name__##__formal_params__#
 //{
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
-//      methodChannelWithName:#__method_channel__#
-//            binaryMessenger:[_registrar messenger]];
+//        methodChannelWithName:#__method_channel__#
+//              binaryMessenger:[_registrar messenger]
+//                        codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
 //  // print log
 //  if (enableLog) {
 //    NSLog(@"#__log__#");

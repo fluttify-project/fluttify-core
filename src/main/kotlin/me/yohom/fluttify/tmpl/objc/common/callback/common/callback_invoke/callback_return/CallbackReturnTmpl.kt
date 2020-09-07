@@ -4,11 +4,6 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
 //dispatch_async(dispatch_get_main_queue(), ^{
-//  FlutterMethodChannel *channel = [FlutterMethodChannel
-//        methodChannelWithName:#__method_channel__#
-//              binaryMessenger:[_registrar messenger]
-//                        codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
-//
 //  [channel invokeMethod:@"#__callback_method__#"
 //              arguments:@{#__callback_args__#}
 //                 result:^(id result) {}]; // 由于结果是异步返回, 这里用不上, 所以就不生成代码了

@@ -45,5 +45,6 @@ fun SetterTmpl(field: Field): String {
             .replace("#__setter_method__#", setterMethodName)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__callback__#", callback)
+            .replace("#__tag__#", ext.projectName)
     }
 }
