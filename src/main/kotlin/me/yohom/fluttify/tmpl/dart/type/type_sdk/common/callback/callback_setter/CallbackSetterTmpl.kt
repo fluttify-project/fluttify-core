@@ -50,6 +50,8 @@ fun CallbackSetterTmpl(field: Field): String {
                             it.variable.hasConcretSubtype()
                 }
             }
+                    &&
+                    it.mustNot("参数中含有lambda") { formalParams.any { it.variable.isLambda() } }
         }
         .joinToString("\n") {
             CallbackCaseDelegateTmpl(it, field.variable.name)
