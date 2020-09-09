@@ -146,10 +146,6 @@ data class Method(
                             .flatMap { it.variable.trueType.findType().ancestorTypes }
                             .any { EXCLUDE_TYPES.any { type -> type.matches(it) } }
                     }
-                    &&
-                    mustNot("形参父类是混淆类") {
-                        formalParams.any { it.variable.trueType.findType().superClass.isObfuscated() }
-                    }
             if (METHOD_LOG) println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result

@@ -307,8 +307,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("有公开构造器 或 没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
                 &&
-                must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
-                &&
                 must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter } || constructors.isEmpty() }
                 &&
                 must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
