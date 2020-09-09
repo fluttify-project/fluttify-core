@@ -46,6 +46,16 @@ class TypeTest : FluttifyTest() {
     }
 
     @Test
+    fun constructable_amap_track_com_amap_api_track_query_model_QueryTerminalRequest() {
+        Amap.androidTrackSDK
+            .allTypes
+            .find { it.name == "com.amap.api.track.query.model.QueryTerminalRequest" }
+            ?.run {
+                println("结果: $constructable")
+            }
+    }
+
+    @Test
     fun filterConstructable_amap() {
         Amap.iosMapSDK
             .allTypes
