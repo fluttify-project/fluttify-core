@@ -28,7 +28,8 @@ fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject:
     // 如果是View类型的类, 那么就加上当前的View代表的id
     // 如果参数的回调是lambda类型, 那么也不加入viewid, 因为不需要
     // 因为objc端的delegate方法无法区分调用方, 所以只有view类型的类能根据viewId区分
-    val isView = callbackType.isView
+    // Android端使用匿名类时, 可以拿到refId, 也加上调用方的refId
+    val withCallerRefId = (callbackType.isView || callerMethod.platform == Platform.Android) && !callerMethod.isStatic
 
     // 由于objc端无法区分调用方, 所以ios端使用回调类的类名作为前缀, Java端使用调用方的签名作为前缀(防止使用相同回调类型参数时造成的覆盖)
     val channelPrefix = when (callerMethod.platform) {
@@ -36,7 +37,7 @@ fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject:
         Platform.Android -> callerMethod.nameWithClass()
         else -> ""
     }
-    val callbackChannel = if (isView) {
+    val callbackChannel = if (withCallerRefId) {
         "$channelPrefix::Callback@\$refId"
     } else {
         "$channelPrefix::Callback"

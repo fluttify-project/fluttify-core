@@ -1,6 +1,6 @@
 new #__callback_class_name__#() {
         // method channel
-        MethodChannel callbackChannel = new MethodChannel(messenger, "#__callback_channel__#", new StandardMethodCodec(new FluttifyMessageCodec()));
+        MethodChannel callbackChannel = new MethodChannel(messenger, "#__callback_channel__#" + String.valueOf(System.identityHashCode(__this__)), new StandardMethodCodec(new FluttifyMessageCodec()));
         android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
 
         // call dart method
