@@ -7,7 +7,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 
 //new #__callback_class_name__#() {
 //        // method channel
-//        MethodChannel callbackChannel = new MethodChannel(messenger, "#__callback_channel__#", new StandardMethodCodec(new FluttifyMessageCodec()));
+//        MethodChannel callbackChannel = new MethodChannel(messenger, #__callback_channel__#, new StandardMethodCodec(new FluttifyMessageCodec()));
 //        android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
 //
 //        // call dart method
@@ -22,9 +22,9 @@ fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
         .joinToStringX(prefix = "<", suffix = ">")
     val className = "${containerType}${genericTypes}"
     val callbackChannel = if(callerMethod.isStatic){
-        "${callerMethod.nameWithClass()}::Callback"
+        "\"${callerMethod.nameWithClass()}::Callback\""
     } else {
-        "${callerMethod.nameWithClass()}::Callback@ + String.valueOf(System.identityHashCode(__this__))"
+        "\"${callerMethod.nameWithClass()}::Callback@\" + String.valueOf(System.identityHashCode(__this__))"
     }
     val callbackMethods = callbackType.methods.joinToString("\n") { CallbackMethodTmpl(it) }
     return tmpl
