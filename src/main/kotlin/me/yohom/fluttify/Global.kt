@@ -7,7 +7,7 @@ import java.io.File
 
 var SUCCESS_LOG = false
 
-var CONSTRUCTOR_LOG = false
+var CONSTRUCTOR_LOG = true
 var VARIABLE_LOG = false
 var FIELD_LOG = false
 var TYPE_LOG = false
