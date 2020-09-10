@@ -73,7 +73,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
     private fun param2arg(it: Parameter, isFunction: Boolean = false): String {
         return if (isFunction) {
             if (it.variable.isLambda() && method != null) {
-                CallbackLambdaTmpl(it.variable.trueType.findType())
+                CallbackLambdaTmpl(method, it.variable.trueType.findType())
             } else {
                 when {
                     it.variable.isCallback() -> "self"
@@ -83,7 +83,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
             }
         } else {
             if (it.variable.isLambda() && method != null) {
-                "${it.named}: ${CallbackLambdaTmpl(it.variable.trueType.findType())}"
+                "${it.named}: ${CallbackLambdaTmpl(method, it.variable.trueType.findType())}"
             } else {
                 "${it.named}: ${when {
                     it.variable.isCallback() -> "self"

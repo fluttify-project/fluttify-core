@@ -1,6 +1,6 @@
 ^(#__formal_params__#) {
     FlutterMethodChannel *channel = [FlutterMethodChannel
-          methodChannelWithName:@"#__method_channel__#"
+          methodChannelWithName:#__method_channel__#
                 binaryMessenger:[[weakSelf registrar] messenger]
                           codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
 
