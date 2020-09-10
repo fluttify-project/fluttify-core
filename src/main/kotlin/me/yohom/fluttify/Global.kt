@@ -7,12 +7,12 @@ import java.io.File
 
 var SUCCESS_LOG = false
 
-var CONSTRUCTOR_LOG = true
+var CONSTRUCTOR_LOG = false
 var VARIABLE_LOG = false
 var FIELD_LOG = false
 var TYPE_LOG = false
 var FILE_LOG = false
-var METHOD_LOG = false
+var METHOD_LOG = true
 
 private var idSequence = 0
 val NEXT_ID
