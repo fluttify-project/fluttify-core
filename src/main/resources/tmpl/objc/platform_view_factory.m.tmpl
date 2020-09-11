@@ -68,7 +68,9 @@ extern BOOL enableLog;
     ////////////////////////////////初始化UiKitView////////////////////////////////////////
 
     // 这里用一个magic number调整一下id
+    // 同时存放viewId和refId的对象, 供后续viewId转refId使用
     HEAP[[NSString stringWithFormat:@"%@", @(2147483647 - _viewId)]] = _view;
+    HEAP[[NSString stringWithFormat:@"%@", @(_view.hash)]] = _view;
   }
 
   //region method call handler
