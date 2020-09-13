@@ -14,9 +14,10 @@ fun ArgRefTmpl(variable: Variable): String {
         .replace("$", ".")
         .ifIsGenericTypeConvertToObject()
         .run {
-            when(toLowerCase()) {
-                "float" -> "Double"
-                "long" -> "Integer" // 先统一使用Integer
+            when (this) {
+                "float", "Float", "double", "Double" -> "Number"
+                "long", "Long" -> "Number"
+                "int", "Integer" -> "Number"
                 else -> this
             }
         }

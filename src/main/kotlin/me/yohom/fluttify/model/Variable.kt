@@ -156,8 +156,11 @@ data class Variable(
                 else -> CallbackTmpl(hostMethod, trueType.findType())
             }
         } else {
-            when {
-                trueType.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
+            when (trueType) {
+                "float", "Float" -> "${name}.floatValue()"
+                "double", "Double" -> "${name}.doubleValue()"
+                "int", "Integer" -> "${name}.intValue()"
+                "long", "Long" -> "${name}.longValue()"
                 else -> name
             }
         }
