@@ -11,6 +11,7 @@ extension #__enum_name__#ToX on #__enum_name__# {
   int toValue() {
     switch (this) {
       #__to_int_cases__#
+      default: return 0;
     }
   }
 }
