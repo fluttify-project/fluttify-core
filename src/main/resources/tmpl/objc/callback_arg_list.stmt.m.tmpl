@@ -1,9 +1,2 @@
 // list callback arg
-NSMutableArray<NSNumber*>* arg#__arg_name__# = [NSMutableArray arrayWithCapacity:#__arg_name__#.count];
-for (int __i__ = 0; __i__ < #__arg_name__#.count; __i__++) {
-    NSObject* item = ((NSObject*) [#__arg_name__# objectAtIndex:__i__]);
-    // return to dart side data
-    arg#__arg_name__#[__i__] = [NSNumber numberWithLong: item.hash];
-    // add to HEAP
-    HEAP[[NSNumber numberWithLong: item.hash]] = item;
-}
+NSArray<NSObject*>* arg#__arg_name__# = #__arg_name__#;

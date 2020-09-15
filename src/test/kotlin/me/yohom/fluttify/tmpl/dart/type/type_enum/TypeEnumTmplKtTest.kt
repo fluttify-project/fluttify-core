@@ -1,10 +1,9 @@
 package me.yohom.fluttify.tmpl.dart.type.type_enum
 
+import me.yohom.fluttify.Amap
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.Nim
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 
 internal class TypeEnumTmplKtTest : FluttifyTest() {
 
@@ -13,6 +12,15 @@ internal class TypeEnumTmplKtTest : FluttifyTest() {
         Nim.iosSDK
             .allTypes
             .find { it.name == "NIMHandshakeType" }
+            ?.run {
+                println(TypeEnumTmpl(this))
+            }
+    }
+    @Test
+    fun typeEnumNaviTmpl() {
+        Amap.iosMapSDK
+            .allTypes
+            .find { it.name == "AMapNaviDrivingStrategy" }
             ?.run {
                 println(TypeEnumTmpl(this))
             }

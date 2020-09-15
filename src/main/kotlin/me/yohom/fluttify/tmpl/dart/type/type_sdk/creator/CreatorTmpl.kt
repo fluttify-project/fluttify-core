@@ -5,11 +5,9 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
-//static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
-//  final int refId = await MethodChannel('#__channel_name__#').invokeMethod('ObjectFactory::create#__creator_name__#'#__separator__##__args__#);
-//  final object = #__class_name__#()..refId = refId..tag = '#__tag__#';
-//
-//  kNativeObjectPool.add(object);
+//static Future<#__class_name__#> create__#__signature__#(#__formal_params__#{ bool init = true /* ios only */ }) async {
+//  final refId = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec('#__tag__#'))).invokeMethod('ObjectFactory::create#__creator_name__#', #__args__#);
+//  final object = #__class_name__#()..refId = refId..tag__ = '#__tag__#';
 //  return object;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText() }
@@ -34,15 +32,7 @@ fun CreatorTmpl(type: Type): List<String> {
                     .replace("#__creator_name__#", it.creatorName(type.name))
                     .replace("#__formal_params__#", it.formalParams.joinToString { it.variable.toDartString() })
                     .replace("#__channel_name__#", ext.methodChannelName)
-                    .replace("#__separator__#", if (it.formalParams.isEmpty()) "" else ", ")
-                    .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap {
-                        when {
-                            it.trueType.jsonable() -> it.name
-                            it.isEnum() -> "${it.name}.index"
-                            it.isIterable -> if (it.getIterableLevel() <= 1) "${it.name}.map((it) => it.refId).toList()" else "[] /* 暂不支持嵌套列表 */"
-                            else -> "${it.name}.refId"
-                        }
-                    })
+                    .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap())
                     .replace("#__tag__#", ext.projectName)
             }
         Platform.iOS -> listOf(
@@ -50,10 +40,9 @@ fun CreatorTmpl(type: Type): List<String> {
                 .replace("#__class_name__#", type.name.toUnderscore())
                 .replace("#__signature__#", "")
                 .replace("#__creator_name__#", type.name.toUnderscore())
-                .replace("#__formal_params__#", "")
+                .replace("#__formal_params__#", "{ bool init = true /* ios only */ }")
                 .replace("#__channel_name__#", ext.methodChannelName)
-                .replace("#__separator__#", "")
-                .replace("#__args__#", "")
+                .replace("#__args__#", "{'init': init}")
                 .replace("#__tag__#", ext.projectName)
         )
         else -> listOf()

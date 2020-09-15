@@ -17,8 +17,9 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //- (#__return_type__#)#__method_name__##__formal_params__#
 //{
 //  FlutterMethodChannel *channel = [FlutterMethodChannel
-//      methodChannelWithName:#__method_channel__#
-//            binaryMessenger:[_registrar messenger]];
+//        methodChannelWithName:#__method_channel__#
+//              binaryMessenger:[_registrar messenger]
+//                        codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
 //  // print log
 //  if (enableLog) {
 //    NSLog(@"#__log__#");
@@ -38,7 +39,7 @@ fun ViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "[NSString stringWithFormat:@\"${method.className.deprotocol().replace("$", ".")}::Callback@%@\", @(2147483647 - _viewId)]"
+    val methodChannel = "[NSString stringWithFormat:@\"${method.className.deprotocol()}::Callback@%@\", @(_view.hash)]"
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
     val localArgs = if (method.formalParams.none { it.variable.trueType.isMultiPointer() }) {

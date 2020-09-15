@@ -195,8 +195,13 @@ class StringXKtTest : FluttifyTest() {
         }
 
         @Test
+        fun isObfuscated_com_tencent_lbssearch_object_param() {
+            println("com.tencent.lbssearch.object.param.SearchParam\$a".isObfuscated())
+        }
+
+        @Test
         fun isObfuscated_obfuscated() {
-            assertTrue("List<com.amap.api.mapcore.util.el>".isObfuscated())
+            assertTrue("com.google.android.gms.common.internal.GmsClientSupervisor\$zza".isObfuscated())
         }
     }
 
@@ -205,7 +210,7 @@ class StringXKtTest : FluttifyTest() {
     inner class IsArrayTest : FluttifyTest() {
         @Test
         fun isArray_java_array() {
-            assertTrue("String[]".isArray())
+            assertTrue("String[]".isRefArray())
         }
     }
 }

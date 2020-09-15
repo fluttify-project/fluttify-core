@@ -7,6 +7,7 @@ import me.yohom.fluttify.model.Variable
 //// jsonable参数
 //#__type_name__# #__arg_name__# = #__right_value__#;
 private val tmpl by lazy { getResource("/tmpl/objc/arg_jsonable.stmt.m.tmpl").readText() }
+
 fun ArgJsonableTmpl(variable: Variable): String {
     val typeName = variable.trueType
     val rightValue = if (variable.trueType.isValueType() || variable.isAliasType()) {
@@ -31,7 +32,7 @@ fun ArgJsonableTmpl(variable: Variable): String {
         if (variable.trueType == "uint32_t" || variable.trueType == "unsigned int") {
             methodPrefix = "unsignedInt"
         }
-        if (variable.trueType == "int32_t" || variable.trueType == "int") {
+        if (variable.trueType == "int32_t" || variable.trueType == "int" || variable.trueType == "UInt32") {
             methodPrefix = "int"
         }
         if (variable.trueType == "int64_t" || variable.trueType == "long long") {

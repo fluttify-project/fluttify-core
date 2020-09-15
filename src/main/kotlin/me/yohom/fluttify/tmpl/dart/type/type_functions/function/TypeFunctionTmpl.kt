@@ -20,10 +20,9 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //  #__callback__#
 //
 //  // convert native result to dart side object
-//  if (result == null) {
+//  if (__result__ == null) {
 //    return null;
 //  } else {
-//    #__native_object_pool__#
 //    return #__return_statement__#;
 //  }
 //}
@@ -52,13 +51,6 @@ fun TypeFunctionTmpl(functionType: Type): String {
         .map { CallbackMethodTmpl(functionType.asMethod(), it.trueType.findType(), it.name) }
 
     val returnStatement = ReturnTmpl(functionType.asMethod())
-    val nativeObjectPool = functionType.returnType.run {
-        when {
-            jsonable() or findType().isEnum or isVoid() -> ""
-            isIterable() -> "kNativeObjectPool.addAll($returnStatement);"
-            else -> "kNativeObjectPool.add($returnStatement);"
-        }
-    }
 
     return tmpl
         .replace("#__return_type__#", returnType)
@@ -67,6 +59,5 @@ fun TypeFunctionTmpl(functionType: Type): String {
         .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__invoke__#", invoke)
         .replaceParagraph("#__callback__#", callbacks.joinToString("\n"))
-        .replace("#__native_object_pool__#", nativeObjectPool)
         .replace("#__return_statement__#", returnStatement)
 }

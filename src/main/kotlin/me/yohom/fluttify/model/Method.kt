@@ -62,11 +62,15 @@ data class Method(
                     || must("返回类型关联类型都通过过滤") { !returnType.isMap() && returnType.allTypes().all { it.filter } }
                     || must("返回类型是所在类声明泛型") { returnType in className.findType().declaredGenericTypes })
                     &&
+                    mustNot("方法名为空") { name.isEmpty() }
+                    &&
                     mustNot("返回类型是混淆类") { returnType.isObfuscated() }
                     &&
                     mustNot("方法名为main") { name == "main" }
                     &&
-                    mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isArray()) } }
+                    mustNot("方法名被混淆") { name.isObfuscatedMethod() }
+                    &&
+                    mustNot("返回类型是嵌套数组/列表") { returnType.run { iterableLevel() > 1 || (isList() && genericTypes()[0].isRefArray()) } }
                     &&
                     mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
                     &&
@@ -78,11 +82,9 @@ data class Method(
                     &&
                     must("参数类型全部通过类型过滤") {
                         formalParams.all {
-                            it.variable.isKnownType()
-                                    ||
-                                    it.variable
-                                        .allTypes()
-                                        .all { it.filter || it.name in className.findType().declaredGenericTypes } // 类型通过过滤或者是声明的泛型类`
+                            it.variable
+                                .allTypes()
+                                .all { it.filter || it.name in className.findType().declaredGenericTypes } // 类型通过过滤或者是声明的泛型类`
                                     ||
                                     it.variable.trueType in className.findType().declaredGenericTypes
                         }
@@ -90,7 +92,7 @@ data class Method(
                     &&
                     must("公开方法") { isPublic }
                     &&
-                    mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(name) } }
+                    mustNot("忽略方法") { EXCLUDE_METHODS.any { methods -> methods.matches(nameWithClass()) } }
                     &&
                     // 重写的方法其实没必要再生成一次, 就算调用的是父类的方法, native端仍然是预期行为
                     mustNot("祖宗类已有的方法") {
@@ -139,20 +141,10 @@ data class Method(
                     // 参数不能中含有排除的类
                     mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.trueType.depointer()) } } }
                     &&
-                    mustNot("形参祖宗类含有未知类型") {
-                        formalParams
-                            .flatMap { it.variable.trueType.findType().ancestorTypes }
-                            .any { it.findType().isUnknownType }
-                    }
-                    &&
                     mustNot("形参祖宗类含有忽略类型") {
                         formalParams
                             .flatMap { it.variable.trueType.findType().ancestorTypes }
                             .any { EXCLUDE_TYPES.any { type -> type.matches(it) } }
-                    }
-                    &&
-                    mustNot("形参父类是混淆类") {
-                        formalParams.any { it.variable.trueType.findType().superClass.isObfuscated() }
                     }
             if (METHOD_LOG) println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")

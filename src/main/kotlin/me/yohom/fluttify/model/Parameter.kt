@@ -1,10 +1,7 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.FIELD_LOG
 import me.yohom.fluttify.METHOD_LOG
 import me.yohom.fluttify.NEXT_ID
-import me.yohom.fluttify.extensions.allTypes
-import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.must
 import me.yohom.fluttify.extensions.mustNot
 
@@ -21,17 +18,17 @@ data class Parameter(
 ) : IPlatform, IElement {
     val filter: Boolean
         get() {
-            if(METHOD_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓参数↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
-            if(METHOD_LOG) println("参数:${variable}执行过滤开始")
-            val result = variable.mustNot("Lambda") { isLambda() } // lambda不参与传递
+            if (METHOD_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓参数↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
+            if (METHOD_LOG) println("参数:${variable}执行过滤开始")
+            val result = (variable.mustNot("Lambda") { isLambda() } // lambda不参与传递
                     &&
                     variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
                     &&
-                    variable.must("已知类型") { isKnownType() }
+                    variable.must("已知类型") { isKnownType() })
                     ||
                     variable.must("jsonable类型") { jsonable() }
-            if(METHOD_LOG) println("参数:${variable}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
-            if(METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
+            if (METHOD_LOG) println("参数:${variable}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
+            if (METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
         }
 

@@ -13,7 +13,10 @@ fun List<Variable>.toDartMap(
     valueBuilder: ((Variable) -> String) = { it.name }
 ): String {
     if (isEmpty()) return ""
-    return joinToString(prefix = prefix, postfix = postfix) { "\"${it.name.depointer()}\": ${valueBuilder(it)}" }
+    return joinToString(
+        prefix = prefix,
+        postfix = postfix
+    ) { "\"${if (it.name == "this") "__this__" else it.name.depointer()}\": ${valueBuilder(it)}" }
 }
 
 /**
@@ -22,13 +25,13 @@ fun List<Variable>.toDartMap(
 fun List<Variable>.toDartMapBatch(
     prefix: String = "[for (int __i__ = 0; __i__ < this.length; __i__++) {",
     suffix: String = "}]",
-    valueBuilder: ((Variable) -> String) = { it.name }
+    valueBuilder: ((Variable) -> String) = { "${it.name}[__i__]" }
 ): String {
     if (isEmpty()) return ""
     return joinToStringX(
         prefix = prefix,
         suffix = suffix
-    ) { "\"${if (it.name == "this") "refId" else it.name.depointer()}\": ${valueBuilder(it)}" }
+    ) { "\"${if (it.name == "this") "__this__" else it.name.depointer()}\": ${valueBuilder(it)}" }
 }
 
 /**
@@ -95,6 +98,7 @@ fun List<Field>.filterSetters(batch: Boolean = false): List<Field> {
 fun List<Type>.filterConstructable(): List<Type> {
     return filterType()
         .asSequence()
+        .filter { it.typeType != TypeType.Extension }
         .filter { it.constructable }
         .filterNot { it.isEnum } // 枚举虽然可构造(主要用在构造器中有枚举的情况, 如果枚举定义为不可构造的话, 会导致这个构造器被过滤), 但是不需要生成create方法
         .toList()

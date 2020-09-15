@@ -9,7 +9,7 @@ import me.yohom.fluttify.model.Type
 
 //put("RefClass::isKindOf#__underscore_type_name__#", (__args__, __methodResult__) -> {
 //    // 引用对象
-//    int refId = (int) ((Map<String, Object>) __args__).get("refId");
+//    int refId = (int) ((Map<String, Object>) __args__).get("__this__");
 //    Object ref = getHEAP().get(refId);
 //
 //    __methodResult__.success(ref instanceof #__type_name__#);

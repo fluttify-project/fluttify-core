@@ -151,7 +151,9 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .types
         .filter { it.isCallback }
         .flatMap { it.methods }
+        .filterMethod() // 过滤一下方法 Java不能过滤, objc这边没事
         .distinctBy { it.exactName }
+        .filter { it.mustNot("参数中含有lambda") { formalParams.any { it.variable.isLambda() } } }
         .joinToString("\n") { ViewCallbackMethodTmpl(it) }
 
     return listOf(

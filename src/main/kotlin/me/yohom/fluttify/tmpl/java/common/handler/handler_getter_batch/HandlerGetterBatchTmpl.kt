@@ -9,52 +9,33 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.Resul
 import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.ResultVoidTmpl
 
 //// getter
-//put("#__getter_name__#_batch", (argsBatch, methodResult) -> {
-//    List<#__result_type__#> resultList = new ArrayList<>();
+//put("#__getter_name__#_batch", (__argsBatch__, __methodResult__) -> {
+//    List<#__field_type__#> __resultList__ = new ArrayList<>();
 //
-//    for (int i = 0; i < ((List<Map<String, Object>>) argsBatch).size(); i++) {
-//        Map<String, Object> args = ((List<Map<String, Object>>) argsBatch).get(i);
+//    for (int __i__ = 0; __i__ < ((List<Map<String, Object>>) __argsBatch__).size(); __i__++) {
+//        Map<String, Object> __args__ = ((List<Map<String, Object>>) __argsBatch__).get(__i__);
 //
 //        // ref object
-//        #__class_name__# ref = (#__class_name__#) getHEAP().get((int) args.get("refId"));
+//        #__class_name__# __this__ = (#__class_name__#) __args__.get("__this__");
 //
-//        #__field_type__# result = ref.#__field_name__#;
+//        #__field_type__# __result__ = __this__.#__field_name__#;
 //
-//        #__result__#
-//
-//        resultList.add(jsonableResult);
+//        __resultList__.add(__result__);
 //    }
 //
-//    methodResult.success(resultList);
+//    __methodResult__.success(__resultList__);
 //});
 private val tmpl by lazy { getResource("/tmpl/java/handler_getter_batch.stmt.java.tmpl").readText() }
 
 fun HandlerGetterBatchTmpl(field: Field): String {
     val getterName = field.getterMethodName
     val className = field.className.replace("$", ".")
-    val resultType = field.variable.run {
-        when {
-            jsonable() -> trueType.boxedType().stringArray2List()
-            trueType.isVoid() -> "String"
-            isIterable -> "Integer".enList(getIterableLevel())
-            else -> "Integer"
-        }
-    }
-    val fieldType = field.variable.trueType.replace("$", ".")
+    val fieldType = field.variable.trueType.boxedType().replace("$", ".")
     val fieldName = field.variable.name
-    val result = when {
-        field.variable.jsonable() -> ResultJsonableTmpl(fieldType)
-        field.variable.isEnum() -> ResultEnumTmpl()
-        field.variable.isIterable -> ResultListTmpl(field.asGetterMethod())
-        field.variable.trueType.isVoid() -> ResultVoidTmpl()
-        else -> ResultRefTmpl()
-    }
 
     return tmpl
         .replace("#__getter_name__#", getterName)
         .replace("#__class_name__#", className)
-        .replace("#__result_type__#", resultType)
         .replace("#__field_type__#", fieldType)
         .replace("#__field_name__#", fieldName)
-        .replace("#__result__#", result)
 }

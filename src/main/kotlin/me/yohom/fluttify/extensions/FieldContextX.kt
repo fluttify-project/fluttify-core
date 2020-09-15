@@ -110,6 +110,17 @@ fun ObjectiveCParser.FieldDeclarationContext.isFinal(): Boolean {
 
     return readonly /*|| copy || (getter.isNotEmpty() && setter.isEmpty())*/
 }
+/**
+ * 是否是静态属性 当@property中有class时
+ */
+fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {
+    val propertyAttributes = ancestorOf(ObjectiveCParser.PropertyDeclarationContext::class)
+        ?.propertyAttributesList()
+        ?.propertyAttribute()
+        ?.map { it.text }
+
+    return propertyAttributes?.contains("class") == true
+}
 
 fun ObjectiveCParser.FieldDeclarationContext.getValue(): String {
     return "null"
@@ -140,10 +151,6 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
  */
 fun ObjectiveCParser.FieldDeclarationContext.isListType(): Boolean {
     return specifierQualifierList().text.isIterable()
-}
-
-fun ObjectiveCParser.FieldDeclarationContext.isStatic(): Boolean {
-    return false
 }
 
 fun ObjectiveCParser.FieldDeclarationContext.getterName(): String {

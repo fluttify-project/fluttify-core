@@ -1,5 +1,6 @@
 package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Platform
@@ -7,22 +8,29 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda.CallbackCaseLambdaTmpl
 
-//MethodChannel('#__callback_channel__#')
+//MethodChannel('#__callback_channel__#', StandardMethodCodec(FluttifyMessageCodec(#__tag__#)))
 //    .setMethodCallHandler((methodCall) async {
-//      final args = methodCall.arguments as Map;
-//      switch (methodCall.method) {
-//        #__cases__#
-//        default:
-//          break;
+//      try {
+//        final args = methodCall.arguments as Map;
+//        switch (methodCall.method) {
+//          #__cases__#
+//          default:
+//            break;
+//        }
+//      } catch (e) {
+//        debugPrint(e);
+//        throw e;
 //      }
 //    });
 private val tmpl by lazy { getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText() }
 
 fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject: String): String {
     // 如果是View类型的类, 那么就加上当前的View代表的id
-    // 如果参数的回调是lambda类型, 那么也不加入viewid, 因为不需要
     // 因为objc端的delegate方法无法区分调用方, 所以只有view类型的类能根据viewId区分
-    val isView = callbackType.isView
+    // 如果参数的回调是lambda类型需要加refId
+    // Android端使用匿名类时, 可以拿到refId, 也加上调用方的refId
+    val withCallerRefId =
+        (callbackType.isView || callbackType.isLambda || callerMethod.platform == Platform.Android) && !callerMethod.isStatic
 
     // 由于objc端无法区分调用方, 所以ios端使用回调类的类名作为前缀, Java端使用调用方的签名作为前缀(防止使用相同回调类型参数时造成的覆盖)
     val channelPrefix = when (callerMethod.platform) {
@@ -30,7 +38,7 @@ fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject:
         Platform.Android -> callerMethod.nameWithClass()
         else -> ""
     }
-    val callbackChannel = if (isView) {
+    val callbackChannel = if (withCallerRefId) {
         "$channelPrefix::Callback@\$refId"
     } else {
         "$channelPrefix::Callback"
@@ -49,5 +57,6 @@ fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject:
 
     return tmpl
         .replace("#__callback_channel__#", callbackChannel)
+        .replace("#__tag__#", ext.projectName)
         .replaceParagraph("#__cases__#", callbackCases)
 }

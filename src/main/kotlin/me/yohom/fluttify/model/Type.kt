@@ -52,11 +52,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     var isStaticType: Boolean = true
 
     /**
-     * 是否jsonable
-     */
-    var isJsonable: Boolean = false
-
-    /**
      * 父类全名
      */
     var superClass: String = ""
@@ -146,7 +141,9 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     val filter: Boolean by lazy {
         if (TYPE_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓类↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
         if (TYPE_LOG) println("类:\"${name}\"执行过滤开始")
-        val result = must("已知类型") { isKnownType }
+        val result = mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
+                &&
+                must("已知类型") { isKnownType }
                 &&
                 must("公开类型") {
                     // 这里需要把内部类的所有外部类都判断过去, 只要碰到一个外部类不是public的, 那当前内部类就认为不是public的
@@ -166,14 +163,15 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 }
                 &&
                 must("类名不能为空") { name.isNotBlank() }
-                &&
-                must("祖宗类全部是已知类型 或 没有祖宗类") {
-                    ancestorTypes.all { it.findType().isKnownType } || ancestorTypes.isEmpty()
-                }
+                // 让这些类之间集成Object即可
+//                &&
+//                must("祖宗类全部是已知类型 或 没有祖宗类") {
+//                    ancestorTypes.all { it.findType().isKnownType } || ancestorTypes.isEmpty()
+//                }
                 &&
                 mustNot("混淆类型") { isObfuscated }
                 &&
-                mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
+                mustNot("函数类型且含有lambda") { isFunction && formalParams.any { it.variable.isLambda() } }
                 &&
                 mustNot("祖宗类含有忽略类型") {
                     ancestorTypes.isNotEmpty() && EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } }
@@ -284,7 +282,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 // class A { A(A a) {} }
                 mustNot("构造器含有自身类型的参数") {
-                    constructors.any { it.formalParams.map { it.variable.trueType }.contains(name) }
+                    constructors.all { it.formalParams.map { it.variable.trueType }.contains(name) }
                             && constructors.isNotEmpty()
                 }
                 &&
@@ -298,8 +296,10 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 mustNot("混淆类型") { isObfuscated }
                 &&
-                mustNot("参数含有混淆类型") {
-                    constructors.flatMap { it.formalParams }.any { it.variable.trueType.isObfuscated() }
+                must("存在参数都不为`混淆类型 或 未知类`的构造器") {
+                    constructors
+                        .any { it.formalParams.map { it.variable.trueType }.all { !it.isObfuscated() && it.findType().isKnownType } }
+                            || constructors.isEmpty()
                 }
                 &&
                 // 不是静态类的内部类, 需要先构造外部类, 这里过滤掉
@@ -307,9 +307,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("有公开构造器 或 没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
                 &&
-                must("父类不是未知类或没有父类") { superClass.findType().platform != Platform.Unknown || superClass == "" }
-                &&
-                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter } || constructors.isEmpty() || isJsonable }
+                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter } || constructors.isEmpty() }
                 &&
                 must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
@@ -413,7 +411,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
      */
     fun ancestorInterfaces(includeObfuscated: Boolean = true): List<String> {
         return ancestorTypes
-            .filter { it.findType().typeType == TypeType.Interface }
+            .filter { it.findType().run { typeType == TypeType.Interface && filter } }
             .filter { if (!includeObfuscated) !it.isObfuscated() else true }
     }
 
@@ -424,7 +422,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val isUnknownType: Boolean by lazy {
-        platform == Platform.Unknown
+        !isKnownType
     }
 
     /**
@@ -441,7 +439,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, isJsonable=$isJsonable, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$enumerators, returnType='$returnType', formalParams=$formalParams)"
+        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$enumerators, returnType='$returnType', formalParams=$formalParams)"
     }
 
     companion object {

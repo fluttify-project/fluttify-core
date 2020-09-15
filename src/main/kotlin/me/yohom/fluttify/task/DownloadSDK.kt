@@ -9,7 +9,9 @@ import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.io.filefilter.TrueFileFilter
 import org.gradle.api.tasks.TaskAction
 import org.zeroturnaround.zip.ZipUtil
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 import java.net.URI
 
 open class DownloadAndroidSDK : FluttifyTask() {
@@ -22,6 +24,7 @@ open class DownloadAndroidSDK : FluttifyTask() {
                 maven { it.url = URI("https://dl.bintray.com/aweme-open-sdk-team/public") }
                 maven { it.url = URI("http://developer.huawei.com/repo") }
                 jcenter()
+                google()
                 mavenCentral()
             }
             val config = project.configurations.create("targetJar")
@@ -61,46 +64,55 @@ open class DownloadIOSSDK : FluttifyTask() {
                 println("targetVersion: $targetVersion")
 
                 // 从podspec.json文件中读取下载地址, 并下载
-                targetVersion?.run {
+                targetVersion?.apply {
                     val podspec = File("$this/$archiveName.podspec.json").readText().fromJson<Podspec>()
-                    podspec.source?.http?.run {
-                        val archiveFile = "${ext.ios.libDir}/ARCHIVE.zip".file()
+                    if (podspec.source?.http != null) {
+                        podspec.source.http.run {
+                            val archiveFile = "${ext.ios.libDir}/ARCHIVE.zip".file()
 
-                        archiveFile.downloadFrom(this)
-                        // 下载完成后解压
-                        ZipUtil.unpack(archiveFile, archiveFile.parentFile)
-                        // 如果包含vendored_frameworks, 那么需要再拿出framework
-                        // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
-                        val vendoredFrameworkPath = podspec.ios?.vendoredFrameworks ?: podspec.vendoredFrameworks
-                        if (vendoredFrameworkPath != null) {
-                            val trueFramework = if (vendoredFrameworkPath.contains("**/")) {
-                                // 如果含有通配符, 那么从通配符开始查找目标framework
-                                val subPath = vendoredFrameworkPath.substringBefore("**/")
-                                val frameworkName = vendoredFrameworkPath.substringAfter("**/")
-                                FileUtils.iterateFilesAndDirs(
-                                    "${ext.ios.libDir}/$subPath".file(),
-                                    FalseFileFilter.INSTANCE,
-                                    TrueFileFilter.INSTANCE
-                                )
-                                    .asSequence()
-                                    .find { it.name.endsWith(frameworkName) }
-                                    ?.path!!
-                            } else {
-                                "${ext.ios.libDir}/$vendoredFrameworkPath"
+                            archiveFile.downloadFrom(this)
+                            // 下载完成后解压
+                            ZipUtil.unpack(archiveFile, archiveFile.parentFile)
+                            // 如果包含vendored_frameworks, 那么需要再拿出framework
+                            // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
+                            val vendoredFrameworkPath = podspec.ios?.vendoredFrameworks ?: podspec.vendoredFrameworks
+                            if (vendoredFrameworkPath != null) {
+                                val trueFramework = if (vendoredFrameworkPath.contains("**/")) {
+                                    // 如果含有通配符, 那么从通配符开始查找目标framework
+                                    val subPath = vendoredFrameworkPath.substringBefore("**/")
+                                    val frameworkName = vendoredFrameworkPath.substringAfter("**/")
+                                    FileUtils.iterateFilesAndDirs(
+                                        "${ext.ios.libDir}/$subPath".file(),
+                                        FalseFileFilter.INSTANCE,
+                                        TrueFileFilter.INSTANCE
+                                    )
+                                        .asSequence()
+                                        .find { it.name.endsWith(frameworkName) }
+                                        ?.path!!
+                                } else {
+                                    "${ext.ios.libDir}/$vendoredFrameworkPath"
+                                }
+                                // 因为其实每个pod都会有vendored_frameworks字段, 所以这里判断一下顶层是否已经有这个framework, 如果有的
+                                // 话就不需要拷贝了
+                                // 拿出framework文件, 然后拷贝到顶层
+                                if (trueFramework.file().parent != ext.ios.libDir.removeSuffix("/")) {
+                                    FileUtils.copyDirectoryToDirectory(trueFramework.file(), ext.ios.libDir.file())
+                                }
+                                ext.ios.libDir.file()
+                                    .listFiles()
+                                    ?.filter { it.name != trueFramework.file().name }
+                                    ?.forEach { it.deleteRecursively() }
                             }
-                            // 因为其实每个pod都会有vendored_frameworks字段, 所以这里判断一下顶层是否已经有这个framework, 如果有的
-                            // 话就不需要拷贝了
-                            // 拿出framework文件, 然后拷贝到顶层
-                            if (trueFramework.file().parent != ext.ios.libDir.removeSuffix("/")) {
-                                FileUtils.copyDirectoryToDirectory(trueFramework.file(), ext.ios.libDir.file())
-                            }
-                            ext.ios.libDir.file()
-                                .listFiles()
-                                ?.filter { it.name != trueFramework.file().name }
-                                ?.forEach { it.deleteRecursively() }
+                            // 删除压缩文件
+                            archiveFile.delete()
                         }
-                        // 删除压缩文件
-                        archiveFile.delete()
+                    } else if (podspec.source?.git != null) {
+                        println("git clone -b ${podspec.source.tag} ${podspec.source.git} sdk/ios")
+                        val process = Runtime
+                            .getRuntime()
+                            .exec("git clone -b ${podspec.source.tag} ${podspec.source.git} sdk/ios")
+                        val br = BufferedReader(InputStreamReader(process.inputStream))
+                        br.lines().forEach(::println)
                     }
                 }
             } else {

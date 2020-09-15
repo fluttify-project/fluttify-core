@@ -50,6 +50,11 @@ android {
         merge 'classes.jar'
         merge 'proguard.txt'
     }
+    buildTypes {
+        release {
+            consumerProguardFiles "proguard-rules.pro"
+        }
+    }
 }
 
 dependencies {

@@ -13,7 +13,10 @@ import parser.java.JavaParser.*
 import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
-import java.io.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.cert.CertificateException
@@ -44,7 +47,7 @@ fun JAVA_FILE.javaType(): SourceFile {
     var isPublic = false
     var isAbstract = false
     var isInnerType = false
-    var isStaticType = true
+    var isStaticType: Boolean? = null
 
     source.walkTree(object : JavaParserBaseListener() {
         override fun enterPackageDeclaration(ctx: PackageDeclarationContext) {
@@ -67,7 +70,7 @@ fun JAVA_FILE.javaType(): SourceFile {
             val imports = ctx
                 .ancestorOf(CompilationUnitContext::class)
                 ?.importDeclaration()
-                ?.map { it.qualifiedName().text } ?: listOf()
+                ?.map { it.qualifiedName()?.text ?: "" } ?: listOf()
             // 从这些import中找出extends后面的类
             // 同接口会碰到的问题, 如果父类是同包下面的类, 那么就
             // 遍历当前文件夹, 如果找到当前父类名字的类, 那么就加上当前包名, 否则就认为是java.lang的类
@@ -99,7 +102,7 @@ fun JAVA_FILE.javaType(): SourceFile {
 
         override fun enterInterfaceDeclaration(ctx: InterfaceDeclarationContext) {
             isPublic = ctx.isPublic()
-            simpleName = ctx.IDENTIFIER().text
+            simpleName = ctx.IDENTIFIER()?.text ?: ""
             isInnerType = simpleName.contains("$")
             typeType = TypeType.Interface
             declaredGenericTypes = ctx.genericTypes()
@@ -113,7 +116,7 @@ fun JAVA_FILE.javaType(): SourceFile {
 
         override fun enterEnumDeclaration(ctx: EnumDeclarationContext) {
             isPublic = ctx.isPublic() == true
-            simpleName = ctx.IDENTIFIER().text
+            simpleName = ctx.IDENTIFIER()?.text ?: ""
             isInnerType = simpleName.contains("$")
             isStaticType = true
             typeType = TypeType.Enum
@@ -123,7 +126,11 @@ fun JAVA_FILE.javaType(): SourceFile {
         override fun enterConstructorDeclaration(ctx: ConstructorDeclarationContext) {
             if (ctx.IDENTIFIER().text.isObfuscated()) return
 
-            isStaticType = ctx.isStaticType()
+            // 如果已经确认是静态类型, 就不需要再往下判断构造器的情况了
+            // 碰到一个静态内部类, 有一个无参构造器和一个参数外外部类的构造器, 第二个构造器的判断覆盖了第一个构造器
+            if (isStaticType != true) {
+                isStaticType = ctx.isStaticType()
+            }
 
             constructors.add(
                 Constructor(
@@ -196,27 +203,27 @@ fun JAVA_FILE.javaType(): SourceFile {
         }
     })
 
-    return SourceFile(
-        nameWithoutExtension,
-        listOf(Type().also {
-            it.typeType = typeType
-            it.isPublic = isPublic
-            it.isAbstract = isAbstract
-            it.isInnerType = isInnerType
-            it.isStaticType = isStaticType
-            it.declaredGenericTypes.addAll(declaredGenericTypes)
-            it.definedGenericTypes.addAll(definedGenericTypes)
-            it.constructors = constructors
-            it.interfaces = interfaces
-            it.name = "$packageName.$simpleName"
-            it.superClass = superClass
-            it.fields.addAll(fields)
-            it.methods.addAll(methods)
-            it.enumerators.addAll(enumConstants)
-            it.platform = Platform.Android
-        }),
-        listOf()
-    )
+    return SourceFile().also {
+        it.fileName = nameWithoutExtension
+        it.types = listOf(Type().also { type ->
+            type.typeType = typeType
+            type.isPublic = isPublic
+            type.isAbstract = isAbstract
+            type.isInnerType = isInnerType
+            type.isStaticType = isStaticType ?: true
+            type.declaredGenericTypes.addAll(declaredGenericTypes)
+            type.definedGenericTypes.addAll(definedGenericTypes)
+            type.constructors = constructors
+            type.interfaces = interfaces
+            type.name = "$packageName.$simpleName"
+            type.superClass = superClass
+            type.fields.addAll(fields)
+            type.methods.addAll(methods)
+            type.enumerators.addAll(enumConstants)
+            type.platform = Platform.Android
+        })
+        it.topLevelConstants = listOf()
+    }
 }
 
 /**
@@ -280,7 +287,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
-            types.add(stack.pop())
+            if (stack.isNotEmpty()) types.add(stack.pop())
         }
         //endregion
 
@@ -330,7 +337,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         override fun enterEnumerator(ctx: ObjectiveCParser.EnumeratorContext) {
             stack.peekOrNull()?.run {
                 val enumName = ctx.enumeratorIdentifier().identifier().text
-                val enumValue = ctx.expression()?.text?.toIntOrNull()
+                val enumValue = ctx.expression()?.text
                 enumerators.add(Enumerator(enumName, enumValue))
             }
         }
@@ -394,17 +401,17 @@ fun OBJC_FILE.objcType(): SourceFile {
                 ?.typeVariableDeclaratorOrName()
                 ?.filter { it.typeName()?.text != "void" } // void类型, 不占用参数
                 ?.mapNotNull { it.typeVariableDeclarator() }
-                ?.map {
+                ?.mapIndexed { index, it ->
                     val argName = it.declarator().text
+                        .depointer()
+                        .removeObjcSpecifier()
+                        .run { if(isEmpty()) "__arg${index}__" else this }
                     val argType = it.declarationSpecifiers()
                         .text
-                        .run { if (argName.startsWith("*")) enpointer() else this }
+                        .run { if (it.declarator().text.startsWith("*")) enpointer() else this }
+                        .objcSpecifierExpand()
                     Parameter(
-                        variable = Variable(
-                            argType.objcSpecifierExpand(),
-                            argName.depointer().removeObjcSpecifier(),
-                            Platform.iOS
-                        ),
+                        variable = Variable(argType, argName, Platform.iOS),
                         platform = Platform.iOS
                     )
                 }
@@ -478,7 +485,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                     Field(
                         true,
                         ctx.isFinal(),
-                        false,
+                        ctx.isStatic(),
                         ctx.getValue(),
                         variable,
                         name,
@@ -492,7 +499,7 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
 
         override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
-            stack.peek().run {
+            stack.peekOrNull()?.run {
                 methods.add(
                     Method(
                         ctx.returnType(),
@@ -512,7 +519,8 @@ fun OBJC_FILE.objcType(): SourceFile {
         override fun enterFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext) {
             val returnType = ctx
                 .declarationSpecifiers()
-                .typeSpecifier()[0]
+                .typeSpecifier()
+                .last() // 函数可能会多个限定词(包括返回类型), 理论上类型肯定是最后一个(?)
                 ?.text
             val typeName = ctx
                 .identifier()
@@ -554,7 +562,11 @@ fun OBJC_FILE.objcType(): SourceFile {
         }
     })
 
-    return SourceFile(nameWithoutExtension, types, topLevelConstant)
+    return SourceFile().also { type ->
+        type.fileName = nameWithoutExtension
+        type.types = types
+        type.topLevelConstants = topLevelConstant
+    }
 }
 
 fun File.iterate(

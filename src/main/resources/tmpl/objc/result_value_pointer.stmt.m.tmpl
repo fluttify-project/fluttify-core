@@ -1,4 +1,2 @@
 // return a (value)*
-NSValue* resultValue = [NSValue valueWithPointer:result];
-HEAP[[NSNumber numberWithLong: (resultValue).hash]] = resultValue;
-NSNumber* jsonableResult = [NSNumber numberWithLong: (resultValue).hash];
+NSValue* __result__ = [NSValue valueWithPointer:result];

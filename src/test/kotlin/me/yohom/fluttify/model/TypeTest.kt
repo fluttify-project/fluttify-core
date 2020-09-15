@@ -1,6 +1,9 @@
 package me.yohom.fluttify.model
 
 import me.yohom.fluttify.*
+import me.yohom.fluttify.extensions.filterConstructable
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import org.junit.jupiter.api.Test
 
 class TypeTest : FluttifyTest() {
@@ -30,6 +33,37 @@ class TypeTest : FluttifyTest() {
 //            ?.run {
 //                println("结果: $this")
 //            }
+    }
+
+    @Test
+    fun constructable_amap_AMapNaviDriveManager() {
+        Amap.iosMapSDK
+            .allTypes
+            .find { it.name == "AMapNaviDriveManager" }
+            ?.run {
+                println("结果: ${constructable}")
+            }
+    }
+
+    @Test
+    fun constructable_amap_track_com_amap_api_track_query_model_QueryTerminalRequest() {
+        Amap.androidTrackSDK
+            .allTypes
+            .find { it.name == "com.amap.api.track.query.model.QueryTerminalRequest" }
+            ?.run {
+                println("结果: $constructable")
+            }
+    }
+
+    @Test
+    fun filterConstructable_amap() {
+        Amap.iosMapSDK
+            .allTypes
+            .filterConstructable()
+            .map { it.name }
+            .run {
+                println("结果: ${contains("AMapNaviDriveManager")}")
+            }
     }
 
     @Test
@@ -92,13 +126,94 @@ class TypeTest : FluttifyTest() {
     }
 
     @Test
-    fun isView() {
+    fun isView_tmap_QMapView() {
         Tmap.iosSDK
             .allTypes
             .find { it.name == "QMapView" && it.typeType == TypeType.Class }
             ?.isView
             ?.run {
                 println("结果: $this")
+            }
+    }
+
+    @Test
+    fun isView_ali_rtc_SophonSurfaceView() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "org.webrtc.sdk.SophonSurfaceView" }
+            ?.isView
+            ?.run {
+                println("结果: $this")
+            }
+    }
+
+    @Test
+    fun constructable_ali_rtc_org_webrtc_ali_RTCStatsReport() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "org.webrtc.ali.RTCStatsReport" }
+            ?.run {
+                println("结果: $constructable")
+            }
+    }
+
+    @Test
+    fun baoqu() {
+        ext.ios.exclude.classes = listOf(
+            "[BU|bu].*",
+            "SD.*",
+            "Pangle.*"
+        )
+        CmGame.iosSDK
+            .allTypes
+            .find { it.name == "bu_safe_dispatch_sync_main_queue" }
+            ?.run {
+                println("结果: $filter")
+            }
+    }
+
+    @Test
+    fun locationClient() {
+        Bmap.androidMapSDK
+            .allTypes
+            .find { it.name == "com.baidu.location.LocationClient" }
+            ?.run {
+                println("结果: ${TypeSdkTmpl(this)}")
+            }
+    }
+
+    @Test
+    fun amap_AMapGeoFenceCircleRegion() {
+        Amap.iosLocationSDK
+            .allTypes
+            .find { it.name == "AMapGeoFenceRegion" }
+            ?.run {
+                println("结果: ${filter}")
+            }
+    }
+
+    @Test
+    fun tencent_live_TRTCCloudDelegate() {
+        ext.ios.exclude.classes = listOf("TRTCMediaDeviceType")
+        TencentLive.iosSDK
+            .allTypes
+            .find { it.name == "TRTCCloudDelegate" }
+            ?.methods
+            ?.find { it.name.contains("onDevice") }
+            ?.run {
+                println("结果 ${nameWithClass()}: ${filter}")
+            }
+    }
+
+    @Test
+    fun tencent_live_TXAudioEffectManager() {
+        TencentLive.iosSDK
+            .allTypes
+            .find { it.name == "TXAudioEffectManager" }
+            ?.methods
+            ?.find { it.name.contains("init") }
+            ?.run {
+                println("结果 $isPublic")
             }
     }
 }

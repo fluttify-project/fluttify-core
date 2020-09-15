@@ -5,8 +5,9 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
-//final resultBatch = await MethodChannel(#__channel__#).invokeMethod('#__method_name__#', #__args__#);
+//final resultBatch = await MethodChannel(#__channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('#__method_name__#', #__args__#);
 private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText() }
+
 fun InvokeBatchTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
         "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
@@ -41,14 +42,12 @@ fun InvokeBatchTmpl(method: Method): String {
                     // 枚举列表
                     "${it.name}[__i__].map((__it__) => __it__.toValue()).toList()"
                 }
-                typeName.jsonable() -> "${it.name}[__i__]"
-                (it.isIterable && it.getIterableLevel() <= 1) || it.isStructPointer() -> "${it.name.depointer()}[__i__].map((it) => it.refId).toList()"
-                it.getIterableLevel() > 1 -> "[]" // 多维数组暂不处理
-                else -> "${it.name}[__i__].refId"
+                else -> "${it.name}[__i__]"
             }
         }
     return tmpl
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
+        .replace("#__tag__#", ext.projectName)
         .replace("#__args__#", args)
 }

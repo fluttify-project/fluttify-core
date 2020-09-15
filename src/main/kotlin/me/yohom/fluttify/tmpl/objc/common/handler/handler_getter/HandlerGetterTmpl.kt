@@ -24,6 +24,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //    methodResult(jsonableResult);
 //},
 private val tmpl by lazy { getResource("/tmpl/objc/handler_getter.stmt.m.tmpl").readText() }
+
 fun HandlerGetterTmpl(field: Field): String {
     val methodName = field.getterMethodName
     val className = when {

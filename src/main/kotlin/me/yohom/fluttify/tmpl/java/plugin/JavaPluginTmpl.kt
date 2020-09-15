@@ -44,7 +44,7 @@ import java.io.File
 //
 //    // v1 android embedding for compatible
 //    public static void registerWith(Registrar registrar) {
-//        final MethodChannel channel = new MethodChannel(registrar.messenger(), "#__method_channel__#");
+//        final MethodChannel channel = new MethodChannel(registrar.messenger(), "#__method_channel__#", new StandardMethodCodec(new FluttifyMessageCodec()));
 //
 //        #__plugin_name__#Plugin plugin = new #__plugin_name__#Plugin();
 //
@@ -75,7 +75,7 @@ import java.io.File
 //            Log.d("fluttify-java", "#__plugin_name__#Plugin::onAttachedToEngine@" + binding);
 //        }
 //
-//        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "#__method_channel__#");
+//        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "#__method_channel__#", new StandardMethodCodec(new FluttifyMessageCodec()));
 //
 //        messenger = binding.getBinaryMessenger();
 //        platformViewRegistry = binding.getPlatformViewRegistry();

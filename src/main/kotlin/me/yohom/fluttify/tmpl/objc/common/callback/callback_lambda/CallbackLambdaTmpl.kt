@@ -1,8 +1,10 @@
 package me.yohom.fluttify.tmpl.objc.common.callback.callback_lambda
 
 import me.yohom.fluttify.extensions.deprotocol
+import me.yohom.fluttify.extensions.findType
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
+import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ctype.CallbackArgValueTypeTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
@@ -15,8 +17,9 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 
 //^(#__formal_params__#) {
 //    FlutterMethodChannel *channel = [FlutterMethodChannel
-//        methodChannelWithName:@"#__method_channel__#"
-//              binaryMessenger:[[self registrar] messenger]];
+//          methodChannelWithName:#__method_channel__#
+//                binaryMessenger:[[weakSelf registrar] messenger]
+//                          codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
 //
 //    // print log
 //    if (enableLog) {
@@ -30,8 +33,12 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callba
 //}
 private val tmpl by lazy { getResource("/tmpl/objc/lambda_callback.stmt.m.tmpl").readText() }
 
-fun CallbackLambdaTmpl(callbackType: Type): String {
-    val methodChannel = "${callbackType.name.deprotocol().replace("$", ".")}::Callback"
+fun CallbackLambdaTmpl(callerMethod: Method, callbackType: Type): String {
+    val callbackChannel = if (callerMethod.isStatic) {
+        "@\"${callbackType.name.deprotocol()}::Callback\""
+    } else {
+        "[NSString stringWithFormat:@\"${callbackType.name.deprotocol()}::Callback@%@\", @(ref.hash)]"
+    }
     val formalParams = callbackType
         .formalParams
         .joinToString { "${it.variable.objcType()} ${it.variable.name}" }
@@ -61,7 +68,7 @@ fun CallbackLambdaTmpl(callbackType: Type): String {
 
     return tmpl
         .replace("#__log__#", "")
-        .replace("#__method_channel__#", methodChannel)
+        .replace("#__method_channel__#", callbackChannel)
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__local_args__#", localArgs)
         .replaceParagraph("#__callback__#", callback)

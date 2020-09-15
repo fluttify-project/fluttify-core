@@ -3,11 +3,9 @@ put("#__getter_name__#", (__rawArgs__, __methodResult__) -> {
    Map<String, Object> __args__ = (Map<String, Object>) __rawArgs__;
 
    // ref object
-   #__class_name__# ref = (#__class_name__#) getHEAP().get((int) __args__.get("refId"));
+   #__class_name__# __this__ = (#__class_name__#) __args__.get("__this__");
 
-   #__field_type__# __result__ = ref.#__field_name__#;
+   #__field_type__# __result__ = __this__.#__field_name__#;
 
-   #__result__#
-
-    __methodResult__.success(jsonableResult);
+    __methodResult__.success(__result__);
 });

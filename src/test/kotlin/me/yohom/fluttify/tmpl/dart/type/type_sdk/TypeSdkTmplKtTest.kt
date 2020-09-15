@@ -31,6 +31,26 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
     }
 
     @Test
+    fun typeSdkTmpl_nim_com_netease_nimlib_sdk_auth_LoginInfo() {
+        Nim.androidSDK
+            .allTypes
+            .find { it.name == "com.netease.nimlib.sdk.auth.LoginInfo" }
+            ?.run {
+                println(TypeSdkTmpl(this))
+            }
+    }
+
+    @Test
+    fun typeSdkTmpl_nim_NIMMessage() {
+        Nim.iosSDK
+            .allTypes
+            .find { it.name == "NIMMessage" }
+            ?.run {
+                println(TypeSdkTmpl(this))
+            }
+    }
+
+    @Test
     fun typeSdkTmpl_amap_com_amap_api_maps_model_particle_VelocityGenerate() {
         Amap.androidMapSDK
             .allTypes
@@ -58,6 +78,55 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
         EaseMob.androidSDK
             .allTypes
             .find { it.name == "com.hyphenate.cloud.HttpClientController\$HttpParams" }
+            ?.run {
+                println(filter)
+            }
+    }
+
+    @Test
+    fun typeSdkTmpl_ali_rtc_org_webrtc_ali_RTCStatsReport() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "org.webrtc.ali.RTCStatsReport" }
+            ?.run {
+                println(TypeSdkTmpl(this))
+            }
+    }
+
+    @Test
+    fun typeSdkTmpl_ali_rtc_AliRenderView_filter() {
+        ext.ios.exclude.classes = listOf(
+            "AliRtcMessageResponse",
+            "AliRtcMessage",
+            "AliRTCRenderView"
+        )
+        ext.ios.overrideElements = mapOf(
+            950619 to """{
+              "platform": "iOS",
+              "name": "AliRenderView",
+              "declaredGenericTypes": [],
+              "definedGenericTypes": [],
+              "typeType": "Class",
+              "isPublic": true,
+              "isAbstract": false,
+              "isInnerType": false,
+              "isStaticType": true,
+              "isJsonable": false,
+              "superClass": "UIView",
+              "interfaces": [],
+              "constructors": [],
+              "fields": [],
+              "methods": [],
+              "enumerators": [],
+              "returnType": "",
+              "formalParams": [],
+              "deprecated": false,
+              "id": 950619
+            }"""
+        )
+        AliRtc.iosSDK
+            .allTypes
+            .find { it.name == "AliRenderView" }
             ?.run {
                 println(filter)
             }

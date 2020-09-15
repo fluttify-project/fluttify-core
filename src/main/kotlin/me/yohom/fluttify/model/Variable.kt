@@ -156,14 +156,11 @@ data class Variable(
                 else -> CallbackTmpl(hostMethod, trueType.findType())
             }
         } else {
-            when {
-                // 字符串数组需要转换
-                isStringArray() -> "$name.toArray(new ${trueType.dearray()}[$name.size()])"
-                // 基本类型数组不需要转换, 直接使用
-                isArray() -> name
-                // 自定义类列表需要转换成ArrayList
-                isIterable -> "(ArrayList) $name"
-                trueType.toLowerCase() == "float" -> "new Double(${name}).floatValue()"
+            when (trueType) {
+                "float", "Float" -> "${name}.floatValue()"
+                "double", "Double" -> "${name}.doubleValue()"
+                "int", "Integer" -> "${name}.intValue()"
+                "long", "Long" -> "${name}.longValue()"
                 else -> name
             }
         }
@@ -171,7 +168,7 @@ data class Variable(
 
     fun isStringArray(): Boolean = trueType.isStringArray()
 
-    fun isArray(): Boolean = trueType.isArray()
+    fun isRefArray(): Boolean = trueType.isRefArray()
 
     fun isCollection(): Boolean = trueType.isIterable()
 

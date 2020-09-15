@@ -11,7 +11,8 @@ var CONSTRUCTOR_LOG = true
 var VARIABLE_LOG = false
 var FIELD_LOG = false
 var TYPE_LOG = false
-var METHOD_LOG = false
+var FILE_LOG = false
+var METHOD_LOG = true
 
 private var idSequence = 0
 val NEXT_ID
@@ -22,7 +23,16 @@ val NEXT_ID
  */
 val EXCLUDE_METHODS
     get() =
-        listOf("toString", "equals", "writeToParcel", "describeContents", "recycle", "hashCode", "addView", "removeView")
+        listOf(
+            ".*::toString()",
+            ".*::equals.*",
+            ".*::writeToParcel.*",
+            ".*::describeContents.*",
+            ".*::recycle.*",
+            ".*::hashCode()",
+            ".*::addView.*",
+            ".*::removeView.*"
+        )
             .union(ext.ios.exclude.methods)
             .union(ext.android.exclude.methods)
             .map { Regex(it) }
@@ -32,9 +42,35 @@ val EXCLUDE_METHODS
  * 排除生成的类
  */
 val EXCLUDE_TYPES
-    get() = ext.ios.exclude.classes
+    get() = listOf(
+        "android.app.Fragment",
+        "android.support.v4.app.Fragment"
+    ).union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
-//        .union(listOf(".+\\.R"))
+        .map { Regex(it) }
+
+/**
+ * 排除生成的类
+ */
+val EXCLUDE_LIBS
+    get() = ext.ios.exclude.libs
+        .union(ext.android.exclude.libs)
+        .map { Regex(it) }
+
+/**
+ * 排除生成的文件
+ */
+val EXCLUDE_FILES
+    get() = ext.ios.exclude.files
+        .union(ext.android.exclude.files)
+        .map { Regex(it) }
+
+/**
+ * 排除生成的常量
+ */
+val EXCLUDE_CONSTANTS
+    get() = ext.ios.exclude.constants
+        .union(ext.android.exclude.constants)
         .map { Regex(it) }
 
 /**
@@ -53,6 +89,7 @@ val SYSTEM_TYPEDEF = mapOf(
     "int32_t" to "int",
     "int64_t" to "long long",
     "uint32_t" to "unsigned int",
+    "UInt32" to "unsigned int",
     "uint64_t" to "unsigned long long"
 )
 
@@ -80,7 +117,9 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Binder"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.SurfaceView"; typeType = TypeType.Class; platform = Platform.Android },
-    Type().apply { name = "android.view.SurfaceHolder.Callback"; typeType = TypeType.Interface; platform = Platform.Android },
+    Type().apply {
+        name = "android.view.SurfaceHolder.Callback"; typeType = TypeType.Interface; platform = Platform.Android
+    },
     Type().apply {
         name = "android.view.View.OnApplyWindowInsetsListener"; typeType = TypeType.Interface; platform =
         Platform.Android
@@ -142,7 +181,7 @@ val SYSTEM_TYPE = listOf(
 )
 
 object Regexes {
-    val MAP = Regex("(\\w*Map|NS(Mutable)?Dictionary)(<.+,.+>)?")
+    val MAP = Regex("(\\w*Map|NS(Mutable)?Dictionary)(<(int|double|String),((List<)?int|double|String(>)?)>)?")
 
     // Regex("\\w*List<(\\w*|.*)>").matches(this)
     //            || Regex("Iterable<(\\w*|.*)>").matches(this)
@@ -165,3 +204,22 @@ typealias PATH = String
 
 typealias JAVA_FILE = File
 typealias OBJC_FILE = File
+
+val dartReserved = listOf(
+    "abstract", "dynamic", "implements", "show", "as", "else",
+    "import", "static", "assert", "enum", "in", "super", "async",
+    "export", "interface", "switch", "await", "extends", "is", "sync",
+    "break", "external", "library", "this", "case", "factory", "mixin",
+    "throw", "catch", "false", "new", "true", "class", "final", "null", "try",
+    "const", "finally", "on", "typedef", "continue", "for", "operator", "var",
+    "covariant", "Function", "part", "void", "default", "get", "rethrow",
+    "while", "deferred", "hide", "return", "with", "do", "if", "set", "yield"
+)
+
+val JAVA_RESERVED = listOf(
+    "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
+    "continue", "default", "do", "double", "else", "enum", "extends", "final", "finally", "float",
+    "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long", "native",
+    "new", "package", "private", "protected", "public", "return", "strictfp", "short", "static", "super",
+    "switch", "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile", "while"
+)

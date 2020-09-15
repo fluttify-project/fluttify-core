@@ -5,9 +5,8 @@
         #__type_name__# data;
 
         NSValue* dataValue = [NSValue value:&data withObjCType:@encode(#__type_name__#)];
-        HEAP[[NSNumber numberWithLong: dataValue.hash]] = dataValue;
 
-        [resultList addObject:[NSNumber numberWithLong: dataValue.hash]];
+        [resultList addObject:dataValue];
     }
 
     methodResult(resultList);

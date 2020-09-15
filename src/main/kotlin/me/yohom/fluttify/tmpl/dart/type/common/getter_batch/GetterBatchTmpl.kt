@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //Future<List<#__type__#>> get_#__name__#_batch(#__view_channel__#) async {
-//  final resultBatch = await MethodChannel(#__method_channel__#).invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'refId': __item__.refId}]);
+//  final resultBatch = await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'refId': __item__.refId}]);
 //  final typedResult = (resultBatch as List).cast<#__result_type__#>.map((__result__) => #__result__#).toList();
 //  #__native_object_pool__#
 //  return typedResult;
@@ -15,7 +15,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").
 
 fun GetterBatchTmpl(field: Field): String {
     val dartType = field.variable.trueType.toDartType()
-    val name = field.variable.name.depointer()
+    val name = if (field.isStatic == true) "static_${field.variable.name.depointer()}" else field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
 
     val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
@@ -32,7 +32,7 @@ fun GetterBatchTmpl(field: Field): String {
         when {
             jsonable() -> toDartType()
             isVoid() -> "String"
-            else -> "int"
+            else -> "String"
         }
     }
     val result = field.variable.run {
@@ -65,6 +65,7 @@ fun GetterBatchTmpl(field: Field): String {
             .replace("#__getter_method__#", getter)
             .replace("#__result_type__#", resultType)
             .replace("#__native_object_pool__#", nativeObjectPool)
+            .replace("#__tag__#", ext.projectName)
             .replace("#__result__#", result)
     }
 }

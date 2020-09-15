@@ -1,9 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_method
 
-import me.yohom.fluttify.Bmap
-import me.yohom.fluttify.FluttifyTest
-import me.yohom.fluttify.Nim
-import me.yohom.fluttify.Tim
+import me.yohom.fluttify.*
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -19,7 +17,6 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
             ?.find { it.name == "done" }
             ?.run {
                 println(HandlerMethodTmpl(this))
-//                Assert.assertTrue(this.isCallback)
             }
     }
 
@@ -32,7 +29,6 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
             ?.find { it.name == "setSteps" }
             ?.run {
                 println(HandlerMethodTmpl(this))
-//                Assert.assertTrue(this.isCallback)
             }
     }
 
@@ -45,7 +41,6 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
             ?.find { it.name == "setCallback" }
             ?.run {
                 println(HandlerMethodTmpl(this))
-//                Assert.assertTrue(this.isCallback)
             }
     }
 
@@ -58,7 +53,16 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
             ?.find { it.name == "getGenderEnum" }
             ?.run {
                 println(HandlerMethodTmpl(this))
-//                Assert.assertTrue(this.isCallback)
             }
+    }
+
+    @Test
+    fun handlerMethodTmpl_nim_com_netease_nimlib_sdk_team_TeamService_createTeam() {
+        Nim.androidSDK
+            .allTypes
+            .find { it.name == "com.netease.nimlib.sdk.team.TeamService" }
+            ?.methods
+            ?.find { it.name == "createTeam" }
+            ?.run { println(HandlerMethodTmpl(this)) }
     }
 }

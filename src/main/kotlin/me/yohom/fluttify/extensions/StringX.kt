@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
+import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import java.io.File
@@ -124,6 +125,15 @@ fun TYPE_NAME.isArray(): Boolean {
 }
 
 /**
+ * 是否是数组
+ */
+fun TYPE_NAME.isRefArray(): Boolean {
+    return isArray()
+            &&
+            this != "byte[]" && this != "int[]" && this != "long[]" && this != "double[]" && this != "float[]" && this != "char[]"
+}
+
+/**
  * 是否是Map类型
  */
 fun TYPE_NAME.isMap(): Boolean {
@@ -149,6 +159,7 @@ fun TYPE_NAME.boxedType(): TYPE_NAME {
         "float" -> "Float"
         "double" -> "Double"
         "boolean" -> "Boolean"
+        "void" -> "Void"
         else -> this
     }
 }
@@ -179,7 +190,7 @@ fun TYPE_NAME.simpleName(): String {
  */
 fun TYPE_NAME.findType(): Type {
     val type = depointer().deprotocol()
-    return if (type.genericTypes().isNotEmpty()) {
+    val result = if (type.genericTypes().isNotEmpty()) {
         // 说明有泛型, 合成一个新的类
         val containerType = SDK.findType(type.containerType())
 
@@ -198,14 +209,18 @@ fun TYPE_NAME.findType(): Type {
                 // 找出当前声明泛型在泛型列表中的位置
                 val genericTypePosition = clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
                 // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
-                it.defineGenericType(definedGenericTypes[genericTypePosition])
+                if (genericTypePosition < definedGenericTypes.size) {
+                    it.defineGenericType(definedGenericTypes[genericTypePosition])
+                } else {
+                    it.defineGenericType(it.platform.objectType())
+                }
             }
         clonedContainerType
     } else {
         val result = SDK.findType(type)
 
         // 如果类型没有指定泛型, 却发现是泛型类, 那么把泛型类型全部替换成Object类
-        return if (result.declaredGenericTypes.isNotEmpty()) {
+        if (result.declaredGenericTypes.isNotEmpty()) {
             val clonedContainerType = result.toJson().fromJson<Type>()
 
             clonedContainerType.definedGenericTypes.replaceAll { result.platform.nativeObjectType() }
@@ -223,6 +238,12 @@ fun TYPE_NAME.findType(): Type {
         } else {
             result
         }
+    }
+    // 如果在override元素内, 则替换掉
+    return when (result.platform) {
+        Platform.iOS -> ext.ios.overrideElements[result.id]?.fromJson<Type>() ?: result
+        Platform.Android -> ext.android.overrideElements[result.id]?.fromJson<Type>() ?: result
+        else -> result
     }
 }
 
@@ -250,6 +271,7 @@ fun TYPE_NAME.isValueType(): Boolean {
         "int",
         "float",
         "double",
+        "long",
         "BOOL",
         "bool",
         "unsigned long long",
@@ -314,13 +336,35 @@ fun TYPE_NAME.isObfuscated(): Boolean {
     val types = genericTypes()
         .map { it.replace("$", ".").substringAfterLast(".") }
         .union(listOf(containerType().replace("$", ".").substringAfterLast(".")))
-    val regex = Regex("[a-z|\\d]{0,2}")
+    val regex1 = Regex("[a-zA-Z|\\d]{0,2}")
+    val regex2 = Regex("[a-z|\\d]{0,4}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
     return this !in ext.obfuscatedWhiteList
             &&
-            types.any { (regex.matches(it) || regex.matches(this)) }
+            types.any { regex1.matches(it) || regex1.matches(this) || regex2.matches(it) || regex2.matches(this) }
             &&
             this != "id"
+}
+
+/**
+ * 判断一个文件是否是被混淆过的
+ *
+ * 规则为判断文件名长度是否是1或者2且仅包含小写字母
+ */
+fun String.isObfuscatedFile(): Boolean {
+    val parts = split("$")
+    val regex = Regex("[a-zA-Z|\\d]{0,2}")
+    return parts.any { regex.matches(it) || it in JAVA_RESERVED }
+}
+
+/**
+ * 判断一个方法名是否是被混淆过的
+ *
+ * 规则为判断文件名长度是否是1或者2且仅包含小写字母
+ */
+fun String.isObfuscatedMethod(): Boolean {
+    val regex = Regex("[a-zA-Z|\\d]{0,2}")
+    return regex.matches(this)
 }
 
 /**
@@ -403,6 +447,13 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
         .deprotocol()
 }
 
+///**
+// * 传参时, 可以把Serializable替换为String, 以实现传递参数, 不然dart这边没法传递
+// */
+//fun TYPE_NAME.serializableToString(): String {
+//    return replace(Regex("java.io.Serializable"), "String /* java.io.Serializable */")
+//}
+
 fun TYPE_NAME.toUnderscore(): String {
     return replace(Regex("[$.<>,]"), "_")
 }
@@ -423,6 +474,13 @@ fun String.depointer(): String {
  */
 fun String.deprotocol(): String {
     return if (startsWith("id<")) removePrefix("id<").removeSuffix(">") else this
+}
+
+/**
+ * 是否是排除类
+ */
+fun String.isExcludedType(): Boolean {
+    return ext.android.exclude.classes.union(ext.ios.exclude.classes).any { Regex(it).matches(this) }
 }
 
 /**
@@ -491,6 +549,7 @@ fun TYPE_NAME.removeObjcSpecifier(): TYPE_NAME {
         .replace("_Nonnull", "")
         .replace("nullable", "")
         .replace("nonnull", "")
+        .replace("__autoreleasing", "")
 }
 
 /**
@@ -632,4 +691,25 @@ fun String.isDynamic(): Boolean {
  */
 fun String.isMultiPointer(): Boolean {
     return contains("**")
+}
+
+/**
+ * 解析SDK
+ */
+fun String.parseSDK(): SDK {
+    val sdk = fromJson<SDK>()
+    val allOverrideElements: MutableMap<Int, String> = mutableMapOf()
+    allOverrideElements.putAll(ext.android.overrideElements)
+    allOverrideElements.putAll(ext.ios.overrideElements)
+    sdk.allTypes.replaceAll {
+        allOverrideElements[it.id]?.fromJson<Type>() ?: it
+    }
+    return sdk
+}
+
+/**
+ * 变量名为id的情况
+ */
+fun String.objcId(): String {
+    return if (this == "id") "id__" else this
 }

@@ -79,6 +79,7 @@ import java.io.File
 //@end
 private val hTmpl by lazy { getResource("/tmpl/objc/plugin.h.tmpl").readText() }
 private val mTmpl by lazy { getResource("/tmpl/objc/plugin.m.tmpl").readText() }
+
 fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
     // 插件名称
     val pluginClassName = ext.projectName.underscore2Camel(true)
@@ -134,7 +135,9 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
         .filterType()
         .filter { it.isCallback }
         .flatMap { it.methods }
+        .filterMethod() // 过滤一下方法 Java不能过滤, objc这边没事
         .distinctBy { it.exactName }
+        .filter { it.mustNot("参数中含有lambda") { formalParams.any { it.variable.isLambda() } } }
         .map { NonViewCallbackMethodTmpl(it) }
 
     val subHandlerDir = File(subHandlerOutputDir)

@@ -1,9 +1,8 @@
 package me.yohom.fluttify.tmpl.dart
 
-import me.yohom.fluttify.EaseMob
-import me.yohom.fluttify.FluttifyTest
-import me.yohom.fluttify.Nim
-import me.yohom.fluttify.SYSTEM_TYPE
+import me.yohom.fluttify.*
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 import org.junit.jupiter.api.Test
 
@@ -44,12 +43,41 @@ class MethodTmplTest : FluttifyTest() {
     }
 
     @Test
+    fun methodBatchTmpl_amap() {
+        Amap.iosMapSDK
+            .allTypes
+            .find { it.name == "MAParticleColorGenerate" }
+            ?.methods
+            ?.find { it.name == "getColor" }
+            ?.run { println(MethodBatchTmpl(this)) }
+    }
+
+    @Test
     fun methodTmpl_easemob_im_com_hyphenate_push_EMPushConfig_getEnabledPushTypes() {
         EaseMob.androidSDK
             .allTypes
             .find { it.name == "com.hyphenate.push.EMPushConfig" }
             ?.methods
             ?.find { it.name == "getEnabledPushTypes" }
+            ?.run { println(MethodTmpl(this)) }
+    }
+
+    @Test
+    fun methodTmpl_ali_rtc_com_serenegiant_usb_UVCCamera_open() {
+        AliRtc.androidSDK
+            .allTypes
+            .find { it.name == "com.serenegiant.usb.UVCCamera" }
+            ?.run { println(TypeSdkTmpl(this)) }
+    }
+
+    @Test
+    fun methodTmpl_nim_com_netease_nimlib_sdk_team_TeamService_createTeam() {
+        ext.android.noncallbackClasses = listOf()
+        Nim.androidSDK
+            .allTypes
+            .find { it.name == "com.netease.nimlib.sdk.team.TeamService" }
+            ?.methods
+            ?.find { it.name == "createTeam" }
             ?.run { println(MethodTmpl(this)) }
     }
 }

@@ -5,8 +5,6 @@ import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgListTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
 
@@ -36,7 +34,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //
 //        this.registrar = registrar;
 //
-//        new MethodChannel(registrar.messenger(), "#__method_channel__#").setMethodCallHandler((methodCall, methodResult) -> {
+//        new MethodChannel(registrar.messenger(), "#__method_channel__#", new StandardMethodCodec(new FluttifyMessageCodec())).setMethodCallHandler((methodCall, methodResult) -> {
 //                    Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
 //                    #__plugin_class__#.Handler handler = handlerMap.get(methodCall.method);
 //                    if (handler != null) {
@@ -115,9 +113,7 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
         val args = formalParamsExcludeContext
             .joinToString("\n") {
                 when {
-                    it.variable.jsonable() -> ArgJsonableTmpl(it.variable)
                     it.variable.isEnum() -> ArgEnumTmpl(it.variable)
-                    it.variable.isIterable -> ArgListTmpl(it.variable)
                     else -> ArgRefTmpl(it.variable)
                 }
             }

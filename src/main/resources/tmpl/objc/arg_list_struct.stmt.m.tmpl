@@ -1,9 +1,8 @@
 // list arg struct
-NSArray* #__arg_name__#RefIdArray = (NSArray*) args[@"#__arg_name__#"];
-#__type_name__# #__arg_name__#[#__arg_name__#RefIdArray.count];
-
-for (int __i__ = 0; __i__ < #__arg_name__#RefIdArray.count; __i__++) {
-    NSValue* #__arg_name__#Value = (NSValue*) HEAP[[#__arg_name__#RefIdArray objectAtIndex:__i__]];
+NSArray<NSValue*>* #__arg_name__#ValueList = (NSArray<NSValue*>*) args[@"#__arg_name__#"];
+#__type_name__# #__arg_name__#[#__arg_name__#ValueList.count];
+for (int __i__ = 0; __i__ < #__arg_name__#ValueList.count; __i__++) {
+    NSValue* #__arg_name__#Value = (NSValue*) [#__arg_name__#ValueList objectAtIndex:__i__];
     #__type_name__# #__arg_name__#Item;
     [#__arg_name__#Value getValue:&#__arg_name__#Item];
     #__arg_name__#[__i__] = #__arg_name__#Item;

@@ -4,11 +4,6 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.ifIsGenericTypeConvertToObject
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_jsonable.CallbackArgJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_list.CallbackArgListTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_object.CallbackArgObjectTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_return.CallbackReturnTmpl
 
 //@Override
@@ -49,21 +44,10 @@ fun CallbackMethodTmpl(method: Method): String {
             "${it.trueType.replace("$", ".").ifIsGenericTypeConvertToObject()} ${it.name}"
         }
     val returnType = method.returnType.replace("$", ".")
-    val localArgs = method
-        .formalParams
-        .joinToString("\n") {
-            when {
-                it.variable.trueType.ifIsGenericTypeConvertToObject() == "java.lang.Object" -> CallbackArgObjectTmpl(it)
-                it.variable.jsonable() -> CallbackArgJsonableTmpl(it)
-                it.variable.isEnum() -> CallbackArgEnumTmpl(it)
-                it.variable.isIterable -> CallbackArgListTmpl(it)
-                else -> CallbackArgRefTmpl(it)
-            }
-        }
     val callbackArgs = method
         .formalParams
         .joinToString("\n") {
-            "put(\"${it.variable.name}\", arg${it.variable.name});"
+            "put(\"${it.variable.name}\", ${it.variable.name});"
         }
     // 打印日志
     val logArgs = method
@@ -81,7 +65,6 @@ fun CallbackMethodTmpl(method: Method): String {
         .replace("#__callback_method_name__#", callbackMethodName)
         .replace("#__formal_params__#", formalParams)
         .replace("#__return_type__#", returnType)
-        .replaceParagraph("#__local_args__#", localArgs)
         .replaceParagraph("#__callback_args__#", callbackArgs)
         .replaceParagraph("#__log__#", log)
         .replaceParagraph("#__return_stmt__#", returnStmt)

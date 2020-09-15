@@ -124,11 +124,6 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
      * 元素替换
      */
     var overrideElements: Map<Int, String> = mapOf()
-//        get() {
-//            val packedMethods = field.map { entry -> Pair(entry.key.pack(), entry.key.pack()) }.toMap()
-//            println("packedMethods: $packedMethods")
-//            return packedMethods
-//        }
 
     /**
      * 远程依赖配置
@@ -169,12 +164,29 @@ open class Exclude {
     var classes: List<String> = listOf()
 
     /**
+     * 排除的文件 接受正则表达式
+     *
+     * 文件名, 不需要路径
+     */
+    var files: List<String> = listOf()
+
+    /**
      * 排除的方法 接受正则表达式
      */
     var methods: List<String> = listOf()
 
+    /**
+     * 排除的库
+     */
+    var libs: List<String> = listOf()
+
+    /**
+     * 排除的常量
+     */
+    var constants: List<String> = listOf()
+
     override fun toString(): String {
-        return "Exclude(classes=$classes, methods=$methods)"
+        return "Exclude(classes=$classes, methods=$methods, libs=$libs, constants=$constants)"
     }
 }
 

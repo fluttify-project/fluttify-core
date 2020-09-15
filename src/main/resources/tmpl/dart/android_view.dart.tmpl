@@ -23,13 +23,14 @@ class #__view__#_Android extends StatefulWidget {
     Key key,
     this.onViewCreated,
     this.onDispose,
-    #__creation_params__#
+    this.params = const <String, dynamic>{},
+    this.gestureRecognizers,
   }) : super(key: key);
 
   final #__view_simple_name__#CreatedCallback onViewCreated;
   final _OnAndroidViewDispose onDispose;
-
-  #__creation_fields__#
+  final Map<String, dynamic> params;
+  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   @override
   _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
@@ -40,9 +41,9 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
 
   @override
   Widget build(BuildContext context) {
-    final gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>[
+    final gestureRecognizers = widget.gestureRecognizers ?? <Factory<OneSequenceGestureRecognizer>>{
       Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-    ].toSet();
+    };
 
     final messageCodec = StandardMessageCodec();
     return AndroidView(
@@ -50,13 +51,15 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
       creationParamsCodec: messageCodec,
-      #__creation_args__#
+      creationParams: widget.params,
     );
   }
 
-  void _onViewCreated(int id) {
+  void _onViewCreated(int id) async {
     // 碰到一个对象返回的hashCode为0的情况, 造成和这个id冲突了, 这里用一个magic number避免一下
-    _controller = #__view__#()..refId = 2147483647 - id;
+    // 把viewId转换为refId再使用, 使其与其他对象统一
+    final refId = await viewId2RefId((2147483647 - id).toString());
+    _controller = #__view__#()..refId = refId..tag__ = '#__tag__#';
     if (widget.onViewCreated != null) {
       widget.onViewCreated(_controller);
     }
@@ -66,6 +69,8 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
   void dispose() {
     if (widget.onDispose != null) {
       widget.onDispose().then((_) => _controller.release__());
+    } else {
+      _controller.release__();
     }
     super.dispose();
   }
