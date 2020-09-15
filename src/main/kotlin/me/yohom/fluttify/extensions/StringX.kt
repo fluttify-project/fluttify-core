@@ -494,7 +494,7 @@ fun String.enprotocol(): String {
  * 为指针类型加上`*`号
  */
 fun TYPE_NAME.enpointer(): TYPE_NAME {
-    return if (endsWith("*") || Regex("id<\\w+>").matches(this)) this else "$this*"
+    return if (endsWith("*") || Regex("id(<\\w+>)?").matches(this)) this else "$this*"
 }
 
 /**
