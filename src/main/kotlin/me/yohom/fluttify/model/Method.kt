@@ -74,10 +74,6 @@ data class Method(
                     &&
                     mustNot("返回类型是排除类") { EXCLUDE_TYPES.any { it.matches(returnType) } }
                     &&
-                    must("返回类型的祖宗类是已知类") {
-                        returnType.allTypes().flatMap { it.ancestorTypes }.all { it.findType().isKnownType }
-                    }
-                    &&
                     must("返回类型不是回调类") { returnType.allTypes().none { it.isCallback } }
                     &&
                     must("参数类型全部通过类型过滤") {
