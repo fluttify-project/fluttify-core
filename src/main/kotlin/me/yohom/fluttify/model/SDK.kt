@@ -68,6 +68,14 @@ class SDK : IPlatform {
         directLibs.flatMap { it.types }.toMutableList()
     }
 
+    /**
+     * 所有枚举类型
+     */
+    @delegate:Transient
+    val allEnumTypes: MutableList<Type> by lazy {
+        directLibs.flatMap { it.types }.filter { it.typeType == TypeType.Enum }.toMutableList()
+    }
+
     override fun toString(): String {
         return "SDK(version='$version', platform=$platform, libs=$libs)"
     }
