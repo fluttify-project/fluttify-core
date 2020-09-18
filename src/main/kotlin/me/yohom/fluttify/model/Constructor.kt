@@ -52,10 +52,10 @@ data class Constructor(
                                         ||
                                         must("构造器的参数类型也是可构造的") {
                                             it.variable.trueType.run {
-                                                if (isIterable()) {
-                                                    innermostGenericType().findType().constructable
-                                                } else {
-                                                    findType().constructable
+                                                when {
+                                                    this.simpleName() == name -> true
+                                                    isIterable() -> innermostGenericType().findType().constructable
+                                                    else -> findType().constructable
                                                 }
                                             }
                                         }
