@@ -396,10 +396,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                     "List<${genericType.toDartType()}>"
                 }
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<java_lang_Object>"
-                Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace(
-                    "java.util.Collection",
-                    "List"
-                )
+                Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace("java.util.Collection", "List")
                 Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
 
                 // objc
@@ -455,7 +452,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
 //}
 
 fun TYPE_NAME.toUnderscore(): String {
-    return replace(Regex("[$.<>,]"), "_")
+    return replace(Regex("[$.<>,|]"), "_")
 }
 
 fun TYPE_NAME.isStructPointer(): Boolean {

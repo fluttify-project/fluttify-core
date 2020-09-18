@@ -168,10 +168,8 @@ data class Method(
                 .filter { it == this.signatureNamed() }.size > 1
             return if (hasOverload) {
                 // 类内部含有相同方法名超过1个, 说明有重载, 这里需要给方法名加上类型
-                name + formalParams.joinToStringX(
-                    "__",
-                    "__"
-                ) { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.trueType.toDartType()}" }
+                name + formalParams
+                    .joinToStringX("__", "__") { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.trueType.toDartType()}" }
                     .toUnderscore()
             } else {
                 signatureNamed()
