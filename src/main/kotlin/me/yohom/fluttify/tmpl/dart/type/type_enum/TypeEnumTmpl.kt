@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_enum
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.toDartType
-import me.yohom.fluttify.model.Platform
+import me.yohom.fluttify.model.Enumerator
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 
@@ -47,36 +47,31 @@ fun TypeEnumTmpl(type: Type): String {
         }
     }
 
+    fun Enumerator.enumerator2Value(): String {
+        return when (this.value) {
+            // 没有值, 则直接索引+偏移
+            null -> "${typeName}.${name}.index + $offset"
+            // 值是其他枚举, 则调用其他枚举的值
+            in allEnumerators.map { e -> e.name } -> "${allEnumerators.find { e -> e.name == value }!!.value}/* $value */"
+            // 直接的值, 直接使用
+            else -> value
+        }
+    }
+
     // 如果枚举有值, 那么直接使用, 如果没有值, 那么就index + 偏移量
     val toIntCases = type.enumerators
         .map {
-            val value = when (it.value) {
-                // 没有值, 则直接索引+偏移
-                null -> "${typeName}.${it.name}.index + $offset"
-                // 值是其他枚举, 则调用其他枚举的值
-                in allEnumerators.map { e -> e.name } -> "${allEnumerators.find { e -> e.name == it.value }!!.value}/* ${it.value} */"
-                // 直接的值, 直接使用
-                else -> it.value
-            }
-            "case ${typeName}.${it.name}: return ${value};"
+            "case ${typeName}.${it.name}: return ${it.enumerator2Value()};"
         }
 
     val toEnumCases = type.enumerators
         .filter { it.value != null }
         .map {
-            val case = when (it.value) {
-                // 没有值, 则直接索引+偏移
-                null -> "${typeName}.${it.name}.index + $offset"
-                // 值是其他枚举, 则调用其他枚举的值
-                in allEnumerators.map { e -> e.name } -> "${allEnumerators.find { e -> e.name == it.value }!!.value}/* ${it.value} */"
-                // 直接的值, 直接使用
-                else -> it.value
-            }
-            "case ${case}: return ${typeName}.${it.name};"
+            "case ${it.enumerator2Value()}: return ${typeName}.${it.name};"
         }
     return tmpl
         .replace("#__enum_name__#", typeName)
-        .replace("#__offset__#", offset.toString())
+        .replace("#__offset__#", offset)
         .replaceParagraph("#__enumerators__#", enumerators)
         .replaceParagraph("#__to_int_cases__#", toIntCases.joinToString("\n"))
         .replaceParagraph("#__to_enum_cases__#", toEnumCases.joinToString("\n"))
