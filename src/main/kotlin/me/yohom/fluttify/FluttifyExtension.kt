@@ -224,7 +224,7 @@ open class Remote {
     /**
      * ios pod 坐标
      */
-    val iosCoordinate get() = name.indices.map { "'${name[it]}', '~> ${version[it]}'" }
+    val iosCoordinate get() = name.indices.map { "'${name[it]}', '${version[it]}'" }
 
     /**
      * ios是否已配置

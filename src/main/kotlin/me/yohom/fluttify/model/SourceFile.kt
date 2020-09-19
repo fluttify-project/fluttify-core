@@ -24,4 +24,8 @@ class SourceFile {
 
         result
     }
+
+    override fun toString(): String {
+        return "SourceFile(fileName='$fileName', types=$types, topLevelConstants=$topLevelConstants)"
+    }
 }

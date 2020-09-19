@@ -657,5 +657,5 @@ fun File.downloadFrom(url: String) {
 }
 
 fun String.replaceMarco(): String {
-    return replace(Regex("((#el)?if (TARGET_OS_MAC|TARGET_OS_OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
+    return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
 }

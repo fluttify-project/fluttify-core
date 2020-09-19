@@ -1095,4 +1095,19 @@ typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
             }
         })
     }
+
+    @Test
+    fun methodSig_startScreenCapture() {
+        val source = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Professional.framework/Headers/TRTCCloud.h".file().readText()
+//        val source = "- (int)stopScreenCapture;"
+        source.walkTree(object : ObjectiveCParserBaseListener() {
+//            override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
+//                println(ctx.text)
+//            }
+
+            override fun enterInstanceMethodDeclaration(ctx: ObjectiveCParser.InstanceMethodDeclarationContext) {
+                println(ctx.text)
+            }
+        })
+    }
 }
