@@ -680,7 +680,7 @@ fun String.objcSpecifierExpand(): String {
 //}
 
 fun String.isDynamic(): Boolean {
-    return this == "dynamic"
+    return toDartType() == "dynamic"
 }
 
 /**

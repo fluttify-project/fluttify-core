@@ -18,7 +18,6 @@ fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
                 val genericTypes = findType().definedGenericTypes.joinToStringX(",", "<", ">").toDartType()
                 when {
                     isEmpty() -> platform.objectType()
-                    toDartType().isDynamic() -> "Ref"
                     findType().isInterface -> "${toDartType().containerType()}.subInstance$genericTypes"
                     else -> this.toDartType()
                 }

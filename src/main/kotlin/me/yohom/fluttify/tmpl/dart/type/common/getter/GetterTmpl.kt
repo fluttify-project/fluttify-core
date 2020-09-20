@@ -6,8 +6,8 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //#__static__#Future<#__type__#> get_#__name__#(#__view_channel__#) async {
-//  final __result__ = await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod("#__getter_method__#", #__ref_id__#);
-//  return #__result__#;
+//  final __result__ = await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec('#__tag__#'))).invokeMethod("#__getter_method__#", #__ref_id__#);
+//  return __result__ == null ? null : (#__result__#);
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText() }
 
@@ -28,14 +28,16 @@ fun GetterTmpl(field: Field): String {
     val getter = field.getterMethodName
     val result = field.variable.run {
         when {
-            jsonable() -> ResultJsonableTmpl(trueType, platform)
+            jsonable()
+                    || trueType.isVoid()
+                    /* dynamic类型直接返回, 让应用层自行决定怎么处理 */
+                    || trueType.isDynamic() -> ResultJsonableTmpl(trueType, platform)
             isIterable -> ResultListTmpl(
                 if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType(),
                 platform
             )
             isStructPointer() -> ResultListTmpl(trueType.depointer(), platform)
             isEnum() -> ResultEnumTmpl(trueType)
-            trueType.isVoid() -> ResultVoidTmpl()
             else -> ResultRefTmpl(trueType)
         }
     }

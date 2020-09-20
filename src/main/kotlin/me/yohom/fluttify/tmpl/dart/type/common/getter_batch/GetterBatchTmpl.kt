@@ -37,14 +37,16 @@ fun GetterBatchTmpl(field: Field): String {
     }
     val result = field.variable.run {
         when {
-            jsonable() -> ResultJsonableTmpl(trueType, platform)
+            jsonable()
+                    || trueType.isVoid()
+                    /* dynamic类型直接返回, 让应用层自行决定怎么处理 */
+                    || trueType.isDynamic() -> ResultJsonableTmpl(trueType, platform)
             isIterable -> ResultListTmpl(
                 if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType(),
                 platform
             )
             isStructPointer() -> ResultListTmpl(trueType.depointer(), platform)
             isEnum() -> ResultEnumTmpl(trueType)
-            trueType.isVoid() -> ResultVoidTmpl()
             else -> ResultRefTmpl(trueType)
         }
     }
