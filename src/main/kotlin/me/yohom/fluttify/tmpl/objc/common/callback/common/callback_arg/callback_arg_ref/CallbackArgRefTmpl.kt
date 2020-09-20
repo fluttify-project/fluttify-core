@@ -6,11 +6,12 @@ import me.yohom.fluttify.extensions.isPrimitivePointerType
 import me.yohom.fluttify.model.Variable
 
 //// ref callback arg
-//NSObject* arg#__arg_name__# = #__arg_name__#;
+//#__type_name__# arg#__arg_name__# = #__arg_name__#;
 private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_ref.stmt.m.tmpl").readText() }
 
 fun CallbackArgRefTmpl(variable: Variable): String {
     return tmpl
+        .replace("#__type_name__#", variable.trueType)
         .replace("#__arg_name__#", variable.name.depointer())
         .replace("#__arg__#", variable.run {
             // 如果碰到id类型就转型成NSObject
