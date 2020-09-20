@@ -6,7 +6,7 @@ import me.yohom.fluttify.extensions.isPrimitivePointerType
 import me.yohom.fluttify.model.Variable
 
 //// ref callback arg
-//NSObject* arg#__arg_name__# = #__arg_name__# == nil ? [NSNull null] : #__arg_name__#;
+//NSObject* arg#__arg_name__# = #__arg_name__#;
 private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_ref.stmt.m.tmpl").readText() }
 
 fun CallbackArgRefTmpl(variable: Variable): String {
