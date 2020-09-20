@@ -4,6 +4,7 @@ import me.yohom.fluttify.extensions.depointer
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Variable
 
+//// enum callback arg
 //NSNumber* arg#__arg_name__# = @((NSInteger) #__arg_name__#);
 private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_enum.stmt.m.tmpl").readText() }
 

@@ -6,12 +6,7 @@ import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Variable
 
 //// list callback arg
-//NSMutableArray<NSObject*>* arg#__arg_name__# = [NSMutableArray arrayWithCapacity:#__arg_name__#.count];
-//for (int __i__ = 0; __i__ < #__arg_name__#.count; __i__++) {
-//    NSObject* item = ((NSObject*) [#__arg_name__# objectAtIndex:__i__]);
-//    // return to dart side data
-//    arg#__arg_name__#[__i__] = item;
-//}
+//NSArray<NSObject*>* arg#__arg_name__# = #__arg_name__#;
 private val tmpl by lazy { getResource("/tmpl/objc/callback_arg_list.stmt.m.tmpl").readText() }
 
 fun CallbackArgListTmpl(variable: Variable): String {
