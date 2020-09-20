@@ -237,7 +237,7 @@ fun OBJC_FILE.objcType(): SourceFile {
 
     val stack = Stack<Type>()
 
-    source.replaceMarco()
+    source.replaceMacro()
         .walkTree(object : ObjectiveCParserBaseListener() {
             override fun enterVarDeclaration(ctx: ObjectiveCParser.VarDeclarationContext) {
                 // 只有顶层声明需要处理
@@ -656,6 +656,6 @@ fun File.downloadFrom(url: String) {
     }
 }
 
-fun String.replaceMarco(): String {
+fun String.replaceMacro(): String {
     return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
 }

@@ -1110,4 +1110,26 @@ typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
             }
         })
     }
+
+    @Test
+    fun enum_googlemap() {
+        val source = """
+typedef NS_ENUM(NSUInteger, GMSMapViewType) {
+  kGMSTypeNormal GMS_SWIFT_NAME_2_0_3_0(Normal, normal) = 1,
+
+  kGMSTypeSatellite GMS_SWIFT_NAME_2_0_3_0(Satellite, satellite),
+
+  kGMSTypeTerrain GMS_SWIFT_NAME_2_0_3_0(Terrain, terrain),
+  kGMSTypeHybrid GMS_SWIFT_NAME_2_0_3_0(Hybrid, hybrid),
+
+  kGMSTypeNone GMS_SWIFT_NAME_2_0_3_0(None, none),
+
+};"""
+
+        source.walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
+                println(ctx.text)
+            }
+        })
+    }
 }

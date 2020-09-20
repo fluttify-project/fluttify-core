@@ -246,6 +246,6 @@ class StringXKtTest : FluttifyTest() {
 - (void)startScreenCapture:(NSView *)view streamType:(TRTCVideoStreamType)streamType encParam:(TRTCVideoEncParam *)encParam;
 #endif
 """
-        println(source.replaceMarco())
+        println(source.replaceMacro())
     }
 }
