@@ -54,7 +54,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
-                    .replace("#__sdk_dependency__#", ext.ios.remote.run {
+                    .replaceParagraph("#__sdk_dependency__#", ext.ios.remote.run {
                         if (iosConfigured) {
                             iosCoordinate
                                 .union(transitiveDependencies)
