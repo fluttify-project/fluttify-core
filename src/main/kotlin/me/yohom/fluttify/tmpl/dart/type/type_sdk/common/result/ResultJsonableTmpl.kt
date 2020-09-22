@@ -17,8 +17,8 @@ fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
                 returnType.iterableLevel() != 0 -> returnType.genericTypes()[0]
                 // 数组类型
                 returnType.isRefArray() -> returnType.dearray()
-                // List没有指定泛型, 使用各个平台的Object类
-                else -> platform.objectType()
+                // List没有指定泛型, 使用dynamic
+                else -> "dynamic"
             }
             "(__result__ as List).cast<${type.toDartType()}>()"
         }

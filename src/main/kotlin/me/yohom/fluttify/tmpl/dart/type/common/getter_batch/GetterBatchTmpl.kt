@@ -42,10 +42,9 @@ fun GetterBatchTmpl(field: Field): String {
                     /* dynamic类型直接返回, 让应用层自行决定怎么处理 */
                     || trueType.isDynamic() -> ResultJsonableTmpl(trueType, platform)
             isIterable -> ResultListTmpl(
-                if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType(),
-                platform
+                if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType()
             )
-            isStructPointer() -> ResultListTmpl(trueType.depointer(), platform)
+            isStructPointer() -> ResultListTmpl(trueType.depointer())
             isEnum() -> ResultEnumTmpl(trueType)
             else -> ResultRefTmpl(trueType)
         }

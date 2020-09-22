@@ -395,7 +395,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                     val genericType = genericTypes()[0]
                     "List<${genericType.toDartType()}>"
                 }
-                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<java_lang_Object>"
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<dynamic>"
                 Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace("java.util.Collection", "List")
                 Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
 
@@ -404,7 +404,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("NS(Mutable)?Array\\u003cNSString\\*?\\u003e\\*?").matches(this) -> "List<String>"
                 Regex("nil").matches(this) -> "null"
                 Regex("id").matches(this) -> "dynamic"
-                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<NSObject>"
+                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<dynamic>"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
                 Regex("NSArray\\u003cNSNumber\\*\\u003e\\*").matches(this) -> "List<num>"
@@ -685,7 +685,8 @@ fun String.objcSpecifierExpand(): String {
 //}
 
 fun String.isDynamic(): Boolean {
-    return toDartType() == "dynamic"
+    val dartType = toDartType()
+    return dartType == "dynamic" || dartType == "List<dynamic>"
 }
 
 /**

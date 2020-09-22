@@ -31,6 +31,16 @@ internal class TypeSdkTmplKtTest : FluttifyTest() {
     }
 
     @Test
+    fun typeSdkTmpl_AliyunClip() {
+        AliyunShortVideo.iosSDK
+            .allTypes
+            .find { it.name == "AliyunClip" }
+            ?.run {
+                println(TypeSdkTmpl(this))
+            }
+    }
+
+    @Test
     fun typeSdkTmpl_nim_com_netease_nimlib_sdk_auth_LoginInfo() {
         Nim.androidSDK
             .allTypes
