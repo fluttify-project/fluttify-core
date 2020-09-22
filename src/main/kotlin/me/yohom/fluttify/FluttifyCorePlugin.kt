@@ -43,9 +43,6 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val export = project.tasks.create("export", Export::class.java)
         val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
-        // 可选任务
-        val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
-
         // assembly
         fluttify.dependsOn(export)
 
