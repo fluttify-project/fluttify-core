@@ -42,70 +42,95 @@ open class DownloadAndroidSDK : FluttifyTask() {
 open class DownloadIOSSDK : FluttifyTask() {
     @TaskAction
     fun process() {
-        ext.ios.libDir.file().run {
-            if (list { _, name -> !name.startsWith(".") }?.isEmpty() == true && ext.ios.remote.iosConfigured) {
-                for (i in ext.ios.remote.name.indices) {
-                    downloadIOSDependency(ext.ios.remote.name[i], ext.ios.remote.version[i])
+        val process = Runtime
+            .getRuntime()
+            .exec(
+                arrayOf(
+                    "/bin/sh",
+                    "-c",
+                    "cd ${project.projectDir}/output-project/${ext.projectName}/example; flutter packages get --verbose; cd ios; pod install --verbose; cd ${project.projectDir}"
+                )
+            )
+        val br = BufferedReader(InputStreamReader(process.inputStream))
+        val errorBr = BufferedReader(InputStreamReader(process.errorStream))
+        br.lines().forEach(::println)
+        errorBr.lines().forEach(::println)
+
+        if (process.exitValue() == 0) {
+            "output-project/${ext.projectName}/example/ios/Pods/"
+                .file()
+                .listFiles { _, name -> name in ext.ios.remote.name }
+                ?.forEach {
+                    FileUtils.copyDirectoryToDirectory("${it}/".file(), ext.ios.libDir.file())
                 }
-            } else {
-                println("非远程依赖 或 本地已缓存依赖")
-            }
         }
     }
 
-    /**
-     * 下载iOS端的依赖
-     */
-    private fun downloadIOSDependency(archiveName: String, archiveVersion: String) {
-        val iosArchiveSpec: File?
-        val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
-
-        // 找出目标pod所在的文件
-        // cocoapods的Specs文件夹分为三层0x0-0xf的文件夹, 最后一层文件夹下的分别存放着所有的pod, 找到目标pod后再根据版本号找到目标podspec.json
-        // 解析出下载地址后进行下载
-        iosArchiveSpec = specDir.listFiles()
-            ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
-            ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
-            ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
-            ?.firstOrNull { it.nameWithoutExtension == archiveName }
-
-        // 找出目标版本所在文件夹
-        val targetVersion: File? = iosArchiveSpec?.listFiles()?.firstOrNull { it.name.contains(archiveVersion) }
-        println("targetVersion: $targetVersion")
-
-        // 从podspec.json文件中读取下载地址, 并下载
-        targetVersion?.apply {
-            val podspec = File("$this/$archiveName.podspec.json").readText().fromJson<Podspec>()
-            if (podspec.source?.http != null) {
-                podspec.source.http.run {
-                    val archiveFile = "${ext.ios.libDir}/ARCHIVE.zip".file()
-
-                    archiveFile.downloadFrom(this)
-                    // 下载完成后解压
-                    ZipUtil.unpack(archiveFile, archiveFile.parentFile)
-                    // 如果包含vendored_frameworks, 那么需要再拿出framework
-                    // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
-                    val vendoredFrameworkPath = podspec.ios?.vendoredFrameworks ?: podspec.vendoredFrameworks
-                    // 可能是String也可能是List<String>
-                    if (vendoredFrameworkPath is String) {
-                        moveFramework(vendoredFrameworkPath)
-                    } else if (vendoredFrameworkPath is List<*>) {
-                        vendoredFrameworkPath.forEach { moveFramework(it as String) }
-                    }
-                    // 删除压缩文件
-                    archiveFile.delete()
-                }
-            } else if (podspec.source?.git != null) {
-                println("git clone -b ${podspec.source.tag} ${podspec.source.git} sdk/ios")
-                val process = Runtime
-                    .getRuntime()
-                    .exec("git clone -b ${podspec.source.tag} ${podspec.source.git} sdk/ios")
-                val br = BufferedReader(InputStreamReader(process.inputStream))
-                br.lines().forEach(::println)
-            }
-        }
-    }
-
+    //    /**
+//     * 下载iOS端的依赖
+//     */
+//    private fun downloadIOSDependency(archiveName: String, archiveVersion: String) {
+//        val iosArchiveSpec: File?
+//        val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
+//
+//        // 找出目标pod所在的文件
+//        // cocoapods的Specs文件夹分为三层0x0-0xf的文件夹, 最后一层文件夹下的分别存放着所有的pod, 找到目标pod后再根据版本号找到目标podspec.json
+//        // 解析出下载地址后进行下载
+//        iosArchiveSpec = specDir.listFiles()
+//            ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
+//            ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
+//            ?.flatMap<File, File> { it.listFiles()?.toList() ?: listOf() }
+//            ?.firstOrNull { it.nameWithoutExtension == archiveName }
+//
+//        // 找出目标版本所在文件夹
+//        val targetVersion: File? = iosArchiveSpec?.listFiles()?.firstOrNull { it.name.contains(archiveVersion) }
+//        println("targetVersion: $targetVersion")
+//
+//        // 从podspec.json文件中读取下载地址, 并下载
+//        targetVersion?.apply {
+//            val podspec = File("$this/$archiveName.podspec.json").readText().fromJson<Podspec>()
+//            if (podspec.source?.http != null) {
+//                podspec.source.http.run {
+//                    val archiveFile = "${ext.ios.libDir}/ARCHIVE.zip".file()
+//
+//                    archiveFile.downloadFrom(this)
+//                    // 下载完成后解压
+//                    ZipUtil.unpack(archiveFile, archiveFile.parentFile)
+//                    // 如果包含vendored_frameworks, 那么需要再拿出framework
+//                    // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
+//                    val vendoredFrameworkPath = podspec.ios?.vendoredFrameworks ?: podspec.vendoredFrameworks
+//                    // 可能是String也可能是List<String>
+//                    if (vendoredFrameworkPath is String) {
+//                        moveFramework(vendoredFrameworkPath)
+//                    } else if (vendoredFrameworkPath is List<*>) {
+//                        vendoredFrameworkPath.forEach { moveFramework(it as String) }
+//                    }
+//                    // 删除压缩文件
+//                    archiveFile.delete()
+//                }
+//            } else if (podspec.source?.git != null) {
+//                println("git clone -b ${podspec.source.tag} ${podspec.source.git} sdk/ios")
+//                val process = Runtime
+//                    .getRuntime()
+//                    .exec("git clone -b ${podspec.source.tag} ${podspec.source.git} sdk/ios")
+//                val br = BufferedReader(InputStreamReader(process.inputStream))
+//                val errorBr = BufferedReader(InputStreamReader(process.errorStream))
+//                br.lines().forEach(::println)
+//                errorBr.lines().forEach(::println)
+//
+//                // 如果包含vendored_frameworks, 那么需要再拿出framework
+//                // 碰到一种情况, 下载下来带有demo和乱七八糟的东西, 需要再把framework找出来
+//                val vendoredFrameworkPath = podspec.ios?.vendoredFrameworks ?: podspec.vendoredFrameworks
+//                // 可能是String也可能是List<String>
+//                if (vendoredFrameworkPath is String) {
+//                    moveFramework(vendoredFrameworkPath)
+//                } else if (vendoredFrameworkPath is List<*>) {
+//                    vendoredFrameworkPath.forEach { moveFramework(it as String) }
+//                }
+//            }
+//        }
+//    }
+//
     private fun moveFramework(vendoredFrameworkPath: String) {
         val trueFramework = if (vendoredFrameworkPath.contains("**/")) {
             // 如果含有通配符, 那么从通配符开始查找目标framework
@@ -130,7 +155,7 @@ open class DownloadIOSSDK : FluttifyTask() {
         }
         ext.ios.libDir.file()
             .listFiles()
-            ?.filter { it.name != trueFramework.file().name }
+            ?.filter { it.extension != "framework" }
             ?.forEach { it.deleteRecursively() }
     }
 }
