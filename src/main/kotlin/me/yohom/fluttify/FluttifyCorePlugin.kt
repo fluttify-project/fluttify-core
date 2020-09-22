@@ -65,14 +65,15 @@ open class FluttifyCorePlugin : Plugin<Project> {
         androidJsonRepresentation.dependsOn(androidAddDependency)
 
         // 添加依赖
-        iOSAddDependency.dependsOn(tweakDefaultProject)
-        androidAddDependency.dependsOn(tweakDefaultProject)
+        iOSAddDependency.dependsOn(decompileClass)
+        androidAddDependency.dependsOn(decompileClass)
 
         // 反编译jar
         decompileClass.dependsOn(unzip)
 
         // 下载SDK
         unzip.dependsOn(downloadAndroidSDK)
+        unzip.dependsOn(downloadIOSSDK)
         downloadAndroidSDK.dependsOn(tweakDefaultProject)
         downloadIOSSDK.dependsOn(tweakDefaultProject)
 
