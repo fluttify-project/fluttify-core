@@ -8,6 +8,7 @@ import me.yohom.fluttify.model.XCConfig
 import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 open class AndroidJsonRepresentation : FluttifyTask() {
     @InputDirectory
@@ -68,10 +69,16 @@ open class IOSJsonRepresentation : FluttifyTask() {
 
         // 远程依赖解析
         if (ext.ios.remote.iosConfigured) {
+            println("远程依赖解析")
             frameworkDir.listFiles()
                 ?.forEach {
+                    val dir = "${project.projectDir}/output-project/${ext.projectName}/example/ios/Pods/Target Support Files/${it.nameWithoutExtension}"
                     val xcConfigFile =
-                        "${project.projectDir}/output-project/${ext.projectName}/example/ios/Pods/Target Support Files/${it.nameWithoutExtension}/${it.nameWithoutExtension}.xcconfig".file()
+                        if (File("${dir}/${it.nameWithoutExtension}.xcconfig").exists()) {
+                            File("${dir}/${it.nameWithoutExtension}.xcconfig")
+                        } else {
+                            File("${dir}/${it.nameWithoutExtension}.release.xcconfig")
+                        }
                     val xcConfig = XCConfig(xcConfigFile)
                     // 先看有没有配置framework的路径
                     if (xcConfig.FRAMEWORK_SEARCH_PATHS != null) {
@@ -96,11 +103,14 @@ open class IOSJsonRepresentation : FluttifyTask() {
                                 if (header.extension == "h") lib.sourceFiles.add(header.objcType())
                             }
                         sdk.libs.add(lib)
+                    } else {
+                        println("未找到搜索路径: $xcConfig")
                     }
                 }
         }
         // 本地依赖解析
         else {
+            println("本地依赖解析")
             frameworkDir.listFiles()
                 ?.run {
                     // 如果下载来解压后发现没有framework文件, 那么就认为是.h+.a的组合, 直接解析

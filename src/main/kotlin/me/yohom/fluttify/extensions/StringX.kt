@@ -609,12 +609,12 @@ fun PATH.file(): File {
     val cleanPath = replace("//", "/")
     val file = File(cleanPath)
     if (!file.exists()) {
-        println("PATH.file(): 文件${this}不存在")
+//        println("PATH.file(): 文件${this}不存在")
         if (endsWith("/")) {
-            println("PATH.file(): 路径以\\结尾, 创建文件夹${this}")
+//            println("PATH.file(): 路径以\\结尾, 创建文件夹${this}")
             file.mkdirs()
         } else {
-            println("PATH.file(): 创建文件${this}")
+//            println("PATH.file(): 创建文件${this}")
             // 如果是文件, 那么获取文件上级文件夹, 检查是否存在, 不存在就先创建文件夹, 再创建文件
             val dir = File(substringBeforeLast("/"))
             if (!dir.exists()) {

@@ -14,6 +14,7 @@ class XCConfig(val file: File) {
             ?.get(1)
             ?.removeSurrounding("\"", "\"")
             ?.replace("\${PODS_ROOT}", "output-project/${ext.projectName}/example/ios/Pods")
+            ?.apply { println("FRAMEWORK_SEARCH_PATHS: $this") }
     }
 
     val HEADER_SEARCH_PATHS: List<String> by lazy {
@@ -25,6 +26,12 @@ class XCConfig(val file: File) {
             ?.toMutableList()?.apply { removeAt(0) }
             ?.map { it.removeSurrounding("\"", "\"") }
             ?.map { it.replace("\${PODS_ROOT}", "output-project/${ext.projectName}/example/ios/Pods") }
+            ?.apply { println("HEADER_SEARCH_PATHS: $this") }
             ?: listOf()
     }
+
+    override fun toString(): String {
+        return "XCConfig: $file, $FRAMEWORK_SEARCH_PATHS, $HEADER_SEARCH_PATHS"
+    }
+
 }
