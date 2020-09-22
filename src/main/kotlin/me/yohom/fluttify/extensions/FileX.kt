@@ -519,8 +519,8 @@ fun OBJC_FILE.objcType(): SourceFile {
             override fun enterFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext) {
                 val returnType = ctx
                     .declarationSpecifiers()
-                    .typeSpecifier()
-                    .last() // 函数可能会多个限定词(包括返回类型), 理论上类型肯定是最后一个(?)
+                    ?.typeSpecifier()
+                    ?.last() // 函数可能会多个限定词(包括返回类型), 理论上类型肯定是最后一个(?)
                     ?.text
                 val typeName = ctx
                     .identifier()

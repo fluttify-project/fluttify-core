@@ -4,6 +4,8 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.model.XCConfig
+import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
 
@@ -64,28 +66,64 @@ open class IOSJsonRepresentation : FluttifyTask() {
 
         sdk.platform = Platform.iOS
 
-        frameworkDir.listFiles()
-            ?.run {
-                // 如果下载来解压后发现没有framework文件, 那么就认为是.h+.a的组合, 直接解析
-                if (none { it.extension == "framework" }) {
-                    val lib = Lib().apply { name = ext.projectName }
-                    frameworkDir.iterate("h") { objcFile ->
-                        lib.sourceFiles.add(objcFile.objcType())
-                    }
-                    sdk.libs.add(lib)
-                }
-                // 如果有framework文件, 那么就遍历framework, 生成Lib
-                else {
-                    filter { it.isDirectory }
-                        .forEach {
-                            val lib = Lib().apply { name = it.nameWithoutExtension }
-                            it.iterate("h") { objcFile ->
-                                lib.sourceFiles.add(objcFile.objcType())
+        // 远程依赖解析
+        if (ext.ios.remote.iosConfigured) {
+            frameworkDir.listFiles()
+                ?.forEach {
+                    val xcConfigFile =
+                        "${project.projectDir}/output-project/${ext.projectName}/example/ios/Pods/Target Support Files/${it.nameWithoutExtension}/${it.nameWithoutExtension}.xcconfig".file()
+                    val xcConfig = XCConfig(xcConfigFile)
+                    // 先看有没有配置framework的路径
+                    if (xcConfig.FRAMEWORK_SEARCH_PATHS != null) {
+                        xcConfig.FRAMEWORK_SEARCH_PATHS
+                            ?.file()
+                            ?.listFiles()
+                            ?.filter { file -> file.extension == "framework" }
+                            ?.forEach { file ->
+                                val lib = Lib().apply { name = file.nameWithoutExtension }
+                                file.iterate("h") { objcFile ->
+                                    lib.sourceFiles.add(objcFile.objcType())
+                                }
+                                sdk.libs.add(lib)
                             }
-                            sdk.libs.add(lib)
-                        }
+                    }
+                    // 再看有没有配置头文件的路径
+                    else if (xcConfig.HEADER_SEARCH_PATHS.isNotEmpty()) {
+                        val lib = Lib().apply { name = it.nameWithoutExtension }
+                        xcConfig.HEADER_SEARCH_PATHS
+                            .flatMap { path -> path.file().listFiles()?.toList() ?: listOf() }
+                            .forEach { header ->
+                                if (header.extension == "h") lib.sourceFiles.add(header.objcType())
+                            }
+                        sdk.libs.add(lib)
+                    }
                 }
-            }
+        }
+        // 本地依赖解析
+        else {
+            frameworkDir.listFiles()
+                ?.run {
+                    // 如果下载来解压后发现没有framework文件, 那么就认为是.h+.a的组合, 直接解析
+                    if (none { it.extension == "framework" }) {
+                        val lib = Lib().apply { name = ext.projectName }
+                        frameworkDir.iterate("h") { objcFile ->
+                            lib.sourceFiles.add(objcFile.objcType())
+                        }
+                        sdk.libs.add(lib)
+                    }
+                    // 如果有framework文件, 那么就遍历framework, 生成Lib
+                    else {
+                        filter { it.isDirectory }
+                            .forEach {
+                                val lib = Lib().apply { name = it.nameWithoutExtension }
+                                it.iterate("h") { objcFile ->
+                                    lib.sourceFiles.add(objcFile.objcType())
+                                }
+                                sdk.libs.add(lib)
+                            }
+                    }
+                }
+        }
 
         // 把依赖插件的libs都添加到当前插件的jr文件中去, 并标注为依赖
         sdk.libs.addAll(

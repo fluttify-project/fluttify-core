@@ -22,6 +22,7 @@ class XCConfig(val file: File) {
             ?.split(" = ")
             ?.get(1)
             ?.split(" ")
+            ?.toMutableList()?.apply { removeAt(0) }
             ?.map { it.removeSurrounding("\"", "\"") }
             ?.map { it.replace("\${PODS_ROOT}", "output-project/${ext.projectName}/example/ios/Pods") }
             ?: listOf()
