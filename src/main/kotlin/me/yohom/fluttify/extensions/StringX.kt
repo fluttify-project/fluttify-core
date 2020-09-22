@@ -669,6 +669,8 @@ fun String.objcSpecifierExpand(): String {
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
         .replace("unsignedlonglong", "unsigned long long")
+        .replace("unsignedlong", "unsigned long")
+        .replace("unsignedint", "unsigned int")
         .replace("longlong", "long long")
 }
 //

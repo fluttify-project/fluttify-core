@@ -38,6 +38,9 @@ fun ArgJsonableTmpl(variable: Variable): String {
         if (variable.trueType == "int64_t" || variable.trueType == "long long") {
             methodPrefix = "longLong"
         }
+        if (variable.trueType == "unsigned long") {
+            methodPrefix = "unsignedLong"
+        }
         if (variable.trueType == "uint64_t" || variable.trueType == "unsigned long long") {
             methodPrefix = "unsignedLongLong"
         }

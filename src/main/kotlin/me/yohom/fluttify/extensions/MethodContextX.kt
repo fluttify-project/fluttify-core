@@ -207,6 +207,7 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
         .run { removeSuffix(substringAfterLast("*", "")) }
         // 去掉nonnull前缀
         .run { removePrefix("nonnull").removePrefix("nullable") }
+        .objcSpecifierExpand()
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isStatic(): Boolean {
@@ -248,7 +249,8 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
                                 } else {
                                     this
                                 }
-                            },
+                            }
+                            .objcSpecifierExpand(),
                         it.identifier().text.depointer(), // 统一把*号加到类名上去
                         Platform.iOS
                     ),
@@ -265,7 +267,7 @@ fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
-    return macro()?.text?.contains("unavailable", true)  == true
+    return macro()?.text?.contains("unavailable", true) == true
             || macro()?.primaryExpression()?.any { it.text.contains("unavailable", true) } == true
             || attributeSpecifier()?.text?.contains("unavailable", true) == true
 }
