@@ -1,9 +1,6 @@
 package me.yohom.fluttify.model
 
-import me.yohom.fluttify.AliyunShortVideo
-import me.yohom.fluttify.Amap
-import me.yohom.fluttify.FluttifyTest
-import me.yohom.fluttify.Tim
+import me.yohom.fluttify.*
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
 import org.junit.jupiter.api.Test
 
@@ -44,6 +41,19 @@ class MethodTest: FluttifyTest() {
             ?.find { it.name == "setOnChoosePictureSizeCallBack" }
             ?.run {
                 println(HandlerMethodTmpl(this))
+            }
+    }
+
+    @Test
+    fun filter_AliyunIRecorderDelegate() {
+        ext.ios.exclude.methods = listOf("AliyunIRecorderDelegate::customRender_size")
+        AliyunShortVideo.iosSDK
+            .allTypes
+            .find { it.name == "AliyunIRecorderDelegate" }
+            ?.methods
+            ?.find { it.name == "customRender" }
+            ?.run {
+                println(filter)
             }
     }
 }
