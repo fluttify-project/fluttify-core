@@ -138,6 +138,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
         .filterMethod() // 过滤一下方法 Java不能过滤, objc这边没事
         .distinctBy { it.exactName }
         .filter { it.mustNot("参数中含有lambda") { formalParams.any { it.variable.isLambda() } } }
+        .filter { it.mustNot("过时方法") { isDeprecated } } // objc这边去掉过时回调方法, dart那边保留也无妨
         .map { NonViewCallbackMethodTmpl(it) }
 
     val subHandlerDir = File(subHandlerOutputDir)
