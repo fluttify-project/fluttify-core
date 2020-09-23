@@ -9,6 +9,7 @@ import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_enum.CallbackArgEnumTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_ref.CallbackArgRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_struct.CallbackArgStructTmpl
+import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_arg.callback_arg_value_pointer.CallbackArgValuePointerTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_return.CallbackReturnTmpl
 import me.yohom.fluttify.tmpl.objc.common.callback.common.callback_invoke.callback_void.CallbackVoidTmpl
 
@@ -47,6 +48,7 @@ fun CallbackLambdaTmpl(callerMethod: Method, callbackType: Type): String {
                 // !顺序很重要
                 it.isEnum() -> CallbackArgEnumTmpl(it)
                 it.isValueType() or it.isAliasType() -> CallbackArgValueTypeTmpl(it)
+                it.isValuePointerType() -> CallbackArgValuePointerTmpl(it)
                 it.isStruct() -> CallbackArgStructTmpl(it)
                 else -> CallbackArgRefTmpl(it)
             }
