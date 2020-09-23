@@ -137,4 +137,9 @@ class RuleContextXKtTest {
         println("interfaces: $interfaces")
     }
 
+    @Test
+    fun typeFullName() {
+        "com.aliyun.common.utils.Size"
+    }
+
 }
