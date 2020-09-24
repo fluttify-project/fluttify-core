@@ -270,6 +270,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
         if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤开始")
         val result = mustNot("抽象类型") { isAbstract }
                 &&
+                must("祖宗类是可构造的") { ancestorTypes.isEmpty() || ancestorTypes.all { it.findType().constructable } }
+                &&
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
                 mustNot("构造器循环构造") {
