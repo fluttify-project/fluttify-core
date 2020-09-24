@@ -390,12 +390,12 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 Regex("java\\.lang\\.Void").matches(this) -> "void"
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(this) -> "List<dynamic>"
                 // 若是某种java的List, 那么去掉前缀, 然后转换泛型类型
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)\\u003c.*\\u003e").matches(this) -> {
                     val genericType = genericTypes()[0]
                     "List<${genericType.toDartType()}>"
                 }
-                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<dynamic>"
                 Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace("java.util.Collection", "List")
                 Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
 
@@ -666,6 +666,7 @@ fun String.objcSpecifierExpand(): String {
         .replace("_Nonnull", "")
         .replace("nullable", "")
         .replace("nonnull", "")
+        .replace("__autoreleasing", "")
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
         .replace("unsignedlonglong", "unsigned long long")

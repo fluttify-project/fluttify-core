@@ -159,8 +159,8 @@ class StringXKtTest : FluttifyTest() {
     inner class ToDartTypeTest : FluttifyTest() {
         @Test
         fun toDartType_non_jsonable_generic_should_as_container_type() {
-            val result = "android_util_Pair<Integer,com_amap_api_maps_model_LatLng>".toDartType()
-            assertEquals(result, "android_util_Pair")
+            val result = "java.util.Collection<java.lang.Object>".toDartType()
+            println(result)
         }
     }
 
