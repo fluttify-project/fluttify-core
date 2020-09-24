@@ -44,7 +44,8 @@ val EXCLUDE_METHODS
 val EXCLUDE_TYPES
     get() = listOf(
         "android.app.Fragment",
-        "android.support.v4.app.Fragment"
+        "android.support.v4.app.Fragment",
+        "java.io.Closeable"
     ).union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
         .map { Regex(it) }
