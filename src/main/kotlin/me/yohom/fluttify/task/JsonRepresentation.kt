@@ -76,8 +76,11 @@ open class IOSJsonRepresentation : FluttifyTask() {
                     val xcConfigFile =
                         if (File("${dir}/${it.nameWithoutExtension}.xcconfig").exists()) {
                             File("${dir}/${it.nameWithoutExtension}.xcconfig")
-                        } else {
+                        } else if (File("${dir}/${it.nameWithoutExtension}.release.xcconfig").exists()) {
                             File("${dir}/${it.nameWithoutExtension}.release.xcconfig")
+                        } else {
+                            println("未找到xcconfig")
+                            return
                         }
                     val xcConfig = XCConfig(xcConfigFile)
                     // 先看有没有配置framework的路径
