@@ -12,7 +12,7 @@ var VARIABLE_LOG = false
 var FIELD_LOG = false
 var TYPE_LOG = true
 var FILE_LOG = false
-var METHOD_LOG = false
+var METHOD_LOG = true
 
 private var idSequence = 0
 val NEXT_ID

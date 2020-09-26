@@ -270,8 +270,6 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
         if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤开始")
         val result = mustNot("抽象类型") { isAbstract }
                 &&
-                must("祖宗类是可构造的") { ancestorTypes.isEmpty() || ancestorTypes.all { it.findType().constructable } }
-                &&
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
                 mustNot("构造器循环构造") {
@@ -319,6 +317,13 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
                             || platform != Platform.iOS
                 }
+                &&
+                must("这条是针对ios平台, 祖宗类是可构造的") {
+                    platform != Platform.iOS
+                            ||
+                            ancestorTypes.isEmpty()
+                            ||
+                            ancestorTypes.all { it.findType().run { constructable || isAbstract } } }
                 ||
                 must("公开枚举") { isPublic && isEnum }
         if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
