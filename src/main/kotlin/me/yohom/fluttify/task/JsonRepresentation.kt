@@ -5,7 +5,6 @@ import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.XCConfig
-import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -71,14 +70,18 @@ open class IOSJsonRepresentation : FluttifyTask() {
         if (ext.ios.remote.iosConfigured) {
             println("远程依赖解析")
             frameworkDir.listFiles()
+                ?.filter { it.isDirectory && !it.name.startsWith(".") }
                 ?.forEach {
-                    val dir = "${project.projectDir}/output-project/${ext.projectName}/example/ios/Pods/Target Support Files/${it.nameWithoutExtension}"
+                    val dir = "${project.projectDir}/output-project/${ext.projectName}/example/ios/Pods/Target Support Files/${it.name}"
                     val xcConfigFile =
-                        if (File("${dir}/${it.nameWithoutExtension}.xcconfig").exists()) {
-                            File("${dir}/${it.nameWithoutExtension}.xcconfig")
-                        } else if (File("${dir}/${it.nameWithoutExtension}.release.xcconfig").exists()) {
-                            File("${dir}/${it.nameWithoutExtension}.release.xcconfig")
+                        if (File("${dir}/${it.name}.xcconfig").exists()) {
+                            println("找到 ${dir}/${it.name}.xcconfig")
+                            File("${dir}/${it.name}.xcconfig")
+                        } else if (File("${dir}/${it.name}.release.xcconfig").exists()) {
+                            println("找到 ${dir}/${it.name}.release.xcconfig")
+                            File("${dir}/${it.name}.release.xcconfig")
                         } else {
+                            println("已尝试 ${dir}/${it.name}.xcconfig 和 ${dir}/${it.name}.release.xcconfig")
                             println("未找到xcconfig")
                             return
                         }
