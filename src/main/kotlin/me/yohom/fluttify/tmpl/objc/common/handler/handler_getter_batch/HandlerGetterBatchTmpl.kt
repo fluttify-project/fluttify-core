@@ -47,10 +47,9 @@ fun HandlerGetterBatchTmpl(field: Field): String {
     val result = when {
         field.variable.isValueType() -> ResultValueTmpl()
         field.variable.jsonable() -> ResultJsonableTmpl()
-        field.variable.isIterable -> ResultListTmpl()
         field.variable.isValuePointerType() -> ResultValuePointerTmpl()
         field.variable.isStruct() -> ResultStructTmpl(field.variable.trueType)
-        else -> ResultRefTmpl(field.variable.trueType)
+        else -> ResultRefTmpl()
     }
     return tmpl
         .replace("#__method_name__#", methodName)

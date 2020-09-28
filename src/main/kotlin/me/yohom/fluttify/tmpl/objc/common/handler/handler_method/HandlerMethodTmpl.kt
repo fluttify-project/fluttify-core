@@ -68,11 +68,10 @@ fun HandlerMethodTmpl(method: Method): String {
         when {
             isValueType() -> ResultValueTmpl()
             jsonable() -> ResultJsonableTmpl()
-            isIterable() -> ResultListTmpl()
             findType().isStruct -> ResultStructTmpl(method.returnType)
             isVoid() -> ResultVoidTmpl()
             isPrimitivePointerType() -> ResultValuePointerTmpl()
-            else -> ResultRefTmpl(method.returnType)
+            else -> ResultRefTmpl()
         }
     }
 
