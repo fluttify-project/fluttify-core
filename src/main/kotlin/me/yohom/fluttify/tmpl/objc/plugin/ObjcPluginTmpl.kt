@@ -125,6 +125,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
 
     val protocols = libs
         .flatMap { it.types }
+        .filter { it.filter }
         .filter { it.isCallback }
         .map { it.name }
         .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
@@ -132,8 +133,8 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
 
     val callbackMethods = libs
         .flatMap { it.types }
-        .filterType()
         .filter { it.isCallback }
+        .filterType()
         .flatMap { it.methods }
         .filterMethod() // 过滤一下方法 Java不能过滤, objc这边没事
         .distinctBy { it.exactName }

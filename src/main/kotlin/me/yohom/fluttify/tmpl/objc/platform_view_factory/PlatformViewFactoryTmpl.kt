@@ -124,6 +124,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
     val protocols = lib
         .types
         .filter { it.isCallback }
+        .filter { it.filter }
         .map { it.name }
         .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
         .joinToString(", ")
