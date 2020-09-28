@@ -185,6 +185,11 @@ open class Exclude {
      */
     var constants: List<String> = listOf()
 
+    /**
+     * 排除的宏
+     */
+    var macros: List<String> = listOf()
+
     override fun toString(): String {
         return "Exclude(classes=$classes, methods=$methods, libs=$libs, constants=$constants)"
     }

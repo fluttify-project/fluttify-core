@@ -3,6 +3,7 @@ package me.yohom.fluttify.extensions
 import me.yohom.fluttify.JAVA_FILE
 import me.yohom.fluttify.OBJC_FILE
 import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -581,6 +582,7 @@ fun File.iterate(
 }
 
 @Throws(Exception::class)
+@Deprecated("已不需要")
 fun File.downloadFrom(url: String) {
     println("开始从 $url 下载")
     // 忽略HTTPS效验
@@ -659,4 +661,12 @@ fun File.downloadFrom(url: String) {
 fun String.replaceMacro(): String {
     return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
         .replace("#import\"", "#import \"") // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
+        .run {
+            if (ext.ios.exclude.macros.isNotEmpty()) {
+                val regex = ext.ios.exclude.macros.joinToString("|", "(", ")")
+                replace(Regex("(#(el)?if.*${regex})[\\s\\S]*?(#endif)"), "$1\n$4")
+            } else {
+                this
+            }
+        }
 }

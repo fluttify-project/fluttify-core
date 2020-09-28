@@ -1,6 +1,7 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.Podspec
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -246,6 +247,14 @@ class StringXKtTest : FluttifyTest() {
 - (void)startScreenCapture:(NSView *)view streamType:(TRTCVideoStreamType)streamType encParam:(TRTCVideoEncParam *)encParam;
 #endif
 """
-        println(source.replaceMacro())
+        ext.ios.exclude.macros = listOf("TENCENTLBS_DEBUG")
+        val source2 = """
+            #if TENCENTLBS_DEBUG
+            + (void)upLoadData;
+            + (NSData *)getLocationLog;
+            + (void)newLocationLog;
+            #endif
+        """.trimIndent()
+        println(source2.replaceMacro())
     }
 }

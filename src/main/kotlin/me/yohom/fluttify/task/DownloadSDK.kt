@@ -1,16 +1,9 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.extensions.downloadFrom
 import me.yohom.fluttify.extensions.file
-import me.yohom.fluttify.extensions.fromJson
-import me.yohom.fluttify.model.Podspec
 import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.FalseFileFilter
-import org.apache.commons.io.filefilter.TrueFileFilter
 import org.gradle.api.tasks.TaskAction
-import org.zeroturnaround.zip.ZipUtil
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
 import java.net.URI
 
