@@ -59,7 +59,11 @@ data class Method(
             val result = (must("返回类型是jsonable类型") { returnType.jsonable() }
                     || must("返回类型是void") { returnType.isVoid() }
                     || must("返回类型是原始类型指针类型") { returnType.isPrimitivePointerType() }
-                    || must("返回类型关联类型都通过过滤") { !returnType.isMap() && returnType.allTypes().all { it.filter } }
+                    || must("返回类型关联类型都通过过滤") {
+                !returnType.isMap()
+                        &&
+                        returnType.allTypes().all { it.filter || it.name in this.className.findType().declaredGenericTypes } // 能够通过过滤, 或者是声明泛型
+            }
                     || must("返回类型是所在类声明泛型") { returnType in className.findType().declaredGenericTypes })
                     &&
                     mustNot("方法名为空") { name.isEmpty() }
@@ -132,7 +136,7 @@ data class Method(
                             .run { isEmpty() || all { it.variable.isKnownLambda() } }
                     }
                     &&
-                    mustNot("形参类型含有混淆类") { formalParams.any { it.variable.trueType.isObfuscated() } }
+                    mustNot("形参类型含有混淆类") { formalParams.any { it.variable.trueType.containerType().isObfuscated() } } // TODO 这里只判断了容器类是否是混淆类, 需要处理如果泛型类型是混淆类的情况
                     &&
                     // 参数不能中含有排除的类
                     mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.trueType.depointer()) } } }
@@ -169,7 +173,10 @@ data class Method(
             return if (hasOverload) {
                 // 类内部含有相同方法名超过1个, 说明有重载, 这里需要给方法名加上类型
                 name + formalParams
-                    .joinToStringX("__", "__") { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.trueType.toDartType()}" }
+                    .joinToStringX(
+                        "__",
+                        "__"
+                    ) { "${if (it.named.isNotBlank()) "${it.named}_" else ""}${it.variable.trueType.toDartType()}" }
                     .toUnderscore()
             } else {
                 signatureNamed()

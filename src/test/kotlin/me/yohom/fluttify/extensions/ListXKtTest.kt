@@ -2,6 +2,7 @@ package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.Amap
 import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.Nim
 import me.yohom.fluttify.Tmap
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Platform
@@ -78,6 +79,20 @@ class ListXKtTest : FluttifyTest() {
 
     @Test
     fun filterSetters() {
+    }
+
+    @Test
+    fun NIMSDK_filterType() {
+        Nim.iosSDK.allTypes.find { it.name == "NIMSDK" }?.run { println(filter) }
+    }
+
+    @Test
+    fun NIMSDK_filterMethod() {
+        Nim.androidSDK.allTypes
+            .find { it.name == "com.netease.nimlib.sdk.InvocationFuture" }
+            ?.methods
+            ?.find { it.name == "setCallback" }
+            ?.run { println(filter) }
     }
 
     @Test
