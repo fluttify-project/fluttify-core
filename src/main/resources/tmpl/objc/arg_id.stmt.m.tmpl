@@ -9,5 +9,5 @@ if ([args[@"#__name__#"] isKindOfClass:[NSNumber class]]
 }
 // non jsonable
 else {
-    #__name__# = HEAP[@([args[@"#__name__#"] integerValue])];
+    #__name__# = args[@"#__name__#"];
 }

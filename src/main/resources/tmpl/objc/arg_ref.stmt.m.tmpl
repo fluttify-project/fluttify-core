@@ -1,2 +1,2 @@
 // ref arg
-#__type_name__# #__arg_name__# = (#__type_name__#) args[@"#__arg_name__#"];
+#__type_name__# #__arg_name__# = (#__type_name__#) (args[@"#__arg_name__#"] == [NSNull null] ? nil : args[@"#__arg_name__#"]);
