@@ -11,7 +11,11 @@ class XCConfig(val file: File) {
             ?.split(" = ")
             ?.get(1)
             ?.split(" ")
-            ?.filterNot { path -> ext.ios.exclude.frameworkSearchPath.map { Regex(it) }.any { it.matches(path) } }
+            ?.filterNot { it == "\$(inherited)" }
+            ?.filterNot { path -> ext.ios.exclude.frameworkSearchPath
+                .map { Regex(it.removeSurrounding("\"", "\"")) }
+                .any { it.matches(path) }
+            }
             ?.map {
                 it.removeSurrounding("\"", "\"")
                     .replace("\${PODS_ROOT}", "output-project/${ext.projectName}/example/ios/Pods")
