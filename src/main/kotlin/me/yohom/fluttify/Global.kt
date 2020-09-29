@@ -167,6 +167,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "NSError"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSCoding"; typeType = TypeType.Interface; platform = Platform.iOS },
     Type().apply { name = "NSCopying"; typeType = TypeType.Interface; platform = Platform.iOS },
+    Type().apply { name = "NSMutableCopying"; typeType = TypeType.Interface; platform = Platform.iOS },
     Type().apply { name = "UIView"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIViewController"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIControl"; typeType = TypeType.Class; platform = Platform.iOS },
