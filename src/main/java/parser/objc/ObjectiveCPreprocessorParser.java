@@ -1,5 +1,5 @@
 package parser.objc;
-// Generated from src/main/java/parser/objc/ObjectiveCPreprocessorParser.g4 by ANTLR 4.7.2
+// Generated from src/main/java/parser/objc/ObjectiveCPreprocessorParser.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.ATNDeserializer;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class ObjectiveCPreprocessorParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
