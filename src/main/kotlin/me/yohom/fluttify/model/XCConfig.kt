@@ -11,7 +11,7 @@ class XCConfig(val file: File) {
             ?.split(" = ")
             ?.get(1)
             ?.split(" ")
-            ?.get(1)
+            ?.find { it.contains(file.nameWithoutExtension) }
             ?.removeSurrounding("\"", "\"")
             ?.replace("\${PODS_ROOT}", "output-project/${ext.projectName}/example/ios/Pods")
             ?.apply { println("FRAMEWORK_SEARCH_PATHS: $this") }
