@@ -190,6 +190,11 @@ open class Exclude {
      */
     var macros: List<String> = listOf()
 
+    /**
+     * 排除的framework搜索路径
+     */
+    var frameworkSearchPath: List<String> = listOf()
+
     override fun toString(): String {
         return "Exclude(classes=$classes, methods=$methods, libs=$libs, constants=$constants)"
     }

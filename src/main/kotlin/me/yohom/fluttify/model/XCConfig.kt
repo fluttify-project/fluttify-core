@@ -5,16 +5,19 @@ import java.io.File
 
 @Suppress("PropertyName")
 class XCConfig(val file: File) {
-    val FRAMEWORK_SEARCH_PATHS: String? by lazy {
+    val FRAMEWORK_SEARCH_PATHS: List<String> by lazy {
         file.readLines()
             .find { it.contains("FRAMEWORK_SEARCH_PATHS") }
             ?.split(" = ")
             ?.get(1)
             ?.split(" ")
-            ?.find { it.contains(file.nameWithoutExtension) }
-            ?.removeSurrounding("\"", "\"")
-            ?.replace("\${PODS_ROOT}", "output-project/${ext.projectName}/example/ios/Pods")
+            ?.filterNot { path -> ext.ios.exclude.frameworkSearchPath.map { Regex(it) }.any { it.matches(path) } }
+            ?.map {
+                it.removeSurrounding("\"", "\"")
+                    .replace("\${PODS_ROOT}", "output-project/${ext.projectName}/example/ios/Pods")
+            }
             ?.apply { println("FRAMEWORK_SEARCH_PATHS: $this") }
+            ?: listOf()
     }
 
     val HEADER_SEARCH_PATHS: List<String> by lazy {

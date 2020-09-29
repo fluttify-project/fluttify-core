@@ -72,7 +72,8 @@ open class IOSJsonRepresentation : FluttifyTask() {
             frameworkDir.listFiles()
                 ?.filter { it.isDirectory && !it.name.startsWith(".") }
                 ?.forEach {
-                    val dir = "${project.projectDir}/output-project/${ext.projectName}/example/ios/Pods/Target Support Files/${it.name}"
+                    val dir =
+                        "${project.projectDir}/output-project/${ext.projectName}/example/ios/Pods/Target Support Files/${it.name}"
                     val xcConfigFile =
                         if (File("${dir}/${it.name}.xcconfig").exists()) {
                             println("找到 ${dir}/${it.name}.xcconfig")
@@ -87,17 +88,19 @@ open class IOSJsonRepresentation : FluttifyTask() {
                         }
                     val xcConfig = XCConfig(xcConfigFile)
                     // 先看有没有配置framework的路径
-                    if (xcConfig.FRAMEWORK_SEARCH_PATHS != null) {
+                    if (xcConfig.FRAMEWORK_SEARCH_PATHS.isNotEmpty()) {
                         xcConfig.FRAMEWORK_SEARCH_PATHS
-                            ?.file()
-                            ?.listFiles()
-                            ?.filter { file -> file.extension == "framework" }
-                            ?.forEach { file ->
-                                val lib = Lib().apply { name = file.nameWithoutExtension }
-                                file.iterate("h") { objcFile ->
-                                    lib.sourceFiles.add(objcFile.objcType())
-                                }
-                                sdk.libs.add(lib)
+                            .forEach { path ->
+                                path.file()
+                                    .listFiles()
+                                    ?.filter { file -> file.extension == "framework" }
+                                    ?.forEach { file ->
+                                        val lib = Lib().apply { name = file.nameWithoutExtension }
+                                        file.iterate("h") { objcFile ->
+                                            lib.sourceFiles.add(objcFile.objcType())
+                                        }
+                                        sdk.libs.add(lib)
+                                    }
                             }
                     }
                     // 再看有没有配置头文件的路径
