@@ -63,7 +63,7 @@ import me.yohom.fluttify.model.Type
 //    // 碰到一个对象返回的hashCode为0的情况, 造成和这个id冲突了, 这里用一个magic number避免一下
 //    // 把viewId转换为refId再使用, 使其与其他对象统一
 //    final refId = await viewId2RefId((2147483647 - id).toString());
-//    _controller = #__view__#()..refId = refId..tag__ = '#__tag__#';
+//    _controller = #__view__#()..refId = refId;
 //    if (widget.onViewCreated != null) {
 //      widget.onViewCreated(_controller);
 //    }
@@ -94,7 +94,6 @@ fun UiKitViewTmpl(viewClass: Type): String {
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__view__#", view.toDartType())
         .replace("#__channel_name__#", ext.methodChannelName)
-        .replace("#__tag__#", ext.projectName)
         .replace("#__org__#", org)
         .replace("#__view_type__#", viewType)
 }

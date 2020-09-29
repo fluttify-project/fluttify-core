@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Type
 
 //static Future<#__class_name__#> create__#__signature__#(#__formal_params__#{ bool init = true /* ios only */ }) async {
 //  final refId = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec('#__tag__#'))).invokeMethod('ObjectFactory::create#__creator_name__#', #__args__#);
-//  final object = #__class_name__#()..refId = refId..tag__ = '#__tag__#';
+//  final object = #__class_name__#()..refId = refId;
 //  return object;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText() }

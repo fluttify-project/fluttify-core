@@ -4,6 +4,6 @@ static Future<List<#__class_name__#>> create_batch__#__signature__#(#__formal_pa
   }
   final List resultBatch = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec('#__tag__#'))).invokeMethod('ObjectFactory::create_batch#__creator_name__#', #__args__#);
 
-  final List<#__class_name__#> typedResult = resultBatch.map((result) => #__class_name__#()..refId = result..tag__ = '#__tag__#').toList();
+  final List<#__class_name__#> typedResult = resultBatch.map((result) => #__class_name__#()..refId = result).toList();
   return typedResult;
 }

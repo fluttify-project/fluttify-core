@@ -4,7 +4,7 @@ import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 
-//(__result__ as List).cast<String>().map((__it__) => #__type_name__#()..refId = __it__..tag__ = '#__tag__#').toList()
+//(__result__ as List).cast<String>().map((__it__) => #__type_name__#()..refId = __it__).toList()
 private val tmpl by lazy { getResource("/tmpl/dart/result_list.stmt.dart.tmpl").readText() }
 
 fun ResultListTmpl(genericType: TYPE_NAME): String {
