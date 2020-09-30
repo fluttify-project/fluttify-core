@@ -1,5 +1,5 @@
 static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
   final refId = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec('#__tag__#'))).invokeMethod('ObjectFactory::create#__creator_name__#', #__args__#);
-  final object = #__class_name__#()..refId;
+  final object = #__class_name__#()..refId = refId;
   return object;
 }

@@ -23,7 +23,7 @@ fun List<Variable>.toDartMap(
  * 键值对转成dart的map字面量字符串 批处理版本
  */
 fun List<Variable>.toDartMapBatch(
-    prefix: String = "[for (int __i__ = 0; __i__ < this.length; __i__++) {",
+    prefix: String = "[for (int __i__ = 0; __i__ < length; __i__++) {",
     suffix: String = "}]",
     valueBuilder: ((Variable) -> String) = { "${it.name}[__i__]" }
 ): String {
