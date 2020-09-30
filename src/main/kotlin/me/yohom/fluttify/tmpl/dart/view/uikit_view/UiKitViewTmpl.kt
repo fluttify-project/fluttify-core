@@ -94,6 +94,7 @@ fun UiKitViewTmpl(viewClass: Type): String {
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__view__#", view.toDartType())
         .replace("#__channel_name__#", ext.methodChannelName)
+        .replace("#__tag__#", ext.projectName)
         .replace("#__org__#", org)
         .replace("#__view_type__#", viewType)
 }

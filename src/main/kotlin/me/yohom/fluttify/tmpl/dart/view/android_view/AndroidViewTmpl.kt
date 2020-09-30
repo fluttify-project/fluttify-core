@@ -96,6 +96,7 @@ fun AndroidViewTmpl(viewType: Type): String {
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__channel_name__#", ext.methodChannelName)
         .replace("#__view__#", view.toDartType())
+        .replace("#__tag__#", ext.projectName)
         .replace("#__org__#", org)
         .replace("#__view_type__#", nativeView)
 }
