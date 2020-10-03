@@ -46,6 +46,33 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
     };
 
     final messageCodec = FluttifyMessageCodec('#__tag__#');
+
+    // hybrid composition version.
+    // PlatformViewLink(
+    //   viewType: '#__org__#/#__view_type__#',
+    //   surfaceFactory: (
+    //     BuildContext context,
+    //     PlatformViewController controller,
+    //   ) {
+    //     return AndroidViewSurface(
+    //       controller: controller,
+    //       gestureRecognizers: gestureRecognizers,
+    //       hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+    //     );
+    //   },
+    //   onCreatePlatformView: (PlatformViewCreationParams params) {
+    //     return PlatformViewsService.initSurfaceAndroidView(
+    //       id: params.id,
+    //       viewType: '#__org__#/#__view_type__#',
+    //       layoutDirection: TextDirection.ltr,
+    //       creationParams: widget.params,
+    //       creationParamsCodec: messageCodec,
+    //     )
+    //       ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+    //       ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
+    //       ..create();
+    //   },
+    // );
     return AndroidView(
       viewType: '#__org__#/#__view_type__#',
       gestureRecognizers: gestureRecognizers,
