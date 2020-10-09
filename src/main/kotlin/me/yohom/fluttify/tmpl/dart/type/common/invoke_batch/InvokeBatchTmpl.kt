@@ -18,7 +18,7 @@ fun InvokeBatchTmpl(method: Method): String {
     val loopHeader = if (method.isStatic && method.formalParams.isNotEmpty()) {
         "[for (int __i__ = 0; __i__ < ${method.formalParams[0].variable.name}.length; __i__++) {"
     } else {
-        "[for (int __i__ = 0; __i__ < length; __i__++) {"
+        "[for (int __i__ = 0; __i__ < this.length; __i__++) {"
     }
     val args = method.formalParams
         .filterFormalParams()
