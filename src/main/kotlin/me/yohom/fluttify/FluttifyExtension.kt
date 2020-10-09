@@ -51,6 +51,11 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     var pluginDependencies: Map<String, String> = mapOf()
 
     /**
+     * 纯dart包依赖
+     */
+    var packageDependencies: Map<String, String> = mapOf()
+
+    /**
      * android端配置
      */
     var android: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)

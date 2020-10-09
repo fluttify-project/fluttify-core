@@ -90,6 +90,10 @@ open class TweakDefaultProject : FluttifyTask() {
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")
                     )
+                    .replaceParagraph(
+                        "#__package_dependency__#",
+                        ext.packageDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")
+                    )
                     .replace("#__android_identifier__#", "${ext.org}.${ext.projectName}")
                     .replace("#__plugin_class__#", "${ext.projectName.underscore2Camel()}Plugin")
             )
