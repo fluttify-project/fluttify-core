@@ -94,8 +94,8 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__plugin_class__#", "${ext.projectName.underscore2Camel()}Plugin")
             )
 
-//        "${outputProjectPath}/analysis_options.yaml"
-//            .file()
-//            .writeText(analysisTmpl)
+        "${outputProjectPath}/analysis_options.yaml"
+            .file()
+            .writeText(analysisTmpl)
     }
 }
