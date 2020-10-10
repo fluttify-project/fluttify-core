@@ -8,6 +8,7 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Variable
+import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.io.filefilter.SuffixFileFilter
@@ -93,6 +94,20 @@ class ListXKtTest : FluttifyTest() {
             ?.methods
             ?.find { it.name == "setCallback" }
             ?.run { println(filter) }
+    }
+
+    @Test
+    fun AmapNavi_filterMethod() {
+        Amap.androidMapSDK.allTypes
+            .find { it.name == "com.amap.api.navi.AMapNaviListener" }
+            ?.run {
+                println(TypeInterfaceTmpl(this))
+            }
+//        Amap.androidMapSDK.allTypes
+//            .find { it.name == "com.amap.api.navi.AMapNaviListener" }
+//            ?.methods
+//            ?.filter { it.name == "OnUpdateTrafficFacility" }
+//            ?.forEach { println("${it.nameWithClass()}: ${it.filter}") }
     }
 
     @Test

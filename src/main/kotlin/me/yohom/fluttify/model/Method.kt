@@ -180,7 +180,7 @@ data class Method(
                     .toUnderscore()
             } else {
                 signatureNamed()
-            }.replace("[]", "_") // 去掉数据的方括号
+            }.replace("[]", "Array") // 去掉数据的方括号
         }
 
     /**

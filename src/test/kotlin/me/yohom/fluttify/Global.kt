@@ -17,9 +17,6 @@ object Amap {
 
     val androidTrackSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_track_fluttify/jr/amap_track_fluttify.android.json".file().readText().fromJson<SDK>()
     val iosTrackSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_track_fluttify/jr/amap_track_fluttify.ios.json".file().readText().fromJson<SDK>()
-
-    val androidNaviSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_navi_fluttify/jr/android/json_representation.json".file().readText().fromJson<SDK>()
-    val iosNaviSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_navi_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
 }
 
 object Bmap {

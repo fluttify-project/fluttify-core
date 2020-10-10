@@ -260,7 +260,11 @@ fun TYPE_NAME.ifIsGenericTypeConvertToObject(): String {
  * 获取与当前类名关联的所有类型信息
  */
 fun TYPE_NAME.allTypes(): List<Type> {
-    return genericTypes().map { it.findType() }.union(listOf(containerType().findType())).toList()
+    val containerTypes = dearray().containerType().findType()
+    val genericTypes = dearray().genericTypes().map { it.findType() }
+    return genericTypes
+        .union(listOf(containerTypes))
+        .toList()
 }
 
 /**
@@ -388,6 +392,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
+                Regex(".*\\[]").matches(this) -> dearray().enList() // 数组转列表
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 Regex("java\\.lang\\.Void").matches(this) -> "void"
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(this) -> "List<dynamic>"
