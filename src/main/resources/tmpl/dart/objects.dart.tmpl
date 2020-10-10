@@ -1,0 +1,9 @@
+import 'package:flutter/services.dart';
+import 'package:foundation_fluttify/foundation_fluttify.dart';
+
+const k#__identifier__#Channel = MethodChannel(
+  '#__channel_name__#',
+  StandardMethodCodec(FluttifyMessageCodec('#__project_name__#')),
+);
+
+const kProjectName = '#__project_name__#';

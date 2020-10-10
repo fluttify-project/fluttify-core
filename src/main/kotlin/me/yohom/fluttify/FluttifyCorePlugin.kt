@@ -36,6 +36,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
 
         val androidDartInterface = project.tasks.create("androidDartInterface", AndroidDartInterface::class.java)
         val iOSDartInterface = project.tasks.create("iOSDartInterface", IOSDartInterface::class.java)
+        val commonObjects = project.tasks.create("commonObjects", CommonObjects::class.java)
 
         val androidJavaInterface = project.tasks.create("androidJavaInterface", AndroidJavaInterface::class.java)
         val iOSObjcInterface = project.tasks.create("iOSObjcInterface", IOSObjcInterface::class.java)
@@ -50,10 +51,12 @@ open class FluttifyCorePlugin : Plugin<Project> {
         export.dependsOn(iOSObjcInterface, androidJavaInterface)
 
         // 原生接口
-        iOSObjcInterface.dependsOn(iOSDartInterface)
-        androidJavaInterface.dependsOn(androidDartInterface)
+        iOSObjcInterface.dependsOn(commonObjects)
+        androidJavaInterface.dependsOn(commonObjects)
 
         // dart接口
+        commonObjects.dependsOn(iOSDartInterface)
+        commonObjects.dependsOn(androidDartInterface)
         iOSDartInterface.dependsOn(iOSJsonRepresentation)
         androidDartInterface.dependsOn(androidJsonRepresentation)
 

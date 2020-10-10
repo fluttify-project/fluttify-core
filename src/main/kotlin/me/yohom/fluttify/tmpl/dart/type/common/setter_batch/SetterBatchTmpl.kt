@@ -17,13 +17,11 @@ fun SetterBatchTmpl(field: Field): String {
         val typeName = field.variable.trueType.toDartType()
         val name = name.depointer()
 
-        val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
-        val normalMethodChannel = ext.methodChannelName
-        // 只有当前类是View的时候, 才需要区分普通channel和View channel
-        val methodChannel = if (field.className.findType().isView) {
-            "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
+        val channel = if (field.className.findType().isView) {
+            val channelName = "viewChannel ? '${ext.methodChannelName}/${field.className.toUnderscore()}' : '${ext.methodChannelName}'"
+            "MethodChannel($channelName, StandardMethodCodec(FluttifyMessageCodec('${ext.projectName}')))"
         } else {
-            "'$normalMethodChannel'"
+            "k${ext.projectName.underscore2Camel()}Channel"
         }
 
         val argValue = when {
@@ -40,7 +38,7 @@ fun SetterBatchTmpl(field: Field): String {
             .replace("#__name__#", name)
             .replace("#__arg_value__#", argValue)
             .replace("#__tag__#", ext.projectName)
-            .replace("#__method_channel__#", methodChannel)
+            .replace("#__channel__#", channel)
             .replace("#__setter_method__#", setterMethodName)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__callback__#", callback)

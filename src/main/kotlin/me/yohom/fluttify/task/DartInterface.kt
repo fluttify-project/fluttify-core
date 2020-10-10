@@ -16,6 +16,19 @@ import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
 import org.gradle.api.tasks.TaskAction
 
+open class CommonObjects: FluttifyTask() {
+    private val tmpl by lazy { getResource("/tmpl/dart/objects.dart.tmpl").readText() }
+
+    @TaskAction
+    fun process() {
+        val content = tmpl.replace("#__channel_name__#", ext.methodChannelName)
+            .replace("#__project_name__#", ext.projectName)
+            .replace("#__identifier__#", ext.projectName.underscore2Camel())
+
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file().writeText(content)
+    }
+}
+
 /**
  * 生成Java文件的Dart接口文件
  */

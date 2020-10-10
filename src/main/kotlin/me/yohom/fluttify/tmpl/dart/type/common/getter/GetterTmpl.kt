@@ -16,13 +16,11 @@ fun GetterTmpl(field: Field): String {
     val name = if (field.isStatic == true) "static_${field.variable.name.depointer()}" else field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
 
-    val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
-    val normalMethodChannel = ext.methodChannelName
-    // 只有当前类是View的时候, 才需要区分普通channel和View channel
-    val methodChannel = if (field.className.findType().isView) {
-        "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
+    val channel = if (field.className.findType().isView) {
+        val channelName = "viewChannel ? '${ext.methodChannelName}/${field.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        "MethodChannel($channelName, StandardMethodCodec(FluttifyMessageCodec('${ext.projectName}')))"
     } else {
-        "'$normalMethodChannel'"
+        "k${ext.projectName.underscore2Camel()}Channel"
     }
 
     val getter = field.getterMethodName
@@ -47,7 +45,7 @@ fun GetterTmpl(field: Field): String {
             .replace("#__static__#", if (field.isStatic == true) "static " else "")
             .replace("#__name__#", name)
             .replace("#__view_channel__#", viewChannel)
-            .replace("#__method_channel__#", methodChannel)
+            .replace("#__channel__#", channel)
             .replace("#__getter_method__#", getter)
             .replace("#__ref_id__#", if (field.isStatic == true) "" else "{'__this__': this}")
             .replace("#__tag__#", ext.projectName)
