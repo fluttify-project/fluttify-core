@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_setter.CallbackSetterTmpl
 
 //Future<void> set_#__name__#_batch(List<#__type__#> #__name__##__view_channel__#) async {
-//  await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('#__setter_method__#_batch', [for (int __i__ = 0; __i__ < this.length; __i__++) {'__this__': this[__i__], "#__name__#": #__arg_value__#}]);
+//  await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec(#__tag__#))).invokeMethod('#__setter_method__#_batch', [for (int __i__ = 0; __i__ < this.length; __i__++) {'__this__': this[__i__], "#__name__#": #__arg_value__#}]);
 //
 //  #__callback__#
 //}
@@ -39,6 +39,7 @@ fun SetterBatchTmpl(field: Field): String {
             .replace("#__type__#", typeName)
             .replace("#__name__#", name)
             .replace("#__arg_value__#", argValue)
+            .replace("#__tag__#", ext.projectName)
             .replace("#__method_channel__#", methodChannel)
             .replace("#__setter_method__#", setterMethodName)
             .replace("#__view_channel__#", viewChannel)
