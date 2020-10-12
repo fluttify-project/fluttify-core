@@ -83,10 +83,16 @@ extern BOOL enableLog;
     NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
 
     __strong __typeof(weakSelf) strongSelf = weakSelf;
-    if (strongSelf != nil && strongSelf->_handlerMap[methodCall.method] != nil) {
-      strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
+    if (strongSelf != nil) {
+      if (strongSelf->_handlerMap[methodCall.method] != nil) {
+        strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
+      } else {
+        methodResult(FlutterMethodNotImplemented);
+      }
     } else {
-      methodResult(FlutterMethodNotImplemented);
+      methodResult([FlutterError errorWithCode:@"当前PlatformView为nil"
+                                       message: @"当前PlatformView为nil"
+                                       details:[NSString stringWithFormat:@"请不要在 %@ 释放后继续调用其对象的方法", NSStringFromClass([MAMapView class])]]);
     }
   }];
   //endregion
