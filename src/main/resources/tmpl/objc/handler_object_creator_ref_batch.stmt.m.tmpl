@@ -3,7 +3,7 @@
 
     NSNumber* length = (NSNumber*) ((NSDictionary<NSString*, NSObject*>*) argsBatch)[@"length"];
     NSNumber* init = (NSNumber*) ((NSDictionary<NSString*, NSObject*>*) argsBatch)[@"init"];
-    for (int __i__ = 0; __i__ < [length integerValue]; __i__++) {
+    for (NSUInteger __i__ = 0; __i__ < [length integerValue]; __i__++) {
         #__type_name__#* __this__;
         if ([init boolValue]) {
             __this__ = [[#__type_name__# alloc] init];
