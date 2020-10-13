@@ -1,14 +1,13 @@
 @"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
+    if (enableLog) {
+        NSLog(@"fluttify-objc: #__method_name__#(%@)", args);
+    }
+
     // args
     #__args__#
 
     // ref
     #__ref__#
-
-    // print log
-    if (enableLog) {
-        #__log__#
-    }
 
     // invoke native method
     #__invoke__#

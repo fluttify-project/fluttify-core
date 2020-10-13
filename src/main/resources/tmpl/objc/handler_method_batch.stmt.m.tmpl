@@ -1,4 +1,8 @@
 @"#__method_name__#_batch": ^(NSObject <FlutterPluginRegistrar> * registrar, id argsBatch, FlutterResult methodResult) {
+    if (enableLog) {
+        NSLog(@"fluttify-objc: #__method_name__#(%@)", argsBatch);
+    }
+
     NSMutableArray* resultList = [NSMutableArray array];
 
     for (NSUInteger __i__ = 0; __i__ < ((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch).count; __i__++) {
