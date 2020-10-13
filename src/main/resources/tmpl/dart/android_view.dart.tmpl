@@ -95,7 +95,7 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
   @override
   void dispose() {
     if (widget.onDispose != null) {
-      widget.onDispose().then((_) => _controller.release__());
+      widget.onDispose().whenComplete((_) => _controller.release__());
     } else {
       _controller.release__();
     }
