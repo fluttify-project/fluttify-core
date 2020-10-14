@@ -5,12 +5,13 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
-//final resultBatch = await #__channel__#.invokeMethod('#__method_name__#', #__args__#);
+//final resultBatch = await #__channel__#.invokeMethod<#__cast_type__#>('#__method_name__#', #__args__#);
 private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText() }
 
 fun InvokeBatchTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
-        val channelName = "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val channelName =
+            "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
         "MethodChannel($channelName, StandardMethodCodec(FluttifyMessageCodec('${ext.projectName}')))"
     } else {
         "k${ext.projectName.underscore2Camel()}Channel"
@@ -22,6 +23,7 @@ fun InvokeBatchTmpl(method: Method): String {
     } else {
         "[for (int __i__ = 0; __i__ < this.length; __i__++) {"
     }
+    val castType = if (method.returnType.jsonable()) method.returnType.toDartType() else "Ref"
     val args = method.formalParams
         .filterFormalParams()
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter(method.className, "this")) else this }
@@ -50,6 +52,7 @@ fun InvokeBatchTmpl(method: Method): String {
     return tmpl
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
+        .replace("#__cast_type__#", castType)
         .replace("#__tag__#", ext.projectName)
         .replace("#__args__#", args)
 }

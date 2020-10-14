@@ -1,6 +1,6 @@
 Future<List<#__type__#>> get_#__name__#_batch(#__view_channel__#) async {
-  final resultBatch = await #__channel__#.invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'__this__': __item__}]);
+  final resultBatch = await #__channel__#.invokeListMethod<#__result_type__#>("#__getter_method__#_batch", [for (final __item__ in this) {'__this__': __item__}]);
 
-  final typedResult = (resultBatch as List).cast<#__result_type__#>().map((__result__) => #__result__#).toList();
+  final typedResult = resultBatch.map((__result__) => #__result__#).toList();
   return typedResult;
 }
