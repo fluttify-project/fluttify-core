@@ -4,11 +4,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 
 //@mustCallSuper
-//Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {
-//  if (fluttifyLogEnabled) {
-//    debugPrint('#__interface_method__#::kNativeObjectPool: $kNativeObjectPool');
-//  }
-//}
+//Future<#__return_type__#> #__interface_method__#(#__formal_params__#) {}
 private val tmpl by lazy { getResource("/tmpl/dart/interface_method.mtd.dart.tmpl").readText() }
 
 fun InterfaceMethodTmpl(method: Method): String {

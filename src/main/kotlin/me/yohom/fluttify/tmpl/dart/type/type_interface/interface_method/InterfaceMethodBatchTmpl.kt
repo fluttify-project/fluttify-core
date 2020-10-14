@@ -53,8 +53,7 @@ fun InterfaceMethodBatchTmpl(method: Method): String {
     val resultType = method.returnType.run {
         when {
             jsonable() -> toDartType()
-            isVoid() -> "String"
-            else -> "String"
+            else -> "Ref"
         }
     }
     val returnStatement = "(resultBatch as List).cast<$resultType>().map((__result__) => ${ReturnTmpl(method)}).toList()"
