@@ -3,8 +3,8 @@ package me.yohom.fluttify.tmpl.objc.common.handler.handler_getter_batch
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.objc.common.handler.common.invoke.InvokeTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
-import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref_batch.ref_ref.RefRefBatchTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref_batch.struct_ref.StructRefBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
 //@"#__method_name__#_batch": ^(NSObject <FlutterPluginRegistrar>* registrar, id argsBatch, FlutterResult methodResult) {
@@ -36,10 +36,11 @@ fun HandlerGetterBatchTmpl(field: Field): String {
     }
 
     // 获取当前调用方法的对象引用
+    // 批处理和普通调用的获取引用方式区分一下, 批处理时, 碰到到nil则添加nil进结果列表并跳过此次循环
     val ref = if (field.className.findType().isStruct) {
-        StructRefTmpl(field.asGetterMethod())
+        StructRefBatchTmpl(field.asGetterMethod())
     } else {
-        RefRefTmpl(field.asGetterMethod())
+        RefRefBatchTmpl(field.asGetterMethod())
     }
 
     // 调用objc端对应的方法

@@ -6,8 +6,8 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //#__static__#Future<#__type__#> get_#__name__#(#__view_channel__#) async {
-//  final __result__ = await MethodChannel(#__method_channel__#, StandardMethodCodec(FluttifyMessageCodec('#__tag__#'))).invokeMethod("#__getter_method__#", #__ref_id__#);
-//  return __result__ == null ? null : (#__result__#);
+//  final __result__ = await #__channel__#.invokeMethod("#__getter_method__#", #__ref_id__#);
+//  return #__result__#;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText() }
 

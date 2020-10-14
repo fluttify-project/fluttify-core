@@ -20,7 +20,7 @@
         // result
         #__result__#
 
-        [resultList addObject:__result__];
+        [resultList addObject:__result__ == nil ? [NSNull null] : __result__];
     }
 
     methodResult(resultList);
