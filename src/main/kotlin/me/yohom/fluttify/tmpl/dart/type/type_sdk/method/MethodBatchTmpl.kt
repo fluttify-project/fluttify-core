@@ -14,13 +14,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 //  // invoke native method
 //  #__invoke__#
 //
-//  // convert native result to dart side object
-//  if (resultBatch == null) {
-//    return null;
-//  } else {
-//    final typedResult = #__return_statement__#;
-//    return typedResult;
-//  }
+//  return #__return_statement__#;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText() }
 
@@ -54,8 +48,7 @@ fun MethodBatchTmpl(method: Method): String {
     val resultType = method.returnType.run {
         when {
             jsonable() -> toDartType()
-            isVoid() -> "String"
-            else -> "String"
+            else -> "Ref"
         }
     }
     val returnStatement = "(resultBatch as List).cast<$resultType>().map((__result__) => ${ReturnTmpl(method)}).toList()"

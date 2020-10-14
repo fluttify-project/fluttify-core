@@ -29,8 +29,7 @@ fun GetterBatchTmpl(field: Field): String {
     val resultType = field.variable.trueType.run {
         when {
             jsonable() -> toDartType()
-            isVoid() -> "String"
-            else -> "String"
+            else -> "Ref"
         }
     }
     val result = field.variable.run {
@@ -47,13 +46,6 @@ fun GetterBatchTmpl(field: Field): String {
             else -> ResultRefTmpl(trueType)
         }
     }
-    val nativeObjectPool = field.variable.run {
-        when {
-            jsonable() or isEnum() or isAliasType() -> ""
-            isIterable || isStructPointer() -> "kNativeObjectPool.addAll(typedResult.expand((e) => e));"
-            else -> "kNativeObjectPool.addAll(typedResult);"
-        }
-    }
 
     return field.variable.run {
         tmpl
@@ -63,7 +55,6 @@ fun GetterBatchTmpl(field: Field): String {
             .replace("#__channel__#", channel)
             .replace("#__getter_method__#", getter)
             .replace("#__result_type__#", resultType)
-            .replace("#__native_object_pool__#", nativeObjectPool)
             .replace("#__tag__#", ext.projectName)
             .replace("#__result__#", result)
     }

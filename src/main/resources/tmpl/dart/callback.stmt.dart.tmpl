@@ -9,6 +9,6 @@ MethodChannel('#__callback_channel__#', StandardMethodCodec(FluttifyMessageCodec
         }
       } catch (e) {
         debugPrint(e);
-        throw e;
+        rethrow;
       }
     });

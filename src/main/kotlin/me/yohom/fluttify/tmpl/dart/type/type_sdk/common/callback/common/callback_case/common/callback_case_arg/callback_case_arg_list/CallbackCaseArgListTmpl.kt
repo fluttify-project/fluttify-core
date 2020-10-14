@@ -4,7 +4,7 @@ import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Parameter
 
-//(args['#__arg_name__#'] as List).cast<int>().map((__it__) => TypeOp#__plugin_name__##__platform__#(__it__).as__<#__arg_type_name__#>()).toList()
+//(args['#__arg_name__#'] as List).cast<Ref>().map((__it__) => TypeOp#__plugin_name__##__platform__#(__it__).as__<#__arg_type_name__#>()).toList()
 private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_list.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgListTmpl(param: Parameter): String {

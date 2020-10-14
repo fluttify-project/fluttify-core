@@ -1,5 +1,5 @@
 static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
-  final refId = await k#__identifier__#Channel.invokeMethod('ObjectFactory::create#__creator_name__#', #__args__#);
-  final object = #__class_name__#()..refId = refId;
+  final __result__ = await k#__identifier__#Channel.invokeMethod<Ref>('ObjectFactory::create#__creator_name__#', #__args__#);
+  final object = #__class_name__#()..refId = __result__.refId;
   return object;
 }
