@@ -4,7 +4,7 @@ import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 
-//__result__ == null ? null : (#__type_name__#()..refId = __result__.refId)
+//__result__ == null ? null : (#__type_name__#()..refId = __result__)
 private val tmpl by lazy { getResource("/tmpl/dart/result_ref.stmt.dart.tmpl").readText() }
 
 fun ResultRefTmpl(returnType: TYPE_NAME): String {

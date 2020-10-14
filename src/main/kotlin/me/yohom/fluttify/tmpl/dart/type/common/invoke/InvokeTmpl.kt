@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum_list.ArgEnumListTmpl
 
-//final __result__ = await #__channel__#.invokeMethod<#__cast_type__#>('#__method_name__#', #__args__#);
+//final __result__ = await #__channel__#.invokeMethod('#__method_name__#', #__args__#);
 private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText() }
 
 fun InvokeTmpl(method: Method): String {
@@ -18,7 +18,6 @@ fun InvokeTmpl(method: Method): String {
         "k${ext.projectName.underscore2Camel()}Channel"
     }
     val methodName = method.nameWithClass()
-    val castType = if (method.returnType.jsonable()) method.returnType.toDartType() else "Ref"
     val args = method.formalParams
         .filterFormalParams()
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter(method.className, "this")) else this }
@@ -42,7 +41,6 @@ fun InvokeTmpl(method: Method): String {
         }
     return tmpl
         .replace("#__channel__#", channel)
-        .replace("#__cast_type__#", castType)
         .replace("#__method_name__#", methodName)
         .replace("#__args__#", args)
         .replace("#__tag__#", ext.projectName)

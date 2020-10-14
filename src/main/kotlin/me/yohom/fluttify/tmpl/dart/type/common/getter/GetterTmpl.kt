@@ -6,7 +6,7 @@ import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //#__static__#Future<#__type__#> get_#__name__#(#__view_channel__#) async {
-//  final __result__ = await #__channel__#.invokeMethod<#__cast_type__#>("#__getter_method__#", #__ref_id__#);
+//  final __result__ = await #__channel__#.invokeMethod("#__getter_method__#", #__ref_id__#);
 //  return #__result__#;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText() }
@@ -24,7 +24,6 @@ fun GetterTmpl(field: Field): String {
     }
 
     val getter = field.getterMethodName
-    val castType = if (field.variable.trueType.jsonable()) field.variable.trueType.toDartType() else "Ref"
     val result = field.variable.run {
         when {
             jsonable()
@@ -46,7 +45,6 @@ fun GetterTmpl(field: Field): String {
             .replace("#__static__#", if (field.isStatic == true) "static " else "")
             .replace("#__name__#", name)
             .replace("#__view_channel__#", viewChannel)
-            .replace("#__cast_type__#", castType)
             .replace("#__channel__#", channel)
             .replace("#__getter_method__#", getter)
             .replace("#__ref_id__#", if (field.isStatic == true) "" else "{'__this__': this}")
