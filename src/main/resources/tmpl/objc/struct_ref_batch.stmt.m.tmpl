@@ -1,9 +1,9 @@
 NSValue* dataValue = (NSValue*) ((NSDictionary<NSString*, NSObject*>*) args)[@"__this__"];
+#__type_name__# ref;
 // 批处理过程中出现nil引用则直接添加nil进结果列表, 然后进行下一次循环
 if ((NSNull *) dataValue == [NSNull null] || dataValue == nil) {
     [resultList addObject: [NSNull null]];
     continue;
 } else {
-    #__type_name__# value;
-    [dataValue getValue:&value];
+    [dataValue getValue:&ref];
 }
