@@ -26,12 +26,7 @@ fun GetterBatchTmpl(field: Field): String {
     }
 
     val getter = field.getterMethodName
-    val resultType = field.variable.trueType.run {
-        when {
-            jsonable() -> toDartType()
-            else -> "Ref"
-        }
-    }
+    val resultType = field.variable.trueType.toDartType()
     val result = field.variable.run {
         when {
             jsonable()
@@ -43,7 +38,7 @@ fun GetterBatchTmpl(field: Field): String {
             )
             isStructPointer() -> ResultListTmpl(trueType.depointer())
             isEnum() -> ResultEnumTmpl(trueType)
-            else -> ResultRefTmpl(trueType)
+            else -> ResultRefTmpl()
         }
     }
 
@@ -53,9 +48,9 @@ fun GetterBatchTmpl(field: Field): String {
             .replace("#__name__#", name)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__channel__#", channel)
+            .replace("#__cast__#",  field.variable.trueType.containerType().toDartType())
             .replace("#__getter_method__#", getter)
             .replace("#__result_type__#", resultType)
-            .replace("#__tag__#", ext.projectName)
             .replace("#__result__#", result)
     }
 }

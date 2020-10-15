@@ -35,7 +35,7 @@ fun CallbackLambdaTmpl(callerMethod: Method, callbackType: Type): String {
     val callbackChannel = if (callerMethod.isStatic) {
         "@\"${callbackType.name.deprotocol()}::Callback\""
     } else {
-        "[NSString stringWithFormat:@\"${callbackType.name.deprotocol()}::Callback@%@\", @(ref.hash)]"
+        "[NSString stringWithFormat:@\"${callbackType.name.deprotocol()}::Callback@%@:%@\", NSStringFromClass([ref class]), @(ref.hash)]"
     }
     val formalParams = callbackType
         .formalParams

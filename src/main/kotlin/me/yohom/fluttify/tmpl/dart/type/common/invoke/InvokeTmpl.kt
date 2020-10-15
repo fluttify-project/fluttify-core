@@ -12,7 +12,8 @@ private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readT
 
 fun InvokeTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
-        val channelName = "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val channelName =
+            "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}Codec))"
     } else {
         "k${ext.projectName.underscore2Camel()}Channel"
@@ -22,7 +23,7 @@ fun InvokeTmpl(method: Method): String {
         .filterFormalParams()
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter(method.className, "this")) else this }
         .map { it.variable }
-        .toDartMap  {
+        .toDartMap {
             val typeName = it.trueType
             when {
                 // 数组
@@ -43,5 +44,4 @@ fun InvokeTmpl(method: Method): String {
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
         .replace("#__args__#", args)
-        .replace("#__tag__#", ext.projectName)
 }

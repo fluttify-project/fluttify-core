@@ -7,15 +7,14 @@ import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Type
 
-//else if (T == #__type_name__#) {
-//  final result = await MethodChannel('#__method_channel__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('RefClass::as#__type_name__#', {'refId': (this as Ref).refId});
-//  return (#__constructor__#().refId = result..tag__ = '#__plugin_name__#') as T;
+//else if (typeName == '#__type_name__#') {
+//  return #__constructor__#()..refId = (__this__ is Ref ? (__this__ as Ref).refId : __this__ as String);
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/type_cast.stmt.dart.tmpl").readText() }
 
 fun TypeCastTmpl(type: Type): String {
     return tmpl
-        .replace("#__type_name__#", type.name.containerType().toDartType())
+        .replace("#__type_name__#", type.name.containerType().replace("$", "\\$"))
         .replace(
             "#__constructor__#",
             if (type.isInterface) {

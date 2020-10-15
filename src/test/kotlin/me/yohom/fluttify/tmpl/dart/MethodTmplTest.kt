@@ -90,4 +90,14 @@ class MethodTmplTest : FluttifyTest() {
             ?.find { it.name == "createTeam" }
             ?.run { println(MethodTmpl(this)) }
     }
+
+    @Test
+    fun methodTmpl_com_amap_api_services_poisearch_PoiResult() {
+        Amap.androidSearchSDK
+            .allTypes
+            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
+            ?.methods
+            ?.find { it.name == "getSearchSuggestionCitys" }
+            ?.run { println(MethodTmpl(this)) }
+    }
 }

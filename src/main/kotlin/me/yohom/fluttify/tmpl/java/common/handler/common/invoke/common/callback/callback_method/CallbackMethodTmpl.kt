@@ -13,9 +13,6 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //        #__log__#
 //    }
 //
-//    // convert to jsonable data
-//    #__local_args__#
-//
 //    // call dart method
 //    handler.post(new Runnable() {
 //        @Override

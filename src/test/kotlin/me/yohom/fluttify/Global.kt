@@ -6,8 +6,8 @@ import me.yohom.fluttify.extensions.parseSDK
 import me.yohom.fluttify.model.SDK
 
 object Amap {
-    val androidSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/android/json_representation.json".file().readText().fromJson<SDK>()
-    val iosSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
+    val androidSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/amap_search_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/amap_search_fluttify.ios.json".file().readText().fromJson<SDK>()
 
     val androidMapSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/jr/amap_map_fluttify.android.json".file().readText().fromJson<SDK>()
     val iosMapSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/jr/amap_map_fluttify.ios.json".file().readText().fromJson<SDK>()

@@ -45,12 +45,7 @@ fun MethodBatchTmpl(method: Method): String {
     val checkParamSize = method.formalParams.checkParamSize()
     val invoke = InvokeBatchTmpl(method)
 
-    val resultType = method.returnType.run {
-        when {
-            jsonable() -> toDartType()
-            else -> "Ref"
-        }
-    }
+    val resultType = method.returnType.toDartType()
     val returnStatement = "(resultBatch as List).cast<$resultType>().map((__result__) => ${ReturnTmpl(method)}).toList()"
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")

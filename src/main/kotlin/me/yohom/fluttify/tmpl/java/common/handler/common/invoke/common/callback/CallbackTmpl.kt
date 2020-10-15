@@ -24,7 +24,7 @@ fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
     val callbackChannel = if(callerMethod.isStatic){
         "\"${callerMethod.nameWithClass()}::Callback\""
     } else {
-        "\"${callerMethod.nameWithClass()}::Callback@\" + String.valueOf(System.identityHashCode(__this__))"
+        "\"${callerMethod.nameWithClass()}::Callback@\" + \"${callerMethod.className}:\" + String.valueOf(System.identityHashCode(__this__))"
     }
     val callbackMethods = callbackType.methods.joinToString("\n") { CallbackMethodTmpl(it) }
     return tmpl

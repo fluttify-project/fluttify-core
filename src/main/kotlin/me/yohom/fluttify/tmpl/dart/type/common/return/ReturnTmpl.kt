@@ -34,7 +34,7 @@ fun ReturnTmpl(method: Method): String {
             returnType.isRefArray() -> ResultListTmpl(returnType.dearray())
             returnType.isStructPointer() -> ResultListTmpl(returnType.depointer())
             returnType in method.className.findType().declaredGenericTypes -> "Object().as__<$returnType>()"
-            else -> ResultRefTmpl(returnType)
+            else -> ResultRefTmpl()
         }
     }
 }

@@ -38,7 +38,7 @@ fun ViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "[NSString stringWithFormat:@\"${method.className.deprotocol()}::Callback@%@\", @(_view.hash)]"
+    val methodChannel = "[NSString stringWithFormat:@\"${method.className.deprotocol()}::Callback@%@:%@\", NSStringFromClass([_view class]), @(_view.hash)]"
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name}" }}"
     val localArgs = if (method.formalParams.none { it.variable.trueType.isMultiPointer() }) {

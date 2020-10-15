@@ -50,6 +50,5 @@ fun InvokeBatchTmpl(method: Method): String {
     return tmpl
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
-        .replace("#__tag__#", ext.projectName)
         .replace("#__args__#", args)
 }
