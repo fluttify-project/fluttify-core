@@ -10,10 +10,5 @@ put("ObjectFactory::create#__creator_name__#", (__args__, __methodResult__) -> {
     // create target object
     #__class_name__# __obj__ = new #__class_name__#(#__args_value__#);
 
-    // print current HEAP
-    if (getEnableLog()) {
-        Log.d("ObjectFactory", "HEAP: " + getHEAP());
-    }
-
     __methodResult__.success(__obj__);
 });

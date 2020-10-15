@@ -2,17 +2,13 @@ package me.yohom.fluttify.tmpl.java.common.handler.handler_method
 
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.tmpl.java.common.handler.common.arg.*
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
+import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_return.InvokeReturnTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.invoke_void.InvokeVoidTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogInstanceTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.log.LogStaticTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.ref.RefTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_enum.ResultEnumTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_jsonable.ResultJsonableTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_list.ResultListTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_ref.ResultRefTmpl
-import me.yohom.fluttify.tmpl.java.common.handler.common.result.result_void.ResultVoidTmpl
 
 //// method
 //put("#__method_name__#", (__args__, __methodResult__) -> {
