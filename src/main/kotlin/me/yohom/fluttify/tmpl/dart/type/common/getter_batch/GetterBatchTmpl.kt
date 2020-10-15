@@ -7,9 +7,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //Future<List<#__type__#>> get_#__name__#_batch(#__view_channel__#) async {
 //  final resultBatch = await #__channel__#.invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'__this__': __item__}]);
-//
-//  final typedResult = (resultBatch as List).cast<#__result_type__#>().map((__result__) => #__result__#).toList();
-//  return typedResult;
+//  return (resultBatch as List).cast<#__type__#>().map((__result__) => #__result__#).toList();
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").readText() }
 
