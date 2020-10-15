@@ -19,6 +19,9 @@ Future<bool> #__plugin_name__##__platform__#Is<T>(dynamic __this__) async {
     return __this__ is T;
   }
   #__type_check__#
+  else {
+    return false;
+  }
 }
 
 // type cast
@@ -26,4 +29,7 @@ dynamic #__plugin_name__##__platform__#As(dynamic __this__, String typeName) {
   // 占位用
   if (false) { }
   #__type_cast__#
+  else {
+    return null;
+  }
 }
