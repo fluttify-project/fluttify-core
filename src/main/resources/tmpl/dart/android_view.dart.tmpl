@@ -45,8 +45,6 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
       Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
     };
 
-    final messageCodec = k#__identifier__#MessageCodec;
-
     // hybrid composition version.
     // PlatformViewLink(
     //   viewType: '#__org__#/#__view_type__#',
@@ -66,7 +64,7 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
     //       viewType: '#__org__#/#__view_type__#',
     //       layoutDirection: TextDirection.ltr,
     //       creationParams: widget.params,
-    //       creationParamsCodec: messageCodec,
+    //       creationParamsCodec: k#__identifier__#MessageCodec,
     //     )
     //       ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
     //       ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
@@ -77,7 +75,7 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
       viewType: '#__org__#/#__view_type__#',
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
-      creationParamsCodec: messageCodec,
+      creationParamsCodec: k#__identifier__#MessageCodec,
       creationParams: widget.params,
     );
   }

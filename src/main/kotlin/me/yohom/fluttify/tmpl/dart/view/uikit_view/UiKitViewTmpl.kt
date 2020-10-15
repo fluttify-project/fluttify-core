@@ -1,10 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.view.uikit_view
 
 import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.simpleName
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 
 //import 'dart:convert';
@@ -94,7 +91,7 @@ fun UiKitViewTmpl(viewClass: Type): String {
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__view__#", view.toDartType())
         .replace("#__channel_name__#", ext.methodChannelName)
-        .replace("#__tag__#", ext.projectName)
+        .replace("#__identifier__#", ext.projectName.underscore2Camel())
         .replace("#__org__#", org)
         .replace("#__view_type__#", viewType)
 }

@@ -1,10 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.view.android_view
 
 import me.yohom.fluttify.ext
-import me.yohom.fluttify.extensions.getResource
-import me.yohom.fluttify.extensions.replaceParagraph
-import me.yohom.fluttify.extensions.simpleName
-import me.yohom.fluttify.extensions.toDartType
+import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Type
 
 //import 'dart:convert';
@@ -19,8 +16,8 @@ import me.yohom.fluttify.model.Type
 //
 //#__foundation__#
 //
-//typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
-//typedef Future<void> _OnAndroidViewDispose();
+//typedef #__view_simple_name__#CreatedCallback = void Function(#__view__# controller);
+//typedef _OnAndroidViewDispose = Future<void> Function();
 //
 //class #__view__#_Android extends StatefulWidget {
 //  const #__view__#_Android({
@@ -49,7 +46,34 @@ import me.yohom.fluttify.model.Type
 //      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
 //    };
 //
-//    final messageCodec = FluttifyMessageCodec(#__tag__#);
+//    final messageCodec = k#__identifier__#MessageCodec;
+//
+//    // hybrid composition version.
+//    // PlatformViewLink(
+//    //   viewType: '#__org__#/#__view_type__#',
+//    //   surfaceFactory: (
+//    //     BuildContext context,
+//    //     PlatformViewController controller,
+//    //   ) {
+//    //     return AndroidViewSurface(
+//    //       controller: controller,
+//    //       gestureRecognizers: gestureRecognizers,
+//    //       hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+//    //     );
+//    //   },
+//    //   onCreatePlatformView: (PlatformViewCreationParams params) {
+//    //     return PlatformViewsService.initSurfaceAndroidView(
+//    //       id: params.id,
+//    //       viewType: '#__org__#/#__view_type__#',
+//    //       layoutDirection: TextDirection.ltr,
+//    //       creationParams: widget.params,
+//    //       creationParamsCodec: messageCodec,
+//    //     )
+//    //       ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+//    //       ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
+//    //       ..create();
+//    //   },
+//    // );
 //    return AndroidView(
 //      viewType: '#__org__#/#__view_type__#',
 //      gestureRecognizers: gestureRecognizers,
@@ -72,7 +96,7 @@ import me.yohom.fluttify.model.Type
 //  @override
 //  void dispose() {
 //    if (widget.onDispose != null) {
-//      widget.onDispose().then((_) => _controller.release__());
+//      widget.onDispose().whenComplete(() => _controller.release__());
 //    } else {
 //      _controller.release__();
 //    }
@@ -96,7 +120,7 @@ fun AndroidViewTmpl(viewType: Type): String {
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__channel_name__#", ext.methodChannelName)
         .replace("#__view__#", view.toDartType())
-        .replace("#__tag__#", ext.projectName)
+        .replace("#__identifier__#", ext.projectName.underscore2Camel())
         .replace("#__org__#", org)
         .replace("#__view_type__#", nativeView)
 }
