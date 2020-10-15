@@ -12,24 +12,18 @@ import 'package:flutter/services.dart';
 #__foundation__#
 
 // ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
-extension TypeOp#__plugin_name__##__platform__# on Object {
-  // type check
-  Future<bool> is__<T>() async {
-    final typeName = T.toString();
-    if (RegExp(r'^(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)$').hasMatch(typeName)) {
-      return this is T;
-    }
-    #__type_check__#
+// type check
+Future<bool> #__plugin_name__##__platform__#Is<T>(dynamic __this__) async {
+  final typeName = T.toString();
+  if (RegExp(r'^(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)$').hasMatch(typeName)) {
+    return __this__ is T;
   }
+  #__type_check__#
+}
 
-  // type cast
-  T as__<T>() {
-    final typeName = T.toString();
-    // jsonable 直接造型 返回
-    if (RegExp(r'^(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)$').hasMatch(typeName)) {
-      return this as T;
-    }
-    // 如果是Ref类的cast, 那么取其refId, 如果本身是refId, 那么直接使用(int)
-    #__type_cast__#
-  }
+// type cast
+dynamic #__plugin_name__##__platform__#As(dynamic __this__, String typeName) {
+  // 占位用
+  if (false) { }
+  #__type_cast__#
 }
