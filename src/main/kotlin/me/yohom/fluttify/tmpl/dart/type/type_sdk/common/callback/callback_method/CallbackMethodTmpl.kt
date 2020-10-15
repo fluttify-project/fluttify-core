@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda.CallbackCaseLambdaTmpl
 
-//MethodChannel('#__callback_channel__#', k#__project_name__#Codec)
+//MethodChannel('#__callback_channel__#', k#__project_name__#MethodCodec)
 //    .setMethodCallHandler((methodCall) async {
 //      try {
 //        final args = methodCall.arguments as Map;
