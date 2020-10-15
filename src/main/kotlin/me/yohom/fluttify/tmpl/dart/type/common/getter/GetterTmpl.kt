@@ -18,7 +18,7 @@ fun GetterTmpl(field: Field): String {
 
     val channel = if (field.className.findType().isView) {
         val channelName = "viewChannel ? '${ext.methodChannelName}/${field.className.toUnderscore()}' : '${ext.methodChannelName}'"
-        "MethodChannel($channelName, StandardMethodCodec(FluttifyMessageCodec('${ext.projectName}')))"
+        "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}Codec)"
     } else {
         "k${ext.projectName.underscore2Camel()}Channel"
     }

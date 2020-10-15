@@ -3,9 +3,8 @@ import 'package:foundation_fluttify/foundation_fluttify.dart';
 import 'package:#__project_name__#/src/ios/ios.export.g.dart';
 import 'package:#__project_name__#/src/android/android.export.g.dart';
 
-const k#__identifier__#Channel = MethodChannel(
-  '#__channel_name__#',
-  StandardMethodCodec(FluttifyMessageCodec('#__project_name__#', androidCaster: #__identifier__#AndroidAs, iosCaster: #__identifier__#IOSAs)),
-);
+const k#__identifier__#Codec = StandardMethodCodec(FluttifyMessageCodec(androidCaster: #__identifier__#AndroidAs, iosCaster: #__identifier__#IOSAs));
+
+const k#__identifier__#Channel = MethodChannel('#__channel_name__#', k#__identifier__#Codec);
 
 const k#__identifier__#ProjectName = '#__project_name__#';

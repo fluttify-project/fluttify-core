@@ -59,6 +59,6 @@ fun CallbackSetterTmpl(field: Field): String {
 
     return tmpl
         .replace("#__callback_channel__#", callbackChannel)
-        .replace("#__tag__#", ext.projectName)
+        .replace("#__project_name__#", ext.projectName.underscore2Camel())
         .replaceParagraph("#__cases__#", callbackDelegateCases)
 }

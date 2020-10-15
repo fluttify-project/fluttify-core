@@ -2,5 +2,5 @@ static Future<List<#__class_name__#>> create_batch__#__signature__#(#__formal_pa
   if (#__check_param_size__#) {
     return Future.error('all args must have same length!');
   }
-  return k#__identifier__#Channel.invokeListMethod<Ref>('ObjectFactory::create_batch#__creator_name__#', #__args__#);
+  return k#__identifier__#Channel.invokeMethod('ObjectFactory::create_batch#__creator_name__#', #__args__#);
 }
