@@ -29,12 +29,12 @@ fun ReturnTmpl(method: Method): String {
                     "" // 这里传空字符串即可 ResultListTmpl内部会转换为对应平台的Object类型
                 }
 
-                ResultListTmpl(type, method.platform)
+                ResultListTmpl(type)
             }
-            returnType.isRefArray() -> ResultListTmpl(returnType.dearray(), method.platform)
-            returnType.isStructPointer() -> ResultListTmpl(returnType.depointer(), method.platform)
+            returnType.isRefArray() -> ResultListTmpl(returnType.dearray())
+            returnType.isStructPointer() -> ResultListTmpl(returnType.depointer())
             returnType in method.className.findType().declaredGenericTypes -> "Object().as__<$returnType>()"
-            else -> ResultRefTmpl(method)
+            else -> ResultRefTmpl()
         }
     }
 }

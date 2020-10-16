@@ -3,6 +3,7 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
+import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
 import me.yohom.fluttify.tmpl.dart.type.type_constants.TypeConstantsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
