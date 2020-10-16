@@ -1,3 +1,7 @@
 static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
-  return k#__project_prefix__#Channel.invokeMethod('ObjectFactory::create#__creator_name__#', #__args__#);
+  final __result__ = await k#__project_prefix__#Channel.invokeMethod(
+    'ObjectFactory::create#__creator_name__#',
+    #__args__#
+  );
+  return #__project_prefix__##__platform__#As<#__class_name__#>(__result__);
 }

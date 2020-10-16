@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 
 // ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 // type check
+@optionalTypeArgs
 Future<bool> #__plugin_name__##__platform__#Is<T>(dynamic __this__) async {
   final typeName = T.toString();
   if (RegExp(r'^(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)$').hasMatch(typeName)) {
@@ -25,10 +26,13 @@ Future<bool> #__plugin_name__##__platform__#Is<T>(dynamic __this__) async {
 }
 
 // type cast
-dynamic #__plugin_name__##__platform__#As(dynamic __this__, String typeName) {
-  final _typeName = typeName.replaceAll('*', '');
-  // 占位用
-  if (false) { }
+// 给一个可选的泛型, 如果没有指定泛型就返回dynamic
+@optionalTypeArgs
+T #__plugin_name__##__platform__#As<T>(dynamic __this__) {
+  final typeName = T.toString();
+  if (RegExp(r'^(List<)?(String|int|double)(>)?|(Map<String,(String|int|double)>)$').hasMatch(typeName)) {
+    return __this__ as T;
+  }
   #__type_cast__#
   else {
     return null;

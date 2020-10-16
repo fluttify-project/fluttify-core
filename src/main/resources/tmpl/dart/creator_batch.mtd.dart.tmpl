@@ -1,4 +1,10 @@
 static Future<List<#__class_name__#>> create_batch__#__signature__#(#__formal_params__#) async {
   assert(#__check_param_size__#);
-  return k#__project_prefix__#Channel.invokeListMethod<#__class_name__#>('ObjectFactory::create_batch#__creator_name__#', #__args__#);
+  final __result_batch__ = await  k#__project_prefix__#Channel.invokeListMethod(
+    'ObjectFactory::create_batch#__creator_name__#',
+    #__args__#
+  );
+  return __result_batch__
+      .map((it) => #__project_prefix__##__platform__#As<#__class_name__#>(it))
+      .toList();
 }

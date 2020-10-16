@@ -1,3 +1,3 @@
-else if (_typeName == '#__type_name__#') {
-  return #__constructor__#()..refId = (__this__ as Ref).refId;
+else if (T == #__type_name__#) {
+  return (#__constructor__#()..refId = (__this__ as Ref).refId) as T;
 }

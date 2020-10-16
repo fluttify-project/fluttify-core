@@ -32,7 +32,7 @@ fun CreatorTmpl(type: Type): List<String> {
                     .replace("#__creator_name__#", it.creatorName(type.name))
                     .replace("#__formal_params__#", it.formalParams.joinToString { it.variable.toDartString() })
                     .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap())
-                    .replaceGlobal()
+                    .replaceGlobal(type.platform)
             }
         Platform.iOS -> listOf(
             tmpl
@@ -41,7 +41,7 @@ fun CreatorTmpl(type: Type): List<String> {
                 .replace("#__creator_name__#", type.name.toUnderscore())
                 .replace("#__formal_params__#", "{ bool init = true /* ios only */ }")
                 .replace("#__args__#", "{'init': init}")
-                .replaceGlobal()
+                .replaceGlobal(type.platform)
         )
         else -> listOf()
     }
