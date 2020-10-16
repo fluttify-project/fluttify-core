@@ -230,9 +230,9 @@ open class IOSDartInterface : FluttifyTask() {
             .distinctBy { it.name }
             .filter { if (ext.foundationVersion.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }
         // 类型检查
-        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
+        val typeChecks = targetTypes.joinToString(" ") { TypeCheckTmpl(it) }
         // 类型造型
-        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
+        val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/ios/ios.export.g.dart';")
             .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
