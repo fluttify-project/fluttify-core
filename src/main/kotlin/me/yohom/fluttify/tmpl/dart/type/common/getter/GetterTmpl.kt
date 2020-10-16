@@ -35,10 +35,10 @@ fun GetterTmpl(field: Field): String {
                     || trueType.isVoid()
                     /* dynamic类型直接返回, 让应用层自行决定怎么处理 */
                     || trueType.isDynamic() -> ResultJsonableTmpl(trueType, platform)
-            isIterable -> ResultListTmpl(if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType())
-            isStructPointer() -> ResultListTmpl(trueType.depointer())
+            isIterable -> ResultListTmpl(if (getIterableLevel() > 0) trueType.genericTypes()[0] else platform.objectType(), field.platform)
+            isStructPointer() -> ResultListTmpl(trueType.depointer(), field.platform)
             isEnum() -> ResultEnumTmpl(trueType)
-            else -> ResultRefTmpl()
+            else -> ResultRefTmpl(field.asGetterMethod())
         }
     }
 
