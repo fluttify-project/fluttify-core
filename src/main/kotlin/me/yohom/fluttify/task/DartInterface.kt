@@ -100,7 +100,7 @@ open class AndroidDartInterface : FluttifyTask() {
             }
 
         val typeOpTmpl = getResource("/tmpl/dart/type_op.dart.tmpl").readText()
-        val targetTypes = sdk.libs
+        val targetTypes = sdk.directLibs
             .flatMap { it.types }
             .union(SYSTEM_TYPE.filter { it.platform == Platform.Android }) // 造型需要把系统类加上
             .toList()
@@ -212,7 +212,7 @@ open class IOSDartInterface : FluttifyTask() {
             }
 
         val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
-        val targetTypes = sdk.libs
+        val targetTypes = sdk.directLibs
             .flatMap { it.types }
             .union(SYSTEM_TYPE.filter { it.platform == Platform.iOS }) // 造型需要把系统类加上
             .toList()
