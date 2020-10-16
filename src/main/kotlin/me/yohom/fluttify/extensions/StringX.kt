@@ -749,3 +749,9 @@ fun String.parseSDK(): SDK {
 fun String.objcId(): String {
     return if (this == "id") "id__" else this
 }
+
+fun String.replaceGlobal(platform: Platform): String {
+    return replace("#__project_name__#", ext.projectName)
+        .replace("#__project_prefix__#", ext.projectName.underscore2Camel())
+        .replace("#__platform__#", platform.toString().capitalize())
+}
