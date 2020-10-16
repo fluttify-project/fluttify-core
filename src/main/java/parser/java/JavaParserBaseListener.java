@@ -1,10 +1,9 @@
 package parser.java;
-// Generated from JavaParser.g4 by ANTLR 4.7.2
+// Generated from src/main/java/parser/java/JavaParser.g4 by ANTLR 4.8
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import parser.java.JavaParser;
 
 /**
  * This class provides an empty implementation of {@link JavaParserListener},

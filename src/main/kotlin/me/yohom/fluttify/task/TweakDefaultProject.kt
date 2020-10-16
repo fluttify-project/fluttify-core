@@ -14,6 +14,7 @@ open class TweakDefaultProject : FluttifyTask() {
     private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
     private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
     private val pubSpecTmpl = this::class.java.getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
+    private val analysisTmpl = this::class.java.getResource("/tmpl/project/analysis_options.yaml.tmpl").readText()
 
     @TaskAction
     fun process() {
@@ -54,7 +55,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__author__#", ext.author)
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
-                    .replace("#__sdk_dependency__#", ext.ios.remote.run {
+                    .replaceParagraph("#__sdk_dependency__#", ext.ios.remote.run {
                         if (iosConfigured) {
                             iosCoordinate
                                 .union(transitiveDependencies)
@@ -89,8 +90,16 @@ open class TweakDefaultProject : FluttifyTask() {
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")
                     )
+                    .replaceParagraph(
+                        "#__package_dependency__#",
+                        ext.packageDependencies.map { "${it.key}: ${it.value}" }.joinToString("\n")
+                    )
                     .replace("#__android_identifier__#", "${ext.org}.${ext.projectName}")
                     .replace("#__plugin_class__#", "${ext.projectName.underscore2Camel()}Plugin")
             )
+
+        "${outputProjectPath}/analysis_options.yaml"
+            .file()
+            .writeText(analysisTmpl)
     }
 }

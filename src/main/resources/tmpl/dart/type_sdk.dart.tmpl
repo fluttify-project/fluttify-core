@@ -15,6 +15,9 @@ import 'package:flutter/services.dart';
   //region constants
   static const String name__ = '#__origin_class_name__#';
 
+  @override
+  final String tag__ = '#__tag__#';
+
   #__constants__#
   //endregion
 
@@ -33,6 +36,11 @@ import 'package:flutter/services.dart';
   //region methods
   #__methods__#
   //endregion
+
+  @override
+  String toString() {
+    return '#__class_name__#{refId: $refId, runtimeType: $runtimeType, tag__: $tag__}';
+  }
 }
 
 #__type_sdk_batch__#

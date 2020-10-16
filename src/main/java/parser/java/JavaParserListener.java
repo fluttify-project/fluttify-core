@@ -1,5 +1,5 @@
 package parser.java;
-// Generated from JavaParser.g4 by ANTLR 4.7.2
+// Generated from src/main/java/parser/java/JavaParser.g4 by ANTLR 4.8
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

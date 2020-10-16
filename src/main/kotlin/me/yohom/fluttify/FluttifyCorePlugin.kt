@@ -19,28 +19,30 @@ open class FluttifyCorePlugin : Plugin<Project> {
         ext.ios.libDir = "${project.projectDir}/sdk/ios/"
 
         // 必需任务 顺序已经排列好
-        val downloadAndroidSDK = project.tasks.create("downloadAndroidSDK", DownloadAndroidSDK::class.java)
-        val downloadIOSSDK = project.tasks.create("downloadIOSSDK", DownloadIOSSDK::class.java)
-        val unzip = project.tasks.create("unzipArchive", UnzipArchive::class.java)
-        val decompileClass = project.tasks.create("decompileClass", DecompileClass::class.java)
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
         val tweakDefaultProject = project.tasks.create("tweakDefaultProject", TweakDefaultProject::class.java)
+
+        val downloadIOSSDK = project.tasks.create("downloadIOSSDK", DownloadIOSSDK::class.java)
+        val downloadAndroidSDK = project.tasks.create("downloadAndroidSDK", DownloadAndroidSDK::class.java)
+        val unzip = project.tasks.create("unzipArchive", UnzipArchive::class.java)
+        val decompileClass = project.tasks.create("decompileClass", DecompileClass::class.java)
+
         val androidAddDependency = project.tasks.create("androidAddDependency", AndroidAddDependency::class.java)
         val iOSAddDependency = project.tasks.create("iOSAddDependency", IOSAddDependency::class.java)
+
         val androidJsonRepresentation =
             project.tasks.create("androidJsonRepresentation", AndroidJsonRepresentation::class.java)
         val iOSJsonRepresentation = project.tasks.create("iOSJsonRepresentation", IOSJsonRepresentation::class.java)
+
         val androidDartInterface = project.tasks.create("androidDartInterface", AndroidDartInterface::class.java)
         val iOSDartInterface = project.tasks.create("iOSDartInterface", IOSDartInterface::class.java)
+        val commonObjects = project.tasks.create("commonObjects", CommonObjects::class.java)
+
         val androidJavaInterface = project.tasks.create("androidJavaInterface", AndroidJavaInterface::class.java)
         val iOSObjcInterface = project.tasks.create("iOSObjcInterface", IOSObjcInterface::class.java)
-        val export = project.tasks.create("export", Export::class.java)
-        val packagingJar = project.tasks.create("packagingJar", PackagingJar::class.java)
-        val packagingFramework = project.tasks.create("packagingFramework", PackagingFramework::class.java)
-        val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
-        // 可选任务
-        val dartfmt = project.tasks.create("dartfmt", Dartfmt::class.java)
+        val export = project.tasks.create("export", Export::class.java)
+        val fluttify = project.tasks.create("fluttify", Fluttify::class.java)
 
         // assembly
         fluttify.dependsOn(export)
@@ -49,10 +51,12 @@ open class FluttifyCorePlugin : Plugin<Project> {
         export.dependsOn(iOSObjcInterface, androidJavaInterface)
 
         // 原生接口
-        iOSObjcInterface.dependsOn(iOSDartInterface)
-        androidJavaInterface.dependsOn(androidDartInterface)
+        iOSObjcInterface.dependsOn(commonObjects)
+        androidJavaInterface.dependsOn(commonObjects)
 
         // dart接口
+        commonObjects.dependsOn(iOSDartInterface)
+        commonObjects.dependsOn(androidDartInterface)
         iOSDartInterface.dependsOn(iOSJsonRepresentation)
         androidDartInterface.dependsOn(androidJsonRepresentation)
 
@@ -61,14 +65,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         androidJsonRepresentation.dependsOn(androidAddDependency)
 
         // 添加依赖
-        iOSAddDependency.dependsOn(tweakDefaultProject)
-        androidAddDependency.dependsOn(tweakDefaultProject)
-
-        // 调整默认项目
-        tweakDefaultProject.dependsOn(outputProject)
-
-        // 创建插件工程
-        outputProject.dependsOn(decompileClass)
+        iOSAddDependency.dependsOn(decompileClass)
+        androidAddDependency.dependsOn(decompileClass)
 
         // 反编译jar
         decompileClass.dependsOn(unzip)
@@ -76,5 +74,10 @@ open class FluttifyCorePlugin : Plugin<Project> {
         // 下载SDK
         unzip.dependsOn(downloadAndroidSDK)
         unzip.dependsOn(downloadIOSSDK)
+        downloadAndroidSDK.dependsOn(tweakDefaultProject)
+        downloadIOSSDK.dependsOn(tweakDefaultProject)
+
+        // 调整默认项目
+        tweakDefaultProject.dependsOn(outputProject)
     }
 }

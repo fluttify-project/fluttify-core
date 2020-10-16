@@ -1,5 +1,5 @@
 package parser.dart;
-// Generated from Dart2.g4 by ANTLR 4.7.2
+// Generated from src/main/java/parser/dart/Dart2.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class Dart2Parser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -251,11 +251,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitCompilationUnit(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitCompilationUnit(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CompilationUnitContext compilationUnit() throws RecognitionException {
@@ -313,11 +308,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitVariableDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitVariableDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -381,11 +371,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDeclaredIdentifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDeclaredIdentifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final DeclaredIdentifierContext declaredIdentifier() throws RecognitionException {
@@ -433,11 +418,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFinalConstVarOrType(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFinalConstVarOrType(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -523,11 +503,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitVarOrType(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitVarOrType(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final VarOrTypeContext varOrType() throws RecognitionException {
@@ -591,11 +566,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitInitializedVariableDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitInitializedVariableDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -668,11 +638,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitInitializedIdentifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitInitializedIdentifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final InitializedIdentifierContext initializedIdentifier() throws RecognitionException {
@@ -727,11 +692,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitInitializedIdentifierList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitInitializedIdentifierList(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -798,11 +758,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFunctionSignature(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFunctionSignature(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FunctionSignatureContext functionSignature() throws RecognitionException {
@@ -859,11 +814,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFormalParameterPart(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFormalParameterPart(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FormalParameterPartContext formalParameterPart() throws RecognitionException {
@@ -914,11 +864,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitReturnType(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitReturnType(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -974,11 +919,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFunctionBody(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFunctionBody(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1065,11 +1005,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBlock(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBlock(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final BlockContext block() throws RecognitionException {
@@ -1115,11 +1050,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFormalParameterList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFormalParameterList(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1217,11 +1147,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNormalFormalParameters(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNormalFormalParameters(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final NormalFormalParametersContext normalFormalParameters() throws RecognitionException {
@@ -1236,7 +1161,7 @@ public class Dart2Parser extends Parser {
 			setState(460);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,18,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1282,11 +1207,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitOptionalFormalParameters(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitOptionalFormalParameters(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1345,11 +1265,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitOptionalPositionalFormalParameters(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitOptionalPositionalFormalParameters(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final OptionalPositionalFormalParametersContext optionalPositionalFormalParameters() throws RecognitionException {
@@ -1367,7 +1282,7 @@ public class Dart2Parser extends Parser {
 			setState(473);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,20,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1426,11 +1341,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNamedFormalParameters(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNamedFormalParameters(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final NamedFormalParametersContext namedFormalParameters() throws RecognitionException {
@@ -1448,7 +1358,7 @@ public class Dart2Parser extends Parser {
 			setState(487);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,22,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1509,11 +1419,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNormalFormalParameter(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNormalFormalParameter(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1582,11 +1487,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFunctionFormalParameter(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFunctionFormalParameter(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1657,11 +1557,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitSimpleFormalParameter(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitSimpleFormalParameter(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1737,11 +1632,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFieldFormalParameter(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFieldFormalParameter(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FieldFormalParameterContext fieldFormalParameter() throws RecognitionException {
@@ -1811,11 +1701,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDefaultFormalParameter(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDefaultFormalParameter(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final DefaultFormalParameterContext defaultFormalParameter() throws RecognitionException {
@@ -1870,11 +1755,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDefaultNamedParameter(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDefaultNamedParameter(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1979,11 +1859,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitClassDefinition(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitClassDefinition(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2126,11 +2001,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMixins(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMixins(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MixinsContext mixins() throws RecognitionException {
@@ -2177,11 +2047,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitClassMemberDefinition(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitClassMemberDefinition(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2257,11 +2122,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMethodSignature(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMethodSignature(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2417,11 +2277,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2719,11 +2574,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitStaticFinalDeclarationList(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitStaticFinalDeclarationList(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final StaticFinalDeclarationListContext staticFinalDeclarationList() throws RecognitionException {
@@ -2783,11 +2633,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitStaticFinalDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitStaticFinalDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final StaticFinalDeclarationContext staticFinalDeclaration() throws RecognitionException {
@@ -2836,11 +2681,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitOperatorSignature(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitOperatorSignature(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2895,11 +2735,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitOperator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitOperator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2997,11 +2832,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBinaryOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBinaryOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final BinaryOperatorContext binaryOperator() throws RecognitionException {
@@ -3098,11 +2928,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitGetterSignature(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitGetterSignature(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final GetterSignatureContext getterSignature() throws RecognitionException {
@@ -3160,11 +2985,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitSetterSignature(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitSetterSignature(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3226,11 +3046,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitConstructorSignature(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitConstructorSignature(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ConstructorSignatureContext constructorSignature() throws RecognitionException {
@@ -3287,11 +3102,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitRedirection(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitRedirection(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3351,11 +3161,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitInitializers(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitInitializers(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3423,11 +3228,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitInitializerListEntry(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitInitializerListEntry(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3512,11 +3312,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFieldInitializer(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFieldInitializer(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FieldInitializerContext fieldInitializer() throws RecognitionException {
@@ -3593,11 +3388,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFactoryConstructorSignature(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFactoryConstructorSignature(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FactoryConstructorSignatureContext factoryConstructorSignature() throws RecognitionException {
@@ -3663,11 +3453,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitRedirectingFactoryConstructorSignature(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitRedirectingFactoryConstructorSignature(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3755,11 +3540,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitConstantConstructorSignature(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitConstantConstructorSignature(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ConstantConstructorSignatureContext constantConstructorSignature() throws RecognitionException {
@@ -3803,11 +3583,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitSuperclass(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitSuperclass(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final SuperclassContext superclass() throws RecognitionException {
@@ -3848,11 +3623,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitInterfaces(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitInterfaces(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3900,11 +3670,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMixinApplicationClass(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMixinApplicationClass(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3968,11 +3733,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMixinApplication(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMixinApplication(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MixinApplicationContext mixinApplication() throws RecognitionException {
@@ -4034,11 +3794,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitEnumType(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitEnumType(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final EnumTypeContext enumType() throws RecognitionException {
@@ -4062,7 +3817,7 @@ public class Dart2Parser extends Parser {
 			setState(825);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,81,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4121,11 +3876,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitEnumEntry(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitEnumEntry(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final EnumEntryContext enumEntry() throws RecognitionException {
@@ -4172,11 +3922,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeParameter(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeParameter(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4234,11 +3979,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeParameters(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeParameters(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4315,11 +4055,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMetadata(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMetadata(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MetadataContext metadata() throws RecognitionException {
@@ -4333,7 +4068,7 @@ public class Dart2Parser extends Parser {
 			setState(864);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,87,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4416,11 +4151,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4512,11 +4242,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitExpressionWithoutCascade(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitExpressionWithoutCascade(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ExpressionWithoutCascadeContext expressionWithoutCascade() throws RecognitionException {
@@ -4583,11 +4308,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitExpressionList(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitExpressionList(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ExpressionListContext expressionList() throws RecognitionException {
@@ -4602,7 +4322,7 @@ public class Dart2Parser extends Parser {
 			setState(894);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,91,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4666,11 +4386,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitPrimary(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitPrimary(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4790,11 +4505,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLiteral(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLiteral(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LiteralContext literal() throws RecognitionException {
@@ -4879,11 +4589,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNullLiteral(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNullLiteral(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final NullLiteralContext nullLiteral() throws RecognitionException {
@@ -4921,11 +4626,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNumericLiteral(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNumericLiteral(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4971,11 +4671,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBooleanLiteral(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBooleanLiteral(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5029,11 +4724,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitStringLiteral(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitStringLiteral(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5097,11 +4787,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitStringInterpolation(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitStringInterpolation(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5169,11 +4854,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitSymbolLiteral(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitSymbolLiteral(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final SymbolLiteralContext symbolLiteral() throws RecognitionException {
@@ -5221,7 +4901,7 @@ public class Dart2Parser extends Parser {
 				setState(946);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,96,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -5274,11 +4954,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitListLiteral(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitListLiteral(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5369,11 +5044,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMapLiteral(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMapLiteral(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MapLiteralContext mapLiteral() throws RecognitionException {
@@ -5416,7 +5086,7 @@ public class Dart2Parser extends Parser {
 				setState(978);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,104,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -5478,11 +5148,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMapLiteralEntry(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMapLiteralEntry(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MapLiteralEntryContext mapLiteralEntry() throws RecognitionException {
@@ -5526,11 +5191,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitThrowExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitThrowExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ThrowExpressionContext throwExpression() throws RecognitionException {
@@ -5571,11 +5231,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitThrowExpressionWithoutCascade(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitThrowExpressionWithoutCascade(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5621,11 +5276,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFunctionExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFunctionExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FunctionExpressionContext functionExpression() throws RecognitionException {
@@ -5663,11 +5313,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitThisExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitThisExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5713,11 +5358,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNayaExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNayaExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5782,11 +5422,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitConstObjectExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitConstObjectExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ConstObjectExpressionContext constObjectExpression() throws RecognitionException {
@@ -5842,11 +5477,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitArguments(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitArguments(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5916,11 +5546,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitArgumentList(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitArgumentList(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ArgumentListContext argumentList() throws RecognitionException {
@@ -5939,7 +5564,7 @@ public class Dart2Parser extends Parser {
 				setState(1033);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,111,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -5964,7 +5589,7 @@ public class Dart2Parser extends Parser {
 				setState(1041);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,112,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -6012,11 +5637,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNamedArgument(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNamedArgument(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6076,11 +5696,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitCascadeSection(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitCascadeSection(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6183,11 +5798,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitCascadeSelector(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitCascadeSelector(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CascadeSelectorContext cascadeSelector() throws RecognitionException {
@@ -6249,11 +5859,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitArgumentPart(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitArgumentPart(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ArgumentPartContext argumentPart() throws RecognitionException {
@@ -6303,11 +5908,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAssignmentOperator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAssignmentOperator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6371,11 +5971,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitCompoundAssignmentOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitCompoundAssignmentOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CompoundAssignmentOperatorContext compoundAssignmentOperator() throws RecognitionException {
@@ -6429,11 +6024,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitConditionalExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitConditionalExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6494,11 +6084,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitIfNullExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitIfNullExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final IfNullExpressionContext ifNullExpression() throws RecognitionException {
@@ -6558,11 +6143,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLogicalOrExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLogicalOrExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LogicalOrExpressionContext logicalOrExpression() throws RecognitionException {
@@ -6621,11 +6201,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLogicalAndExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLogicalAndExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6688,11 +6263,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitEqualityExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitEqualityExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6760,11 +6330,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitEqualityOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitEqualityOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final EqualityOperatorContext equalityOperator() throws RecognitionException {
@@ -6824,11 +6389,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitRelationalExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitRelationalExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6931,11 +6491,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitRelationalOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitRelationalOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final RelationalOperatorContext relationalOperator() throws RecognitionException {
@@ -6993,11 +6548,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBitwiseOrExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBitwiseOrExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final BitwiseOrExpressionContext bitwiseOrExpression() throws RecognitionException {
@@ -7016,7 +6566,7 @@ public class Dart2Parser extends Parser {
 				setState(1159);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,129,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -7059,7 +6609,7 @@ public class Dart2Parser extends Parser {
 					setState(1167); 
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,130,_ctx);
-				} while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER );
+				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
 				}
 				break;
 			}
@@ -7093,11 +6643,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBitwiseXorExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBitwiseXorExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7187,11 +6732,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBitwiseAndExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBitwiseAndExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final BitwiseAndExpressionContext bitwiseAndExpression() throws RecognitionException {
@@ -7274,11 +6814,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBitwiseOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBitwiseOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final BitwiseOperatorContext bitwiseOperator() throws RecognitionException {
@@ -7335,11 +6870,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitShiftExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitShiftExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7423,11 +6953,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitShiftOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitShiftOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ShiftOperatorContext shiftOperator() throws RecognitionException {
@@ -7484,11 +7009,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAdditiveExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAdditiveExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7572,11 +7092,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAdditiveOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAdditiveOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AdditiveOperatorContext additiveOperator() throws RecognitionException {
@@ -7633,11 +7148,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMultiplicativeExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMultiplicativeExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7721,11 +7231,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMultiplicativeOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMultiplicativeOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MultiplicativeOperatorContext multiplicativeOperator() throws RecognitionException {
@@ -7794,11 +7299,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitUnaryExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitUnaryExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7901,11 +7401,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitPrefixOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitPrefixOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final PrefixOperatorContext prefixOperator() throws RecognitionException {
@@ -7964,11 +7459,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitMinusOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitMinusOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MinusOperatorContext minusOperator() throws RecognitionException {
@@ -8005,11 +7495,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNegationOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNegationOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final NegationOperatorContext negationOperator() throws RecognitionException {
@@ -8045,11 +7530,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTildeOperator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTildeOperator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8089,11 +7569,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAwaitExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAwaitExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8148,11 +7623,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitPostfixExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitPostfixExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final PostfixExpressionContext postfixExpression() throws RecognitionException {
@@ -8180,7 +7650,7 @@ public class Dart2Parser extends Parser {
 				setState(1307);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,150,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -8224,11 +7694,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitPostfixOperator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitPostfixOperator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final PostfixOperatorContext postfixOperator() throws RecognitionException {
@@ -8270,11 +7735,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitSelector(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitSelector(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8329,11 +7789,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitIncrementOperator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitIncrementOperator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8397,11 +7852,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAssignableExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAssignableExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8487,11 +7937,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitUnconditionalAssignableSelector(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitUnconditionalAssignableSelector(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final UnconditionalAssignableSelectorContext unconditionalAssignableSelector() throws RecognitionException {
@@ -8555,11 +8000,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAssignableSelector(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAssignableSelector(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AssignableSelectorContext assignableSelector() throws RecognitionException {
@@ -8615,11 +8055,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitIdentifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitIdentifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final IdentifierContext identifier() throws RecognitionException {
@@ -8661,11 +8096,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitQualified(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitQualified(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8721,11 +8151,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeTest(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeTest(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeTestContext typeTest() throws RecognitionException {
@@ -8763,11 +8188,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitIsOperator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitIsOperator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8822,11 +8242,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeCast(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeCast(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeCastContext typeCast() throws RecognitionException {
@@ -8864,11 +8279,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAsOperator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAsOperator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8912,11 +8322,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitStatements(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitStatements(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final StatementsContext statements() throws RecognitionException {
@@ -8929,7 +8334,7 @@ public class Dart2Parser extends Parser {
 			setState(1371);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,160,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -8977,11 +8382,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final StatementContext statement() throws RecognitionException {
@@ -8994,7 +8394,7 @@ public class Dart2Parser extends Parser {
 			setState(1377);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,161,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -9085,11 +8485,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitNonLabledStatment(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitNonLabledStatment(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9248,11 +8643,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitExpressionStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitExpressionStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ExpressionStatementContext expressionStatement() throws RecognitionException {
@@ -9303,11 +8693,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLocalVariableDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLocalVariableDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LocalVariableDeclarationContext localVariableDeclaration() throws RecognitionException {
@@ -9351,11 +8736,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLocalFunctionDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLocalFunctionDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9403,11 +8783,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitIfStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitIfStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9470,11 +8845,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitForStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitForStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9545,11 +8915,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitForLoopParts(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitForLoopParts(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9644,11 +9009,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitForInitializerStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitForInitializerStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ForInitializerStatementContext forInitializerStatement() throws RecognitionException {
@@ -9715,11 +9075,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitWhileStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitWhileStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final WhileStatementContext whileStatement() throws RecognitionException {
@@ -9769,11 +9124,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDoStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDoStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9835,11 +9185,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitSwitchStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitSwitchStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final SwitchStatementContext switchStatement() throws RecognitionException {
@@ -9863,7 +9208,7 @@ public class Dart2Parser extends Parser {
 			setState(1477);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,171,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -9925,11 +9270,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitSwitchCase(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitSwitchCase(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9997,11 +9337,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDefaultCase(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDefaultCase(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final DefaultCaseContext defaultCase() throws RecognitionException {
@@ -10057,11 +9392,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitRethrowStatment(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitRethrowStatment(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final RethrowStatmentContext rethrowStatment() throws RecognitionException {
@@ -10111,11 +9441,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTryStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTryStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10206,11 +9531,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitOnPart(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitOnPart(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final OnPartContext onPart() throws RecognitionException {
@@ -10285,11 +9605,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitCatchPart(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitCatchPart(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CatchPartContext catchPart() throws RecognitionException {
@@ -10348,11 +9663,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFinallyPart(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFinallyPart(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FinallyPartContext finallyPart() throws RecognitionException {
@@ -10393,11 +9703,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitReturnStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitReturnStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10451,11 +9756,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLabel(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLabel(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LabelContext label() throws RecognitionException {
@@ -10496,11 +9796,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitBreakStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitBreakStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10554,11 +9849,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitContinueStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitContinueStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ContinueStatementContext continueStatement() throws RecognitionException {
@@ -10611,11 +9901,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitYieldStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitYieldStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final YieldStatementContext yieldStatement() throws RecognitionException {
@@ -10658,11 +9943,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitYieldEachStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitYieldEachStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10707,11 +9987,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAssertStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAssertStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AssertStatementContext assertStatement() throws RecognitionException {
@@ -10755,11 +10030,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitAssertion(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitAssertion(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10866,11 +10136,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTopLevelDefinition(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTopLevelDefinition(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -11077,11 +10342,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitGetOrSet(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitGetOrSet(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final GetOrSetContext getOrSet() throws RecognitionException {
@@ -11151,11 +10411,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLibraryDefinition(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLibraryDefinition(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LibraryDefinitionContext libraryDefinition() throws RecognitionException {
@@ -11189,7 +10444,7 @@ public class Dart2Parser extends Parser {
 			setState(1652);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,195,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -11205,7 +10460,7 @@ public class Dart2Parser extends Parser {
 			setState(1658);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,196,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -11261,11 +10516,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitScriptTag(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitScriptTag(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -11334,11 +10584,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLibraryName(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLibraryName(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LibraryNameContext libraryName() throws RecognitionException {
@@ -11386,11 +10631,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitImportOrExport(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitImportOrExport(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -11446,11 +10686,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDottedIdentifierList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDottedIdentifierList(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -11511,11 +10746,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLibraryimport(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLibraryimport(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LibraryimportContext libraryimport() throws RecognitionException {
@@ -11565,11 +10795,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitImportSpecification(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitImportSpecification(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -11641,11 +10866,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitCombinator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitCombinator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CombinatorContext combinator() throws RecognitionException {
@@ -11706,11 +10926,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitIdentifierList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitIdentifierList(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -11777,11 +10992,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitLibraryExport(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitLibraryExport(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LibraryExportContext libraryExport() throws RecognitionException {
@@ -11845,11 +11055,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitPartDirective(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitPartDirective(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final PartDirectiveContext partDirective() throws RecognitionException {
@@ -11900,11 +11105,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitPartHeader(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitPartHeader(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -11977,11 +11177,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitPartDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitPartDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final PartDeclarationContext partDeclaration() throws RecognitionException {
@@ -12038,11 +11233,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitUri(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitUri(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final UriContext uri() throws RecognitionException {
@@ -12087,11 +11277,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitConfigurableUri(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitConfigurableUri(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -12150,11 +11335,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitConfigurationUri(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitConfigurationUri(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ConfigurationUriContext configurationUri() throws RecognitionException {
@@ -12204,11 +11384,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitUriTest(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitUriTest(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -12265,11 +11440,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitDtype(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitDtype(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final DtypeContext dtype() throws RecognitionException {
@@ -12320,11 +11490,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeName(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeName(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -12380,11 +11545,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeArguments(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeArguments(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeArgumentsContext typeArguments() throws RecognitionException {
@@ -12430,11 +11590,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeList(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -12495,11 +11650,6 @@ public class Dart2Parser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeAlias(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeAlias(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeAliasContext typeAlias() throws RecognitionException {
@@ -12542,11 +11692,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitTypeAliasBody(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitTypeAliasBody(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -12592,11 +11737,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFunctionTypeAlias(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFunctionTypeAlias(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -12654,11 +11794,6 @@ public class Dart2Parser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof Dart2Listener ) ((Dart2Listener)listener).exitFunctionPrefix(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof Dart2Visitor ) return ((Dart2Visitor<? extends T>)visitor).visitFunctionPrefix(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 

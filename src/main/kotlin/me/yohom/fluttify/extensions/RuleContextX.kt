@@ -28,10 +28,15 @@ fun <T : RuleContext> RuleContext.ancestorOf(target: KClass<T>): T? {
 
 fun RuleContext.typeFullName(typeSimpleName: String): String {
     fun nonGenericTypeFullName(typeName: String): String {
+        // 如果类型含有点(.), 则说明已经是全名, 直接返回
+        if (typeName.contains(".")) return typeName
+
         return if (typeName == "List") {
             "java.util.List"
         } else if (typeName == "Map") {
             "java.util.Map"
+        } else if (typeName == "SortedSet") {
+            "java.util.SortedSet"
         } else if (typeName == "Object") {
             "java.lang.Object"
         } else if (typeName == "Throwable") {

@@ -9,6 +9,6 @@ fun LogTmpl(method: Method): String {
     return if (method.isStatic) {
         """NSLog(@"fluttify-objc: ${method.className}::${method.name}($argsPlaceholder)"$args);"""
     } else {
-        """NSLog(@"fluttify-objc: ${method.className}@%@::${method.name}($argsPlaceholder)", args[@"refId"]$args);"""
+        """NSLog(@"fluttify-objc: ${method.className}@%@::${method.name}($argsPlaceholder)", args[@"__this__"]$args);"""
     }
 }

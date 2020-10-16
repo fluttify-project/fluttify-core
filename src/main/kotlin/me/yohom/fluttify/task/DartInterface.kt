@@ -3,7 +3,6 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.SYSTEM_TYPE
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
-import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.TypeType
 import me.yohom.fluttify.tmpl.dart.type.type_constants.TypeConstantsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
@@ -15,6 +14,16 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
 import org.gradle.api.tasks.TaskAction
+
+open class CommonObjects: FluttifyTask() {
+    private val tmpl by lazy { getResource("/tmpl/dart/objects.dart.tmpl").readText() }
+
+    @TaskAction
+    fun process() {
+        val content = tmpl.replaceGlobal()
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file().writeText(content)
+    }
+}
 
 /**
  * 生成Java文件的Dart接口文件
@@ -92,7 +101,6 @@ open class AndroidDartInterface : FluttifyTask() {
 
         val typeOpTmpl = getResource("/tmpl/dart/type_op.dart.tmpl").readText()
         val targetTypes = sdk.directLibs
-            .filterNot { it.isDependency }
             .flatMap { it.types }
             .union(SYSTEM_TYPE.filter { it.platform == Platform.Android }) // 造型需要把系统类加上
             .toList()
@@ -113,9 +121,9 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
         // 类型检查
-        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
+        val typeChecks = targetTypes.joinToString(" ") { TypeCheckTmpl(it) }
         // 类型造型
-        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
+        val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/android/android.export.g.dart';")
             .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
@@ -205,7 +213,6 @@ open class IOSDartInterface : FluttifyTask() {
 
         val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
         val targetTypes = sdk.directLibs
-            .filterNot { it.isDependency }
             .flatMap { it.types }
             .union(SYSTEM_TYPE.filter { it.platform == Platform.iOS }) // 造型需要把系统类加上
             .toList()

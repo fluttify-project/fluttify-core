@@ -2,11 +2,13 @@ package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.Amap
 import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.Nim
 import me.yohom.fluttify.Tmap
 import me.yohom.fluttify.model.Field
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Variable
+import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.io.filefilter.SuffixFileFilter
@@ -78,6 +80,34 @@ class ListXKtTest : FluttifyTest() {
 
     @Test
     fun filterSetters() {
+    }
+
+    @Test
+    fun NIMSDK_filterType() {
+        Nim.iosSDK.allTypes.find { it.name == "NIMSDK" }?.run { println(filter) }
+    }
+
+    @Test
+    fun NIMSDK_filterMethod() {
+        Nim.androidSDK.allTypes
+            .find { it.name == "com.netease.nimlib.sdk.InvocationFuture" }
+            ?.methods
+            ?.find { it.name == "setCallback" }
+            ?.run { println(filter) }
+    }
+
+    @Test
+    fun AmapNavi_filterMethod() {
+        Amap.androidMapSDK.allTypes
+            .find { it.name == "com.amap.api.navi.AMapNaviListener" }
+            ?.run {
+                println(TypeInterfaceTmpl(this))
+            }
+//        Amap.androidMapSDK.allTypes
+//            .find { it.name == "com.amap.api.navi.AMapNaviListener" }
+//            ?.methods
+//            ?.filter { it.name == "OnUpdateTrafficFacility" }
+//            ?.forEach { println("${it.nameWithClass()}: ${it.filter}") }
     }
 
     @Test

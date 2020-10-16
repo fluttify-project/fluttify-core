@@ -183,6 +183,16 @@ class TypeTest : FluttifyTest() {
     }
 
     @Test
+    fun MACircle() {
+        Amap.iosMapSDK
+            .allTypes
+            .find { it.name == "MACircle" }
+            ?.run {
+                println("结果: ${TypeSdkTmpl(this)}")
+            }
+    }
+
+    @Test
     fun amap_AMapGeoFenceCircleRegion() {
         Amap.iosLocationSDK
             .allTypes

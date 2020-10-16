@@ -1,4 +1,4 @@
-MethodChannel('#__callback_channel__#', StandardMethodCodec(FluttifyMessageCodec('#__tag__#')))
+MethodChannel('#__callback_channel__#', k#__project_name__#MethodCodec)
     .setMethodCallHandler((methodCall) async {
       try {
         final args = methodCall.arguments as Map;
@@ -9,6 +9,6 @@ MethodChannel('#__callback_channel__#', StandardMethodCodec(FluttifyMessageCodec
         }
       } catch (e) {
         debugPrint(e);
-        throw e;
+        rethrow;
       }
     });

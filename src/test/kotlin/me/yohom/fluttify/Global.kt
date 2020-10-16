@@ -6,8 +6,8 @@ import me.yohom.fluttify.extensions.parseSDK
 import me.yohom.fluttify.model.SDK
 
 object Amap {
-    val androidSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/android/json_representation.json".file().readText().fromJson<SDK>()
-    val iosSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
+    val androidSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/amap_search_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSearchSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/amap_search_fluttify.ios.json".file().readText().fromJson<SDK>()
 
     val androidMapSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/jr/amap_map_fluttify.android.json".file().readText().fromJson<SDK>()
     val iosMapSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/jr/amap_map_fluttify.ios.json".file().readText().fromJson<SDK>()
@@ -17,9 +17,6 @@ object Amap {
 
     val androidTrackSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_track_fluttify/jr/amap_track_fluttify.android.json".file().readText().fromJson<SDK>()
     val iosTrackSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_track_fluttify/jr/amap_track_fluttify.ios.json".file().readText().fromJson<SDK>()
-
-    val androidNaviSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_navi_fluttify/jr/android/json_representation.json".file().readText().fromJson<SDK>()
-    val iosNaviSDK = "/Users/yohom/Github/Me/All/fluttify/amap/amap_navi_fluttify/jr/ios/json_representation.json".file().readText().fromJson<SDK>()
 }
 
 object Bmap {
@@ -67,8 +64,8 @@ object Nim {
 }
 
 object EaseMob {
-    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/easemob_im/jr/easemob_im_fluttify.android.json".file().readText().fromJson<SDK>()
-    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/easemob_im/jr/easemob_im_fluttify.ios.json".file().readText().fromJson<SDK>()
+    val androidSDK = "/Volumes/X/Working/fluttify/easemob_im/jr/easemob_im_fluttify.android.json".file().readText().fromJson<SDK>()
+    val iosSDK = "/Volumes/X/Working/fluttify/easemob_im/jr/easemob_im_fluttify.ios.json".file().readText().fromJson<SDK>()
 }
 
 object AliRtc {
@@ -84,5 +81,10 @@ object CmGame {
 object GoogleMap {
     val androidSDK = "/Users/yohom/Github/Me/All/fluttify/google_map/google_map_fluttify/jr/google_map_fluttify.android.json".file().readText().parseSDK()
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/google_map/google_map_fluttify/jr/google_map_fluttify.ios.json".file().readText().parseSDK()
+}
+
+object AliyunShortVideo {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_short_video/jr/ali_short_video_fluttify.android.json".file().readText().parseSDK()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_short_video/jr/ali_short_video_fluttify.ios.json".file().readText().parseSDK()
 }
 

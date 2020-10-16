@@ -20,13 +20,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //  // handle native call
 //  #__callback__#
 //
-//  // convert native result to dart side object
-//  if (__result__ == null) {
-//    return null;
-//  } else {
-//    final __return__ = #__return_statement__#;
-//    return __return__;
-//  }
+//  return #__return_statement__#;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/method.mtd.dart.tmpl").readText() }
 

@@ -26,6 +26,8 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  //region constants
 //  static const String name__ = '#__origin_class_name__#';
 //
+//  String tag__ = '#__tag__#';
+//
 //  #__constants__#
 //  //endregion
 //
@@ -150,12 +152,14 @@ fun TypeSdkTmpl(type: Type): String {
         )
         .replaceParagraph(
             "#__foundation__#",
-            ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+            ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" }
+        )
         .replace("#__abstract__#", if (type.isAbstract) "/* abstract */ " else "")
         .replace("#__class_name__#", className)
         .replace("#__origin_class_name__#", originClassName)
         .replace("#__super_class__#", superClass)
         .replace("#__mixins__#", mixins)
+        .replace("#__tag__#", ext.projectName)
         .replaceParagraph("#__constants__#", constants)
         .replaceParagraph("#__creators__#", creators.joinToString("\n"))
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))

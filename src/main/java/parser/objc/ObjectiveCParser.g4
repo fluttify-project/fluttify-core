@@ -530,7 +530,7 @@ enumeratorList
     ;
 
 enumerator
-    : enumeratorIdentifier ('=' expression)?
+    : enumeratorIdentifier macro? ('=' expression)? // 新增(macro?) 枚举中可能会出现NS_SWIFT_NAME()这个宏
     ;
 
 enumeratorIdentifier

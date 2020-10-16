@@ -7,21 +7,23 @@ import me.yohom.fluttify.model.Parameter
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum_list.ArgEnumListTmpl
 
-//final __result__ = await MethodChannel(#__channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('#__method_name__#', #__args__#);
+//final __result__ = await #__channel__#.invokeMethod('#__method_name__#', #__args__#);
 private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText() }
 
 fun InvokeTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
-        "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val channelName =
+            "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
     } else {
-        "'${ext.methodChannelName}'"
+        "k${ext.projectName.underscore2Camel()}Channel"
     }
     val methodName = method.nameWithClass()
     val args = method.formalParams
         .filterFormalParams()
         .run { if (!method.isStatic) addParameter(Parameter.simpleParameter(method.className, "this")) else this }
         .map { it.variable }
-        .toDartMap  {
+        .toDartMap {
             val typeName = it.trueType
             when {
                 // 数组
@@ -42,5 +44,4 @@ fun InvokeTmpl(method: Method): String {
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
         .replace("#__args__#", args)
-        .replace("#__tag__#", ext.projectName)
 }

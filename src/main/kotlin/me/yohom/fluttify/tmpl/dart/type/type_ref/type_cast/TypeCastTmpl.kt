@@ -8,8 +8,7 @@ import me.yohom.fluttify.extensions.toUnderscore
 import me.yohom.fluttify.model.Type
 
 //else if (T == #__type_name__#) {
-//  final result = await MethodChannel('#__method_channel__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('RefClass::as#__type_name__#', {'refId': (this as Ref).refId});
-//  return (#__constructor__#().refId = result..tag__ = '#__plugin_name__#') as T;
+//  return (#__constructor__#()..refId = (__this__ as Ref).refId) as T;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/type_cast.stmt.dart.tmpl").readText() }
 

@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_delegate.CallbackCaseDelegateTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda.CallbackCaseLambdaTmpl
 
-//MethodChannel('#__callback_channel__#', StandardMethodCodec(FluttifyMessageCodec(#__tag__#)))
+//MethodChannel('#__callback_channel__#', k#__project_name__#MethodCodec)
 //    .setMethodCallHandler((methodCall) async {
 //      try {
 //        final args = methodCall.arguments as Map;
@@ -19,7 +19,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //        }
 //      } catch (e) {
 //        debugPrint(e);
-//        throw e;
+//        rethrow;
 //      }
 //    });
 private val tmpl by lazy { getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText() }
@@ -57,6 +57,6 @@ fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject:
 
     return tmpl
         .replace("#__callback_channel__#", callbackChannel)
-        .replace("#__tag__#", ext.projectName)
+        .replace("#__project_name__#", ext.projectName.underscore2Camel())
         .replaceParagraph("#__cases__#", callbackCases)
 }

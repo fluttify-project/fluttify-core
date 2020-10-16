@@ -5,23 +5,11 @@ import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
 
-//(result as List).cast<String>().map((it) => #__type_name__#()..refId = it..tag = '#__tag__#').toList()
+//(__result__ as List)?.map((it) => #__project_prefix__##__platform__#As<#__return_type__#>(it))?.toList()
 private val tmpl by lazy { getResource("/tmpl/dart/result_list.stmt.dart.tmpl").readText() }
 
 fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
     return tmpl
-        .replace("#__type_name__#", genericType
-            .findType()
-            .name
-            .depointer()
-            .run {
-                val genericTypes = findType().definedGenericTypes.joinToStringX(",", "<", ">").toDartType()
-                when {
-                    isEmpty() -> platform.objectType()
-                    toDartType().isDynamic() -> "Ref"
-                    findType().isInterface -> "${toDartType().containerType()}.subInstance$genericTypes"
-                    else -> this.toDartType()
-                }
-            })
-        .replace("#__tag__#", ext.projectName)
+        .replace("#__return_type__#", genericType.toDartType())
+        .replaceGlobal(platform)
 }

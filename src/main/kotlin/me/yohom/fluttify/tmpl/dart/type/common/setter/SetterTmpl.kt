@@ -17,13 +17,11 @@ fun SetterTmpl(field: Field): String {
     return field.variable.run {
         val typeName = field.variable.trueType.toDartType()
 
-        val viewMethodChannel = "${ext.methodChannelName}/${field.className.toUnderscore()}"
-        val normalMethodChannel = ext.methodChannelName
-        // 只有当前类是View的时候, 才需要区分普通channel和View channel
-        val methodChannel = if (field.className.findType().isView) {
-            "viewChannel ? '$viewMethodChannel' : '$normalMethodChannel'"
+        val channel = if (field.className.findType().isView) {
+            val channelName = "viewChannel ? '${ext.methodChannelName}/${field.className.toUnderscore()}' : '${ext.methodChannelName}'"
+            "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
         } else {
-            "'$normalMethodChannel'"
+            "k${ext.projectName.underscore2Camel()}Channel"
         }
 
         val argValue = field.variable.trueType.run {
@@ -41,7 +39,7 @@ fun SetterTmpl(field: Field): String {
             .replace("#__type__#", typeName)
             .replace("#__name__#", name)
             .replace("#__args__#", if (typeName.findType().isCallback) "" else "\"$name\": $argValue")
-            .replace("#__method_channel__#", methodChannel)
+            .replace("#__channel__#", channel)
             .replace("#__setter_method__#", setterMethodName)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__callback__#", callback)

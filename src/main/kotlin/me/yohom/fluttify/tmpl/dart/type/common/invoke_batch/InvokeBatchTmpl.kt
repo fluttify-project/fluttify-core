@@ -5,15 +5,17 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Parameter
 
-//final resultBatch = await MethodChannel(#__channel__#, StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('#__method_name__#', #__args__#);
+//final resultBatch = await #__channel__#.invokeMethod('#__method_name__#', #__args__#);
 private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText() }
 
 fun InvokeBatchTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
-        "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val channelName = "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
     } else {
-        "'${ext.methodChannelName}'"
+        "k${ext.projectName.underscore2Camel()}Channel"
     }
+
     val methodName = "${method.nameWithClass()}_batch"
     val loopHeader = if (method.isStatic && method.formalParams.isNotEmpty()) {
         "[for (int __i__ = 0; __i__ < ${method.formalParams[0].variable.name}.length; __i__++) {"
@@ -48,6 +50,5 @@ fun InvokeBatchTmpl(method: Method): String {
     return tmpl
         .replace("#__channel__#", channel)
         .replace("#__method_name__#", methodName)
-        .replace("#__tag__#", ext.projectName)
         .replace("#__args__#", args)
 }

@@ -1,6 +1,7 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.FluttifyTest
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.Podspec
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -159,8 +160,8 @@ class StringXKtTest : FluttifyTest() {
     inner class ToDartTypeTest : FluttifyTest() {
         @Test
         fun toDartType_non_jsonable_generic_should_as_container_type() {
-            val result = "android_util_Pair<Integer,com_amap_api_maps_model_LatLng>".toDartType()
-            assertEquals(result, "android_util_Pair")
+            val result = "java.util.Collection<java.lang.Object>".toDartType()
+            println(result)
         }
     }
 
@@ -212,5 +213,48 @@ class StringXKtTest : FluttifyTest() {
         fun isArray_java_array() {
             assertTrue("String[]".isRefArray())
         }
+    }
+
+    @Test
+    fun replaceMarco() {
+        val source = """
+#if TARGET_OS_IPHONE
+/**
+ * 8.1 启动屏幕分享（iOS）
+ *
+ * iPhone 屏幕分享的推荐配置参数：
+ * - 分辨率(videoResolution): 1280 x 720
+ * - 帧率(videoFps): 10 FPS
+ * - 码率(videoBitrate): 1600 kbps
+ * - 分辨率自适应(enableAdjustRes): NO
+ *
+ * @param encParams 设置屏幕分享时的编码参数，推荐采用上述推荐配置，如果您指定 encParams 为 nil，则使用您调用 startScreenCapture 之前的编码参数设置。
+ */
+- (void)startScreenCapture:(TRTCVideoEncParam *)encParams API_AVAILABLE(ios(13.0));
+
+#elif TARGET_OS_MAC
+
+/**
+ * 8.1 启动屏幕分享（Mac）
+ *
+ * @param view 渲染控件所在的父控件，可以设置为 nil，表示不显示屏幕分享的预览效果。
+ * @param streamType 屏幕分享使用的线路，可以设置为主路（TRTCVideoStreamTypeBig）或者辅路（TRTCVideoStreamTypeSub），默认使用辅路。
+ * @param encParam 屏幕分享的画面编码参数，可以设置为 nil，表示让 SDK 选择最佳的编码参数（分辨率、码率等）。
+ * 
+ * @note 一个用户同时最多只能上传一条主路（TRTCVideoStreamTypeBig）画面和一条辅路（TRTCVideoStreamTypeSub）画面，
+ * 默认情况下，屏幕分享使用辅路画面，如果使用主路画面，建议您提前停止摄像头采集（stopLocalPreview）避免相互冲突。
+ */
+- (void)startScreenCapture:(NSView *)view streamType:(TRTCVideoStreamType)streamType encParam:(TRTCVideoEncParam *)encParam;
+#endif
+"""
+        ext.ios.exclude.macros = listOf("TENCENTLBS_DEBUG")
+        val source2 = """
+            #if TENCENTLBS_DEBUG
+            + (void)upLoadData;
+            + (NSData *)getLocationLog;
+            + (void)newLocationLog;
+            #endif
+        """.trimIndent()
+        println(source2.replaceMacro())
     }
 }

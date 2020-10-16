@@ -26,11 +26,6 @@ put("ObjectFactory::create_batch#__creator_name__#", (__argsBatch__, __methodRes
         // create target object
         #__class_name__# __obj__ = new #__class_name__#(#__args_value__#);
 
-        // print current HEAP
-        if (getEnableLog()) {
-            Log.d("ObjectFactory", "HEAP: " + getHEAP());
-        }
-
         __resultList__.add(__obj__);
     }
 

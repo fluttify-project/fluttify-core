@@ -1,4 +1,4 @@
 else if (T == #__type_name__#) {
-  final result = await MethodChannel('#__method_channel__#', StandardMethodCodec(FluttifyMessageCodec())).invokeMethod('RefClass::isKindOf#__type_name__#', {'__this__': this});
+  final result = await k#__project_prefix__#Channel.invokeMethod('RefClass::isKindOf#__type_name__#', {'__this__': __this__});
   return result;
 }

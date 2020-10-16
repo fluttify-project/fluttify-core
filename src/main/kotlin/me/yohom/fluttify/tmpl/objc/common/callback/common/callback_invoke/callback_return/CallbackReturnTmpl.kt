@@ -20,10 +20,9 @@ fun CallbackReturnTmpl(method: Method): String {
     val callbackMethod = "Callback::${method.nameWithClass()}"
     val methodChannel = "@\"${method.className.deprotocol().replace("$", ".")}::Callback\""
 
-// 由于目前有返回值的回调方法是开放出来的, 也就是会通知dart端回调被调用了, 但是不会要求dart端返回值, 原生端也不会传有效的参数过去, 所以这里先传一个空的字典过去
-//    val callbackArgs = method
-//        .formalParams
-//        .joinToString { "@\"${it.variable.name.depointer()}\": arg${it.variable.name.depointer()}" }
+    val callbackArgs = method
+        .formalParams
+        .joinToString { "@\"${it.variable.name.depointer()}\": arg${it.variable.name.depointer()} == nil ? [NSNull null] : arg${it.variable.name.depointer()}" }
 
     val stubReturn = method
         .returnType
@@ -41,6 +40,6 @@ fun CallbackReturnTmpl(method: Method): String {
     return tmpl
         .replace("#__callback_method__#", callbackMethod)
         .replace("#__method_channel__#", methodChannel)
-        .replace("#__callback_args__#", "")
+        .replace("#__callback_args__#", callbackArgs)
         .replaceParagraph("__stub_return__", stubReturn)
 }

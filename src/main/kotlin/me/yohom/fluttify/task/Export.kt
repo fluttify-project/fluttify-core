@@ -33,6 +33,14 @@ open class Export : FluttifyTask() {
             iosResult.appendln("export 'package:$name/$name.dart';")
         }
 
+        ext.packageDependencies.forEach { (name, _) ->
+            androidResult.appendln("export 'package:$name/$name.dart';")
+            iosResult.appendln("export 'package:$name/$name.dart';")
+        }
+
+        androidResult.appendln("export '../facade/objects.g.dart';")
+        iosResult.appendln("export '../facade/objects.g.dart';")
+
         androidExportFile.writeText(androidResult.toString())
         iosExportFile.writeText(iosResult.toString())
     }

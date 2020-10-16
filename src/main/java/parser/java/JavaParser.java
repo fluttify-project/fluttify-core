@@ -1,5 +1,5 @@
 package parser.java;
-// Generated from JavaParser.g4 by ANTLR 4.7.2
+// Generated from src/main/java/parser/java/JavaParser.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class JavaParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -222,11 +222,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitCompilationUnit(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitCompilationUnit(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CompilationUnitContext compilationUnit() throws RecognitionException {
@@ -313,11 +308,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitPackageDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitPackageDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final PackageDeclarationContext packageDeclaration() throws RecognitionException {
@@ -380,11 +370,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitImportDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitImportDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -468,11 +453,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeDeclarationContext typeDeclaration() throws RecognitionException {
@@ -499,7 +479,7 @@ public class JavaParser extends Parser {
 				setState(249);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -585,11 +565,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitModifier(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitModifier(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -679,11 +654,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitClassOrInterfaceModifier(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitClassOrInterfaceModifier(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -782,11 +752,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitVariableModifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitVariableModifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final VariableModifierContext variableModifier() throws RecognitionException {
@@ -853,11 +818,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitClassDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitClassDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -946,11 +906,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeParameters(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeParameters(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeParametersContext typeParameters() throws RecognitionException {
@@ -1018,11 +973,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeParameter(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeParameter(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1097,11 +1047,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeBound(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeBound(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeBoundContext typeBound() throws RecognitionException {
@@ -1169,11 +1114,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitEnumDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitEnumDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1270,11 +1210,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitEnumConstants(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitEnumConstants(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final EnumConstantsContext enumConstants() throws RecognitionException {
@@ -1289,7 +1224,7 @@ public class JavaParser extends Parser {
 			setState(350);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,23,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1342,11 +1277,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitEnumConstant(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitEnumConstant(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1426,11 +1356,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitEnumBodyDeclarations(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitEnumBodyDeclarations(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final EnumBodyDeclarationsContext enumBodyDeclarations() throws RecognitionException {
@@ -1493,11 +1418,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitInterfaceDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitInterfaceDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1570,11 +1490,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitClassBody(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitClassBody(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ClassBodyContext classBody() throws RecognitionException {
@@ -1635,11 +1550,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitInterfaceBody(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitInterfaceBody(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1708,11 +1618,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitClassBodyDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitClassBodyDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ClassBodyDeclarationContext classBodyDeclaration() throws RecognitionException {
@@ -1754,7 +1659,7 @@ public class JavaParser extends Parser {
 				setState(410);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,33,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -1823,11 +1728,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitMemberDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitMemberDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1949,11 +1849,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitMethodDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitMethodDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MethodDeclarationContext methodDeclaration() throws RecognitionException {
@@ -2029,11 +1924,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitMethodBody(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitMethodBody(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MethodBodyContext methodBody() throws RecognitionException {
@@ -2088,11 +1978,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeTypeOrVoid(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeTypeOrVoid(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2160,11 +2045,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitGenericMethodDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitGenericMethodDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final GenericMethodDeclarationContext genericMethodDeclaration() throws RecognitionException {
@@ -2208,11 +2088,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitGenericConstructorDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitGenericConstructorDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2263,11 +2138,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitConstructorDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitConstructorDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2329,11 +2199,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitFieldDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitFieldDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FieldDeclarationContext fieldDeclaration() throws RecognitionException {
@@ -2384,11 +2249,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitInterfaceBodyDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitInterfaceBodyDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final InterfaceBodyDeclarationContext interfaceBodyDeclaration() throws RecognitionException {
@@ -2431,7 +2291,7 @@ public class JavaParser extends Parser {
 				setState(472);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,41,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -2503,11 +2363,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitInterfaceMemberDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitInterfaceMemberDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2607,11 +2462,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitConstDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitConstDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ConstDeclarationContext constDeclaration() throws RecognitionException {
@@ -2681,11 +2531,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitConstantDeclarator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitConstantDeclarator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2781,11 +2626,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitInterfaceMethodDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitInterfaceMethodDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final InterfaceMethodDeclarationContext interfaceMethodDeclaration() throws RecognitionException {
@@ -2799,7 +2639,7 @@ public class JavaParser extends Parser {
 			setState(513);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,46,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -2838,7 +2678,7 @@ public class JavaParser extends Parser {
 				setState(521);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,47,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -2926,11 +2766,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitInterfaceMethodModifier(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitInterfaceMethodModifier(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final InterfaceMethodModifierContext interfaceMethodModifier() throws RecognitionException {
@@ -3016,11 +2851,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitGenericInterfaceMethodDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitGenericInterfaceMethodDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final GenericInterfaceMethodDeclarationContext genericInterfaceMethodDeclaration() throws RecognitionException {
@@ -3068,11 +2898,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitVariableDeclarators(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitVariableDeclarators(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3134,11 +2959,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitVariableDeclarator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitVariableDeclarator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final VariableDeclaratorContext variableDeclarator() throws RecognitionException {
@@ -3196,11 +3016,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitVariableDeclaratorId(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitVariableDeclaratorId(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3260,11 +3075,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitVariableInitializer(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitVariableInitializer(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3360,11 +3170,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitArrayInitializer(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitArrayInitializer(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ArrayInitializerContext arrayInitializer() throws RecognitionException {
@@ -3387,7 +3192,7 @@ public class JavaParser extends Parser {
 				setState(585);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,56,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -3457,11 +3262,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitClassOrInterfaceType(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitClassOrInterfaceType(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ClassOrInterfaceTypeContext classOrInterfaceType() throws RecognitionException {
@@ -3486,7 +3286,7 @@ public class JavaParser extends Parser {
 			setState(606);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,61,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -3542,11 +3342,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeArgument(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeArgument(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3639,11 +3434,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitQualifiedNameList(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitQualifiedNameList(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final QualifiedNameListContext qualifiedNameList() throws RecognitionException {
@@ -3701,11 +3491,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitFormalParameters(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitFormalParameters(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3769,11 +3554,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitFormalParameterList(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitFormalParameterList(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FormalParameterListContext formalParameterList() throws RecognitionException {
@@ -3793,7 +3573,7 @@ public class JavaParser extends Parser {
 				setState(636);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,66,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -3867,11 +3647,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitFormalParameter(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitFormalParameter(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FormalParameterContext formalParameter() throws RecognitionException {
@@ -3884,7 +3659,7 @@ public class JavaParser extends Parser {
 			setState(649);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,69,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -3940,11 +3715,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitLastFormalParameter(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitLastFormalParameter(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LastFormalParameterContext lastFormalParameter() throws RecognitionException {
@@ -3957,7 +3727,7 @@ public class JavaParser extends Parser {
 			setState(658);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,70,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4010,11 +3780,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitQualifiedName(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitQualifiedName(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final QualifiedNameContext qualifiedName() throws RecognitionException {
@@ -4029,7 +3794,7 @@ public class JavaParser extends Parser {
 			setState(670);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,71,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -4079,11 +3844,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitLiteral(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitLiteral(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4172,11 +3932,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitIntegerLiteral(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitIntegerLiteral(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final IntegerLiteralContext integerLiteral() throws RecognitionException {
@@ -4223,11 +3978,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitFloatLiteral(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitFloatLiteral(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4285,11 +4035,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotation(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotation(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4368,11 +4113,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitElementValuePairs(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitElementValuePairs(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ElementValuePairsContext elementValuePairs() throws RecognitionException {
@@ -4431,11 +4171,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitElementValuePair(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitElementValuePair(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ElementValuePairContext elementValuePair() throws RecognitionException {
@@ -4484,11 +4219,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitElementValue(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitElementValue(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4558,11 +4288,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitElementValueArrayInitializer(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitElementValueArrayInitializer(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ElementValueArrayInitializerContext elementValueArrayInitializer() throws RecognitionException {
@@ -4585,7 +4310,7 @@ public class JavaParser extends Parser {
 				setState(718);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,77,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -4647,11 +4372,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotationTypeDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotationTypeDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AnnotationTypeDeclarationContext annotationTypeDeclaration() throws RecognitionException {
@@ -4701,11 +4421,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotationTypeBody(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotationTypeBody(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4770,11 +4485,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotationTypeElementDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotationTypeElementDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AnnotationTypeElementDeclarationContext annotationTypeElementDeclaration() throws RecognitionException {
@@ -4814,7 +4524,7 @@ public class JavaParser extends Parser {
 				setState(745);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,81,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -4884,11 +4594,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotationTypeElementRest(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotationTypeElementRest(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5010,11 +4715,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotationMethodOrConstantRest(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotationMethodOrConstantRest(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AnnotationMethodOrConstantRestContext annotationMethodOrConstantRest() throws RecognitionException {
@@ -5070,11 +4770,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotationMethodRest(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotationMethodRest(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AnnotationMethodRestContext annotationMethodRest() throws RecognitionException {
@@ -5129,11 +4824,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitAnnotationConstantRest(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitAnnotationConstantRest(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AnnotationConstantRestContext annotationConstantRest() throws RecognitionException {
@@ -5173,11 +4863,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitDefaultValue(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitDefaultValue(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5224,11 +4909,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitBlock(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitBlock(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5292,11 +4972,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitBlockStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitBlockStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5368,11 +5043,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitLocalVariableDeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitLocalVariableDeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LocalVariableDeclarationContext localVariableDeclaration() throws RecognitionException {
@@ -5385,7 +5055,7 @@ public class JavaParser extends Parser {
 			setState(808);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,92,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -5440,11 +5110,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitLocalTypeDeclaration(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitLocalTypeDeclaration(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5554,11 +5219,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase5(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase5(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase4Context extends StatementContext {
 		public TerminalNode WHILE() { return getToken(JavaParser.WHILE, 0); }
@@ -5576,11 +5236,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase4(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase4(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase7Context extends StatementContext {
@@ -5609,11 +5264,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase7(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase7(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase6Context extends StatementContext {
 		public TerminalNode TRY() { return getToken(JavaParser.TRY, 0); }
@@ -5638,11 +5288,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase6(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase6(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase10Context extends StatementContext {
 		public TerminalNode RETURN() { return getToken(JavaParser.RETURN, 0); }
@@ -5658,11 +5303,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase10(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase10(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase1Context extends StatementContext {
@@ -5684,11 +5324,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase1(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase1(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase0Context extends StatementContext {
 		public BlockContext blockLabel;
@@ -5703,11 +5338,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase0(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase0(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase3Context extends StatementContext {
@@ -5728,11 +5358,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase3(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase3(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase2Context extends StatementContext {
@@ -5756,11 +5381,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase2(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase2(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase15Context extends StatementContext {
 		public ExpressionContext statementExpression;
@@ -5776,11 +5396,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase15(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase15(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase16Context extends StatementContext {
@@ -5799,11 +5414,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase16(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase16(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase11Context extends StatementContext {
 		public TerminalNode THROW() { return getToken(JavaParser.THROW, 0); }
@@ -5820,11 +5430,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase11(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase11(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase12Context extends StatementContext {
 		public TerminalNode BREAK() { return getToken(JavaParser.BREAK, 0); }
@@ -5838,11 +5443,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase12(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase12(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase13Context extends StatementContext {
@@ -5858,11 +5458,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase13(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase13(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class StmtCase14Context extends StatementContext {
 		public TerminalNode SEMI() { return getToken(JavaParser.SEMI, 0); }
@@ -5874,11 +5469,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase14(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase14(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase9Context extends StatementContext {
@@ -5897,11 +5487,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase9(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase9(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class StmtCase8Context extends StatementContext {
@@ -5931,11 +5516,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitStmtCase8(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitStmtCase8(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6147,7 +5727,7 @@ public class JavaParser extends Parser {
 				setState(890);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,103,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -6334,11 +5914,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitCatchClause(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitCatchClause(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CatchClauseContext catchClause() throws RecognitionException {
@@ -6410,11 +5985,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitCatchType(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitCatchType(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CatchTypeContext catchType() throws RecognitionException {
@@ -6472,11 +6042,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitFinallyBlock(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitFinallyBlock(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FinallyBlockContext finallyBlock() throws RecognitionException {
@@ -6520,11 +6085,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitResourceSpecification(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitResourceSpecification(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6587,11 +6147,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitResources(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitResources(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ResourcesContext resources() throws RecognitionException {
@@ -6606,7 +6161,7 @@ public class JavaParser extends Parser {
 			setState(969);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,112,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -6662,11 +6217,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitResource(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitResource(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6736,11 +6286,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitSwitchBlockStatementGroup(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitSwitchBlockStatementGroup(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6813,11 +6358,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitSwitchLabel(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitSwitchLabel(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6907,11 +6447,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitForControl(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitForControl(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ForControlContext forControl() throws RecognitionException {
@@ -7000,11 +6535,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitForInit(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitForInit(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ForInitContext forInit() throws RecognitionException {
@@ -7070,11 +6600,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitEnhancedForControl(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitEnhancedForControl(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final EnhancedForControlContext enhancedForControl() throws RecognitionException {
@@ -7087,7 +6612,7 @@ public class JavaParser extends Parser {
 			setState(1024);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,123,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -7139,11 +6664,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitParExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitParExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ParExpressionContext parExpression() throws RecognitionException {
@@ -7193,11 +6713,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExpressionList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExpressionList(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7259,11 +6774,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitMethodCall(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitMethodCall(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7382,11 +6892,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase15(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase15(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase14Context extends ExpressionContext {
 		public Token bop;
@@ -7407,11 +6912,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase14(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase14(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase17Context extends ExpressionContext {
 		public Token bop;
@@ -7430,11 +6930,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase17(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase17(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase16Context extends ExpressionContext {
@@ -7455,11 +6950,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase16(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase16(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase19Context extends ExpressionContext {
 		public Token bop;
@@ -7479,11 +6969,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase19(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase19(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase18Context extends ExpressionContext {
 		public Token bop;
@@ -7502,11 +6987,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase18(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase18(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase11Context extends ExpressionContext {
@@ -7533,11 +7013,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase11(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase11(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase10Context extends ExpressionContext {
 		public Token bop;
@@ -7558,11 +7033,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase10(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase10(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase13Context extends ExpressionContext {
 		public Token bop;
@@ -7581,11 +7051,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase13(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase13(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase12Context extends ExpressionContext {
@@ -7609,11 +7074,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase12(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase12(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase2Context extends ExpressionContext {
 		public List<ExpressionContext> expression() {
@@ -7632,11 +7092,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase2(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase2(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase1Context extends ExpressionContext {
@@ -7673,11 +7128,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase1(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase1(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase4Context extends ExpressionContext {
 		public TerminalNode NEW() { return getToken(JavaParser.NEW, 0); }
@@ -7693,11 +7143,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase4(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase4(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase3Context extends ExpressionContext {
 		public MethodCallContext methodCall() {
@@ -7712,11 +7157,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase3(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase3(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase0Context extends ExpressionContext {
 		public PrimaryContext primary() {
@@ -7730,11 +7170,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase0(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase0(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase25Context extends ExpressionContext {
@@ -7754,11 +7189,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase25(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase25(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase9Context extends ExpressionContext {
@@ -7781,11 +7211,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase9(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase9(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase20Context extends ExpressionContext {
 		public Token bop;
@@ -7806,11 +7231,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase20(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase20(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase22Context extends ExpressionContext {
 		public LambdaExpressionContext lambdaExpression() {
@@ -7824,11 +7244,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase22(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase22(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase6Context extends ExpressionContext {
@@ -7846,11 +7261,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase6(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase6(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase5Context extends ExpressionContext {
@@ -7870,11 +7280,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase5(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase5(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase21Context extends ExpressionContext {
@@ -7906,11 +7311,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase21(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase21(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase8Context extends ExpressionContext {
 		public Token prefix;
@@ -7927,11 +7327,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase8(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase8(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 	public static class ExprCase24Context extends ExpressionContext {
@@ -7953,11 +7348,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase24(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase24(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase7Context extends ExpressionContext {
 		public Token prefix;
@@ -7977,11 +7367,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase7(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase7(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 	public static class ExprCase23Context extends ExpressionContext {
 		public ExpressionContext expression() {
@@ -8000,11 +7385,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExprCase23(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExprCase23(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8189,7 +7569,7 @@ public class JavaParser extends Parser {
 			setState(1177);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,138,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -8589,11 +7969,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitLambdaExpression(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitLambdaExpression(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final LambdaExpressionContext lambdaExpression() throws RecognitionException {
@@ -8646,11 +8021,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitLambdaParameters(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitLambdaParameters(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8746,11 +8116,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitLambdaBody(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitLambdaBody(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8858,11 +8223,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitPrimary(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitPrimary(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -8991,11 +8351,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitClassType(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitClassType(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ClassTypeContext classType() throws RecognitionException {
@@ -9080,11 +8435,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitCreator(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitCreator(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9183,11 +8533,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitCreatedName(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitCreatedName(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9291,11 +8636,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitInnerCreator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitInnerCreator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final InnerCreatorContext innerCreator() throws RecognitionException {
@@ -9361,11 +8701,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitArrayCreatorRest(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitArrayCreatorRest(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9446,7 +8781,7 @@ public class JavaParser extends Parser {
 				setState(1293);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,156,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -9466,7 +8801,7 @@ public class JavaParser extends Parser {
 				setState(1300);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,157,_ctx);
-				while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -9517,11 +8852,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitClassCreatorRest(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitClassCreatorRest(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9575,11 +8905,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExplicitGenericInvocation(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExplicitGenericInvocation(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ExplicitGenericInvocationContext explicitGenericInvocation() throws RecognitionException {
@@ -9622,11 +8947,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeArgumentsOrDiamond(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeArgumentsOrDiamond(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9684,11 +9004,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitNonWildcardTypeArgumentsOrDiamond(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitNonWildcardTypeArgumentsOrDiamond(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final NonWildcardTypeArgumentsOrDiamondContext nonWildcardTypeArgumentsOrDiamond() throws RecognitionException {
@@ -9745,11 +9060,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitNonWildcardTypeArguments(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitNonWildcardTypeArguments(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final NonWildcardTypeArgumentsContext nonWildcardTypeArguments() throws RecognitionException {
@@ -9799,11 +9109,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeList(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -9875,11 +9180,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeType(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeType(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeTypeContext typeType() throws RecognitionException {
@@ -9928,7 +9228,7 @@ public class JavaParser extends Parser {
 			setState(1345);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,165,_ctx);
-			while ( _alt!=2 && _alt!= ATN.INVALID_ALT_NUMBER ) {
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -9976,11 +9276,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitPrimitiveType(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitPrimitiveType(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10038,11 +9333,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitTypeArguments(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitTypeArguments(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10105,11 +9395,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitSuperSuffix(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitSuperSuffix(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -10182,11 +9467,6 @@ public class JavaParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitExplicitGenericInvocationSuffix(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitExplicitGenericInvocationSuffix(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ExplicitGenericInvocationSuffixContext explicitGenericInvocationSuffix() throws RecognitionException {
@@ -10246,11 +9526,6 @@ public class JavaParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JavaParserListener ) ((JavaParserListener)listener).exitArguments(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JavaParserVisitor ) return ((JavaParserVisitor<? extends T>)visitor).visitArguments(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 

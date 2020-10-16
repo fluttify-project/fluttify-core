@@ -15,8 +15,8 @@ import 'package:flutter/services.dart';
 
 #__foundation__#
 
-typedef void #__view_simple_name__#CreatedCallback(#__view__# controller);
-typedef Future<void> _OnAndroidViewDispose();
+typedef #__view_simple_name__#CreatedCallback = void Function(#__view__# controller);
+typedef _OnAndroidViewDispose = Future<void> Function();
 
 class #__view__#_Android extends StatefulWidget {
   const #__view__#_Android({
@@ -45,12 +45,37 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
       Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
     };
 
-    final messageCodec = StandardMessageCodec();
+    // hybrid composition version.
+    // PlatformViewLink(
+    //   viewType: '#__org__#/#__view_type__#',
+    //   surfaceFactory: (
+    //     BuildContext context,
+    //     PlatformViewController controller,
+    //   ) {
+    //     return AndroidViewSurface(
+    //       controller: controller,
+    //       gestureRecognizers: gestureRecognizers,
+    //       hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+    //     );
+    //   },
+    //   onCreatePlatformView: (PlatformViewCreationParams params) {
+    //     return PlatformViewsService.initSurfaceAndroidView(
+    //       id: params.id,
+    //       viewType: '#__org__#/#__view_type__#',
+    //       layoutDirection: TextDirection.ltr,
+    //       creationParams: widget.params,
+    //       creationParamsCodec: k#__project_prefix__#MessageCodec,
+    //     )
+    //       ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+    //       ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
+    //       ..create();
+    //   },
+    // );
     return AndroidView(
       viewType: '#__org__#/#__view_type__#',
       gestureRecognizers: gestureRecognizers,
       onPlatformViewCreated: _onViewCreated,
-      creationParamsCodec: messageCodec,
+      creationParamsCodec: k#__project_prefix__#MessageCodec,
       creationParams: widget.params,
     );
   }
@@ -59,7 +84,7 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
     // 碰到一个对象返回的hashCode为0的情况, 造成和这个id冲突了, 这里用一个magic number避免一下
     // 把viewId转换为refId再使用, 使其与其他对象统一
     final refId = await viewId2RefId((2147483647 - id).toString());
-    _controller = #__view__#()..refId = refId..tag__ = '#__tag__#';
+    _controller = #__view__#()..refId = refId;
     if (widget.onViewCreated != null) {
       widget.onViewCreated(_controller);
     }
@@ -68,7 +93,7 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
   @override
   void dispose() {
     if (widget.onDispose != null) {
-      widget.onDispose().then((_) => _controller.release__());
+      widget.onDispose().whenComplete(() => _controller.release__());
     } else {
       _controller.release__();
     }

@@ -1,17 +1,9 @@
 #__deprecated__#
 #__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
-  if (#__check_param_size__#) {
-    return Future.error('all args must have same length!');
-  }
+  assert(#__check_param_size__#);
 
   // invoke native method
   #__invoke__#
 
-  // convert native result to dart side object
-  if (resultBatch == null) {
-    return null;
-  } else {
-    final typedResult = #__return_statement__#;
-    return typedResult;
-  }
+  return #__return_statement__#;
 }

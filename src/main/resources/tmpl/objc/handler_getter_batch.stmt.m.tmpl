@@ -1,7 +1,7 @@
 @"#__method_name__#_batch": ^(NSObject <FlutterPluginRegistrar>* registrar, id argsBatch, FlutterResult methodResult) {
     NSMutableArray* resultList = [NSMutableArray array];
 
-    for (int __i__ = 0; __i__ < ((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch).count; __i__++) {
+    for (NSUInteger __i__ = 0; __i__ < ((NSArray<NSDictionary<NSString*, NSObject*>*>*) argsBatch).count; __i__++) {
         NSDictionary<NSString*, id>* args = [((NSArray<NSDictionary<NSString*, id>*>*) argsBatch) objectAtIndex:__i__];
 
         // ref object
@@ -11,7 +11,7 @@
 
         #__result__#
 
-        [resultList addObject:__result__];
+        [resultList addObject:__result__ == nil ? [NSNull null] : __result__];
     }
 
     methodResult(resultList);

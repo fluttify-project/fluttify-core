@@ -51,6 +51,11 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     var pluginDependencies: Map<String, String> = mapOf()
 
     /**
+     * 纯dart包依赖
+     */
+    var packageDependencies: Map<String, String> = mapOf()
+
+    /**
      * android端配置
      */
     var android: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
@@ -185,6 +190,16 @@ open class Exclude {
      */
     var constants: List<String> = listOf()
 
+    /**
+     * 排除的宏
+     */
+    var macros: List<String> = listOf()
+
+    /**
+     * 排除的framework搜索路径
+     */
+    var frameworkSearchPath: List<String> = listOf()
+
     override fun toString(): String {
         return "Exclude(classes=$classes, methods=$methods, libs=$libs, constants=$constants)"
     }
@@ -224,7 +239,7 @@ open class Remote {
     /**
      * ios pod 坐标
      */
-    val iosCoordinate get() = name.indices.map { "'${name[it]}', '~> ${version[it]}'" }
+    val iosCoordinate get() = name.indices.map { "'${name[it]}', '${version[it]}'" }
 
     /**
      * ios是否已配置

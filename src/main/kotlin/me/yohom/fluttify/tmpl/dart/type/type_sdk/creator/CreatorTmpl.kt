@@ -5,9 +5,9 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 
-//static Future<#__class_name__#> create__#__signature__#(#__formal_params__#{ bool init = true /* ios only */ }) async {
-//  final refId = await MethodChannel('#__channel_name__#', StandardMethodCodec(FluttifyMessageCodec('#__tag__#'))).invokeMethod('ObjectFactory::create#__creator_name__#', #__args__#);
-//  final object = #__class_name__#()..refId = refId..tag__ = '#__tag__#';
+//static Future<#__class_name__#> create__#__signature__#(#__formal_params__#) async {
+//  final refId = await k#__project_prefix__#Channel.invokeMethod('ObjectFactory::create#__creator_name__#', #__args__#);
+//  final object = #__class_name__#()..refId = refId;
 //  return object;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText() }
@@ -31,9 +31,8 @@ fun CreatorTmpl(type: Type): List<String> {
                     )
                     .replace("#__creator_name__#", it.creatorName(type.name))
                     .replace("#__formal_params__#", it.formalParams.joinToString { it.variable.toDartString() })
-                    .replace("#__channel_name__#", ext.methodChannelName)
                     .replace("#__args__#", it.formalParams.map { it.variable }.toDartMap())
-                    .replace("#__tag__#", ext.projectName)
+                    .replaceGlobal(type.platform)
             }
         Platform.iOS -> listOf(
             tmpl
@@ -41,9 +40,8 @@ fun CreatorTmpl(type: Type): List<String> {
                 .replace("#__signature__#", "")
                 .replace("#__creator_name__#", type.name.toUnderscore())
                 .replace("#__formal_params__#", "{ bool init = true /* ios only */ }")
-                .replace("#__channel_name__#", ext.methodChannelName)
                 .replace("#__args__#", "{'init': init}")
-                .replace("#__tag__#", ext.projectName)
+                .replaceGlobal(type.platform)
         )
         else -> listOf()
     }

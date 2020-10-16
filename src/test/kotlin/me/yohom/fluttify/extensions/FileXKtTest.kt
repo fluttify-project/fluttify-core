@@ -2,13 +2,10 @@ package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.EaseMob
 import me.yohom.fluttify.FluttifyTest
-import me.yohom.fluttify.TencentLive
 import me.yohom.fluttify.model.*
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
-import parser.java.JavaParser
-import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
@@ -1092,6 +1089,43 @@ typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
                             platform = Platform.iOS
                         )
                     }
+            }
+        })
+    }
+
+    @Test
+    fun methodSig_startScreenCapture() {
+        val source = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Professional.framework/Headers/TRTCCloud.h".file().readText()
+//        val source = "- (int)stopScreenCapture;"
+        source.walkTree(object : ObjectiveCParserBaseListener() {
+//            override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
+//                println(ctx.text)
+//            }
+
+            override fun enterInstanceMethodDeclaration(ctx: ObjectiveCParser.InstanceMethodDeclarationContext) {
+                println(ctx.text)
+            }
+        })
+    }
+
+    @Test
+    fun enum_googlemap() {
+        val source = """
+typedef NS_ENUM(NSUInteger, GMSMapViewType) {
+  kGMSTypeNormal GMS_SWIFT_NAME_2_0_3_0(Normal, normal) = 1,
+
+  kGMSTypeSatellite GMS_SWIFT_NAME_2_0_3_0(Satellite, satellite),
+
+  kGMSTypeTerrain GMS_SWIFT_NAME_2_0_3_0(Terrain, terrain),
+  kGMSTypeHybrid GMS_SWIFT_NAME_2_0_3_0(Hybrid, hybrid),
+
+  kGMSTypeNone GMS_SWIFT_NAME_2_0_3_0(None, none),
+
+};"""
+
+        source.walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
+                println(ctx.text)
             }
         })
     }

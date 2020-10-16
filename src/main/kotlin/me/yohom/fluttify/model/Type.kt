@@ -273,17 +273,18 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
                 mustNot("构造器循环构造") {
-                    constructors.all {
-                        it.formalParams.any {
-                            it.variable.containerType().constructors.any { it.formalParams.any { it.variable.trueType == name } }
-                        }
-                    } && constructors.isNotEmpty()
+                    constructors.isNotEmpty() &&
+                            constructors.all {
+                                it.formalParams.any {
+                                    it.variable.containerType().constructors.any { it.formalParams.any { it.variable.trueType == name } }
+                                }
+                            }
                 }
                 &&
                 // class A { A(A a) {} }
                 mustNot("构造器含有自身类型的参数") {
-                    constructors.all { it.formalParams.map { it.variable.trueType }.contains(name) }
-                            && constructors.isNotEmpty()
+                    constructors.isNotEmpty() &&
+                            constructors.all { it.formalParams.map { it.variable.trueType }.contains(this.name) }
                 }
                 &&
                 must("是已知类型或jsonable类型") { isKnownType }
@@ -298,7 +299,10 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("存在参数都不为`混淆类型 或 未知类`的构造器") {
                     constructors
-                        .any { it.formalParams.map { it.variable.trueType }.all { !it.isObfuscated() && it.findType().isKnownType } }
+                        .any {
+                            it.formalParams.map { it.variable.trueType }
+                                .all { !it.isObfuscated() && it.findType().isKnownType }
+                        }
                             || constructors.isEmpty()
                 }
                 &&
@@ -307,12 +311,19 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 &&
                 must("有公开构造器 或 没有声明构造器") { (constructors.any { it.isPublic } || constructors.isEmpty()) }
                 &&
-                must("存在构造器可以通过过滤 或 没有构造器 或 jsonable类型") { constructors.any { it.filter } || constructors.isEmpty() }
+                must("存在构造器可以通过过滤 或 没有构造器") { constructors.any { it.filter } || constructors.isEmpty() }
                 &&
                 must("这条是针对ios平台, 如果init方法不是公开的(即被标记为unavailable), 那么就跳过这个类") {
                     platform == Platform.iOS && methods.find { it.name == "init" }?.isPublic != false
                             || platform != Platform.iOS
                 }
+                &&
+                must("这条是针对ios平台, 祖宗类是可构造的") {
+                    platform != Platform.iOS
+                            ||
+                            ancestorTypes.isEmpty()
+                            ||
+                            ancestorTypes.all { it.findType().run { constructable || isAbstract } } }
                 ||
                 must("公开枚举") { isPublic && isEnum }
         if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")

@@ -188,9 +188,15 @@ fun TYPE_NAME.simpleName(): String {
 /**
  * 从类名获取类信息
  */
+private val findTypeCache = mutableMapOf<String, Type>()
 fun TYPE_NAME.findType(): Type {
+    if (findTypeCache.containsKey(this)) {
+        if (CACHE_LOG) println("findType命中缓存: $this -> ${findTypeCache[this]!!.name}")
+        return findTypeCache[this]!!
+    }
+
     val type = depointer().deprotocol()
-    val result = if (type.genericTypes().isNotEmpty()) {
+    val temp = if (type.genericTypes().isNotEmpty()) {
         // 说明有泛型, 合成一个新的类
         val containerType = SDK.findType(type.containerType())
 
@@ -240,11 +246,15 @@ fun TYPE_NAME.findType(): Type {
         }
     }
     // 如果在override元素内, 则替换掉
-    return when (result.platform) {
-        Platform.iOS -> ext.ios.overrideElements[result.id]?.fromJson<Type>() ?: result
-        Platform.Android -> ext.android.overrideElements[result.id]?.fromJson<Type>() ?: result
-        else -> result
+    val result = when (temp.platform) {
+        Platform.iOS -> ext.ios.overrideElements[temp.id]?.fromJson<Type>() ?: temp
+        Platform.Android -> ext.android.overrideElements[temp.id]?.fromJson<Type>() ?: temp
+        else -> temp
     }
+
+    findTypeCache[this] = result
+
+    return result
 }
 
 fun TYPE_NAME.ifIsGenericTypeConvertToObject(): String {
@@ -260,7 +270,11 @@ fun TYPE_NAME.ifIsGenericTypeConvertToObject(): String {
  * 获取与当前类名关联的所有类型信息
  */
 fun TYPE_NAME.allTypes(): List<Type> {
-    return genericTypes().map { it.findType() }.union(listOf(containerType().findType())).toList()
+    val containerTypes = dearray().containerType().findType()
+    val genericTypes = dearray().genericTypes().map { it.findType() }
+    return genericTypes
+        .union(listOf(containerTypes))
+        .toList()
 }
 
 /**
@@ -370,9 +384,15 @@ fun String.isObfuscatedMethod(): Boolean {
 /**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
+private val dartTypeCache = mutableMapOf<String, String>()
 fun TYPE_NAME.toDartType(): TYPE_NAME {
+    if (dartTypeCache.containsKey(this)) {
+        if (CACHE_LOG) println("toDartType命中缓存: $this -> ${dartTypeCache[this]}")
+        return dartTypeCache[this]!!
+    }
+
     // 如果是系统别名就先取出原始类型, 否则就直接使用
-    return (SYSTEM_TYPEDEF[this] ?: this).pack()
+    val dartType = (SYSTEM_TYPEDEF[this] ?: this).pack()
         .run {
             when {
                 // java
@@ -388,26 +408,30 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
+                Regex(".*\\[]").matches(this) -> dearray().enList() // 数组转列表
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 Regex("java\\.lang\\.Void").matches(this) -> "void"
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(this) -> "List<dynamic>"
                 // 若是某种java的List, 那么去掉前缀, 然后转换泛型类型
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)\\u003c.*\\u003e").matches(this) -> {
                     val genericType = genericTypes()[0]
                     "List<${genericType.toDartType()}>"
                 }
-                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)").matches(this) -> "List<java_lang_Object>"
                 Regex("java\\.util\\.Collection\\u003c.+\\u003e").matches(this) -> replace(
                     "java.util.Collection",
                     "List"
                 )
-                Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace("java.lang.Iterable", "List")
+                Regex("java\\.lang\\.Iterable\\u003c.+\\u003e").matches(this) -> replace(
+                    "java.lang.Iterable",
+                    "List"
+                )
 
                 // objc
                 Regex("NSString\\*?").matches(this) -> "String"
                 Regex("NS(Mutable)?Array\\u003cNSString\\*?\\u003e\\*?").matches(this) -> "List<String>"
                 Regex("nil").matches(this) -> "null"
                 Regex("id").matches(this) -> "dynamic"
-                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<NSObject>"
+                Regex("NS(Mutable)?Array\\*?").matches(this) -> "List<dynamic>"
                 Regex("NS(U)?Integer").matches(this) -> "int"
                 Regex("NSNumber\\*?").matches(this) -> "num"
                 Regex("NSArray\\u003cNSNumber\\*\\u003e\\*").matches(this) -> "List<num>"
@@ -445,6 +469,11 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
         .replace(".", "_")
         .depointer()
         .deprotocol()
+
+    // 加入缓存
+    dartTypeCache[this] = dartType
+
+    return dartType
 }
 
 ///**
@@ -455,7 +484,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
 //}
 
 fun TYPE_NAME.toUnderscore(): String {
-    return replace(Regex("[$.<>,]"), "_")
+    return replace(Regex("[$.<>,|]"), "_")
 }
 
 fun TYPE_NAME.isStructPointer(): Boolean {
@@ -494,7 +523,7 @@ fun String.enprotocol(): String {
  * 为指针类型加上`*`号
  */
 fun TYPE_NAME.enpointer(): TYPE_NAME {
-    return if (endsWith("*") || Regex("id<\\w+>").matches(this)) this else "$this*"
+    return if (endsWith("*") || Regex("id(<\\w+>)?").matches(this)) this else "$this*"
 }
 
 /**
@@ -612,9 +641,12 @@ fun PATH.file(): File {
     val cleanPath = replace("//", "/")
     val file = File(cleanPath)
     if (!file.exists()) {
+//        println("PATH.file(): 文件${this}不存在")
         if (endsWith("/")) {
+//            println("PATH.file(): 路径以\\结尾, 创建文件夹${this}")
             file.mkdirs()
         } else {
+//            println("PATH.file(): 创建文件${this}")
             // 如果是文件, 那么获取文件上级文件夹, 检查是否存在, 不存在就先创建文件夹, 再创建文件
             val dir = File(substringBeforeLast("/"))
             if (!dir.exists()) {
@@ -666,9 +698,12 @@ fun String.objcSpecifierExpand(): String {
         .replace("_Nonnull", "")
         .replace("nullable", "")
         .replace("nonnull", "")
+        .replace("__autoreleasing", "")
         .replace("unsignedint", "unsigned int")
         .replace("constvoid*", "const void*")
         .replace("unsignedlonglong", "unsigned long long")
+        .replace("unsignedlong", "unsigned long")
+        .replace("unsignedint", "unsigned int")
         .replace("longlong", "long long")
 }
 //
@@ -683,7 +718,8 @@ fun String.objcSpecifierExpand(): String {
 //}
 
 fun String.isDynamic(): Boolean {
-    return this == "dynamic"
+    val dartType = toDartType()
+    return dartType == "dynamic" || dartType == "List<dynamic>"
 }
 
 /**
@@ -712,4 +748,15 @@ fun String.parseSDK(): SDK {
  */
 fun String.objcId(): String {
     return if (this == "id") "id__" else this
+}
+
+fun String.replaceGlobal(platform: Platform? = null): String {
+    return replace("#__project_name__#", ext.projectName)
+        .replace("#__project_prefix__#", ext.projectName.underscore2Camel())
+        .replace("#__tag__#", ext.projectName)
+        .replace("#__channel_name__#", ext.methodChannelName)
+        .replace("#__current_package__#", ext.projectName)
+        .run {
+            if (platform != null) replace("#__platform__#", platform.toString().capitalize()) else this
+        }
 }

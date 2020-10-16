@@ -3,6 +3,7 @@ package me.yohom.fluttify.extensions
 import me.yohom.fluttify.JAVA_FILE
 import me.yohom.fluttify.OBJC_FILE
 import me.yohom.fluttify.TYPE_NAME
+import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -237,330 +238,330 @@ fun OBJC_FILE.objcType(): SourceFile {
 
     val stack = Stack<Type>()
 
-    source.walkTree(object : ObjectiveCParserBaseListener() {
+    source.replaceMacro()
+        .walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterVarDeclaration(ctx: ObjectiveCParser.VarDeclarationContext) {
+                // 只有顶层声明需要处理
+                if (!ctx.isChildOf(ObjectiveCParser.ClassInterfaceContext::class)
+                    &&
+                    !ctx.isChildOf(ObjectiveCParser.ClassImplementationContext::class)
+                    &&
+                    !ctx.isChildOf(ObjectiveCParser.CategoryInterfaceContext::class)
+                    &&
+                    !ctx.isChildOf(ObjectiveCParser.CategoryImplementationContext::class)
+                    &&
+                    !ctx.isChildOf(ObjectiveCParser.ProtocolDeclarationContext::class)
+                    &&
+                    !ctx.isChildOf(ObjectiveCParser.FunctionDeclarationContext::class)
+                ) {
+                    val isExternString = ctx
+                        .declarationSpecifiers()
+                        ?.text
+                        ?.run {
+                            contains("extern") && contains("NSString")
+                        }
+                    val constantName = ctx
+                        .initDeclaratorList()
+                        ?.initDeclarator()
+                        ?.get(0)
+                        ?.declarator()
+                        ?.directDeclarator()
+                        ?.identifier()
+                        ?.text
 
-        override fun enterVarDeclaration(ctx: ObjectiveCParser.VarDeclarationContext) {
-            // 只有顶层声明需要处理
-            if (!ctx.isChildOf(ObjectiveCParser.ClassInterfaceContext::class)
-                &&
-                !ctx.isChildOf(ObjectiveCParser.ClassImplementationContext::class)
-                &&
-                !ctx.isChildOf(ObjectiveCParser.CategoryInterfaceContext::class)
-                &&
-                !ctx.isChildOf(ObjectiveCParser.CategoryImplementationContext::class)
-                &&
-                !ctx.isChildOf(ObjectiveCParser.ProtocolDeclarationContext::class)
-                &&
-                !ctx.isChildOf(ObjectiveCParser.FunctionDeclarationContext::class)
-            ) {
-                val isExternString = ctx
-                    .declarationSpecifiers()
-                    ?.text
-                    ?.run {
-                        contains("extern") && contains("NSString")
+                    if (isExternString == true && constantName != null) {
+                        topLevelConstant.add(Variable("NSString*", constantName.depointer(), Platform.iOS))
                     }
-                val constantName = ctx
-                    .initDeclaratorList()
-                    ?.initDeclarator()
-                    ?.get(0)
-                    ?.declarator()
+                }
+            }
+
+            //region 类
+            override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
+                stack.push(Type().also {
+                    it.platform = Platform.iOS
+                    it.typeType = TypeType.Class
+                    it.name = ctx.className.text
+                    it.superClass = ctx.superclassName.text
+                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.isAbstract = false
+                })
+            }
+
+            override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
+                if (stack.isNotEmpty()) types.add(stack.pop())
+            }
+            //endregion
+
+            //region 协议
+            override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
+                stack.push(Type().also {
+                    it.platform = Platform.iOS
+                    it.typeType = TypeType.Interface
+                    it.name = ctx.protocolName().text
+                    it.superClass = ""
+                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.isAbstract = true
+                })
+            }
+
+            override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
+                types.add(stack.pop())
+            }
+            //endregion
+
+            //region 枚举
+            override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
+                // 碰到了
+                //
+                //enum MALineCapType
+                //{
+                //    kMALineCapButt,     ///< 普通头
+                //    kMALineCapSquare,   ///< 扩展头
+                //    kMALineCapArrow,    ///< 箭头
+                //    kMALineCapRound     ///< 圆形头
+                //};
+                //typedef enum MALineCapType MALineCapType;
+                //
+                // 这种情况, 导致MALineCapType在dart端的内容是空的, 这里如果碰到的枚举是已经定义过的, 那么就跳过
+                if (types.map { it.name }.contains(ctx.identifier()?.text)) return
+
+                stack.push(Type().also {
+                    it.platform = Platform.iOS
+                    it.typeType = TypeType.Enum
+                    it.name = ctx.identifier()?.text
+                        ?: ctx.enumSpecifier().identifier().firstOrNull { it != null }?.text
+                                ?: ""
+                    it.isAbstract = false
+                })
+            }
+
+            override fun enterEnumerator(ctx: ObjectiveCParser.EnumeratorContext) {
+                stack.peekOrNull()?.run {
+                    val enumName = ctx.enumeratorIdentifier().identifier().text
+                    val enumValue = ctx.expression()?.text
+                    enumerators.add(Enumerator(enumName, enumValue))
+                }
+            }
+
+            override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
+                if (stack.isNotEmpty()) types.add(stack.pop())
+            }
+            //endregion
+
+            //region 分类
+            override fun enterCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
+                stack.push(Type().also {
+                    it.platform = Platform.iOS
+                    it.typeType = TypeType.Extension
+                    it.name = ctx.categoryName.text
+                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.isAbstract = false
+                })
+            }
+
+            override fun exitCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
+                types.add(stack.pop())
+            }
+            //endregion
+
+            //region 结构体 已经在typedef上下文中处理
+            override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+                // 如果结构体没有内容则略过, 这种情况可以是`typedef struct MACoordinateRegion MACoordinateRegion;`
+                if (ctx.fieldDeclaration().isEmpty()) return
+                stack.push(Type().also {
+                    it.platform = Platform.iOS
+                    it.typeType = TypeType.Struct
+                    // 结构体名字, 从结构体定时时获取, 如果没有则向上找typedef, 获取typedef后的名称
+                    it.name = ctx.identifier()?.text
+                        ?: ctx.ancestorOf(ObjectiveCParser.TypedefDeclarationContext::class)?.typeName()
+                                ?: ""
+                })
+            }
+
+            override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
+                if (stack.isNotEmpty()) types.add(stack.pop())
+            }
+            //endregion
+
+            override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
+                val returnType = ctx
+                    .declarationSpecifiers()
+                    .typeSpecifier()[0]
+                    ?.text
+                val typeName = ctx
+                    .typeDeclaratorList()
+                    .typeDeclarator()[0]
                     ?.directDeclarator()
                     ?.identifier()
                     ?.text
+                val formalParams = ctx
+                    .typeDeclaratorList()
+                    .typeDeclarator()[0]
+                    ?.directDeclarator()
+                    ?.blockParameters()
+                    ?.typeVariableDeclaratorOrName()
+                    ?.filter { it.typeName()?.text != "void" } // void类型, 不占用参数
+                    ?.mapNotNull { it.typeVariableDeclarator() }
+                    ?.mapIndexed { index, it ->
+                        val argName = it.declarator().text
+                            .depointer()
+                            .removeObjcSpecifier()
+                            .run { if (isEmpty()) "__arg${index}__" else this }
+                        val argType = it.declarationSpecifiers()
+                            .text
+                            .run { if (it.declarator().text.startsWith("*")) enpointer() else this }
+                            .objcSpecifierExpand()
+                        Parameter(
+                            variable = Variable(argType, argName, Platform.iOS),
+                            platform = Platform.iOS
+                        )
+                    }
 
-                if (isExternString == true && constantName != null) {
-                    topLevelConstant.add(Variable("NSString*", constantName.depointer(), Platform.iOS))
-                }
-            }
-        }
-
-        //region 类
-        override fun enterClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
-            stack.push(Type().also {
-                it.platform = Platform.iOS
-                it.typeType = TypeType.Class
-                it.name = ctx.className.text
-                it.superClass = ctx.superclassName.text
-                it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
-                it.isAbstract = false
-            })
-        }
-
-        override fun exitClassInterface(ctx: ObjectiveCParser.ClassInterfaceContext) {
-            if (stack.isNotEmpty()) types.add(stack.pop())
-        }
-        //endregion
-
-        //region 协议
-        override fun enterProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
-            stack.push(Type().also {
-                it.platform = Platform.iOS
-                it.typeType = TypeType.Interface
-                it.name = ctx.protocolName().text
-                it.superClass = ""
-                it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
-                it.isAbstract = true
-            })
-        }
-
-        override fun exitProtocolDeclaration(ctx: ObjectiveCParser.ProtocolDeclarationContext) {
-            types.add(stack.pop())
-        }
-        //endregion
-
-        //region 枚举
-        override fun enterEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
-            // 碰到了
-            //
-            //enum MALineCapType
-            //{
-            //    kMALineCapButt,     ///< 普通头
-            //    kMALineCapSquare,   ///< 扩展头
-            //    kMALineCapArrow,    ///< 箭头
-            //    kMALineCapRound     ///< 圆形头
-            //};
-            //typedef enum MALineCapType MALineCapType;
-            //
-            // 这种情况, 导致MALineCapType在dart端的内容是空的, 这里如果碰到的枚举是已经定义过的, 那么就跳过
-            if (types.map { it.name }.contains(ctx.identifier()?.text)) return
-
-            stack.push(Type().also {
-                it.platform = Platform.iOS
-                it.typeType = TypeType.Enum
-                it.name = ctx.identifier()?.text
-                    ?: ctx.enumSpecifier().identifier().firstOrNull { it != null }?.text
-                            ?: ""
-                it.isAbstract = false
-            })
-        }
-
-        override fun enterEnumerator(ctx: ObjectiveCParser.EnumeratorContext) {
-            stack.peekOrNull()?.run {
-                val enumName = ctx.enumeratorIdentifier().identifier().text
-                val enumValue = ctx.expression()?.text
-                enumerators.add(Enumerator(enumName, enumValue))
-            }
-        }
-
-        override fun exitEnumDeclaration(ctx: ObjectiveCParser.EnumDeclarationContext) {
-            if (stack.isNotEmpty()) types.add(stack.pop())
-        }
-        //endregion
-
-        //region 分类
-        override fun enterCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
-            stack.push(Type().also {
-                it.platform = Platform.iOS
-                it.typeType = TypeType.Extension
-                it.name = ctx.categoryName.text
-                it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
-                it.isAbstract = false
-            })
-        }
-
-        override fun exitCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
-            types.add(stack.pop())
-        }
-        //endregion
-
-        //region 结构体 已经在typedef上下文中处理
-        override fun enterStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-            // 如果结构体没有内容则略过, 这种情况可以是`typedef struct MACoordinateRegion MACoordinateRegion;`
-            if (ctx.fieldDeclaration().isEmpty()) return
-            stack.push(Type().also {
-                it.platform = Platform.iOS
-                it.typeType = TypeType.Struct
-                // 结构体名字, 从结构体定时时获取, 如果没有则向上找typedef, 获取typedef后的名称
-                it.name = ctx.identifier()?.text
-                    ?: ctx.ancestorOf(ObjectiveCParser.TypedefDeclarationContext::class)?.typeName()
-                            ?: ""
-            })
-        }
-
-        override fun exitStructOrUnionSpecifier(ctx: ObjectiveCParser.StructOrUnionSpecifierContext) {
-            if (stack.isNotEmpty()) types.add(stack.pop())
-        }
-        //endregion
-
-        override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
-            val returnType = ctx
-                .declarationSpecifiers()
-                .typeSpecifier()[0]
-                ?.text
-            val typeName = ctx
-                .typeDeclaratorList()
-                .typeDeclarator()[0]
-                ?.directDeclarator()
-                ?.identifier()
-                ?.text
-            val formalParams = ctx
-                .typeDeclaratorList()
-                .typeDeclarator()[0]
-                ?.directDeclarator()
-                ?.blockParameters()
-                ?.typeVariableDeclaratorOrName()
-                ?.filter { it.typeName()?.text != "void" } // void类型, 不占用参数
-                ?.mapNotNull { it.typeVariableDeclarator() }
-                ?.mapIndexed { index, it ->
-                    val argName = it.declarator().text
-                        .depointer()
-                        .removeObjcSpecifier()
-                        .run { if(isEmpty()) "__arg${index}__" else this }
-                    val argType = it.declarationSpecifiers()
-                        .text
-                        .run { if (it.declarator().text.startsWith("*")) enpointer() else this }
-                        .objcSpecifierExpand()
-                    Parameter(
-                        variable = Variable(argType, argName, Platform.iOS),
-                        platform = Platform.iOS
-                    )
-                }
-
-            if (returnType != null && typeName != null) {
-                // lambda
-                if (formalParams != null) {
-                    stack.push(
-                        Type().also {
-                            it.typeType = TypeType.Lambda
-                            it.isPublic = true
-                            it.isAbstract = false
-                            it.name = typeName
-                            it.isStaticType = true
-                            it.returnType = returnType
-                            it.formalParams = formalParams
-                            it.platform = Platform.iOS
-                        }
-                    )
-                }
-                // 结构体
-                else if (returnType.contains("struct")) {
-                    // 结构体统一在struct里处理
+                if (returnType != null && typeName != null) {
+                    // lambda
+                    if (formalParams != null) {
+                        stack.push(
+                            Type().also {
+                                it.typeType = TypeType.Lambda
+                                it.isPublic = true
+                                it.isAbstract = false
+                                it.name = typeName
+                                it.isStaticType = true
+                                it.returnType = returnType
+                                it.formalParams = formalParams
+                                it.platform = Platform.iOS
+                            }
+                        )
+                    }
+                    // 结构体
+                    else if (returnType.contains("struct")) {
+                        // 结构体统一在struct里处理
 //                    stack.push(Type().also {
 //                        it.platform = Platform.iOS
 //                        it.typeType = TypeType.Struct
 //                        it.name = typeName
 //                    })
+                    }
+                    // 别名不包含^, 说明不是函数别名
+                    else if (!typeName.contains("^")) {
+                        stack.push(
+                            Type().also {
+                                it.typeType = TypeType.Alias
+                                it.isPublic = true
+                                it.isAbstract = false
+                                it.name = typeName
+                                it.isStaticType = true
+                                it.aliasOf = returnType
+                                it.platform = Platform.iOS
+                            }
+                        )
+                    }
                 }
-                // 别名不包含^, 说明不是函数别名
-                else if (!typeName.contains("^")) {
-                    stack.push(
-                        Type().also {
-                            it.typeType = TypeType.Alias
-                            it.isPublic = true
-                            it.isAbstract = false
-                            it.name = typeName
-                            it.isStaticType = true
-                            it.aliasOf = returnType
-                            it.platform = Platform.iOS
-                        }
-                    )
-                }
             }
-        }
 
-        override fun exitTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
-            if (stack.isNotEmpty()) types.add(stack.pop())
-        }
-
-        override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
-            // 只接收property和结构体
-            if (!ctx.isChildOf(ObjectiveCParser.PropertyDeclarationContext::class)
-                &&
-                !ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)
-            ) return
-
-            stack.peekOrNull()?.run {
-                val variable = Variable(
-                    ctx.type().run {
-                        when {
-                            ctx.name().startsWith("*") -> enpointer()
-                            else -> this
-                        }
-                    },
-                    ctx.name().depointer().removeObjcSpecifier(), // 统一把*号加到类名上去
-                    Platform.iOS
-                )
-                // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
-                fields.add(
-                    Field(
-                        true,
-                        ctx.isFinal(),
-                        ctx.isStatic(),
-                        ctx.getValue(),
-                        variable,
-                        name,
-                        ctx.getterName().removeObjcSpecifier(),
-                        ctx.setterName().removeObjcSpecifier(),
-                        Platform.iOS,
-                        ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
-                    )
-                )
+            override fun exitTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
+                if (stack.isNotEmpty()) types.add(stack.pop())
             }
-        }
 
-        override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
-            stack.peekOrNull()?.run {
-                methods.add(
-                    Method(
-                        ctx.returnType(),
-                        ctx.name(),
-                        ctx.formalParams(),
-                        ctx.isChildOf(ObjectiveCParser.ClassMethodDeclarationContext::class),
-                        null,
-                        !ctx.isUnavailable(), // 如果不可用就认为是私有的
-                        name,
-                        Platform.iOS,
-                        ctx.isDeprecated()
+            override fun enterFieldDeclaration(ctx: ObjectiveCParser.FieldDeclarationContext) {
+                // 只接收property和结构体
+                if (!ctx.isChildOf(ObjectiveCParser.PropertyDeclarationContext::class)
+                    &&
+                    !ctx.isChildOf(ObjectiveCParser.StructOrUnionSpecifierContext::class)
+                ) return
+
+                stack.peekOrNull()?.run {
+                    val variable = Variable(
+                        ctx.type().run {
+                            when {
+                                ctx.name().startsWith("*") -> enpointer()
+                                else -> this
+                            }
+                        },
+                        ctx.name().depointer().removeObjcSpecifier(), // 统一把*号加到类名上去
+                        Platform.iOS
                     )
-                )
-            }
-        }
-
-        override fun enterFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext) {
-            val returnType = ctx
-                .declarationSpecifiers()
-                .typeSpecifier()
-                .last() // 函数可能会多个限定词(包括返回类型), 理论上类型肯定是最后一个(?)
-                ?.text
-            val typeName = ctx
-                .identifier()
-                ?.text
-            val formalParams = ctx
-                .parameterList()
-                ?.parameterDeclarationList()
-                ?.parameterDeclaration()
-                ?.takeIf { it.all { it.declarationSpecifiers() != null && it.declarator() != null } }
-                ?.map {
-                    Parameter(
-                        variable = Variable(
-                            typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
-                                if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
-                            },
-                            platform = Platform.iOS,
-                            name = (it.declarator()?.text ?: it.VOID().text).depointer()
-                        ),
-                        platform = Platform.iOS
+                    // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
+                    fields.add(
+                        Field(
+                            true,
+                            ctx.isFinal(),
+                            ctx.isStatic(),
+                            ctx.getValue(),
+                            variable,
+                            name,
+                            ctx.getterName().removeObjcSpecifier(),
+                            ctx.setterName().removeObjcSpecifier(),
+                            Platform.iOS,
+                            ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+                        )
                     )
                 }
-
-            if (returnType != null && typeName != null && formalParams != null) {
-                stack.push(Type().also {
-                    it.typeType = TypeType.Function
-                    it.isPublic = true
-                    it.isAbstract = false
-                    it.name = typeName
-                    it.isStaticType = true
-                    it.returnType = returnType
-                    it.formalParams = formalParams
-                    it.platform = Platform.iOS
-                })
             }
-        }
 
-        override fun exitFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext?) {
-            if (stack.isNotEmpty()) types.add(stack.pop())
-        }
-    })
+            override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
+                stack.peekOrNull()?.run {
+                    methods.add(
+                        Method(
+                            ctx.returnType(),
+                            ctx.name(),
+                            ctx.formalParams(),
+                            ctx.isChildOf(ObjectiveCParser.ClassMethodDeclarationContext::class),
+                            null,
+                            !ctx.isUnavailable(), // 如果不可用就认为是私有的
+                            name,
+                            Platform.iOS,
+                            ctx.isDeprecated()
+                        )
+                    )
+                }
+            }
+
+            override fun enterFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext) {
+                val returnType = ctx
+                    .declarationSpecifiers()
+                    ?.typeSpecifier()
+                    ?.last() // 函数可能会多个限定词(包括返回类型), 理论上类型肯定是最后一个(?)
+                    ?.text
+                val typeName = ctx
+                    .identifier()
+                    ?.text
+                val formalParams = ctx
+                    .parameterList()
+                    ?.parameterDeclarationList()
+                    ?.parameterDeclaration()
+                    ?.takeIf { it.all { it.declarationSpecifiers() != null && it.declarator() != null } }
+                    ?.map {
+                        Parameter(
+                            variable = Variable(
+                                typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
+                                    if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
+                                },
+                                platform = Platform.iOS,
+                                name = (it.declarator()?.text ?: it.VOID().text).depointer()
+                            ),
+                            platform = Platform.iOS
+                        )
+                    }
+
+                if (returnType != null && typeName != null && formalParams != null) {
+                    stack.push(Type().also {
+                        it.typeType = TypeType.Function
+                        it.isPublic = true
+                        it.isAbstract = false
+                        it.name = typeName
+                        it.isStaticType = true
+                        it.returnType = returnType
+                        it.formalParams = formalParams
+                        it.platform = Platform.iOS
+                    })
+                }
+            }
+
+            override fun exitFunctionSignature(ctx: ObjectiveCParser.FunctionSignatureContext?) {
+                if (stack.isNotEmpty()) types.add(stack.pop())
+            }
+        })
 
     return SourceFile().also { type ->
         type.fileName = nameWithoutExtension
@@ -581,6 +582,7 @@ fun File.iterate(
 }
 
 @Throws(Exception::class)
+@Deprecated("已不需要")
 fun File.downloadFrom(url: String) {
     println("开始从 $url 下载")
     // 忽略HTTPS效验
@@ -654,4 +656,17 @@ fun File.downloadFrom(url: String) {
             e.printStackTrace()
         }
     }
+}
+
+fun String.replaceMacro(): String {
+    return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
+        .replace("#import\"", "#import \"") // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
+        .run {
+            if (ext.ios.exclude.macros.isNotEmpty()) {
+                val regex = ext.ios.exclude.macros.joinToString("|", "(", ")")
+                replace(Regex("(#(el)?if.*${regex})[\\s\\S]*?(#endif)"), "$1\n$4")
+            } else {
+                this
+            }
+        }
 }

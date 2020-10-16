@@ -7,12 +7,13 @@ import java.io.File
 
 var SUCCESS_LOG = false
 
-var CONSTRUCTOR_LOG = true
+var CONSTRUCTOR_LOG = false
 var VARIABLE_LOG = false
 var FIELD_LOG = false
 var TYPE_LOG = false
 var FILE_LOG = false
-var METHOD_LOG = true
+var METHOD_LOG = false
+var CACHE_LOG = false
 
 private var idSequence = 0
 val NEXT_ID
@@ -44,7 +45,8 @@ val EXCLUDE_METHODS
 val EXCLUDE_TYPES
     get() = listOf(
         "android.app.Fragment",
-        "android.support.v4.app.Fragment"
+        "android.support.v4.app.Fragment",
+        "java.io.Closeable"
     ).union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
         .map { Regex(it) }
@@ -166,6 +168,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "NSError"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSCoding"; typeType = TypeType.Interface; platform = Platform.iOS },
     Type().apply { name = "NSCopying"; typeType = TypeType.Interface; platform = Platform.iOS },
+    Type().apply { name = "NSMutableCopying"; typeType = TypeType.Interface; platform = Platform.iOS },
     Type().apply { name = "UIView"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIViewController"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIControl"; typeType = TypeType.Class; platform = Platform.iOS },

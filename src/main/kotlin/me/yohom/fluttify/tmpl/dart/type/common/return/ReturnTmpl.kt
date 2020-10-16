@@ -15,7 +15,10 @@ fun ReturnTmpl(method: Method): String {
         }
 
         when {
-            returnType.jsonable() || returnType.isVoid() -> ResultJsonableTmpl(returnType, method.platform)
+            returnType.jsonable()
+                    || returnType.isVoid()
+                    /* dynamic类型直接返回, 让应用层自行决定怎么处理 */
+                    || returnType.isDynamic() -> ResultJsonableTmpl(returnType, method.platform)
             // 返回枚举类型
             returnType.run { findType().isEnum || isEnumList() } -> ResultEnumTmpl(returnType)
             // 返回列表类型
@@ -28,9 +31,10 @@ fun ReturnTmpl(method: Method): String {
 
                 ResultListTmpl(type, method.platform)
             }
+            returnType.isRefArray() -> ResultListTmpl(returnType.dearray(), method.platform)
             returnType.isStructPointer() -> ResultListTmpl(returnType.depointer(), method.platform)
             returnType in method.className.findType().declaredGenericTypes -> "Object().as__<$returnType>()"
-            else -> ResultRefTmpl(returnType)
+            else -> ResultRefTmpl(method)
         }
     }
 }

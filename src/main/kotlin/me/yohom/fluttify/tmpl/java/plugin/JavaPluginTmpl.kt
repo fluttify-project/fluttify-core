@@ -29,10 +29,12 @@ import java.io.File
 //import io.flutter.plugin.common.MethodCall;
 //import io.flutter.plugin.common.MethodChannel;
 //import io.flutter.plugin.common.PluginRegistry.Registrar;
+//import io.flutter.plugin.common.StandardMethodCodec;
 //import io.flutter.plugin.platform.PlatformViewRegistry;
 //
 //import #__package_name__#.sub_handler.*;
 //import #__package_name__#.sub_handler.custom.SubHandlerCustom;
+//import me.yohom.foundation_fluttify.core.FluttifyMessageCodec;
 //
 //import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableLog;
 //import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
@@ -57,7 +59,7 @@ import java.io.File
 //
 //        handlerMapList = new ArrayList<>();
 //        #__register_handler__#
-//        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger));
+//        handlerMapList.add(SubHandlerCustom.instance.getSubHandler(messenger, registrar.activity()));
 //
 //        channel.setMethodCallHandler(plugin);
 //
@@ -82,7 +84,6 @@ import java.io.File
 //
 //        handlerMapList = new ArrayList<>();
 //        #__register_handler__#
-//        handlerMapList.add(SubHandlerCustom.getSubHandler(messenger));
 //
 //        channel.setMethodCallHandler(this);
 //    }
@@ -100,6 +101,8 @@ import java.io.File
 //            Log.d("fluttify-java", "#__plugin_name__#Plugin::onAttachedToActivity@" + binding);
 //        }
 //        Activity activity = binding.getActivity();
+//
+//        handlerMapList.add(SubHandlerCustom.instance.getSubHandler(messenger, activity));
 //
 //        // register platform view
 //        #__register_platform_views__#
@@ -167,7 +170,7 @@ fun JavaPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): String {
     val subHandlerDir = File(subHandlerOutputDir)
     val registerHandler = if (subHandlerDir.exists()) {
         subHandlerDir
-            .list { _, name -> name?.contains("custom") != true }
+            .list { _, name -> name?.contains("custom") != true && name?.startsWith(".") != true }
             ?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }
             ?.joinToString("\n") ?: ""
     } else {

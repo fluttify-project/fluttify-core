@@ -146,17 +146,17 @@ fun List<Parameter>.addParameter(param: Parameter): List<Parameter> {
 
 fun List<Parameter>.checkParamSize(): String {
     return if (size <= 1) {
-        "false"
+        "true"
     } else {
-        // if (v1.length != v2.length || v2.length != v3.length || v3.length != v4.length) { }
+        // assert(v1.length == v2.length && v2.length == v3.length && v3.length == v4.length);
         mapIndexed { index: Int, param: Parameter ->
             when (index) {
                 // 第一个元素
                 0 -> "${param.variable.name}.length"
                 // 最后一个元素
-                size - 1 -> "!= ${param.variable.name}.length"
+                size - 1 -> "== ${param.variable.name}.length"
                 // 中间元素
-                else -> "!= ${param.variable.name}.length || ${param.variable.name}.length"
+                else -> "== ${param.variable.name}.length && ${param.variable.name}.length"
             }
         }.joinToString(" ")
     }

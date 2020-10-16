@@ -43,6 +43,16 @@ class MethodTmplTest : FluttifyTest() {
     }
 
     @Test
+    fun methodTmpl_com_amap_api_navi_model_AimLessModeCongestionInfo() {
+        Amap.androidMapSDK
+            .allTypes
+            .find { it.name == "com.amap.api.navi.model.AimLessModeCongestionInfo" }
+            ?.methods
+            ?.find { it.name == "getAmapCongestionLinks" }
+            ?.run { println(MethodTmpl(this)) }
+    }
+
+    @Test
     fun methodBatchTmpl_amap() {
         Amap.iosMapSDK
             .allTypes
@@ -78,6 +88,16 @@ class MethodTmplTest : FluttifyTest() {
             .find { it.name == "com.netease.nimlib.sdk.team.TeamService" }
             ?.methods
             ?.find { it.name == "createTeam" }
+            ?.run { println(MethodTmpl(this)) }
+    }
+
+    @Test
+    fun methodTmpl_com_amap_api_services_poisearch_PoiResult() {
+        Amap.androidSearchSDK
+            .allTypes
+            .find { it.name == "com.amap.api.services.poisearch.PoiResult" }
+            ?.methods
+            ?.find { it.name == "getSearchSuggestionCitys" }
             ?.run { println(MethodTmpl(this)) }
     }
 }

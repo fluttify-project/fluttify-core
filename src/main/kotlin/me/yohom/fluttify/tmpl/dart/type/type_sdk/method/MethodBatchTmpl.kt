@@ -14,13 +14,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 //  // invoke native method
 //  #__invoke__#
 //
-//  // convert native result to dart side object
-//  if (resultBatch == null) {
-//    return null;
-//  } else {
-//    final typedResult = #__return_statement__#;
-//    return typedResult;
-//  }
+//  return #__return_statement__#;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").readText() }
 
@@ -51,14 +45,8 @@ fun MethodBatchTmpl(method: Method): String {
     val checkParamSize = method.formalParams.checkParamSize()
     val invoke = InvokeBatchTmpl(method)
 
-    val resultType = method.returnType.run {
-        when {
-            jsonable() -> toDartType()
-            isVoid() -> "String"
-            else -> "String"
-        }
-    }
-    val returnStatement = "(resultBatch as List).cast<$resultType>().map((__result__) => ${ReturnTmpl(method)}).toList()"
+    val resultType = method.returnType.toDartType()
+    val returnStatement = "(resultBatch as List).map((__result__) => ${ReturnTmpl(method)}).cast<$resultType>().toList()"
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
         .replace("#__static__#", static)
