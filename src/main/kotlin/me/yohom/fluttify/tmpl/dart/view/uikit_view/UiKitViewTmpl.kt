@@ -86,12 +86,11 @@ fun UiKitViewTmpl(viewClass: Type): String {
     val viewType = viewClass.name
 
     return tmpl
-        .replace("#__current_package__#", currentPackage)
         .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__view_simple_name__#", viewSimpleName)
         .replace("#__view__#", view.toDartType())
         .replace("#__channel_name__#", ext.methodChannelName)
-        .replace("#__identifier__#", ext.projectName.underscore2Camel())
         .replace("#__org__#", org)
         .replace("#__view_type__#", viewType)
+        .replaceGlobal()
 }

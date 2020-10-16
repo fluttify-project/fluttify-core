@@ -7,9 +7,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke_batch.InvokeBatchTmpl
 
 //#__deprecated__#
 //#__static__#Future<#__return_type__#> #__method_name__#(#__formal_params__#) async {
-//  if (#__check_param_size__#) {
-//    return Future.error('all args must have same length!');
-//  }
+//  assert(#__check_param_size__#);
 //
 //  // invoke native method
 //  #__invoke__#
@@ -45,7 +43,7 @@ fun InterfaceMethodBatchTmpl(method: Method): String {
     val invoke = InvokeBatchTmpl(method)
 
     val resultType = method.returnType.toDartType()
-    val returnStatement = "(resultBatch as List).cast<$resultType>().map((__result__) => ${ReturnTmpl(method)}).toList()"
+    val returnStatement = "(resultBatch as List).map((__result__) => ${ReturnTmpl(method)}).cast<$resultType>().toList()"
 
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")

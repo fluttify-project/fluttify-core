@@ -3,7 +3,7 @@ import 'package:foundation_fluttify/foundation_fluttify.dart';
 import 'package:#__project_name__#/src/ios/ios.export.g.dart';
 import 'package:#__project_name__#/src/android/android.export.g.dart';
 
-const k#__identifier__#MessageCodec = FluttifyMessageCodec(tag: '#__project_name__#', androidCaster: #__identifier__#AndroidAs, iosCaster: #__identifier__#IOSAs);
-const k#__identifier__#MethodCodec = StandardMethodCodec(k#__identifier__#MessageCodec);
-const k#__identifier__#Channel = MethodChannel('#__channel_name__#', k#__identifier__#MethodCodec);
-const k#__identifier__#ProjectName = '#__project_name__#';
+const k#__project_prefix__#MessageCodec = FluttifyMessageCodec(tag: '#__project_name__#', androidCaster: #__project_prefix__#AndroidAs, iosCaster: #__project_prefix__#IOSAs);
+const k#__project_prefix__#MethodCodec = StandardMethodCodec(k#__project_prefix__#MessageCodec);
+const k#__project_prefix__#Channel = MethodChannel('#__channel_name__#', k#__project_prefix__#MethodCodec);
+const k#__project_prefix__#ProjectName = '#__project_name__#';

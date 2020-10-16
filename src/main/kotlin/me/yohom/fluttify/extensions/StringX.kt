@@ -750,8 +750,13 @@ fun String.objcId(): String {
     return if (this == "id") "id__" else this
 }
 
-fun String.replaceGlobal(platform: Platform): String {
+fun String.replaceGlobal(platform: Platform? = null): String {
     return replace("#__project_name__#", ext.projectName)
         .replace("#__project_prefix__#", ext.projectName.underscore2Camel())
-        .replace("#__platform__#", platform.toString().capitalize())
+        .replace("#__tag__#", ext.projectName)
+        .replace("#__channel_name__#", ext.methodChannelName)
+        .replace("#__current_package__#", ext.projectName)
+        .run {
+            if (platform != null) replace("#__platform__#", platform.toString().capitalize()) else this
+        }
 }

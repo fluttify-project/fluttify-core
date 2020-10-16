@@ -20,10 +20,7 @@ open class CommonObjects: FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val content = tmpl.replace("#__channel_name__#", ext.methodChannelName)
-            .replace("#__project_name__#", ext.projectName)
-            .replace("#__identifier__#", ext.projectName.underscore2Camel())
-
+        val content = tmpl.replaceGlobal()
         "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file().writeText(content)
     }
 }

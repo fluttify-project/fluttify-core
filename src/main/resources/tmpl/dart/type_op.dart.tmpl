@@ -26,10 +26,11 @@ Future<bool> #__plugin_name__##__platform__#Is<T>(dynamic __this__) async {
 
 // type cast
 dynamic #__plugin_name__##__platform__#As(dynamic __this__, String typeName) {
+  final _typeName = typeName.replaceAll('*', '');
   // 占位用
   if (false) { }
   #__type_cast__#
   else {
-    return __this__;
+    return null;
   }
 }

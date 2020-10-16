@@ -45,7 +45,6 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                                 joinToString { it.variable.toDartStringBatch() }
                             }
                         })
-                    .replace("#__identifier__#", ext.projectName.underscore2Camel())
                     .replace("#__args__#", it.formalParams
                         .map { it.variable }
                         .run {
@@ -56,17 +55,17 @@ fun CreatorBatchTmpl(type: Type): List<String> {
                             }
                         })
                     .replace("#__tag__#", ext.projectName)
+                    .replaceGlobal()
             }
         Platform.iOS -> listOf(
             tmpl
                 .replace("#__class_name__#", type.name.toUnderscore())
-                .replace("#__check_param_size__#", "false")
+                .replace("#__check_param_size__#", "true")
                 .replace("#__signature__#", "")
                 .replace("#__creator_name__#", type.name.toUnderscore())
                 .replace("#__formal_params__#", "int length, { bool init = true /* ios only */ }")
-                .replace("#__identifier__#", ext.projectName.underscore2Camel())
                 .replace("#__args__#", "{'length': length, 'init': init}")
-                .replace("#__tag__#", ext.projectName)
+                .replaceGlobal()
         )
         else -> listOf()
     }

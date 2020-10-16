@@ -46,7 +46,7 @@ import me.yohom.fluttify.model.Type
 //      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
 //    };
 //
-//    final messageCodec = k#__identifier__#MessageCodec;
+//    final messageCodec = k#__project_prefix__#MessageCodec;
 //
 //    // hybrid composition version.
 //    // PlatformViewLink(
@@ -118,9 +118,8 @@ fun AndroidViewTmpl(viewType: Type): String {
             ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" }
         )
         .replace("#__view_simple_name__#", viewSimpleName)
-        .replace("#__channel_name__#", ext.methodChannelName)
         .replace("#__view__#", view.toDartType())
-        .replace("#__identifier__#", ext.projectName.underscore2Camel())
         .replace("#__org__#", org)
         .replace("#__view_type__#", nativeView)
+        .replaceGlobal()
 }

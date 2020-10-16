@@ -11,6 +11,6 @@ private val tmpl by lazy { getResource("/tmpl/dart/result_list.stmt.dart.tmpl").
 fun ResultListTmpl(genericType: TYPE_NAME, platform: Platform): String {
     return tmpl
         .replace("#__type_name__#", genericType.toDartType())
-        .replace("#__cast_type__#", genericType.replace("$", "\\$"))
+        .replace("#__cast_type__#", genericType.replace("$", "\\$").depointer())
         .replaceGlobal(platform)
 }
