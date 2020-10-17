@@ -262,14 +262,13 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
-    return macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
-            || attributeSpecifier()?.text?.contains("deprecated") == true
+    return macro()?.any { it.text.contains("deprecated") } == true
+            || attributeSpecifier()?.any { it.text.contains("deprecated", true) } == true
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
-    return macro()?.text?.contains("unavailable", true) == true
-            || macro()?.primaryExpression()?.any { it.text.contains("unavailable", true) } == true
-            || attributeSpecifier()?.text?.contains("unavailable", true) == true
+    return macro()?.any { it.text.contains("unavailable", true) } == true
+            || attributeSpecifier()?.any { it.text.contains("unavailable", true) } == true
 }
 
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {
