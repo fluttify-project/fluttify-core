@@ -149,6 +149,18 @@ public class ObjectiveCParserBaseListener implements ObjectiveCParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterClassDeclaration(ObjectiveCParser.ClassDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitClassDeclaration(ObjectiveCParser.ClassDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterClassDeclarationList(ObjectiveCParser.ClassDeclarationListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -773,6 +785,18 @@ public class ObjectiveCParserBaseListener implements ObjectiveCParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFunctionPointer(ObjectiveCParser.FunctionPointerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionPointer(ObjectiveCParser.FunctionPointerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAttribute(ObjectiveCParser.AttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -929,6 +953,18 @@ public class ObjectiveCParserBaseListener implements ObjectiveCParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCommonSpecifiers(ObjectiveCParser.CommonSpecifiersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCommonSpecifiers(ObjectiveCParser.CommonSpecifiersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDeclarationSpecifiers(ObjectiveCParser.DeclarationSpecifiersContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -936,6 +972,18 @@ public class ObjectiveCParserBaseListener implements ObjectiveCParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDeclarationSpecifiers(ObjectiveCParser.DeclarationSpecifiersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPointerQualifier(ObjectiveCParser.PointerQualifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPointerQualifier(ObjectiveCParser.PointerQualifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1692,6 +1740,18 @@ public class ObjectiveCParserBaseListener implements ObjectiveCParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitArgumentExpression(ObjectiveCParser.ArgumentExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOsVersion(ObjectiveCParser.OsVersionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOsVersion(ObjectiveCParser.OsVersionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
