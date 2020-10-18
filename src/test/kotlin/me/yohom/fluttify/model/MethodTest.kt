@@ -56,4 +56,24 @@ class MethodTest: FluttifyTest() {
                 println(filter)
             }
     }
+
+    @Test
+    fun filter_com_amap_api_services_core_LatLonPoint() {
+        Amap.androidSearchSDK
+            .allTypes
+            .find { it.name == "com.amap.api.services.route.DriveStep" }
+            ?.methods
+            ?.find { it.name == "getPolyline" }
+            ?.run {
+                println(filter)
+            }
+//        Amap.androidSearchSDK
+//            .allTypes
+//            .find { it.name == "com.amap.api.services.route.DriveStep" }
+//            ?.methods
+//            ?.filter { it.filter }
+//            ?.run {
+//                println(this.joinToString("\n"))
+//            }
+    }
 }
