@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_enum
 
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.removeNumberSuffix
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Enumerator
@@ -43,7 +44,7 @@ fun TypeEnumTmpl(type: Type): String {
             // 值是其他枚举, 则调用其他枚举的值
             in allEnumerators.map { e -> e.name } -> "${allEnumerators.find { e -> e.name == it.value }!!.value}/* ${it.value} */"
             // 直接的值, 直接使用
-            else -> it.value
+            else -> it.value.removeNumberSuffix()
         }
     }
 
