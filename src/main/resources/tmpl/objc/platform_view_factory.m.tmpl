@@ -92,7 +92,7 @@ extern BOOL enableLog;
     } else {
       methodResult([FlutterError errorWithCode:@"当前PlatformView为nil"
                                        message: @"当前PlatformView为nil"
-                                       details:[NSString stringWithFormat:@"请不要在 %@ 释放后继续调用其对象的方法", NSStringFromClass([MAMapView class])]]);
+                                       details:[NSString stringWithFormat:@"请不要在 %@ 释放后继续调用其对象的方法", NSStringFromClass([#__native_view__# class])]]);
     }
   }];
   //endregion
