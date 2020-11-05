@@ -88,3 +88,8 @@ object AliyunShortVideo {
     val iosSDK = "/Users/yohom/Github/Me/All/fluttify/3rd_party/ali_short_video/jr/ali_short_video_fluttify.ios.json".file().readText().parseSDK()
 }
 
+object Pangolin {
+    val androidSDK = "/Users/yohom/Github/Me/All/fluttify/pangolin/jr/pangolin_fluttify.android.json".file().readText().parseSDK()
+    val iosSDK = "/Users/yohom/Github/Me/All/fluttify/pangolin/jr/pangolin_fluttify.ios.json".file().readText().parseSDK()
+}
+

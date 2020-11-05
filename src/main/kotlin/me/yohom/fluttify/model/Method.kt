@@ -62,7 +62,8 @@ data class Method(
                     || must("返回类型关联类型都通过过滤") {
                 !returnType.isMap()
                         &&
-                        returnType.allTypes().all { it.filter || it.name in this.className.findType().declaredGenericTypes } // 能够通过过滤, 或者是声明泛型
+                        returnType.allTypes()
+                            .all { it.filter || it.name in this.className.findType().declaredGenericTypes } // 能够通过过滤, 或者是声明泛型
             }
                     || must("返回类型是所在类声明泛型") { returnType in className.findType().declaredGenericTypes })
                     &&
@@ -84,7 +85,8 @@ data class Method(
                         formalParams.all {
                             it.variable
                                 .allTypes()
-                                .all { it.filter || it.name in className.findType().declaredGenericTypes } // 类型通过过滤或者是声明的泛型类`
+                                // 类型通过过滤或者是声明的泛型类`
+                                .all { it.filter || it.name in className.findType().declaredGenericTypes }
                                     ||
                                     it.variable.trueType in className.findType().declaredGenericTypes
                         }
@@ -136,7 +138,11 @@ data class Method(
                             .run { isEmpty() || all { it.variable.isKnownLambda() } }
                     }
                     &&
-                    mustNot("形参类型含有混淆类") { formalParams.any { it.variable.trueType.containerType().isObfuscated() } } // TODO 这里只判断了容器类是否是混淆类, 需要处理如果泛型类型是混淆类的情况
+                    mustNot("形参类型含有混淆类") {
+                        formalParams.any {
+                            it.variable.trueType.containerType().isObfuscated()
+                        }
+                    } // TODO 这里只判断了容器类是否是混淆类, 需要处理如果泛型类型是混淆类的情况
                     &&
                     // 参数不能中含有排除的类
                     mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.trueType.depointer()) } } }
