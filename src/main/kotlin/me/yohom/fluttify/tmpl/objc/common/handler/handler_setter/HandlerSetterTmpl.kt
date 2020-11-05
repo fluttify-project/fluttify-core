@@ -66,11 +66,16 @@ fun HandlerSetterTmpl(field: Field): String {
         field.className.enpointer()
     }
 
+   val callSetter = if (field.setterName.endsWith(":")) {
+        "[ref $setter $fieldValue];"
+    } else {
+        "ref.$setter = $fieldValue;"
+    }
+
     return tmpl
         .replace("#__method_name__#", field.setterMethodName)
         .replaceParagraph("#__args__#", args)
         .replaceParagraph("#__ref__#", ref)
-        .replace("#__setter__#", setter)
-        .replace("#__field_value__#", fieldValue)
+        .replace("#__call_setter__#", callSetter)
         .replace("#__class_name__#", className)
 }
