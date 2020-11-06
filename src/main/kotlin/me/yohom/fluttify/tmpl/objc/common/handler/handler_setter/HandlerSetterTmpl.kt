@@ -67,9 +67,9 @@ fun HandlerSetterTmpl(field: Field): String {
     }
 
     val callSetter = if (field.setterName.endsWith(":")) {
-        "[ref $setter $fieldValue];"
+        "[ref $setter $fieldValue]"
     } else {
-        "ref.$setter = $fieldValue;"
+        "ref.$setter = $fieldValue"
     }
 
     return tmpl
