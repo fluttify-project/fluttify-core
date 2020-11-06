@@ -56,7 +56,7 @@ fun HandlerSetterTmpl(field: Field): String {
     val fieldValue = field.variable.run {
         when {
             trueType.findType().isCallback -> "weakSelf"
-            trueType.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
+            trueType.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue]"
             else -> fieldName.depointer()
         }
     }
