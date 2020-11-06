@@ -53,7 +53,7 @@ fun HandlerSetterTmpl(field: Field): String {
     }
 
     // 如果setter的是一个delegate, 那么就认定是当前类作为delegate处理
-    val fieldValue =field.variable.run {
+    val fieldValue = field.variable.run {
         when {
             trueType.findType().isCallback -> "weakSelf"
             trueType.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue];"
@@ -66,7 +66,7 @@ fun HandlerSetterTmpl(field: Field): String {
         field.className.enpointer()
     }
 
-   val callSetter = if (field.setterName.endsWith(":")) {
+    val callSetter = if (field.setterName.endsWith(":")) {
         "[ref $setter $fieldValue];"
     } else {
         "ref.$setter = $fieldValue;"

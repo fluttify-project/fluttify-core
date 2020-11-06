@@ -15,17 +15,16 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.struct_ref.StructRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 
-//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, NSDictionary<NSString *, id> * args, FlutterResult methodResult) {
+//@"#__method_name__#": ^(NSObject <FlutterPluginRegistrar> * registrar, id args, FlutterResult methodResult) {
+//    if (enableLog) {
+//        NSLog(@"fluttify-objc: #__method_name__#(%@)", args);
+//    }
+//
 //    // args
 //    #__args__#
 //
 //    // ref
 //    #__ref__#
-//
-//    // print log
-//    if (enableLog) {
-//        #__log__#
-//    }
 //
 //    // invoke native method
 //    #__invoke__#
@@ -33,7 +32,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.common.result.*
 //    // result
 //    #__result__#
 //
-//    methodResult(jsonableResult);
+//    methodResult(__result__);
 //},
 private val tmpl by lazy { getResource("/tmpl/objc/handler_method.stmt.m.tmpl").readText() }
 

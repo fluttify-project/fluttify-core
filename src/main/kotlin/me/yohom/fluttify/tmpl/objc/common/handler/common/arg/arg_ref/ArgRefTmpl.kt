@@ -4,7 +4,7 @@ import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Variable
 
 //// ref arg
-//#__type_name__# #__arg_name__# = (#__type_name__#) HEAP[@([args[@"#__arg_name__#"] integerValue])];
+//#__type_name__# #__arg_name__# = (#__type_name__#) (args[@"#__arg_name__#"] == [NSNull null] ? nil : args[@"#__arg_name__#"]);
 private val tmpl by lazy { getResource("/tmpl/objc/arg_ref.stmt.m.tmpl").readText() }
 
 fun ArgRefTmpl(variable: Variable): String {
