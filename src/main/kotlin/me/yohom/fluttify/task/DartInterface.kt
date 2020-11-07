@@ -9,6 +9,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_functions.TypeFunctionsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_cast.TypeCastTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.DependencyTypeCheckTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
@@ -122,12 +123,19 @@ open class AndroidDartInterface : FluttifyTask() {
             .distinctBy { it.name }
         // 类型检查
         val typeChecks = targetTypes.joinToString(" ") { TypeCheckTmpl(it) }
+        // 插件依赖类型检查
+        val dependencyTypeChecks = ext.pluginDependencies
+            .keys
+            .filter { it.endsWith("fluttify") }
+            .joinToString(" ") { DependencyTypeCheckTmpl(it, sdk.platform) }
         // 类型造型
         val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/android/android.export.g.dart';")
             .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+            .replaceParagraph("#__dependency__#", ext.pluginDependencies.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
+            .replaceParagraph("#__dependency_type_cast__#", dependencyTypeChecks)
             .replace("#__platform__#", "Android")
             .replaceParagraph("#__type_check__#", typeChecks)
             .replaceParagraph("#__type_cast__#", typeCasts)
@@ -230,15 +238,22 @@ open class IOSDartInterface : FluttifyTask() {
             .distinctBy { it.name }
             .filter { if (ext.foundationVersion.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }
         // 类型检查
-        val typeChecks = targetTypes.joinToString("\n") { TypeCheckTmpl(it) }
+        val typeChecks = targetTypes.joinToString(" ") { TypeCheckTmpl(it) }
+        // 插件依赖类型检查
+        val dependencyTypeChecks = ext.pluginDependencies
+            .keys
+            .filter { it.endsWith("fluttify") }
+            .joinToString(" ") { DependencyTypeCheckTmpl(it, sdk.platform) }
         // 类型造型
-        val typeCasts = targetTypes.joinToString("\n") { TypeCastTmpl(it) }
+        val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/ios/ios.export.g.dart';")
             .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+            .replaceParagraph("#__dependency__#", ext.pluginDependencies.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "IOS")
             .replaceParagraph("#__type_check__#", typeChecks)
+            .replaceParagraph("#__dependency_type_cast__#", dependencyTypeChecks)
             .replaceParagraph("#__type_cast__#", typeCasts)
             .run {
                 "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/type_op.g.dart".file()

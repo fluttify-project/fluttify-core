@@ -5,6 +5,7 @@ MethodChannel('#__callback_channel__#', k#__project_name__#MethodCodec)
         switch (methodCall.method) {
           #__cases__#
           default:
+            throw MissingPluginException('方法${methodCall.method}未实现');
             break;
         }
       } catch (e) {

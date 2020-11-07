@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.dart.type.type_enum
 
 import me.yohom.fluttify.extensions.getResource
+import me.yohom.fluttify.extensions.removeNumberSuffix
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.toDartType
 import me.yohom.fluttify.model.Enumerator
@@ -35,7 +36,7 @@ fun TypeEnumTmpl(type: Type): String {
     val allEnumerators = SDK.sdks.flatMap { it.allEnumTypes }.flatMap { it.enumerators }
 
     val typeName = type.name.toDartType()
-    val enumerators = type.enumerators.joinToString(",\n") { "${it.name} /* ${it.value} */" }
+    val enumerators = type.enumerators.joinToString(",\n") { "${it.name} /* ${it.value?.removeNumberSuffix()} */" }
     val offset = type.enumerators[0].let {
         when (it.value) {
             // 没有值, 则为0
@@ -43,7 +44,7 @@ fun TypeEnumTmpl(type: Type): String {
             // 值是其他枚举, 则调用其他枚举的值
             in allEnumerators.map { e -> e.name } -> "${allEnumerators.find { e -> e.name == it.value }!!.value}/* ${it.value} */"
             // 直接的值, 直接使用
-            else -> it.value
+            else -> it.value.removeNumberSuffix()
         }
     }
 
@@ -54,7 +55,7 @@ fun TypeEnumTmpl(type: Type): String {
             // 值是其他枚举, 则调用其他枚举的值
             in allEnumerators.map { e -> e.name } -> "${allEnumerators.find { e -> e.name == value }!!.value}/* $value */"
             // 直接的值, 直接使用
-            else -> value
+            else -> value.removeNumberSuffix()
         }
     }
 

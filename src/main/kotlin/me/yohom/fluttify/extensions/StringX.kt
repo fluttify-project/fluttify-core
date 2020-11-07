@@ -188,12 +188,7 @@ fun TYPE_NAME.simpleName(): String {
 /**
  * 从类名获取类信息
  */
-private val findTypeCache = mutableMapOf<String, Type>()
 fun TYPE_NAME.findType(): Type {
-    if (findTypeCache.containsKey(this)) {
-        if (CACHE_LOG) println("findType命中缓存: $this -> ${findTypeCache[this]!!.name}")
-        return findTypeCache[this]!!
-    }
 
     val type = depointer().deprotocol()
     val temp = if (type.genericTypes().isNotEmpty()) {
@@ -251,8 +246,6 @@ fun TYPE_NAME.findType(): Type {
         Platform.Android -> ext.android.overrideElements[temp.id]?.fromJson<Type>() ?: temp
         else -> temp
     }
-
-    findTypeCache[this] = result
 
     return result
 }
@@ -384,13 +377,7 @@ fun String.isObfuscatedMethod(): Boolean {
 /**
  * java或objc可json序列化类型转为dart可json序列化类型
  */
-private val dartTypeCache = mutableMapOf<String, String>()
 fun TYPE_NAME.toDartType(): TYPE_NAME {
-    if (dartTypeCache.containsKey(this)) {
-        if (CACHE_LOG) println("toDartType命中缓存: $this -> ${dartTypeCache[this]}")
-        return dartTypeCache[this]!!
-    }
-
     // 如果是系统别名就先取出原始类型, 否则就直接使用
     val dartType = (SYSTEM_TYPEDEF[this] ?: this).pack()
         .run {
@@ -469,10 +456,6 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
         .replace(".", "_")
         .depointer()
         .deprotocol()
-
-    // 加入缓存
-    dartTypeCache[this] = dartType
-
     return dartType
 }
 
@@ -691,7 +674,7 @@ fun String.stripQuotes(): String {
  * 为一些类限定词增加前后的空格, 这么做的原因是类限定词会跟类名粘在一起, 所以要加下空格
  */
 fun String.objcSpecifierExpand(): String {
-    return replace("__kindof", " __kindof ")
+    return replace("__kindof", "")
         .replace("__nullable", "")
         .replace("__nonnull", "")
         .replace("_Nullable", "")

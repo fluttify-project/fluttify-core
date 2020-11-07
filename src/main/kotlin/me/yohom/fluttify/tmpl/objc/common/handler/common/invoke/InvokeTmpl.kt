@@ -47,9 +47,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 }
                 // 协议静态方法
                 else {
-                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") {
-                        param2arg(it)
-                    }}]"
+                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
                 }
 
                 if (method.returnType == "void") {
@@ -61,9 +59,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 if (method.returnType == "void") {
                     "[ref ${method.name} ${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 } else {
-                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") {
-                        param2arg(it)
-                    }}];"
+                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 }
             }
         }
@@ -76,7 +72,8 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 CallbackLambdaTmpl(method, it.variable.trueType.findType())
             } else {
                 when {
-                    it.variable.isCallback() -> "self"
+                    // 回调类, 同时支持作为对象传入, 因为碰到既需要作为对象传递又需要作为回调的情况. 如果参数为null则认为是回调, 否则就认为是普通对象
+                    it.variable.isCallback() -> "${it.variable.name} != nil ? ${it.variable.name} : weakSelf"
                     it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }
@@ -86,7 +83,8 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 "${it.named}: ${CallbackLambdaTmpl(method, it.variable.trueType.findType())}"
             } else {
                 "${it.named}: ${when {
-                    it.variable.isCallback() -> "self"
+                    // 回调类, 同时支持作为对象传入, 因为碰到既需要作为对象传递又需要作为回调的情况. 如果参数为null则认为是回调, 否则就认为是普通对象
+                    it.variable.isCallback() -> "${it.variable.name} != nil ? ${it.variable.name} : weakSelf"
                     it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     else -> it.variable.name
                 }}"

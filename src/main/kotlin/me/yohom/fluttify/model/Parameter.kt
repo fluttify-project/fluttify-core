@@ -21,8 +21,10 @@ data class Parameter(
             if (METHOD_LOG) println("\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓参数↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓")
             if (METHOD_LOG) println("参数:${variable}执行过滤开始")
             val result = (variable.mustNot("Lambda") { isLambda() } // lambda不参与传递
-                    &&
-                    variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
+                    // 碰到一种情况, 一个回调类既需要作为对象传递又需要作为回调处理
+                    // 解决方案为对象照常传递, 在原生端判断对象是否为null, 如果是null则作为回调处理
+//                    &&
+//                    variable.mustNot("Callback") { isCallback() } // 回调类不参与传递(但是接口类型参与传递)
                     &&
                     variable.must("已知类型") { isKnownType() })
                     ||

@@ -70,7 +70,7 @@ extern BOOL enableLog;
     // 这里用一个magic number调整一下id
     // 同时存放viewId和refId的对象, 供后续viewId转refId使用
     HEAP[[NSString stringWithFormat:@"%@", @(2147483647 - _viewId)]] = _view;
-    HEAP[[NSString stringWithFormat:@"%@", @(_view.hash)]] = _view;
+    HEAP[[NSString stringWithFormat:@"%@:%@", @"#__native_view__#", @(_view.hash)]] = _view;
   }
 
   //region method call handler
@@ -92,7 +92,7 @@ extern BOOL enableLog;
     } else {
       methodResult([FlutterError errorWithCode:@"当前PlatformView为nil"
                                        message: @"当前PlatformView为nil"
-                                       details:[NSString stringWithFormat:@"请不要在 %@ 释放后继续调用其对象的方法", NSStringFromClass([MAMapView class])]]);
+                                       details:[NSString stringWithFormat:@"请不要在 %@ 释放后继续调用其对象的方法", NSStringFromClass([#__native_view__# class])]]);
     }
   }];
   //endregion

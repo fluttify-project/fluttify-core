@@ -203,6 +203,18 @@ class TypeTest : FluttifyTest() {
     }
 
     @Test
+    fun pangolin_ios_BUNativeAd() {
+        Pangolin.iosSDK
+            .allTypes
+            .find { it.name == "BUNativeAd" }
+//            ?.methods
+//            ?.find { it.name.contains("registerContainer") }
+            ?.run {
+                println("结果: ${TypeSdkTmpl(this)}")
+            }
+    }
+
+    @Test
     fun tencent_live_TRTCCloudDelegate() {
         ext.ios.exclude.classes = listOf("TRTCMediaDeviceType")
         TencentLive.iosSDK

@@ -55,8 +55,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         androidJavaInterface.dependsOn(commonObjects)
 
         // dart接口
-        commonObjects.dependsOn(iOSDartInterface)
-        commonObjects.dependsOn(androidDartInterface)
+        commonObjects.dependsOn(iOSDartInterface, androidDartInterface)
         iOSDartInterface.dependsOn(iOSJsonRepresentation)
         androidDartInterface.dependsOn(androidJsonRepresentation)
 
@@ -72,8 +71,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         decompileClass.dependsOn(unzip)
 
         // 下载SDK
-        unzip.dependsOn(downloadAndroidSDK)
-        unzip.dependsOn(downloadIOSSDK)
+        unzip.dependsOn(downloadAndroidSDK, downloadIOSSDK)
         downloadAndroidSDK.dependsOn(tweakDefaultProject)
         downloadIOSSDK.dependsOn(tweakDefaultProject)
 
