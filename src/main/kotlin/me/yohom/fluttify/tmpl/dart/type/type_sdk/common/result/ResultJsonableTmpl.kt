@@ -20,7 +20,7 @@ fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
                 // List没有指定泛型, 使用dynamic
                 else -> "dynamic"
             }
-            "(__result__ as List).cast<${type.toDartType()}>()"
+            "(__result__ as List)?.cast<${type.toDartType()}>()"
         }
         else -> "__result__"
     }
