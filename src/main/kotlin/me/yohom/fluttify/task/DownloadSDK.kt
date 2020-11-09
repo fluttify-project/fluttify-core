@@ -41,7 +41,7 @@ open class DownloadIOSSDK : FluttifyTask() {
                 arrayOf(
                     "/bin/sh",
                     "-c",
-                    "cd ${project.projectDir}/output-project/${ext.projectName} && flutter packages get && cd example/ios && pod install"
+                    "cd ${project.projectDir}/output-project/${ext.projectName} && flutter packages get && cd example/ios && pod install --verbose"
                 )
             )
         val br = BufferedReader(InputStreamReader(process.inputStream))
