@@ -128,7 +128,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * 元素替换
      */
-    var overrideElements: Map<Int, String> = mapOf()
+    var overrideElements: Map<String, String> = mapOf()
 
     /**
      * 远程依赖配置

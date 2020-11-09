@@ -19,16 +19,11 @@ data class Variable(
     val isIterable: Boolean
         get() = typeName.isIterable()
 
-    /**
-     * 如果类型由被手动override的话, 这里需要使用override之后的类
-     */
     val trueType: String
         get() {
             val origin = typeName.findType().name
             val alias = typeName.findType().aliasOf
-            return ext.ios.overrideElements[id]?.fromJson<Variable>()?.typeName
-                ?: ext.android.overrideElements[id]?.fromJson<Variable>()?.typeName
-                ?: alias?.run { typeName.replace(origin, this) }
+            return alias?.run { typeName.replace(origin, this) }
                 ?: typeName.objcSpecifierExpand()
         }
 

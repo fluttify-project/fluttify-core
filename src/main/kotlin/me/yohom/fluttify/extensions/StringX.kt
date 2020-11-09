@@ -191,7 +191,7 @@ fun TYPE_NAME.simpleName(): String {
 fun TYPE_NAME.findType(): Type {
 
     val type = depointer().deprotocol()
-    val temp = if (type.genericTypes().isNotEmpty()) {
+    val result = if (type.genericTypes().isNotEmpty()) {
         // 说明有泛型, 合成一个新的类
         val containerType = SDK.findType(type.containerType())
 
@@ -240,13 +240,6 @@ fun TYPE_NAME.findType(): Type {
             result
         }
     }
-    // 如果在override元素内, 则替换掉
-    val result = when (temp.platform) {
-        Platform.iOS -> ext.ios.overrideElements[temp.id]?.fromJson<Type>() ?: temp
-        Platform.Android -> ext.android.overrideElements[temp.id]?.fromJson<Type>() ?: temp
-        else -> temp
-    }
-
     return result
 }
 
@@ -717,14 +710,14 @@ fun String.isMultiPointer(): Boolean {
  * 解析SDK
  */
 fun String.parseSDK(): SDK {
-    val sdk = fromJson<SDK>()
-    val allOverrideElements: MutableMap<Int, String> = mutableMapOf()
-    allOverrideElements.putAll(ext.android.overrideElements)
-    allOverrideElements.putAll(ext.ios.overrideElements)
-    sdk.allTypes.replaceAll {
-        allOverrideElements[it.id]?.fromJson<Type>() ?: it
+    var result = this
+    for (entry in ext.android.overrideElements.entries) {
+        result = result.replace(Regex(entry.key), entry.value)
     }
-    return sdk
+    for (entry in ext.ios.overrideElements.entries) {
+        result = result.replace(Regex(entry.key), entry.value)
+    }
+    return result.fromJson()
 }
 
 /**

@@ -16,13 +16,14 @@ import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
 import org.gradle.api.tasks.TaskAction
 
-open class CommonObjects: FluttifyTask() {
+open class CommonObjects : FluttifyTask() {
     private val tmpl by lazy { getResource("/tmpl/dart/objects.dart.tmpl").readText() }
 
     @TaskAction
     fun process() {
         val content = tmpl.replaceGlobal()
-        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file().writeText(content)
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file()
+            .writeText(content)
     }
 }
 
@@ -132,8 +133,12 @@ open class AndroidDartInterface : FluttifyTask() {
         val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/android/android.export.g.dart';")
-            .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
-            .replaceParagraph("#__dependency__#", ext.pluginDependencies.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+            .replaceParagraph(
+                "#__foundation__#",
+                ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+            .replaceParagraph(
+                "#__dependency__#",
+                ext.pluginDependencies.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replaceParagraph("#__dependency_type_cast__#", dependencyTypeChecks)
             .replace("#__platform__#", "Android")
@@ -248,8 +253,12 @@ open class IOSDartInterface : FluttifyTask() {
         val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
             .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/ios/ios.export.g.dart';")
-            .replaceParagraph("#__foundation__#", ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
-            .replaceParagraph("#__dependency__#", ext.pluginDependencies.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+            .replaceParagraph(
+                "#__foundation__#",
+                ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
+            .replaceParagraph(
+                "#__dependency__#",
+                ext.pluginDependencies.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
             .replace("#__plugin_name__#", ext.projectName.underscore2Camel())
             .replace("#__platform__#", "IOS")
             .replaceParagraph("#__type_check__#", typeChecks)
