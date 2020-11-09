@@ -499,7 +499,8 @@ fun String.isExcludedType(): Boolean {
  * 加上协议类型的id<>
  */
 fun String.enprotocol(): String {
-    return "id<${this}>"
+    // 不重复添加id<>
+    return if(Regex("id<.*>").matches(this)) this else "id<${this}>"
 }
 
 /**
