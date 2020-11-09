@@ -119,6 +119,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Binder"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.SurfaceView"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.view.SurfaceHolder"; typeType = TypeType.Interface; platform = Platform.Android },
     Type().apply { name = "android.opengl.GLSurfaceView"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply {
         name = "android.view.SurfaceHolder.Callback"; typeType = TypeType.Interface; platform = Platform.Android
