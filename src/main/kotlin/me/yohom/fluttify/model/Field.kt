@@ -95,6 +95,8 @@ data class Field(
                     variable.mustNot("常量") { filterConstants }
                     &&
                     variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
+                    &&
+                    variable.mustNot("变量名被混淆") { name.length == 1 }
             if (FIELD_LOG) println("属性:\"${toString()}\"执行getter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
@@ -129,6 +131,8 @@ data class Field(
                     }
                     &&
                     variable.mustNot("变量名为关键字") { name in JAVA_RESERVED }
+                    &&
+                    variable.mustNot("变量名被混淆") { name.length == 1 }
             if (FIELD_LOG) println("属性:${toString()}执行setter过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (FIELD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑属性↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
