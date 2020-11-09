@@ -143,6 +143,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
         if (TYPE_LOG) println("类:\"${name}\"执行过滤开始")
         val result = mustNot("忽略类型") { EXCLUDE_TYPES.any { type -> type.matches(name) } }
                 &&
+                mustNot("以_开头") { name.startsWith("_") }
+                &&
                 must("已知类型") { isKnownType }
                 &&
                 must("公开类型") {
