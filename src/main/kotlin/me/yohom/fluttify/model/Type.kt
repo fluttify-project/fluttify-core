@@ -215,7 +215,10 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                         when (platform) {
                             Platform.General -> true
                             Platform.iOS -> ext.ios.noncallbackClasses.none { Regex(it).matches(name.depointer()) }
-                            Platform.Android -> ext.android.noncallbackClasses.none { Regex(it).matches(name.depointer()) }
+                            Platform.Android -> ext.android
+                                .noncallbackClasses
+                                .union(listOf("android.view.SurfaceHolder"))
+                                .none { Regex(it).matches(name.depointer()) }
                             Platform.Unknown -> true
                         })
     }
