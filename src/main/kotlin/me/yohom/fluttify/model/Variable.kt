@@ -133,7 +133,7 @@ data class Variable(
     fun toDartString(): String {
         return if (trueType.findType().isLambda) {
             val type = trueType.findType()
-            "${type.returnType.toDartType()} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
+            "${type.returnType.toDartType()} Function(${type.formalParams.joinToString { it.variable.toDartString() }}) $name"
         } else {
             "${trueType.toDartType()} ${name.removeObjcSpecifier()}"
         }
