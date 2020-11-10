@@ -35,6 +35,6 @@ fun CallbackCaseLambdaTmpl(lambdaType: Type, lambdaName: String): String {
     return tmpl
         .replace("#__callback_case__#", callbackCase)
         .replace("#__log__#", log)
-        .replace("#__callback_handler__#", "if ($lambdaName != null) $lambdaName")
+        .replace("#__callback_handler__#", "if ($lambdaName != null) await $lambdaName")
         .replace("#__callback_args__#", callbackArgs)
 }
