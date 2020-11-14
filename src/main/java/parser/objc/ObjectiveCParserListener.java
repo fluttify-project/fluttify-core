@@ -1,5 +1,6 @@
 package parser.objc;
-// Generated from ObjectiveCParser.g4 by ANTLR 4.8
+// Generated from src/main/java/parser/objc/ObjectiveCParser.g4 by ANTLR 4.8
+
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -117,16 +118,6 @@ public interface ObjectiveCParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitProtocolDeclarationList(ObjectiveCParser.ProtocolDeclarationListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ObjectiveCParser#classDeclaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterClassDeclaration(ObjectiveCParser.ClassDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ObjectiveCParser#classDeclaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitClassDeclaration(ObjectiveCParser.ClassDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ObjectiveCParser#classDeclarationList}.
 	 * @param ctx the parse tree
@@ -648,16 +639,6 @@ public interface ObjectiveCParserListener extends ParseTreeListener {
 	 */
 	void exitFunctionSignature(ObjectiveCParser.FunctionSignatureContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ObjectiveCParser#functionPointer}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunctionPointer(ObjectiveCParser.FunctionPointerContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ObjectiveCParser#functionPointer}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunctionPointer(ObjectiveCParser.FunctionPointerContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link ObjectiveCParser#attribute}.
 	 * @param ctx the parse tree
 	 */
@@ -788,16 +769,6 @@ public interface ObjectiveCParserListener extends ParseTreeListener {
 	 */
 	void exitTypeDeclarator(ObjectiveCParser.TypeDeclaratorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ObjectiveCParser#commonSpecifiers}.
-	 * @param ctx the parse tree
-	 */
-	void enterCommonSpecifiers(ObjectiveCParser.CommonSpecifiersContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ObjectiveCParser#commonSpecifiers}.
-	 * @param ctx the parse tree
-	 */
-	void exitCommonSpecifiers(ObjectiveCParser.CommonSpecifiersContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link ObjectiveCParser#declarationSpecifiers}.
 	 * @param ctx the parse tree
 	 */
@@ -807,16 +778,6 @@ public interface ObjectiveCParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDeclarationSpecifiers(ObjectiveCParser.DeclarationSpecifiersContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ObjectiveCParser#pointerQualifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterPointerQualifier(ObjectiveCParser.PointerQualifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ObjectiveCParser#pointerQualifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitPointerQualifier(ObjectiveCParser.PointerQualifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ObjectiveCParser#attributeSpecifier}.
 	 * @param ctx the parse tree
@@ -1447,16 +1408,6 @@ public interface ObjectiveCParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArgumentExpression(ObjectiveCParser.ArgumentExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ObjectiveCParser#osVersion}.
-	 * @param ctx the parse tree
-	 */
-	void enterOsVersion(ObjectiveCParser.OsVersionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ObjectiveCParser#osVersion}.
-	 * @param ctx the parse tree
-	 */
-	void exitOsVersion(ObjectiveCParser.OsVersionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ObjectiveCParser#primaryExpression}.
 	 * @param ctx the parse tree

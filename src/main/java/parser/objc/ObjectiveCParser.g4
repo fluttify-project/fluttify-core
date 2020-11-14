@@ -49,32 +49,19 @@ topLevelDeclaration
     ;
 
 importDeclaration
-    :
-	IMPORT (
-		(frameworkName=identifier ';')
-		| (
-			LT (frameworkName = identifier)? (DIV)? headerName = identifier DOT
-			IDENTIFIER GT
-            )
-        | stringLiteral
-    )
+    : '@import' identifier ';'
     ;
 
 classInterface
-:
-	IB_DESIGNABLE? (macro | attributeSpecifier)*
+    : IB_DESIGNABLE?
       '@interface'
-	className = genericTypeSpecifier (
-		':' superclassName = identifier
-	)? (LT protocols = protocolList GT)? instanceVariables? interfaceDeclarationList?
+       className=genericTypeSpecifier (':' superclassName=identifier)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
       '@end'
     ;
 
 categoryInterface
-    : (macro | attributeSpecifier)*
-      '@interface'
-        className = genericTypeSpecifier LP categoryName = identifier? RP (
-		LT protocols = protocolList GT)? instanceVariables? interfaceDeclarationList?
+    : '@interface'
+       categoryName=genericTypeSpecifier LP className=identifier? RP (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
       '@end'
     ;
 
@@ -86,7 +73,7 @@ classImplementation
 
 categoryImplementation
     : '@implementation'
-	    className=genericTypeSpecifier LP categoryName=identifier RP implementationDefinitionList?
+       categoryName=genericTypeSpecifier LP className=identifier RP implementationDefinitionList?
       '@end'
     ;
 
@@ -95,9 +82,8 @@ genericTypeSpecifier
     ;
 
 protocolDeclaration
-    : (macro | attributeSpecifier)* 
-      '@protocol'
-       name = protocolName (LT protocols = protocolList GT)? protocolDeclarationSection*
+    : '@protocol'
+       protocolName (LT protocolList GT)? protocolDeclarationSection*
       '@end'
     ;
 
@@ -110,17 +96,12 @@ protocolDeclarationList
     : '@protocol' protocolList ';'
     ;
 
-classDeclaration
-    :
-	identifier (LT protocolList GT)?
-    ;
-
 classDeclarationList
-    : '@class' classDeclaration (',' classDeclaration)* ';'
+    : '@class' identifier (',' identifier)* ';'
     ;
 
 protocolList
-    : list += protocolName (',' list += protocolName)*
+    : protocolName (',' protocolName)*
     ;
 
 propertyDeclaration
@@ -149,11 +130,8 @@ propertyAttribute
     ;
 
 protocolName
-    :
-	LT protocolList GT
-	| ('__covariant' | '__contravariant')? name = typeName (
-		':' typeSpecifier
-	)?
+    : LT protocolList GT
+    | ('__covariant' | '__contravariant')?  identifier
     ;
 
 instanceVariables
@@ -181,15 +159,15 @@ interfaceDeclarationList
     ;
 
 classMethodDeclaration
-    : ADD methodDeclaration
+    : '+' methodDeclaration
     ;
 
 instanceMethodDeclaration
-    : SUB methodDeclaration
+    : '-' methodDeclaration
     ;
 
 methodDeclaration
-    : methodType? methodSelector (macro | attributeSpecifier)* ';'
+    : methodType? methodSelector attributeSpecifier? macro? ';'
     ;
 
 implementationDefinitionList
@@ -201,11 +179,11 @@ implementationDefinitionList
     )+;
 
 classMethodDefinition
-    : ADD methodDefinition
+    : '+' methodDefinition
     ;
 
 instanceMethodDefinition
-    : SUB methodDefinition
+    : '-' methodDefinition
     ;
 
 methodDefinition
@@ -213,12 +191,12 @@ methodDefinition
     ;
 
 methodSelector
-    : sel = selector
+    : selector
     | keywordDeclarator+ (',' '...')?
     ;
 
 keywordDeclarator
-    : sel = selector? ':' types += methodType* arcBehaviourSpecifier? name = identifier
+    : selector? ':' methodType* arcBehaviourSpecifier? identifier
     ;
 
 selector
@@ -244,7 +222,7 @@ propertySynthesizeItem
     ;
 
 blockType
-    : nullabilitySpecifier? typeSpecifier nullabilitySpecifier? LP BITXOR (nullabilitySpecifier | typeSpecifier)? RP blockParameters?
+    : nullabilitySpecifier? typeSpecifier nullabilitySpecifier? LP '^' (nullabilitySpecifier | typeSpecifier)? RP blockParameters?
     ;
 
 genericsSpecifier
@@ -273,10 +251,7 @@ boxExpression
     ;
 
 blockParameters
-:
-	LP (
-		(types += typeVariableDeclaratorOrName | 'void') (
-			',' types += typeVariableDeclaratorOrName)*)? RP
+    : LP ((typeVariableDeclaratorOrName | 'void') (',' typeVariableDeclaratorOrName)*)? RP
     ;
 
 typeVariableDeclaratorOrName
@@ -285,7 +260,7 @@ typeVariableDeclaratorOrName
     ;
 
 blockExpression
-    : BITXOR typeSpecifier? nullabilitySpecifier? blockParameters? compoundStatement
+    : '^' typeSpecifier? nullabilitySpecifier? blockParameters? compoundStatement
     ;
 
 messageExpression
@@ -353,21 +328,15 @@ autoreleaseStatement
     ;
 
 functionDeclaration
-    : functionSignature (macro | attributeSpecifier)* ';'
+    : functionSignature ';'
     ;
 
 functionDefinition
-    :
-	functionSignature (macro | attributeSpecifier)* compoundStatement
+    : functionSignature compoundStatement
     ;
 
 functionSignature
     : declarationSpecifiers? identifier (LP parameterList? RP) attributeSpecifier?
-    ;
-
-functionPointer:
-	declarationSpecifiers? (
-		LP MUL nullabilitySpecifier? name = identifier? RP) (LP parameterList? RP) attributeSpecifier?
     ;
 
 attribute
@@ -410,23 +379,15 @@ functionCallExpression
     ;
 
 enumDeclaration
-    : (macro | attributeSpecifier)* TYPEDEF? enumSpecifier name = identifier? (macro | attributeSpecifier)* ';'
+    : attributeSpecifier? TYPEDEF? enumSpecifier identifier? ';'
     ;
 
 varDeclaration
-    :
-	macro? (declarationSpecifiers initDeclaratorList | declarationSpecifiers) (macro | attributeSpecifier)* ';'
+    : (declarationSpecifiers initDeclaratorList | declarationSpecifiers) ';'
     ;
 
 typedefDeclaration
-    :
-	attributeSpecifier? TYPEDEF (
-		declarationSpecifiers typeDeclaratorList
-		| declarationSpecifiers
-		| functionPointer
-		| functionSignature
-		| structOrUnionSpecifier identifier
-	) (macro | attributeSpecifier)* ';'
+    : attributeSpecifier? TYPEDEF (declarationSpecifiers typeDeclaratorList | declarationSpecifiers) ';'
     ;
 
 typeDeclaratorList
@@ -437,36 +398,19 @@ typeDeclarator
     : pointer? directDeclarator
     ;
 
-commonSpecifiers
-    :
-	(arcBehaviourSpecifier
+declarationSpecifiers
+    : (storageClassSpecifier
+    | attributeSpecifier
+    | arcBehaviourSpecifier
     | nullabilitySpecifier
     | ibOutletQualifier
     | typePrefix
-    | typeQualifier)+
-    ;
-
-declarationSpecifiers
-    : 
-	(
-		storageClassSpecifier
-		| attributeSpecifier
-		| commonSpecifiers
-		| typeSpecifier
-	)+
-    ;
-
-pointerQualifier
-    : 
-    (
-    storageClassSpecifier
-    | attributeSpecifier
-    | commonSpecifiers
-	)+
+    | typeQualifier
+    | typeSpecifier)+
     ;
 
 attributeSpecifier
-    : ATTRIBUTE LP LP attribute (',' attribute)* RP RP
+    : '__attribute__' LP LP attribute (',' attribute)* RP RP
     ;
 
 initDeclaratorList
@@ -474,20 +418,25 @@ initDeclaratorList
     ;
 
 initDeclarator
-    : declarator (macro | attributeSpecifier)* ('=' initializer)?
+    : declarator ('=' initializer)?
     ;
 
 structOrUnionSpecifier
     : ('struct' | 'union') (identifier | identifier? '{' fieldDeclaration+ '}')
     ;
 
-fieldDeclaration: (
-		specifierQualifierList fieldDeclaratorList
-		| functionPointer
-	) (macro | attributeSpecifier)* ';';
+fieldDeclaration
+    : specifierQualifierList fieldDeclaratorList attributeSpecifier? macro? ';'
+    ;
 
 specifierQualifierList
-: ( commonSpecifiers | typeSpecifier)+;
+    : (arcBehaviourSpecifier
+    | nullabilitySpecifier
+    | ibOutletQualifier
+    | typePrefix
+    | typeQualifier
+    | typeSpecifier)+
+    ;
 
 ibOutletQualifier
     : IB_OUTLET_COLLECTION LP identifier RP
@@ -542,7 +491,7 @@ protocolQualifier
     ;
 
 typeSpecifier
-    : (('void'
+    : 'void'
     | 'char'
     | 'short'
     | 'int'
@@ -550,12 +499,12 @@ typeSpecifier
     | 'float'
     | 'double'
     | 'signed'
-    | 'unsigned')+
+    | 'unsigned'
     | typeofExpression
     | genericTypeSpecifier
     | structOrUnionSpecifier
     | enumSpecifier
-    | identifier) pointer?
+    | identifier pointer?
     ;
 
 typeofExpression
@@ -571,34 +520,27 @@ fieldDeclarator
     | declarator? ':' constant
     ;
 
-enumSpecifier:
-	'enum' (name = identifier? ':' typeName)? (
-		identifier ('{' enumeratorList '}')?
-		| '{' enumeratorList '}'
-	)
-	| type = (
-		NS_OPTIONS
-		| NS_ENUM
-		| NS_ERROR_ENUM
-		| NS_CLOSED_ENUM
-	) LP typeName (',' name = identifier)? RP '{' enumeratorList '}';
+enumSpecifier
+    : 'enum' (identifier? ':' typeName)? (identifier ('{' enumeratorList '}')? | '{' enumeratorList '}')
+    | ('NS_OPTIONS' | 'NS_ENUM') LP typeName ',' identifier RP '{' enumeratorList '}'
+    ;
 
 enumeratorList
-    : list += enumerator (',' list += enumerator)* ','?
+    : enumerator (',' enumerator)* ','?
     ;
 
 enumerator
-    : name = enumeratorIdentifier (macro | attributeSpecifier)* ('=' value = expression)? 
+    : enumeratorIdentifier macro? ('=' expression)? // 新增(macro?) 枚举中可能会出现NS_SWIFT_NAME()这个宏
     ;
 
 enumeratorIdentifier
-    : identifier
+    : identifier (attributeSpecifier)? // 解决枚举中无法识别__attribute__的bug
     | 'default'
     ;
 
 directDeclarator
     : (identifier | LP declarator RP) declaratorSuffix*
-    | LP BITXOR nullabilitySpecifier? identifier? RP blockParameters
+    | LP '^' nullabilitySpecifier? identifier? RP blockParameters
     ;
 
 declaratorSuffix
@@ -610,23 +552,11 @@ parameterList
     ;
 
 pointer
-    : MUL pointerQualifier? nextPointer = pointer?
+    : '*' declarationSpecifiers? pointer?
     ;
 
 macro
-    :
-	identifier (
-		LP (
-			messages += primaryExpression
-			| osVersions += osVersion
-			| identifier (DOT identifier)* (LP (identifier ':')* RP)?
-		) (
-			',' (
-				messages += primaryExpression
-				| osVersions += osVersion
-			)
-		)* RP
-	)?
+    : identifier (LP primaryExpression (',' primaryExpression)* RP)? // 解决方法中无法识别__attribute__的bug
     ;
 
 arrayInitializer
@@ -634,7 +564,7 @@ arrayInitializer
     ;
 
 structInitializer
-    : '{' (DOT expression (',' DOT expression)* ','?)? '}'
+    : '{' ('.' expression (',' '.' expression)* ','?)? '}'
     ;
 
 initializerList
@@ -644,7 +574,6 @@ initializerList
 typeName
     : specifierQualifierList abstractDeclarator?
     | blockType
-	| functionPointer
     ;
 
 abstractDeclarator
@@ -663,9 +592,8 @@ parameterDeclarationList
     ;
 
 parameterDeclaration
-    : declarationSpecifiers declarator?
+    : declarationSpecifiers declarator
     | 'void'
-    | functionPointer
     ;
 
 declarator
@@ -807,17 +735,17 @@ unaryExpression
     ;
 
 unaryOperator
-    : BITAND
-    | MUL
-    | ADD
-    | SUB
-	| TILDE
+    : '&'
+    | '*'
+    | '+'
+    | '-'
+    | '~'
     | BANG
     ;
 
 postfixExpression
     : primaryExpression postfix*
-    | postfixExpression (DOT | STRUCTACCESS) identifier postfix*  // TODO: get rid of property and postfix expression.
+    | postfixExpression (DOT | STRUCTACCESS) identifier postfix*
     ;
 
 postfix
@@ -835,23 +763,6 @@ argumentExpression
     : expression
     | typeSpecifier
     ;
-
-osVersion
-:
-	(os = identifier) (
-		LP min = (
-			FLOATING_POINT_LITERAL
-			| VERSION_SEMATIC
-			| IDENTIFIER
-		) (
-			',' max = (
-				FLOATING_POINT_LITERAL
-				| VERSION_SEMATIC
-				| IDENTIFIER
-			)
-		)? RP
-	)?;
-
 
 primaryExpression
     : identifier
@@ -872,8 +783,8 @@ constant
     : HEX_LITERAL
     | OCTAL_LITERAL
     | BINARY_LITERAL
-    | (ADD | SUB)? DECIMAL_LITERAL
-    | (ADD | SUB)? FLOATING_POINT_LITERAL
+    | ('+' | '-')? DECIMAL_LITERAL
+    | ('+' | '-')? FLOATING_POINT_LITERAL
     | CHARACTER_LITERAL
     | NIL
     | NULL

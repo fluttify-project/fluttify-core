@@ -267,10 +267,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                 stack.push(Type().also {
                     it.platform = Platform.iOS
                     it.typeType = TypeType.Class
-                    // dartnative调整后的g4文件, 类名中的protocol无法去除, 这里变通使用containerType去除一下
-                    it.name = ctx.className.text.containerType()
+                    it.name = ctx.className.text
                     it.superClass = ctx.superclassName.text
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.name.text } ?: listOf())
+                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
                     it.isAbstract = false
                 })
             }
@@ -285,10 +284,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                 stack.push(Type().also {
                     it.platform = Platform.iOS
                     it.typeType = TypeType.Interface
-                    // dartnative调整后的g4文件, 类名中的protocol无法去除, 这里变通使用containerType去除一下
-                    it.name = ctx.protocolName().text.containerType()
+                    it.name = ctx.protocolName().text
                     it.superClass = ""
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.name.text } ?: listOf())
+                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
                     it.isAbstract = true
                 })
             }
@@ -342,9 +340,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                 stack.push(Type().also {
                     it.platform = Platform.iOS
                     it.typeType = TypeType.Extension
-                    // dartnative调整后的g4文件, 类名中的protocol无法去除, 这里变通使用containerType去除一下
-                    it.name = ctx.categoryName.text.containerType()
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.name.text } ?: listOf())
+                    it.name = ctx.categoryName.text
+                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
                     it.isAbstract = false
                 })
             }
@@ -483,7 +480,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                             ctx.getterName().removeObjcSpecifier(),
                             ctx.setterName().removeObjcSpecifier(),
                             Platform.iOS,
-                            ctx.macro().any { it.text.contains("deprecated") }
+                            ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
                         )
                     )
                 }
