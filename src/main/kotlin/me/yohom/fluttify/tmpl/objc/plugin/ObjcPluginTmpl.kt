@@ -6,8 +6,6 @@ import me.yohom.fluttify.model.Lib
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method.NonViewCallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_handler.RegisterHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.IOFileFilter
 import java.io.File
 
 //#import <Flutter/Flutter.h>
@@ -100,36 +98,13 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
 
     // 导入头文件
     // 如果没有手动指定的话则拼接出一个
-    val imports = (if (ext.ios.iosImportHeader.isNotEmpty()) ext.ios.iosImportHeader else ext.ios.libDir
-        .file()
-        .run {
-            // 所有的Framework
-            val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
-                ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
-                ?: listOf()
-            // 如果没有framework, 那么就遍历出所有的.h文件
-            val directHeaders = mutableListOf<String>()
-            if (list()?.none { it.endsWith(".framework") } == true) {
-                // 所有的.h
-                iterate("h") {
-                    // 不导入隐藏文件
-                    if (!it.name.startsWith(".")) {
-                        directHeaders.add("#import <${it.parentFile.name}/${it.name}>")
-                    }
-                }
-            }
-            frameworkHeaders.union(directHeaders)
-        })
-        .union(platformViewHeader)
-        .joinToString("\n")
+    val importLibrary = ext.ios.iosLibraryHeaders.union(platformViewHeader).joinToString("\n")
 
     val protocols = libs
         .flatMap { it.types }
         .filter { it.filter }
         .filter { it.isCallback }
-        .map { it.name }
-        .union(listOf("FlutterPlugin")) // 补上FlutterPlugin协议
-        .joinToString(", ")
+        .joinToStringX(", ", "<", ">") { it.name }
 
     val callbackMethods = libs
         .flatMap { it.types }
@@ -162,11 +137,11 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
 
     return listOf(
         hTmpl
-            .replace("#__imports__#", imports)
-            .replace("#__plugin_name__#", pluginClassName)
-            .replace("#__protocols__#", protocols),
+            .replace("#__plugin_name__#", pluginClassName),
         mTmpl
             .replace("#__import_sub_handlers__#", importSubHandler)
+            .replace("#__import_library__#", importLibrary)
+            .replace("#__protocols__#", protocols)
             .replace("#__plugin_name__#", pluginClassName)
             .replace("#__method_channel__#", methodChannel)
             .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
