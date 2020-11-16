@@ -1,5 +1,5 @@
 package parser.objc;
-// Generated from src/main/java/parser/objc/ObjectiveCParser.g4 by ANTLR 4.8
+// Generated from ObjectiveCParser.g4 by ANTLR 4.8
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
