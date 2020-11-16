@@ -7,3 +7,9 @@ const k#__project_prefix__#MessageCodec = FluttifyMessageCodec(tag: '#__project_
 const k#__project_prefix__#MethodCodec = StandardMethodCodec(k#__project_prefix__#MessageCodec);
 const k#__project_prefix__#Channel = MethodChannel('#__channel_name__#', k#__project_prefix__#MethodCodec);
 const k#__project_prefix__#ProjectName = '#__project_name__#';
+
+Future<void> release#__project_prefix__#Pool() async {
+  final isCurrentPlugin = (Ref it) => it.tag__ == k#__project_prefix__#ProjectName;
+  await gGlobalReleasePool.where(isCurrentPlugin).release_batch();
+  gGlobalReleasePool.removeWhere(isCurrentPlugin);
+}

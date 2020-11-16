@@ -17,13 +17,14 @@ import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
 import org.gradle.api.tasks.TaskAction
 
 open class CommonObjects : FluttifyTask() {
-    private val tmpl by lazy { getResource("/tmpl/dart/objects.dart.tmpl").readText() }
+    private val tmpl by lazy { getResource("/tmpl/dart/shared.dart.tmpl").readText() }
 
     @TaskAction
     fun process() {
         val content = tmpl.replaceGlobal()
-        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file()
-            .writeText(content)
+        // 删除旧版本的文件
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file().delete()
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/shared.g.dart".file().writeText(content)
     }
 }
 
