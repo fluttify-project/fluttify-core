@@ -114,7 +114,7 @@ fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
                 iterate("h") {
                     // 不导入隐藏文件
                     if (!it.name.startsWith(".")) {
-                        directHeaders.add("#import \"${it.name}\"")
+                        directHeaders.add("#import <${it.parentFile.name}/${it.name}>")
                     }
                 }
             }
