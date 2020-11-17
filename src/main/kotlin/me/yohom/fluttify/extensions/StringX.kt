@@ -372,7 +372,7 @@ fun String.isObfuscatedMethod(): Boolean {
  */
 fun TYPE_NAME.toDartType(): TYPE_NAME {
     // 如果是系统别名就先取出原始类型, 否则就直接使用
-    val dartType = (SYSTEM_TYPEDEF[this] ?: this).pack()
+    return (SYSTEM_TYPEDEF[this] ?: this).pack()
         .run {
             when {
                 // java
@@ -422,7 +422,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NS(Mutable)?Dictionary\\*").matches(this) -> "Map"
-                Regex("(java\\.util\\.(Hash)?Map|NSDictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(this) -> {
+                Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(this) -> {
                     val keyType = substringAfter("\u003c").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore("\u003e").toDartType()
                     "Map<$keyType,$valueType>"
@@ -449,7 +449,6 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
         .replace(".", "_")
         .depointer()
         .deprotocol()
-    return dartType
 }
 
 ///**
