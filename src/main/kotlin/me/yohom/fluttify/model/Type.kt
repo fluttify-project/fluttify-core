@@ -169,10 +169,10 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 mustNot("混淆类型") { isObfuscated }
                 &&
                 mustNot("函数类型且含有lambda") { isFunction && formalParams.any { it.variable.isLambda() } }
-//                &&
-//                mustNot("祖宗类含有忽略类型") {
-//                    ancestorTypes.isNotEmpty() && EXCLUDE_TYPES.any { type -> ancestorTypes.any { type.matches(it) } }
-//                }
+                &&
+                mustNot("祖宗类含有Jsonable类型") {
+                    ancestorTypes.isNotEmpty() && ancestorTypes.any { it.jsonable() }
+                }
                 &&
                 (isEnum || !isInnerType || (constructors.any { it.isPublic } || constructors.isEmpty())).apply {
                     if (!this) println("filterType: $name 由于构造器不是全公开且是内部类 被过滤")
@@ -323,7 +323,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                             ||
                             ancestorTypes.isEmpty()
                             ||
-                            ancestorTypes.all { it.findType().run { constructable || isAbstract } } }
+                            ancestorTypes.all { it.findType().run { constructable || isAbstract } }
+                }
                 ||
                 must("公开枚举") { isPublic && isEnum }
         if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")

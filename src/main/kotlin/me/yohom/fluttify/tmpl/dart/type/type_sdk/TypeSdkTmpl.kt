@@ -100,7 +100,9 @@ fun TypeSdkTmpl(type: Type): String {
     // 常量
     val constants = type.fields
         .filterConstants()
-        .joinToString("\n") { "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" }
+        .joinToString("\n") {
+            "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix().escape()};"
+        }
 
     // 构造器
     val creators = if (type.constructable) {

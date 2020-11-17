@@ -541,8 +541,15 @@ fun TYPE_NAME.containerType(): TYPE_NAME {
 /**
  * 去除数字后面的标识 (L/F/D等)
  */
-fun TYPE_NAME.removeNumberSuffix(): TYPE_NAME {
+fun String.removeNumberSuffix(): TYPE_NAME {
     return removeSuffix("L").removeSuffix("F").removeSuffix("D")
+}
+
+/**
+ * 字符串常量转义
+ */
+fun String.escape(): TYPE_NAME {
+    return replace("$", "\\$")
 }
 
 /**
