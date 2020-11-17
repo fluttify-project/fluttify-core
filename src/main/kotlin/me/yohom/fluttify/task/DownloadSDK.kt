@@ -51,6 +51,8 @@ open class DownloadIOSSDK : FluttifyTask() {
         errorBr.lines().forEach(::println)
 
         if (process.exitValue() == 0) {
+            // 清除原先的内容
+            ext.ios.libDir.file().listFiles()?.forEach { it.deleteRecursively() }
             "output-project/${ext.projectName}/example/ios/Pods/"
                 .file()
                 .listFiles { _, name -> name in ext.ios.remote.name }
