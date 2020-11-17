@@ -36,29 +36,31 @@ open class DownloadAndroidSDK : FluttifyTask() {
 open class DownloadIOSSDK : FluttifyTask() {
     @TaskAction
     fun process() {
-        val process = Runtime
-            .getRuntime()
-            .exec(
-                arrayOf(
-                    "/bin/sh",
-                    "-c",
-                    "cd ${project.projectDir}/output-project/${ext.projectName} && flutter packages get && cd example/ios && pod install --verbose"
+        if (ext.ios.remote.iosConfigured) {
+            val process = Runtime
+                .getRuntime()
+                .exec(
+                    arrayOf(
+                        "/bin/sh",
+                        "-c",
+                        "cd ${project.projectDir}/output-project/${ext.projectName} && flutter packages get && cd example/ios && pod install --verbose"
+                    )
                 )
-            )
-        val br = BufferedReader(InputStreamReader(process.inputStream))
-        val errorBr = BufferedReader(InputStreamReader(process.errorStream))
-        br.lines().forEach(::println)
-        errorBr.lines().forEach(::println)
+            val br = BufferedReader(InputStreamReader(process.inputStream))
+            val errorBr = BufferedReader(InputStreamReader(process.errorStream))
+            br.lines().forEach(::println)
+            errorBr.lines().forEach(::println)
 
-        if (process.exitValue() == 0) {
-            // 清除原先的内容
-            ext.ios.libDir.file().listFiles()?.forEach { it.deleteRecursively() }
-            "output-project/${ext.projectName}/example/ios/Pods/"
-                .file()
-                .listFiles { _, name -> name in ext.ios.remote.name }
-                ?.forEach {
-                    FileUtils.copyDirectoryToDirectory("${it}/".file(), ext.ios.libDir.file())
-                }
+            if (process.exitValue() == 0) {
+                // 清除原先的内容
+                ext.ios.libDir.file().listFiles()?.forEach { it.deleteRecursively() }
+                "output-project/${ext.projectName}/example/ios/Pods/"
+                    .file()
+                    .listFiles { _, name -> name in ext.ios.remote.name }
+                    ?.forEach {
+                        FileUtils.copyDirectoryToDirectory("${it}/".file(), ext.ios.libDir.file())
+                    }
+            }
         }
     }
 }
