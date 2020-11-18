@@ -238,19 +238,11 @@ open class Exclude {
 
 open class Remote {
     /**
-     * 组织名 ios可不填
+     * 远程依赖
+     *
+     * Android端即`org:name:version`; iOS端即`'name', 'version'`
      */
-    var org: List<String> = listOf()
-
-    /**
-     * 依赖名称
-     */
-    var name: List<String> = listOf()
-
-    /**
-     * 依赖版本
-     */
-    var version: List<String> = listOf()
+    var dependencies: List<String> = listOf()
 
     /**
      * 间接远程依赖
@@ -258,27 +250,20 @@ open class Remote {
     var transitiveDependencies: List<String> = listOf()
 
     /**
-     * android maven 坐标
-     */
-    val androidCoordinate get() = org.indices.map { "${org[it]}:${name[it]}:${version[it]}" }
-
-    /**
      * android是否已配置
      */
-    val androidConfigured get() = org.isNotEmpty() && name.isNotEmpty() && version.isNotEmpty()
+    val configured get() = dependencies.isNotEmpty()
 
     /**
-     * ios pod 坐标
+     * 依赖名称
      */
-    val iosCoordinate get() = name.indices.map { "'${name[it]}', '${version[it]}'" }
-
-    /**
-     * ios是否已配置
-     */
-    val iosConfigured get() = name.isNotEmpty() && version.isNotEmpty()
+    val nameList: Boolean
+        get() {
+            return dependencies.isNotEmpty()
+        }
 
     override fun toString(): String {
-        return "Remote(org='$org', name='$name', version='$version')"
+        return "Remote(dependencies=$dependencies, transitiveDependencies=$transitiveDependencies)"
     }
 }
 
