@@ -71,7 +71,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         decompileClass.dependsOn(unzip)
 
         // 下载SDK
-        unzip.dependsOn(downloadAndroidSDK, downloadIOSSDK)
+        unzip.dependsOn(downloadAndroidSDK)
+        unzip.dependsOn(downloadIOSSDK)
         downloadAndroidSDK.dependsOn(tweakDefaultProject)
         downloadIOSSDK.dependsOn(tweakDefaultProject)
 
