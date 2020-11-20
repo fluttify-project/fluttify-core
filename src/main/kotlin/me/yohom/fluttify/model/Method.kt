@@ -146,12 +146,6 @@ data class Method(
                     &&
                     // 参数不能中含有排除的类
                     mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.trueType.depointer()) } } }
-                    &&
-                    mustNot("形参祖宗类含有忽略类型") {
-                        formalParams
-                            .flatMap { it.variable.trueType.findType().ancestorTypes }
-                            .any { EXCLUDE_TYPES.any { type -> type.matches(it) } }
-                    }
             if (METHOD_LOG) println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
