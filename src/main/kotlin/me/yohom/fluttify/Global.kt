@@ -5,15 +5,17 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-var SUCCESS_LOG = true
+const val SUCCESS_LOG = true
 
-var CONSTRUCTOR_LOG = false
-var VARIABLE_LOG = false
-var FIELD_LOG = false
-var TYPE_LOG = false
-var FILE_LOG = false
-var METHOD_LOG = false
-var CACHE_LOG = false
+const val CONSTRUCTOR_LOG = false
+const val VARIABLE_LOG = false
+const val FIELD_LOG = false
+const val TYPE_LOG = false
+const val FILE_LOG = false
+const val METHOD_LOG = true
+const val CACHE_LOG = false
+
+const val ENABLE_CACHE = true
 
 private var idSequence = 0
 val NEXT_ID

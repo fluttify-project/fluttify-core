@@ -188,7 +188,12 @@ fun TYPE_NAME.simpleName(): String {
 /**
  * 从类名获取类信息
  */
+private val findTypeCache = mutableMapOf<String, Type>()
 fun TYPE_NAME.findType(): Type {
+    if (findTypeCache.containsKey(this) && ENABLE_CACHE) {
+        if (CACHE_LOG) println("findType命中缓存: $this -> ${findTypeCache[this]!!.name}")
+        return findTypeCache[this]!!
+    }
 
     val type = depointer().deprotocol()
     val result = if (type.genericTypes().isNotEmpty()) {
@@ -240,6 +245,8 @@ fun TYPE_NAME.findType(): Type {
             result
         }
     }
+    findTypeCache[this] = result
+
     return result
 }
 
@@ -561,6 +568,7 @@ fun TYPE_NAME.removeObjcSpecifier(): TYPE_NAME {
         .replace("_Nonnull", "")
         .replace("nullable", "")
         .replace("nonnull", "")
+        .replace("*__autoreleasing", "")
         .replace("__autoreleasing", "")
 }
 
