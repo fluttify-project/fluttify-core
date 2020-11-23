@@ -458,13 +458,6 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
         .deprotocol()
 }
 
-///**
-// * 传参时, 可以把Serializable替换为String, 以实现传递参数, 不然dart这边没法传递
-// */
-//fun TYPE_NAME.serializableToString(): String {
-//    return replace(Regex("java.io.Serializable"), "String /* java.io.Serializable */")
-//}
-
 fun TYPE_NAME.toUnderscore(): String {
     return replace(Regex("[$.<>,|]"), "_")
 }
@@ -477,7 +470,7 @@ fun TYPE_NAME.isStructPointer(): Boolean {
  * 去除指针类型的`*`号
  */
 fun String.depointer(): String {
-    return removePrefix("*").removeSuffix("*")
+    return replace("*", "")
 }
 
 /**
@@ -674,10 +667,6 @@ fun String.replaceParagraph(oldValue: String, newValue: String): String {
     }
 }
 
-fun String.stripQuotes(): String {
-    return replace("\"", "").replace("'", "")
-}
-
 /**
  * 为一些类限定词增加前后的空格, 这么做的原因是类限定词会跟类名粘在一起, 所以要加下空格
  */
@@ -697,16 +686,6 @@ fun String.objcSpecifierExpand(): String {
         .replace("unsignedint", "unsigned int")
         .replace("longlong", "long long")
 }
-//
-///**
-// * 在dart中, 要去掉这些限定词
-// */
-//fun String.removeObjcSpecifier(): String {
-//    return replace("__kindof", "")
-//        .replace("_Nullable", "")
-//        .replace("_Nonnull", "")
-//        .pack()
-//}
 
 fun String.isDynamic(): Boolean {
     val dartType = toDartType()
@@ -731,7 +710,7 @@ fun String.parseSDK(): SDK {
     for (entry in ext.ios.overrideElements.entries) {
         result = result.replace(Regex(entry.key), entry.value)
     }
-    return result.fromJson()
+    return result.removeObjcSpecifier().fromJson()
 }
 
 /**

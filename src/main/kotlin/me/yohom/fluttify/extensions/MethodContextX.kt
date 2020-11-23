@@ -191,7 +191,7 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
         .typeName()
         .text
         .run {
-            if (this == "instancetype") {
+            if (contains("instancetype")) {
                 val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
                     ?: ancestorOf(ObjectiveCParser.ProtocolDeclarationContext::class)?.protocolName()?.text
                 if (instancetype != null) {
