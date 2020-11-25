@@ -377,13 +377,15 @@ fun OBJC_FILE.objcType(): SourceFile {
                     ?.text
                 val typeName = ctx
                     .typeDeclaratorList()
-                    .typeDeclarator()[0]
+                    ?.typeDeclarator()
+                    ?.get(0)
                     ?.directDeclarator()
                     ?.identifier()
                     ?.text
                 val formalParams = ctx
                     .typeDeclaratorList()
-                    .typeDeclarator()[0]
+                    ?.typeDeclarator()
+                    ?.get(0)
                     ?.directDeclarator()
                     ?.blockParameters()
                     ?.typeVariableDeclaratorOrName()
