@@ -470,7 +470,7 @@ fun TYPE_NAME.isStructPointer(): Boolean {
  * 去除指针类型的`*`号
  */
 fun String.depointer(): String {
-    return replace("*", "")
+    return removePrefix("*").removeSuffix("*")
 }
 
 /**
