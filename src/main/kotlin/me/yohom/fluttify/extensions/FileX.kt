@@ -376,7 +376,8 @@ fun OBJC_FILE.objcType(): SourceFile {
             override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
                 val returnType = ctx
                     .declarationSpecifiers()
-                    .typeSpecifier()[0]
+                    ?.typeSpecifier()
+                    ?.get(0)
                     ?.text
                 val typeName = ctx
                     .typeDeclaratorList()

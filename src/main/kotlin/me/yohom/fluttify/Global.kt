@@ -15,7 +15,8 @@ const val FILE_LOG = false
 const val METHOD_LOG = true
 const val CACHE_LOG = false
 
-const val ENABLE_CACHE = true
+const val ENABLE_CACHE = false
+//const val ENABLE_CACHE = true
 
 private var idSequence = 0
 val NEXT_ID
