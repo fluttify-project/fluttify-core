@@ -340,15 +340,15 @@ fun TYPE_NAME.isObfuscated(): Boolean {
     // 如果类名不包含`.`, 说明是泛型类型, 则不认为是混淆类
     if (!contains(".")) return false
 
-    val types = genericTypes()
+    // 容器类型+泛型类型
+    val genericTypes = genericTypes()
         .map { it.replace("$", ".").substringAfterLast(".") }
-        .union(listOf(containerType().replace("$", ".").substringAfterLast(".")))
-    val regex1 = Regex("[a-zA-Z|\\d]{0,2}")
-    val regex2 = Regex("[a-z|\\d]{0,4}")
+    val containerType = containerType().replace("$", ".").substringAfterLast(".")
+    val regex = Regex("[a-z|\\d]{0,2}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
     return this !in ext.obfuscatedWhiteList
             &&
-            types.any { regex1.matches(it) || regex1.matches(this) || regex2.matches(it) || regex2.matches(this) }
+            (regex.matches(containerType) || regex.matches(this) || genericTypes.any { it.isObfuscated() })
             &&
             this != "id"
 }
@@ -492,7 +492,7 @@ fun String.isExcludedType(): Boolean {
  */
 fun String.enprotocol(): String {
     // 不重复添加id<>
-    return if(Regex("id<.*>").matches(this)) this else "id<${this}>"
+    return if (Regex("id<.*>").matches(this)) this else "id<${this}>"
 }
 
 /**

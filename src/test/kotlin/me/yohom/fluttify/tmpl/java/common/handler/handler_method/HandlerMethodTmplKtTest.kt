@@ -1,6 +1,7 @@
 package me.yohom.fluttify.tmpl.java.common.handler.handler_method
 
 import me.yohom.fluttify.*
+import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 import org.junit.jupiter.api.Test
 
@@ -39,6 +40,25 @@ internal class HandlerMethodTmplKtTest : FluttifyTest() {
             .find { it.name == "com.netease.nimlib.sdk.InvocationFuture" }
             ?.methods
             ?.find { it.name == "setCallback" }
+            ?.run {
+                println(HandlerMethodTmpl(this))
+            }
+    }
+
+    @Test
+    fun handlerMethodTmpl_com_tencent_imsdk_v2_V2TIMSendCallback_sendMessage() {
+        ext.android.callbackClasses = listOf(
+            "com.tencent.imsdk.v2.V2TIMCallback",
+            "com.tencent.imsdk.v2.TIMValueCallBack",
+            "com.tencent.imsdk.v2.V2TIMSDKListener",
+            "com.tencent.imsdk.v2.V2TIMConversationListener",
+            "com.tencent.imsdk.v2.V2TIMSendCallback"
+        )
+        Tim.androidSDK
+            .allTypes
+            .find { it.name == "com.tencent.imsdk.v2.V2TIMMessageManager" }
+            ?.methods
+            ?.find { it.name == "sendMessage" }
             ?.run {
                 println(HandlerMethodTmpl(this))
             }
