@@ -197,31 +197,31 @@ fun TYPE_NAME.findType(): Type {
 
     val type = depointer().deprotocol()
     val result = if (type.genericTypes().isNotEmpty()) {
-        // 说明有泛型, 合成一个新的类
+        // 泛型逻辑改为擦除处理
         val containerType = SDK.findType(type.containerType())
 
         // 要使用克隆对象, 因为定义的泛型类可能不止一个, 如果直接在原对象上操作的话, 那么后续的泛型类可能会受影响
-        val clonedContainerType = containerType.toJson().fromJson<Type>()
+//        val clonedContainerType = containerType.toJson().fromJson<Type>()
 
-        val definedGenericTypes = type.genericTypes().toMutableList()
-        clonedContainerType.definedGenericTypes = definedGenericTypes
-        // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
-        clonedContainerType.methods
-            .flatMap { it.formalParams }
-            .map { it.variable }
-            // 过滤出所有用到类泛型的方法的参数 这里使用rawType代替trueType防止循环调用
-            .filter { it.rawType in clonedContainerType.declaredGenericTypes }
-            .forEach {
-                // 找出当前声明泛型在泛型列表中的位置
-                val genericTypePosition = clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
-                // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
-                if (genericTypePosition < definedGenericTypes.size) {
-                    it.defineGenericType(definedGenericTypes[genericTypePosition])
-                } else {
-                    it.defineGenericType(it.platform.objectType())
-                }
-            }
-        clonedContainerType
+//        val definedGenericTypes = type.genericTypes().toMutableList()
+//        clonedContainerType.definedGenericTypes = definedGenericTypes
+//        // 类内的方法有用到泛型的把声明的泛型也替换成定义的泛型
+//        clonedContainerType.methods
+//            .flatMap { it.formalParams }
+//            .map { it.variable }
+//            // 过滤出所有用到类泛型的方法的参数 这里使用rawType代替trueType防止循环调用
+//            .filter { it.rawType in clonedContainerType.declaredGenericTypes }
+//            .forEach {
+//                // 找出当前声明泛型在泛型列表中的位置
+//                val genericTypePosition = clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
+//                // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
+//                if (genericTypePosition < definedGenericTypes.size) {
+//                    it.defineGenericType(definedGenericTypes[genericTypePosition])
+//                } else {
+//                    it.defineGenericType(it.platform.objectType())
+//                }
+//            }
+        containerType
     } else {
         val result = SDK.findType(type)
 
