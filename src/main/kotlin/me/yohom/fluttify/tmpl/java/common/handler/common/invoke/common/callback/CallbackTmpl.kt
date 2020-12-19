@@ -26,10 +26,7 @@ fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
     } else {
         "\"${callerMethod.nameWithClass()}::Callback@\" + __this__.getClass().getName() + \":\" + System.identityHashCode(__this__)"
     }
-    // 回调类自身+父类接口
-    val callbackMethods = callbackType.methods
-        .union(callbackType.ancestorTypes.flatMap { it.findType().methods })
-        .joinToString("\n") { CallbackMethodTmpl(it) }
+    val callbackMethods = callbackType.methods.joinToString("\n") { CallbackMethodTmpl(it) }
     return tmpl
         .replace("#__callback_class_name__#", className)
         .replace("#__callback_channel__#", callbackChannel)
