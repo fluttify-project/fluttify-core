@@ -17,10 +17,6 @@ private val tmpl by lazy { getResource("/tmpl/java/callback.stmt.java.tmpl").rea
 
 fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
     val containerType = callbackType.name.replace("$", ".")
-    val genericTypes = callbackType.definedGenericTypes
-        .map { it.ifIsGenericTypeConvertToObject() }
-        .joinToStringX(prefix = "<", suffix = ">")
-    val className = "${containerType}${genericTypes}"
     val callbackChannel = if(callerMethod.isStatic){
         "\"${callerMethod.nameWithClass()}::Callback\""
     } else {
@@ -31,7 +27,7 @@ fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
         .union(callbackType.ancestorTypes.flatMap { it.findType().methods })
         .joinToString("\n") { CallbackMethodTmpl(it) }
     return tmpl
-        .replace("#__callback_class_name__#", className)
+        .replace("#__callback_class_name__#", containerType) // 只使用容器类, 泛型类都删除掉, 用到泛型的地方都直接使用Object
         .replace("#__callback_channel__#", callbackChannel)
         .replaceParagraph("#__callback_methods__#", callbackMethods)
 }
