@@ -49,6 +49,8 @@ fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject:
     } else {
         callbackType
             .methods
+            .union(callbackType.ancestorTypes.flatMap { it.findType().methods })
+            .toList()
             .filterMethod()
             // 回调的方法要过滤掉参数含有`回调类`参数的方法
             .filter { it.mustNot("参数含有回调类") { formalParams.any { it.variable.isCallback() } } }
