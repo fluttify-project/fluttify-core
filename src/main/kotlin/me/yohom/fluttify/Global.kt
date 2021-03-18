@@ -12,11 +12,11 @@ const val VARIABLE_LOG = false
 const val FIELD_LOG = false
 const val TYPE_LOG = false
 const val FILE_LOG = false
-const val METHOD_LOG = true
+const val METHOD_LOG = false
 const val CACHE_LOG = false
 
-const val ENABLE_CACHE = false
-//const val ENABLE_CACHE = true
+//const val ENABLE_CACHE = false
+const val ENABLE_CACHE = true
 
 private var idSequence = 0
 val NEXT_ID
@@ -178,6 +178,7 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "UIViewController"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIControl"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIImage"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "UIImageView"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSObject"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIColor"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSData"; typeType = TypeType.Class; platform = Platform.iOS },
