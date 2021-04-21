@@ -26,7 +26,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/method.mtd.dart.tmpl").readTe
 
 fun MethodTmpl(method: Method): String {
     val static = if (method.isStatic) "static " else ""
-    val returnType = method.returnType.toDartType()
+    val returnType = method.returnType.toDartType().run { if (isVoid()) this else "$this?" } // 除了void类型, 其余的都添加`?`
     val methodName = method.signature
 
     // 方法声明内的参数一律保留, 只有在传参的时候过滤掉lambda
