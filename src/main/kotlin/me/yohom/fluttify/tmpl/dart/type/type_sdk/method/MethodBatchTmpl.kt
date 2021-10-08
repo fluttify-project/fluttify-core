@@ -25,7 +25,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").
  */
 fun MethodBatchTmpl(method: Method): String {
     val static = if (method.isStatic) "static " else ""
-    val returnType = method.returnType.toDartType().run { if (isVoid()) this else "$this?" }.enList()
+    val returnType = method.returnType.toDartType().enList()
 
     val methodName = "${method.signature}_batch"
 
