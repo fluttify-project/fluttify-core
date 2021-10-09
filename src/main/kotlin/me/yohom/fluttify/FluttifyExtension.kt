@@ -128,6 +128,11 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     var iosImportHeader: List<String> = listOf()
 
     /**
+     * ios sdk版本
+     */
+    var iosDeploymentTarget: String = "8.0"
+
+    /**
      * 元素替换
      */
     var overrideElements: Map<String, String> = mapOf()

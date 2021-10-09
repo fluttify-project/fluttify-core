@@ -1,6 +1,7 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.underscore2Camel
 import org.gradle.api.tasks.TaskAction
@@ -10,11 +11,11 @@ import org.gradle.api.tasks.TaskAction
  */
 open class TweakDefaultProject : FluttifyTask() {
 
-    private val buildGradleTmpl = this::class.java.getResource("/tmpl/project/build.gradle.java.tmpl").readText()
-    private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
-    private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
-    private val pubSpecTmpl = this::class.java.getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
-    private val analysisTmpl = this::class.java.getResource("/tmpl/project/analysis_options.yaml.tmpl").readText()
+    private val buildGradleTmpl = getResource("/tmpl/project/build.gradle.java.tmpl").readText()
+    private val infoPlistTmpl = getResource("/tmpl/project/Info.plist.tmpl").readText()
+    private val podSpecTmpl = getResource("/tmpl/project/projectName.podspec.tmpl").readText()
+    private val pubSpecTmpl = getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
+    private val analysisTmpl = getResource("/tmpl/project/analysis_options.yaml.tmpl").readText()
 
     @TaskAction
     fun process() {
@@ -60,6 +61,7 @@ open class TweakDefaultProject : FluttifyTask() {
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "s.dependency '${it.key}'" }.joinToString("\n")
                     )
+                    .replace("#__deployment_target__#", ext.ios.iosDeploymentTarget)
                     .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
                     .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString { "\"$it\"" })
                     .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
