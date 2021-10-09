@@ -142,6 +142,7 @@ fun ObjectiveCParser.FieldDeclarationContext.name(): String {
         .text
         .removeSuffix("DEPRECATED_ATTRIBUTE")
         .removeSuffix("UI_APPEARANCE_SELECTOR")
+        .removeSuffix("NS_REFINED_FOR_SWIFT")
 }
 
 /**
