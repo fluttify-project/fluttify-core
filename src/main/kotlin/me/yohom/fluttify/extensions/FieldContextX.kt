@@ -138,7 +138,10 @@ fun ObjectiveCParser.FieldDeclarationContext.type(): String {
 
 fun ObjectiveCParser.FieldDeclarationContext.name(): String {
     // 由于没有找到DEPRECATED_ATTRIBUTE对应的antlr声明部分, 所以这里只能先强行删除了
-    return fieldDeclaratorList().text.removeSuffix("DEPRECATED_ATTRIBUTE")
+    return fieldDeclaratorList()
+        .text
+        .removeSuffix("DEPRECATED_ATTRIBUTE")
+        .removeSuffix("UI_APPEARANCE_SELECTOR")
 }
 
 /**
