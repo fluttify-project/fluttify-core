@@ -257,7 +257,13 @@ fun OBJC_FILE.objcType(): SourceFile {
                         ?.text
 
                     if (isExternString == true && constantName != null) {
-                        topLevelConstant.add(Variable("NSString*", constantName.depointer(), Platform.iOS))
+                        topLevelConstant.add(
+                            Variable(
+                                "NSString*",
+                                constantName.depointer(),
+                                Platform.iOS
+                            )
+                        )
                     }
                 }
             }
@@ -269,7 +275,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.typeType = TypeType.Class
                     it.name = ctx.className.text
                     it.superClass = ctx.superclassName.text
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.interfaces.addAll(
+                        ctx.protocolList()?.protocolName()?.map { it.identifier().text }
+                            ?: listOf())
                     it.isAbstract = false
                 })
             }
@@ -286,7 +294,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.typeType = TypeType.Interface
                     it.name = ctx.protocolName().text
                     it.superClass = ""
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.interfaces.addAll(
+                        ctx.protocolList()?.protocolName()?.map { it.identifier().text }
+                            ?: listOf())
                     it.isAbstract = true
                 })
             }
@@ -341,7 +351,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.platform = Platform.iOS
                     it.typeType = TypeType.Extension
                     it.name = ctx.categoryName.text
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.interfaces.addAll(
+                        ctx.protocolList()?.protocolName()?.map { it.identifier().text }
+                            ?: listOf())
                     it.isAbstract = false
                 })
             }
@@ -360,7 +372,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.typeType = TypeType.Struct
                     // 结构体名字, 从结构体定时时获取, 如果没有则向上找typedef, 获取typedef后的名称
                     it.name = ctx.identifier()?.text
-                        ?: ctx.ancestorOf(ObjectiveCParser.TypedefDeclarationContext::class)?.typeName()
+                        ?: ctx.ancestorOf(ObjectiveCParser.TypedefDeclarationContext::class)
+                            ?.typeName()
                                 ?: ""
                 })
             }
@@ -471,6 +484,11 @@ fun OBJC_FILE.objcType(): SourceFile {
                         ctx.name().depointer().removeObjcSpecifier(), // 统一把*号加到类名上去
                         Platform.iOS
                     )
+
+                    // 如果是已有的字段就跳过
+                    // 为了处理有些条件编译, 但是字段名称相同的情况
+                    if (fields.map { it.variable.name }.contains(variable.name)) return
+
                     // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
                     fields.add(
                         Field(
@@ -483,7 +501,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                             ctx.getterName().removeObjcSpecifier(),
                             ctx.setterName().removeObjcSpecifier(),
                             Platform.iOS,
-                            ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+                            ctx.macro()?.primaryExpression()
+                                ?.any { it.text.contains("deprecated") } == true
                         )
                     )
                 }
@@ -524,7 +543,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                     ?.map {
                         Parameter(
                             variable = Variable(
-                                typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
+                                typeName = (it.declarationSpecifiers()?.text
+                                    ?: it.VOID().text).run {
                                     if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
                                 },
                                 platform = Platform.iOS,
@@ -573,7 +593,10 @@ fun File.iterate(
 
 fun String.replaceMacro(): String {
     return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
-        .replace("#import\"", "#import \"") // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
+        .replace(
+            "#import\"",
+            "#import \""
+        ) // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
         .run {
             if (ext.ios.exclude.macros.isNotEmpty()) {
                 val regex = ext.ios.exclude.macros.joinToString("|", "(", ")")
