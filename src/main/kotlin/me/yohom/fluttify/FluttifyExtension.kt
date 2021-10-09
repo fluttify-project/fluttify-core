@@ -166,26 +166,28 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
         get() {
             // 导入头文件
             // 如果没有手动指定的话则拼接出一个
-            return if (iosImportHeader.isNotEmpty()) iosImportHeader else libDir
-                .file()
-                .run {
-                    // 所有的Framework
-                    val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
-                        ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
-                        ?: listOf()
-                    // 如果没有framework, 那么就遍历出所有的.h文件
-                    val directHeaders = mutableListOf<String>()
-                    if (list()?.none { it.endsWith(".framework") } == true) {
-                        // 所有的.h
-                        iterate("h") {
-                            // 不导入隐藏文件
-                            if (!it.name.startsWith(".")) {
-                                directHeaders.add("#import <${it.parentFile.name}/${it.name}>")
+            return iosImportHeader.ifEmpty {
+                libDir
+                    .file()
+                    .run {
+                        // 所有的Framework
+                        val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
+                            ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
+                            ?: listOf()
+                        // 如果没有framework, 那么就遍历出所有的.h文件
+                        val directHeaders = mutableListOf<String>()
+                        if (list()?.none { it.endsWith(".framework") } == true) {
+                            // 所有的.h
+                            iterate("h") {
+                                // 不导入隐藏文件
+                                if (!it.name.startsWith(".")) {
+                                    directHeaders.add("#import <${it.parentFile.name}/${it.name}>")
+                                }
                             }
                         }
+                        frameworkHeaders.union(directHeaders).toList()
                     }
-                    frameworkHeaders.union(directHeaders).toList()
-                }
+            }
         }
 
     override fun toString(): String {
