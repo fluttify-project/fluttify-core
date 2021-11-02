@@ -48,31 +48,31 @@ open class FluttifyCorePlugin : Plugin<Project> {
         fluttify.dependsOn(export)
 
         // 导出
-        export.dependsOn(iOSObjcInterface, androidJavaInterface)
+        export.dependsOn(iOSObjcInterface)
 
         // 原生接口
-        iOSObjcInterface.dependsOn(commonObjects)
+        iOSObjcInterface.dependsOn(androidJavaInterface)
         androidJavaInterface.dependsOn(commonObjects)
 
         // dart接口
-        commonObjects.dependsOn(iOSDartInterface, androidDartInterface)
-        iOSDartInterface.dependsOn(iOSJsonRepresentation)
-        androidDartInterface.dependsOn(androidJsonRepresentation)
+        commonObjects.dependsOn(iOSDartInterface)
+        iOSDartInterface.dependsOn(androidDartInterface)
+        androidDartInterface.dependsOn(iOSJsonRepresentation)
 
         // json表示
-        iOSJsonRepresentation.dependsOn(iOSAddDependency)
-        androidJsonRepresentation.dependsOn(androidAddDependency)
+        iOSJsonRepresentation.dependsOn(androidJsonRepresentation)
+        androidJsonRepresentation.dependsOn(iOSAddDependency)
 
         // 添加依赖
-        iOSAddDependency.dependsOn(decompileClass)
+        iOSAddDependency.dependsOn(androidAddDependency)
         androidAddDependency.dependsOn(decompileClass)
 
         // 反编译jar
         decompileClass.dependsOn(unzip)
 
         // 下载SDK
-        unzip.dependsOn(downloadAndroidSDK)
-        downloadAndroidSDK.dependsOn(tweakDefaultProject)
+        unzip.dependsOn(downloadIOSSDK)
+        downloadAndroidSDK.dependsOn(downloadIOSSDK)
         downloadIOSSDK.dependsOn(tweakDefaultProject)
 
         // 调整默认项目
