@@ -10,7 +10,11 @@ private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl")
 
 fun InvokeBatchTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
-        val channelName = "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val viewChannelName =
+            if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}"
+            else "'${ext.methodChannelName}/${method.className.toUnderscore()}/\$refId''"
+        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
+
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
     } else {
         "k${ext.projectName.underscore2Camel()}Channel"
@@ -24,7 +28,14 @@ fun InvokeBatchTmpl(method: Method): String {
     }
     val args = method.formalParams
         .filterFormalParams()
-        .run { if (!method.isStatic) addParameter(Parameter.simpleParameter(method.className, "this")) else this }
+        .run {
+            if (!method.isStatic) addParameter(
+                Parameter.simpleParameter(
+                    method.className,
+                    "this"
+                )
+            ) else this
+        }
         .map { it.variable }
         .toDartMapBatch(prefix = loopHeader) {
             val typeName = it.trueType

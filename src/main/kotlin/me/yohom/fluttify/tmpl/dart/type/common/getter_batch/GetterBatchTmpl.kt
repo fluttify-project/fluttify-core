@@ -13,11 +13,15 @@ private val tmpl by lazy { getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").
 
 fun GetterBatchTmpl(field: Field): String {
     val dartType = field.variable.trueType.toDartType()
-    val name = if (field.isStatic == true) "static_${field.variable.name.depointer()}" else field.variable.name.depointer()
+    val name =
+        if (field.isStatic == true) "static_${field.variable.name.depointer()}" else field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
 
     val channel = if (field.className.findType().isView) {
-        val channelName = "viewChannel ? '${ext.methodChannelName}/${field.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val viewChannelName =
+            if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}"
+            else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId''"
+        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
     } else {
         "k${ext.projectName.underscore2Camel()}Channel"
@@ -47,7 +51,7 @@ fun GetterBatchTmpl(field: Field): String {
             .replace("#__name__#", name)
             .replace("#__view_channel__#", viewChannel)
             .replace("#__channel__#", channel)
-            .replace("#__cast__#",  field.variable.trueType.containerType().toDartType())
+            .replace("#__cast__#", field.variable.trueType.containerType().toDartType())
             .replace("#__getter_method__#", getter)
             .replace("#__result_type__#", resultType)
             .replace("#__result__#", result)

@@ -21,8 +21,11 @@ fun GetterTmpl(field: Field): String {
     val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
 
     val channel = if (field.className.findType().isView) {
-        val channelName =
-            "viewChannel ? '${ext.methodChannelName}/${field.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val viewChannelName =
+            if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}"
+            else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId''"
+        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
+
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
     } else {
         "k${ext.projectName.underscore2Camel()}Channel"
