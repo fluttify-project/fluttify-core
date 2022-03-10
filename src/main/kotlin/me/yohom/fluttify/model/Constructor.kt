@@ -21,6 +21,27 @@ data class Constructor(
     override var platform: Platform,
     override var id: Int = NEXT_ID
 ) : IPlatform, IScope, IElement {
+
+    companion object {
+        fun fromMemberDefType(type: MemberdefType): Constructor {
+            return Constructor(
+                type.name.toString(),
+                type.param.map {
+                    Parameter(
+                        variable = Variable(
+                            it.type.content.first().toString(),
+                            it.declname.toString(),
+                            Platform.Android,
+                        ),
+                        platform = Platform.Android,
+                    )
+                },
+                type.prot == DoxProtectionKind.PUBLIC,
+                Platform.Android,
+            )
+        }
+    }
+
     /**
      * 一个类中可能有多个构造器, 这个过滤是过滤出可以使用的构造器.
      * 区分于Type类的constructable方法, 这个方法是判断一个类是否含有可以使用的构造器.

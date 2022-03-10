@@ -2,9 +2,8 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
-import me.yohom.fluttify.model.Platform
-import me.yohom.fluttify.model.SDK
-import me.yohom.fluttify.model.Type
+import me.yohom.fluttify.model.*
+import org.simpleframework.xml.core.Persister
 import java.io.File
 
 inline fun <reified T> String.fromJson(): T {
@@ -137,7 +136,9 @@ fun TYPE_NAME.isRefArray(): Boolean {
  * 是否是Map类型
  */
 fun TYPE_NAME.isMap(): Boolean {
-    return Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.*,.*\\u003e)?\\*?").matches(pack())
+    return Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.*,.*\\u003e)?\\*?").matches(
+        pack()
+    )
 }
 
 /**
@@ -213,7 +214,8 @@ fun TYPE_NAME.findType(): Type {
             .filter { it.rawType in clonedContainerType.declaredGenericTypes }
             .forEach {
                 // 找出当前声明泛型在泛型列表中的位置
-                val genericTypePosition = clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
+                val genericTypePosition =
+                    clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
                 // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
                 if (genericTypePosition < definedGenericTypes.size) {
                     it.defineGenericType(definedGenericTypes[genericTypePosition])
@@ -387,9 +389,15 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("[Bb]oolean").matches(this) -> "bool"
                 Regex("(unsigned)?([Bb]yte|[Ii]nt|Integer|[Ll]ong)").matches(this) -> "int"
                 Regex("[Dd]ouble|[Ff]loat").matches(this) -> "double"
-                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Byte|Integer|Long)\\u003e").matches(this) -> "List<int>"
-                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Float|Double)\\u003e").matches(this) -> "List<double>"
-                Regex("java\\.util\\.(Collection|(Array)?List)\\u003cString\\u003e|String\\[]").matches(this) -> "List<String>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Byte|Integer|Long)\\u003e").matches(
+                    this
+                ) -> "List<int>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Float|Double)\\u003e").matches(
+                    this
+                ) -> "List<double>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003cString\\u003e|String\\[]").matches(
+                    this
+                ) -> "List<String>"
                 Regex("[Bb]yte\\[]").matches(this) -> "Uint8List"
                 Regex("(int|Integer)\\[]").matches(this) -> "Int32List"
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
@@ -398,7 +406,9 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex(".*\\[]").matches(this) -> dearray().enList() // 数组转列表
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 Regex("java\\.lang\\.Void").matches(this) -> "void"
-                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(this) -> "List<dynamic>"
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(
+                    this
+                ) -> "List<dynamic>"
                 // 若是某种java的List, 那么去掉前缀, 然后转换泛型类型
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)\\u003c.*\\u003e").matches(this) -> {
                     val genericType = genericTypes()[0]
@@ -429,7 +439,9 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NS(Mutable)?Dictionary\\*").matches(this) -> "Map"
-                Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(this) -> {
+                Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(
+                    this
+                ) -> {
                     val keyType = substringAfter("\u003c").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore("\u003e").toDartType()
                     "Map<$keyType,$valueType>"
@@ -484,7 +496,8 @@ fun String.deprotocol(): String {
  * 是否是排除类
  */
 fun String.isExcludedType(): Boolean {
-    return ext.android.exclude.classes.union(ext.ios.exclude.classes).any { Regex(it).matches(this) }
+    return ext.android.exclude.classes.union(ext.ios.exclude.classes)
+        .any { Regex(it).matches(this) }
 }
 
 /**
@@ -713,6 +726,54 @@ fun String.parseSDK(): SDK {
     return result.removeObjcSpecifier().fromJson()
 }
 
+///**
+// * 从文件(夹)解析SDK
+// */
+//fun File.parseSDK(): SDK {
+//    if (isFile) {
+//        return readText().parseSDK()
+//    } else if (isDirectory) {
+//        val sdk = SDK()
+//        for (item in listFiles()!!) {
+//            val sourceFile = SourceFile()
+//            val types = mutableListOf<Type>()
+//            sourceFile.types = types
+//
+//            val serializer = Persister()
+//            val compound = serializer.read(DoxygenType::class.java, item).compounddef.first()
+//            val result = Type()
+//            if (item.name.startsWith("class")) {
+//                result.typeType = TypeType.Class
+//                result.name = compound.compoundname
+//                result.isPublic = compound.prot == DoxProtectionKind.PUBLIC
+//                result.isInnerType = compound.compoundname.contains("\$")
+//                // 第一个是父类, 后续是接口
+//                if (compound.basecompoundref.size > 0) {
+//                    result.superClass = compound.basecompoundref.first().value
+//                    result.interfaces = compound.basecompoundref
+//                        .apply { removeFirst() }
+//                        .map { it.value }
+//                        .toMutableList()
+//                }
+//                result.constructors = compound.sectiondef
+//                    .find { it.kind == DoxSectionKind.PUBLIC_FUNC }
+//                    ?.memberdef
+//                    ?.filter { it.qualifiedname == compound.compoundname }
+//                    ?.map(Constructor::fromMemberDefType)
+//                    ?.toMutableList() ?: mutableListOf()
+//            } else if (item.name.startsWith("enum")) {
+//
+//            } else if (item.name.startsWith("interface")) {
+//
+//            } else {
+//                continue
+//            }
+//        }
+//    } else {
+//        throw Exception("文件类型错误")
+//    }
+//}
+
 /**
  * 变量名为id的情况
  */
@@ -727,6 +788,9 @@ fun String.replaceGlobal(platform: Platform? = null): String {
         .replace("#__channel_name__#", ext.methodChannelName)
         .replace("#__current_package__#", ext.projectName)
         .run {
-            if (platform != null) replace("#__platform__#", platform.toString().capitalize()) else this
+            if (platform != null) replace(
+                "#__platform__#",
+                platform.toString().capitalize()
+            ) else this
         }
 }
