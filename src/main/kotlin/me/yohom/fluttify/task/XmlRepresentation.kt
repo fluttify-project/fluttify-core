@@ -27,6 +27,15 @@ open class AndroidXmlRepresentation : FluttifyTask() {
         val process = Runtime.getRuntime().exec("doxygen")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
+
+        val xmlOutputDir = "${project.projectDir}/ir/ios/xml/".file()
+        for (file in xmlOutputDir.listFiles()!!) {
+            val noNamespace = file
+                .readText()
+                .replace("xsi:noNamespaceSchemaLocation=\"compound.xsd\"", "")
+                .replace("xml:lang=\"en-US\"", "")
+            file.writeText(noNamespace)
+        }
     }
 }
 
@@ -44,6 +53,15 @@ open class IOSXmlRepresentation : FluttifyTask() {
         val process = Runtime.getRuntime().exec("doxygen")
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
+
+        val xmlOutputDir = "${project.projectDir}/ir/ios/xml/".file()
+        for (file in xmlOutputDir.listFiles()!!) {
+            val noNamespace = file
+                .readText()
+                .replace("xsi:noNamespaceSchemaLocation=\"compound.xsd\"", "")
+                .replace("xml:lang=\"en-US\"", "")
+            file.writeText(noNamespace)
+        }
     }
 
 }

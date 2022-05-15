@@ -41,6 +41,7 @@ open class AndroidJavaInterface : FluttifyTask() {
         val projectName = ext.projectName
         val packageSubDir = ext.org.replace(".", "/")
 
+        val irDir = "${project.projectDir}/ir/android/xml/".file()
         val jrFile = "$projectDir/jr/$projectName.android.json".file()
         val packageDir = "$projectDir/output-project/$projectName/android/src/main/java/$packageSubDir/$projectName"
         val pluginOutputFile = "$packageDir/${ext.projectName.underscore2Camel()}Plugin.java"
@@ -48,7 +49,9 @@ open class AndroidJavaInterface : FluttifyTask() {
         val subHandlerOutputFile = "$subHandlerOutputDir/SubHandler#__number__#.java"
         val subHandlerCustomOutputFile = "$subHandlerOutputDir/custom/SubHandlerCustom.java"
 
-        val sdk = jrFile.readText().parseSDK()
+        // 旧版json解析
+//        val sdk = jrFile.parseSDK()
+        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {
@@ -167,6 +170,7 @@ open class IOSObjcInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
+        val irDir = "${project.projectDir}/ir/ios/xml/".file()
         val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
         val projectRootDir = "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/"
         val pluginHFile = "$projectRootDir/${ext.projectName.underscore2Camel()}Plugin.h"
@@ -178,7 +182,9 @@ open class IOSObjcInterface : FluttifyTask() {
         val subHandlerCustomOutputHFile = "$subHandlerOutputDir/Custom/SubHandlerCustom.h"
         val subHandlerCustomOutputMFile = "$subHandlerOutputDir/Custom/SubHandlerCustom.m"
 
-        val sdk = jrFile.readText().parseSDK()
+        // 旧版json解析
+//        val sdk = jrFile.readText().parseSDK()
+        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {

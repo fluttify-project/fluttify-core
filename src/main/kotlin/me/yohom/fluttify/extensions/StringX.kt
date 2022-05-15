@@ -3,7 +3,9 @@ package me.yohom.fluttify.extensions
 import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.model.*
+import org.apache.commons.io.FileUtils
 import org.simpleframework.xml.core.Persister
+import org.simpleframework.xml.strategy.Strategy
 import java.io.File
 
 inline fun <reified T> String.fromJson(): T {
@@ -726,53 +728,71 @@ fun String.parseSDK(): SDK {
     return result.removeObjcSpecifier().fromJson()
 }
 
-///**
-// * 从文件(夹)解析SDK
-// */
-//fun File.parseSDK(): SDK {
-//    if (isFile) {
-//        return readText().parseSDK()
-//    } else if (isDirectory) {
-//        val sdk = SDK()
-//        for (item in listFiles()!!) {
-//            val sourceFile = SourceFile()
-//            val types = mutableListOf<Type>()
-//            sourceFile.types = types
-//
-//            val serializer = Persister()
-//            val compound = serializer.read(DoxygenType::class.java, item).compounddef.first()
-//            val result = Type()
-//            if (item.name.startsWith("class")) {
-//                result.typeType = TypeType.Class
-//                result.name = compound.compoundname
-//                result.isPublic = compound.prot == DoxProtectionKind.PUBLIC
-//                result.isInnerType = compound.compoundname.contains("\$")
-//                // 第一个是父类, 后续是接口
-//                if (compound.basecompoundref.size > 0) {
-//                    result.superClass = compound.basecompoundref.first().value
-//                    result.interfaces = compound.basecompoundref
-//                        .apply { removeFirst() }
-//                        .map { it.value }
-//                        .toMutableList()
-//                }
-//                result.constructors = compound.sectiondef
-//                    .find { it.kind == DoxSectionKind.PUBLIC_FUNC }
-//                    ?.memberdef
-//                    ?.filter { it.qualifiedname == compound.compoundname }
-//                    ?.map(Constructor::fromMemberDefType)
-//                    ?.toMutableList() ?: mutableListOf()
-//            } else if (item.name.startsWith("enum")) {
-//
-//            } else if (item.name.startsWith("interface")) {
-//
-//            } else {
-//                continue
-//            }
-//        }
-//    } else {
-//        throw Exception("文件类型错误")
-//    }
-//}
+/**
+ * 从文件(夹)解析SDK
+ */
+fun File.parseSDK(): SDK {
+    if (isFile) {
+        return readText().parseSDK()
+    } else if (isDirectory) {
+        val sdk = SDK()
+        var successCount = 0
+        var errorCount = 0
+        for (item in listFiles()!!) {
+            try {
+                val sourceFile = SourceFile()
+                val types = mutableListOf<Type>()
+                sourceFile.types = types
+
+                val json = org.json.XML.toJSONObject(item.readText())
+                    .getJSONObject("doxygen")
+                    .getJSONObject("compounddef")
+                    .toString(2)
+
+//                println("json: $json")
+
+                val compound = json.fromJson<CompounddefType?>() ?: continue
+
+                val result = Type()
+                if (item.name.startsWith("class")) {
+                    result.typeType = TypeType.Class
+                    result.name = compound.compoundname
+                    result.isPublic = compound.prot == DoxProtectionKind.PUBLIC
+                    result.isInnerType = compound.compoundname.contains("\$")
+                    // 第一个是父类, 后续是接口
+                    if (compound.basecompoundref.size > 0) {
+                        result.superClass = compound.basecompoundref.first().value
+                        result.interfaces = compound.basecompoundref
+                            .apply { removeFirst() }
+                            .map { it.value }
+                            .toMutableList()
+                    }
+                    result.constructors = compound.sectiondef
+                        .find { it.kind == DoxSectionKind.PUBLIC_FUNC }
+                        ?.memberdef
+                        ?.filter { it.qualifiedname == compound.compoundname }
+                        ?.map(Constructor::fromMemberDefType)
+                        ?.toMutableList() ?: mutableListOf()
+                } else if (item.name.startsWith("enum")) {
+                    continue
+                } else if (item.name.startsWith("interface")) {
+                    continue
+                } else {
+                    continue
+                }
+                successCount++
+            } catch (e: Exception) {
+                errorCount++
+                println("解析过程出现错误: $e")
+                continue
+            }
+        }
+        println("成功数: $successCount, 失败数: $errorCount")
+        return sdk
+    } else {
+        throw Exception("文件类型错误")
+    }
+}
 
 /**
  * 变量名为id的情况
