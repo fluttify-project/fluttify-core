@@ -42,11 +42,11 @@ dependencies {
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     implementation 'org.jboss.windup.decompiler:decompiler-fernflower:5.2.1.Final'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.20'
-    implementation 'org.antlr:antlr4-runtime:4.9.3'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21'
+    implementation 'org.antlr:antlr4-runtime:4.10.1'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.6.20'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.6.21'
     // zip https://github.com/zeroturnaround/zt-zip
     implementation 'org.zeroturnaround:zt-zip:1.15'
     // https://github.com/ReactiveX/RxJava
