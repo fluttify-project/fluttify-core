@@ -3,8 +3,6 @@ package me.yohom.fluttify.extensions
 import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.model.*
-import org.json.JSONArray
-import org.json.JSONObject
 import org.json.XML
 import java.io.File
 
@@ -759,32 +757,9 @@ fun File.parseSDK(): SDK {
                 }
 
                 val root = XML.toJSONObject(item.readText())
-                sourceFile.types = root.typeList()
+                sourceFile.types = root.types()
+                sourceFile.topLevelConstants = root.topLevelConstants()
 
-//                val example = XmlMapper()
-//                    .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-//                    .readValue(item.readText(), DoxygenType::class.java)
-
-//                val serializer = Persister()
-//                val compound = serializer.read(DoxygenType::class.java, item)
-//                    .compounddef.first()
-
-//                val compoundList = root.compoundList()
-//
-//                val typeName = type.getString("compoundname")
-//                val baseTypeList = if (type.get("basecompoundref") is JSONArray) {
-//                    type.getJSONArray("basecompoundref")
-//                        .toString()
-//                        .fromJson()
-//                } else if (type.get("basecompoundref") is JSONObject) {
-//                    val baseType = type.getJSONObject("basecompoundref")
-//                        .toString()
-//                        .fromJson<CompoundRefType>()
-//                    listOf(baseType)
-//                } else {
-//                    listOf()
-//                }
-//
 ////                val sectionList = type.getJSONArray("sectiondef")
 //
 ////                val compound = json.fromJson<CompounddefType?>() ?: continue
@@ -819,7 +794,7 @@ fun File.parseSDK(): SDK {
                 successCount++
             } catch (e: Exception) {
                 errorCount++
-                println("解析过程出现错误: $e")
+                println("解析过程出现错误: $e, ${e.stackTraceToString()}")
                 continue
             }
         }
@@ -849,4 +824,8 @@ fun String.replaceGlobal(platform: Platform? = null): String {
                 platform.toString().capitalize()
             ) else this
         }
+}
+
+fun String.isOneOf(vararg candidates: String): Boolean {
+    return candidates.contains(this)
 }
