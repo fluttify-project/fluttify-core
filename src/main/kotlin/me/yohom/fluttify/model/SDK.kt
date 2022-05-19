@@ -173,7 +173,7 @@ class Lib {
     var isDependency: Boolean = false
 
     override fun toString(): String {
-        return "Lib(name='$name', types=$types, topLevelConstants=$topLevelConstants, isDependency=$isDependency)"
+        return "Lib(name='$name', sourceFiles=$sourceFiles, types=$types, topLevelConstants=$topLevelConstants, isDependency=$isDependency)"
     }
 }
 

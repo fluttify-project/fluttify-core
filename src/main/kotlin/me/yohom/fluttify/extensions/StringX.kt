@@ -3,9 +3,9 @@ package me.yohom.fluttify.extensions
 import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.model.*
-import org.apache.commons.io.FileUtils
-import org.simpleframework.xml.core.Persister
-import org.simpleframework.xml.strategy.Strategy
+import org.json.JSONArray
+import org.json.JSONObject
+import org.json.XML
 import java.io.File
 
 inline fun <reified T> String.fromJson(): T {
@@ -728,6 +728,10 @@ fun String.parseSDK(): SDK {
     return result.removeObjcSpecifier().fromJson()
 }
 
+class RootObject {
+    var doxygen: DoxygenType? = null
+}
+
 /**
  * 从文件(夹)解析SDK
  */
@@ -736,50 +740,82 @@ fun File.parseSDK(): SDK {
         return readText().parseSDK()
     } else if (isDirectory) {
         val sdk = SDK()
+        val lib = Lib().also {
+            sdk.libs.add(it)
+
+            it.name = nameWithoutExtension
+        }
         var successCount = 0
         var errorCount = 0
         for (item in listFiles()!!) {
+            if (item.extension != "xml") continue
+            if (listOf("class", "interface", "protocol").none { item.name.startsWith(it) }) continue
+
             try {
-                val sourceFile = SourceFile()
-                val types = mutableListOf<Type>()
-                sourceFile.types = types
+                val sourceFile = SourceFile().also {
+                    lib.sourceFiles.add(it)
 
-                val json = org.json.XML.toJSONObject(item.readText())
-                    .getJSONObject("doxygen")
-                    .getJSONObject("compounddef")
-                    .toString(2)
-
-//                println("json: $json")
-
-                val compound = json.fromJson<CompounddefType?>() ?: continue
-
-                val result = Type()
-                if (item.name.startsWith("class")) {
-                    result.typeType = TypeType.Class
-                    result.name = compound.compoundname
-                    result.isPublic = compound.prot == DoxProtectionKind.PUBLIC
-                    result.isInnerType = compound.compoundname.contains("\$")
-                    // 第一个是父类, 后续是接口
-                    if (compound.basecompoundref.size > 0) {
-                        result.superClass = compound.basecompoundref.first().value
-                        result.interfaces = compound.basecompoundref
-                            .apply { removeFirst() }
-                            .map { it.value }
-                            .toMutableList()
-                    }
-                    result.constructors = compound.sectiondef
-                        .find { it.kind == DoxSectionKind.PUBLIC_FUNC }
-                        ?.memberdef
-                        ?.filter { it.qualifiedname == compound.compoundname }
-                        ?.map(Constructor::fromMemberDefType)
-                        ?.toMutableList() ?: mutableListOf()
-                } else if (item.name.startsWith("enum")) {
-                    continue
-                } else if (item.name.startsWith("interface")) {
-                    continue
-                } else {
-                    continue
+                    it.fileName = item.nameWithoutExtension
                 }
+
+                val root = XML.toJSONObject(item.readText())
+                sourceFile.types = root.typeList()
+
+//                val example = XmlMapper()
+//                    .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+//                    .readValue(item.readText(), DoxygenType::class.java)
+
+//                val serializer = Persister()
+//                val compound = serializer.read(DoxygenType::class.java, item)
+//                    .compounddef.first()
+
+//                val compoundList = root.compoundList()
+//
+//                val typeName = type.getString("compoundname")
+//                val baseTypeList = if (type.get("basecompoundref") is JSONArray) {
+//                    type.getJSONArray("basecompoundref")
+//                        .toString()
+//                        .fromJson()
+//                } else if (type.get("basecompoundref") is JSONObject) {
+//                    val baseType = type.getJSONObject("basecompoundref")
+//                        .toString()
+//                        .fromJson<CompoundRefType>()
+//                    listOf(baseType)
+//                } else {
+//                    listOf()
+//                }
+//
+////                val sectionList = type.getJSONArray("sectiondef")
+//
+////                val compound = json.fromJson<CompounddefType?>() ?: continue
+//
+//                val result = Type()
+////                if (item.name.startsWith("class")) {
+////                    result.typeType = TypeType.Class
+////                    result.name = compound.compoundname
+////                    result.isPublic = compound.prot == DoxProtectionKind.PUBLIC
+////                    result.isInnerType = compound.compoundname.contains("\$")
+////                    // 第一个是父类, 后续是接口
+////                    if (compound.basecompoundref.size > 0) {
+////                        result.superClass = compound.basecompoundref.first().value
+////                        result.interfaces = compound.basecompoundref
+////                            .apply { removeFirst() }
+////                            .map { it.value }
+////                            .toMutableList()
+////                    }
+////                    result.constructors = compound.sectiondef
+////                        .find { it.kind == DoxSectionKind.PUBLIC_FUNC }
+////                        ?.memberdef
+////                        ?.filter { it.qualifiedname == compound.compoundname }
+////                        ?.map(Constructor::fromMemberDefType)
+////                        ?.toMutableList() ?: mutableListOf()
+////                } else if (item.name.startsWith("enum")) {
+////                    continue
+////                } else if (item.name.startsWith("interface")) {
+////                    continue
+////                } else {
+////                    continue
+////                }
                 successCount++
             } catch (e: Exception) {
                 errorCount++
