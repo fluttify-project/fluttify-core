@@ -53,8 +53,13 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
     // xml解析
     implementation 'org.simpleframework:simple-xml:2.7.1'
-    // xml解析
+    //jaxb
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+
+    // json解析
     implementation 'org.json:json:20220320'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
 }
 
 //pluginBundle {
