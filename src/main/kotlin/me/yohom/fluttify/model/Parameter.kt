@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.METHOD_LOG
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.extensions.must
@@ -33,6 +34,10 @@ data class Parameter(
             if (METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑参数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
         }
+
+    override fun toString(): String {
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
+    }
 
     companion object {
         fun simpleParameter(typeName: String, name: String): Parameter {

@@ -1,7 +1,9 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
+import org.gradle.internal.impldep.com.fasterxml.jackson.databind.ObjectMapper
 
 open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     override var platform: Platform = Platform.Unknown
@@ -451,7 +453,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     }
 
     override fun toString(): String {
-        return "Type(name='$name', genericTypes=$declaredGenericTypes, typeType=$typeType, isPublic=$isPublic, isInnerClass=$isInnerType, superClass='$superClass', constructors=$constructors, fields=$fields, methods=$methods, constants=$enumerators, returnType='$returnType', formalParams=$formalParams)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 
     companion object {

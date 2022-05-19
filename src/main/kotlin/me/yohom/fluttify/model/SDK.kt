@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.EXCLUDE_CONSTANTS
 import me.yohom.fluttify.EXCLUDE_LIBS
 import me.yohom.fluttify.SYSTEM_TYPE
@@ -77,7 +78,7 @@ class SDK : IPlatform {
     }
 
     override fun toString(): String {
-        return "SDK(version='$version', platform=$platform, libs=$libs)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 
     companion object {
@@ -173,7 +174,7 @@ class Lib {
     var isDependency: Boolean = false
 
     override fun toString(): String {
-        return "Lib(name='$name', sourceFiles=$sourceFiles, types=$types, topLevelConstants=$topLevelConstants, isDependency=$isDependency)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }
 

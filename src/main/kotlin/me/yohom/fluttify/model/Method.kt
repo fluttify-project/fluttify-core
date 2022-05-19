@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
 
@@ -192,6 +193,6 @@ data class Method(
     }
 
     override fun toString(): String {
-        return "Method(returnType='$returnType', name='$name', formalParams=$formalParams, isStatic=$isStatic, isAbstract=$isAbstract, isPublic=$isPublic, className='$className', platform=$platform, isDeprecated=$isDeprecated)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }
