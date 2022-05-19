@@ -12,7 +12,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 data class Variable(
     private var typeName: TYPE_NAME,
     val name: String,
-    override var platform: Platform,
+    override var platform: Platform, // TODO platform参数是否能用静态属性代替?
     override var id: Int = NEXT_ID
 ) : IPlatform, IElement {
 
