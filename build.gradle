@@ -58,4 +58,6 @@ dependencies {
     // (Deprecated) jaxb 目前生成出来的类其实没在使用了, 所以这两行可以去掉, 但是要把生成的类也一并去掉, 否则就报错了
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+    // 生成代码的注解(生成的代码已不再使用, 所以如果删除了生成代码, 这个也可以删掉)
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
 }

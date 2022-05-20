@@ -51,7 +51,7 @@ data class Method(
     /**
      * 文档注释
      */
-    var doc: String = "",
+    var doc: Doc = Doc(),
     override var id: Int = NEXT_ID
 ) : IPlatform, IScope, IElement {
 

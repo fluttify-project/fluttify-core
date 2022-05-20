@@ -798,7 +798,7 @@ fun File.parseSDK(): SDK {
                 successCount++
             } catch (e: Exception) {
                 errorCount++
-                println("解析过程出现错误: $e, ${e.stackTraceToString()}")
+                println("解析过程出现错误: $item, $e, ${e.stackTraceToString()}")
                 continue
             }
         }

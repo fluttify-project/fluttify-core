@@ -21,8 +21,8 @@ fun Node.topLevelConstants(): List<Variable> {
 fun CompoundDef.types(): List<Type> {
     val resultList = mutableListOf<Type>()
 
-    for (i in 0 until childNodes.length) {
-        resultList.add(childNodes.item(i).elementBy(compounddef).type())
+    for (item in elementListBy(compounddef)) {
+        resultList.add(item.type())
     }
 
     return resultList
@@ -91,14 +91,14 @@ fun CompoundDef.fields(): List<Field> {
         ?.elementListBy("memberdef")
         ?.filter { it.attrBy("kind").isOneOf("variable", "property") }
 
-    variables?.run {
-        for (doc in variables) {
-            val type = doc.elementContentBy("type").pack()
+    variables?.let {
+        for (item in it) {
+            val type = item.elementContentBy("type").pack()
             val isFinal = type.contains("final")
-            val isStatic = doc.attrBy("static") == "yes"
+            val isStatic = item.attrBy("static") == "yes"
             val varItem = Variable(
                 typeName = type,
-                name = doc.elementContentBy("name"),
+                name = item.elementContentBy("name"),
                 platform = platform(language()),
             )
             val field = Field(
@@ -124,17 +124,14 @@ fun CompoundDef.methods(): List<Method> {
         ?.elementListBy("memberdef")
         ?.filter { it.attrBy("kind") == "function" }
 
-    methods?.run {
-        for (doc in methods) { // memberdef
-            val type = doc.elementContentBy("type").pack()
-            val name = doc.elementContentBy("name")
-            val isStatic = doc.attrBy("static") == "yes"
-            val isAbstract = doc.attrBy("abstract") == "yes"
-            val varItem = Variable(
-                typeName = type,
-                name = doc.elementContentBy("name"),
-                platform = platform(language()),
-            )
+    methods?.let {
+        for (item in it) { // memberdef
+            if (item.elementContentBy("name") == "__deprecated_msg") continue
+
+            val type = item.elementContentBy("type").pack()
+            val name = item.elementContentBy("name")
+            val isStatic = item.attrBy("static") == "yes"
+            val isAbstract = item.attrBy("abstract") == "yes"
             val method = Method(
                 returnType = type,
                 name = name,
@@ -142,9 +139,9 @@ fun CompoundDef.methods(): List<Method> {
                 isAbstract = isAbstract,
                 className = elementContentBy(compoundname),
                 platform = platform(language()),
-                formalParams = doc.parameters(),
+                formalParams = item.parameters(),
                 isPublic = true,
-//                doc = // TODO 增加文档
+                doc = item.doc(), // 简单实现, 能细化的地方挺多
             )
             resultList.add(method)
         }
@@ -153,20 +150,52 @@ fun CompoundDef.methods(): List<Method> {
     return resultList
 }
 
+/**
+ * 获取参数
+ */
 private fun MemberDef.parameters(): List<Parameter> {
     val result = mutableListOf<Parameter>()
 
+    for (node in elementListBy("param")) {
+        val platform = platform("")
+        val item = Parameter(
+            variable = Variable(
+                typeName = node.elementContentBy("type").pack(),
+                name = node.elementContentBy("declname"),
+                platform = platform,
+            ),
+            named = "", // TODO
+            platform = platform,
+        )
 
+        result.add(item)
+    }
 
     return result
+}
+
+/**
+ * 获取文档
+ */
+private fun MemberDef.doc(): Doc {
+    val brief = elementContentBy("briefdescription")
+    val detail = elementContentBy("briefdescription")
+    return Doc(brief, detail)
 }
 
 /**
  * 根据名称获取第一个元素
  */
 private fun Node.elementBy(name: String): Node {
-    val nodeList = ownerDocument.getElementsByTagName(name)
-    return nodeList.item(0)
+    if (childNodes.length > 0) {
+        for (i in 0 until childNodes.length) {
+            val item = childNodes.item(i)
+            if (item.nodeName == name) return item
+        }
+        throw IllegalAccessException("未找到名为${name}的元素")
+    } else {
+        throw IllegalAccessException("当前子元素数量为0")
+    }
 }
 
 /**
@@ -177,11 +206,15 @@ private fun Node.elementContentBy(name: String): String {
 }
 
 /**
- * 根据名称获取第一个元素
+ * 根据名称获取元素列表
  */
 private fun Node.elementListBy(name: String): List<Node> {
-    val nodeList = ownerDocument.getElementsByTagName(name)
-    return nodeList.toList()
+    val result = mutableListOf<Node>()
+    for (i in 0 until childNodes.length) {
+        val item = childNodes.item(i)
+        if (item.nodeName == name) result.add(item)
+    }
+    return result
 }
 
 private fun NodeList.toList(): List<Node> {
