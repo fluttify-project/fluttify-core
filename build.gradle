@@ -55,7 +55,7 @@ dependencies {
     implementation 'org.zeroturnaround:zt-zip:1.15'
     // https://github.com/ReactiveX/RxJava
     implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
-    //jaxb
+    //jaxb 目前生成出来的类其实没在使用了, 所以这两行可以去掉, 但是要把生成的类也一并去掉, 否则就报错了
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
 

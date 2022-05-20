@@ -3,8 +3,8 @@ package me.yohom.fluttify.extensions
 import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.model.*
-import org.json.XML
 import java.io.File
+import javax.xml.parsers.DocumentBuilderFactory
 
 inline fun <reified T> String.fromJson(): T {
     return Gson().fromJson(this, T::class.java)
@@ -756,9 +756,13 @@ fun File.parseSDK(): SDK {
                     it.fileName = item.nameWithoutExtension
                 }
 
-                val root = XML.toJSONObject(item.readText())
-                sourceFile.types = root.types()
-                sourceFile.topLevelConstants = root.topLevelConstants()
+                val doc = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder()
+                    .parse(item)
+                val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
+                sourceFile.types = doxygenRoot.types()
+                sourceFile.topLevelConstants = doxygenRoot.topLevelConstants()
+
 
 ////                val sectionList = type.getJSONArray("sectiondef")
 //

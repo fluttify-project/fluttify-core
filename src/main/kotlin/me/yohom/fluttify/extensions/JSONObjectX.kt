@@ -1,8 +1,10 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.model.*
-import org.json.JSONArray
 import org.json.JSONObject
+import org.w3c.dom.NamedNodeMap
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 
 private const val doxygen = "doxygen"
 private const val compounddef = "compounddef"
@@ -10,24 +12,19 @@ private const val compoundname = "compoundname"
 private const val objc = "Objective-C"
 private const val java = "Java"
 
-fun JSONObject.topLevelConstants(): List<Variable> {
+typealias MemberDef = Node
+typealias CompoundDef = Node
+
+fun Node.topLevelConstants(): List<Variable> {
     // TODO
     return listOf()
 }
 
-fun JSONObject.types(): List<Type> {
-    val compound = getJSONObject(doxygen).opt(compounddef)
+fun CompoundDef.types(): List<Type> {
     val resultList = mutableListOf<Type>()
 
-    // 单个类型
-    if (compound is JSONObject) {
-        resultList.add(compound.type())
-    }
-    // 一组类型
-    else if (compound is JSONArray) {
-        for (item in compound) {
-            if (item is JSONObject) resultList.add(item.type())
-        }
+    for (i in 0 until childNodes.length) {
+        resultList.add(childNodes.item(i).elementBy(compounddef).type())
     }
 
     return resultList
@@ -36,16 +33,16 @@ fun JSONObject.types(): List<Type> {
 /**
  * 从compounddef解析类型数据
  */
-fun JSONObject.type(): Type {
+fun CompoundDef.type(): Type {
     val result = Type()
-    result.name = optString(compoundname)
+
+    result.name = elementBy(compoundname).textContent
 //    result.aliasOf = getString(compoundname) // TODO
 //    result.declaredGenericTypes = getString(compoundname) // TODO
 //    result.definedGenericTypes = getString(compoundname) // TODO
 
-    val language = optString("language")
-    val kind = optString("kind")
-    result.typeType = when (language) {
+    val kind = attrBy("kind")
+    result.typeType = when (language()) {
         java -> when (kind) {
             "class" -> TypeType.Class
             "interface" -> TypeType.Interface
@@ -61,67 +58,58 @@ fun JSONObject.type(): Type {
         else -> TypeType.Class
     }
 
-    result.platform = platform(language)
-    result.isPublic = optString("prot") == "public"
-    result.isAbstract = optString("abstract") == "yes"
+    result.platform = platform(language())
+    result.isPublic = attrBy("prot") == "public"
+    result.isAbstract = attrBy("abstract") == "yes"
 //    result.isInnerType = optString("abstract") == "yes" // TODO
 //    result.isStaticType = optString("abstract") == "yes" // TODO
 
     // 基类 包含父类和接口
-    val baseTypes = forceJSONArray("basecompoundref")
+    val baseTypes = elementListBy("basecompoundref")
     result.superClass = baseTypes
         .firstOrNull()
-        ?.stringContent()
-        ?: languageObjectType(language)
+        ?.textContent
+        ?: languageObjectType(language())
     if (baseTypes.size > 1) {
         result.interfaces = baseTypes
             .drop(1)
-            .map { it.stringContent() }
+            .map { it.textContent }
             .toMutableList()
     }
 
     // 属性
     result.fields.addAll(fields())
+    // 方法
+    result.methods.addAll(methods())
 
     return result
 }
 
-/**
- * 从compounddef解析变量数据
- */
-fun JSONObject.fields(): List<Field> {
-    val language = optString("language")
+fun CompoundDef.fields(): List<Field> {
     val resultList = mutableListOf<Field>()
 
-    val variables = forceJSONArray("sectiondef")
-        .find { it.optString("kind").isOneOf("public-attrib", "property") }
-        ?.forceJSONArray("memberdef")
-        ?.filter { it.optString("kind").isOneOf("variable", "property") }
+    val variables = elementListBy("sectiondef")
+        .find { it.attrBy("kind").isOneOf("public-attrib", "property") }
+        ?.elementListBy("memberdef")
+        ?.filter { it.attrBy("kind").isOneOf("variable", "property") }
 
     variables?.run {
-        for (variable in variables) {
-            val type = variable.get("type").run {
-                when (this) {
-                    is String -> this
-                    // FIXME objc的id<>被忽略调了, 应该加上
-                    is JSONObject -> getJSONObject("ref").stringContent()
-                    else -> ""
-                }
-            }
+        for (doc in variables) {
+            val type = doc.elementContentBy("type").pack()
             val isFinal = type.contains("final")
-            val isStatic = variable.optString("static") == "yes"
+            val isStatic = doc.attrBy("static") == "yes"
             val varItem = Variable(
                 typeName = type,
-                name = variable.getString("name"),
-                platform = platform(language),
+                name = doc.elementContentBy("name"),
+                platform = platform(language()),
             )
             val field = Field(
                 isPublic = true,
                 isFinal = isFinal,
                 isStatic = isStatic,
                 variable = varItem,
-                className = optString(compoundname),
-                platform = platform(language),
+                className = elementContentBy(compoundname),
+                platform = platform(language()),
             )
             resultList.add(field)
         }
@@ -130,28 +118,108 @@ fun JSONObject.fields(): List<Field> {
     return resultList
 }
 
-/**
- * 强制以列表方式获取
- */
-private fun JSONObject.forceJSONArray(key: String): List<JSONObject> {
-    val resultList = mutableListOf<JSONObject>()
-    val json = opt(key)
+fun CompoundDef.methods(): List<Method> {
+    val resultList = mutableListOf<Method>()
 
-    if (json is JSONObject) {
-        resultList.add(json)
-    } else if (json is JSONArray) {
-        for (item in json) {
-            if (item is JSONObject) resultList.add(item)
+    val methods = elementListBy("sectiondef")
+        .find { it.attrBy("kind") == "public-func" }
+        ?.elementListBy("memberdef")
+        ?.filter { it.attrBy("kind") == "function" }
+
+    methods?.run {
+        for (doc in methods) { // memberdef
+            val type = doc.elementContentBy("type").pack()
+            val name = doc.elementContentBy("name")
+            val isStatic = doc.attrBy("static") == "yes"
+            val isAbstract = doc.attrBy("abstract") == "yes"
+            val varItem = Variable(
+                typeName = type,
+                name = doc.elementContentBy("name"),
+                platform = platform(language()),
+            )
+            val method = Method(
+                returnType = type,
+                name = name,
+                isStatic = isStatic,
+                isAbstract = isAbstract,
+                className = elementContentBy(compoundname),
+                platform = platform(language()),
+                formalParams = doc.parameters(),
+                isPublic = true,
+//                doc = // TODO 增加文档
+            )
+            resultList.add(method)
         }
     }
 
     return resultList
 }
 
+private fun MemberDef.parameters(): List<Parameter> {
+    val result = mutableListOf<Parameter>()
+
+
+
+    return result
+}
+
+/**
+ * 获取xml对应的内容, 如果有多级, 则拍扁并合并
+ */
+private fun JSONObject.stringContent(): String {
+    return optString("content") ?: ""
+}
+
+/**
+ * 根据名称获取第一个元素
+ */
+private fun Node.elementBy(name: String): Node {
+    val nodeList = ownerDocument.getElementsByTagName(name)
+    return nodeList.item(0)
+}
+
+/**
+ * 根据名称获取第一个元素
+ */
+private fun Node.elementContentBy(name: String): String {
+    return elementBy(name).textContent
+}
+
+/**
+ * 根据名称获取第一个元素
+ */
+private fun Node.elementListBy(name: String): List<Node> {
+    val nodeList = ownerDocument.getElementsByTagName(name)
+    return nodeList.toList()
+}
+
+private fun NodeList.toList(): List<Node> {
+    val result = mutableListOf<Node>()
+    for (i in 0 until length) {
+        result.add(item(i))
+    }
+    return result
+}
+
+/**
+ * 根据名称获取第一个属性
+ */
+private fun Node.attrBy(name: String): String {
+    return attributes.getNamedItem(name)?.nodeValue ?: ""
+}
+
+/**
+ * 根据元素名称获取第一个
+ */
+private fun Node.firstElementOrNull(name: String): Node? {
+    val nodeList = ownerDocument.getElementsByTagName(name)
+    return if (nodeList.length == 0) null else nodeList.item(0)
+}
+
 /**
  * 获取xml对应的内容
  */
-private fun JSONObject.stringContent() = optString("content")
+private fun CompoundDef.language() = attrBy("language")
 
 /**
  * 根据语言获取对应的Object类型
