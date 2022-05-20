@@ -13,7 +13,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'java-gradle-plugin'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
 }
 
 def GROUP_ID = 'me.yohom'
@@ -55,11 +55,7 @@ dependencies {
     implementation 'org.zeroturnaround:zt-zip:1.15'
     // https://github.com/ReactiveX/RxJava
     implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
-    //jaxb 目前生成出来的类其实没在使用了, 所以这两行可以去掉, 但是要把生成的类也一并去掉, 否则就报错了
+    // (Deprecated) jaxb 目前生成出来的类其实没在使用了, 所以这两行可以去掉, 但是要把生成的类也一并去掉, 否则就报错了
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
-
-    // json解析
-    implementation 'org.json:json:20220320'
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
 }

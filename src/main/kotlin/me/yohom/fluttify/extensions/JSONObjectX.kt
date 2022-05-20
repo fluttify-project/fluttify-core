@@ -1,8 +1,6 @@
 package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.model.*
-import org.json.JSONObject
-import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 
@@ -164,13 +162,6 @@ private fun MemberDef.parameters(): List<Parameter> {
 }
 
 /**
- * 获取xml对应的内容, 如果有多级, 则拍扁并合并
- */
-private fun JSONObject.stringContent(): String {
-    return optString("content") ?: ""
-}
-
-/**
  * 根据名称获取第一个元素
  */
 private fun Node.elementBy(name: String): Node {
@@ -206,14 +197,6 @@ private fun NodeList.toList(): List<Node> {
  */
 private fun Node.attrBy(name: String): String {
     return attributes.getNamedItem(name)?.nodeValue ?: ""
-}
-
-/**
- * 根据元素名称获取第一个
- */
-private fun Node.firstElementOrNull(name: String): Node? {
-    val nodeList = ownerDocument.getElementsByTagName(name)
-    return if (nodeList.length == 0) null else nodeList.item(0)
 }
 
 /**
