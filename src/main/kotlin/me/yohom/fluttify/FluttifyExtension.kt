@@ -97,6 +97,15 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     val methodChannelName: String
         get() = "$org/$projectName"
 
+    // 暂时没有用处, 需要找方法判断出有没有哪个平台没有配置
+    val availablePlatform: List<String>
+        get() {
+            val result = mutableListOf<String>()
+            if (ios != null) result.add("ios")
+            if (android != null) result.add("android")
+            return result
+        }
+
     override fun toString(): String {
         return "Extension(projectName='$projectName', org='$org', desc='$desc', author='$author', email='$email', homepage='$homepage', foundationVersion='$foundationVersion', pluginDependencies='$pluginDependencies', android=$android, ios=$ios)"
     }
