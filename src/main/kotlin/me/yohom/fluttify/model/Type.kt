@@ -3,7 +3,6 @@ package me.yohom.fluttify.model
 import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
-import org.gradle.internal.impldep.com.fasterxml.jackson.databind.ObjectMapper
 
 open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     override var platform: Platform = Platform.Unknown
@@ -96,7 +95,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     /**
      * 是否过时
      */
-    var deprecated: Boolean = false
+    var isDeprecated: Boolean = false
 
     /**
      * 祖宗类型
