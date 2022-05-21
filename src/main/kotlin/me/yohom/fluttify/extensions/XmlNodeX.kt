@@ -28,10 +28,27 @@ fun Node.topLevelConstants(): List<Variable> {
     return listOf()
 }
 
+// 此次解析上下文
+var language: String = ""
+var objectType: String = ""
+var platform: Platform = Platform.Unknown
+
 /**
  * 从compounddef解析类型数据
  */
 private fun CompoundDef.type(): Type {
+    language = this("language")
+    objectType = when (language) {
+        java -> "java.lang.Object"
+        objc -> "NSObject"
+        else -> ""
+    }
+    platform = when (language) {
+        java -> Platform.Android
+        objc -> Platform.iOS
+        else -> Platform.Unknown
+    }
+
     val result = Type()
 
     result.name = typeName()
@@ -40,7 +57,7 @@ private fun CompoundDef.type(): Type {
 //    result.definedGenericTypes = getString(compoundname) // TODO
 
     val kind = this("kind")
-    result.typeType = when (language()) {
+    result.typeType = when (language) {
         java -> when (kind) {
             "class" -> TypeType.Class
             "interface" -> TypeType.Interface
@@ -56,7 +73,7 @@ private fun CompoundDef.type(): Type {
         else -> TypeType.Class
     }
 
-    result.platform = platform(language())
+    result.platform = platform
     result.isPublic = this("prot") == "public"
     result.isAbstract = this("abstract") == "yes"
 //    result.isInnerType = optString("abstract") == "yes" // TODO
@@ -67,7 +84,7 @@ private fun CompoundDef.type(): Type {
     result.superClass = baseTypes
         .firstOrNull()
         ?.textContent
-        ?: languageObjectType(language())
+        ?: objectType
     if (baseTypes.size > 1) {
         result.interfaces = baseTypes
             .drop(1)
@@ -106,7 +123,7 @@ private fun CompoundDef.fields(): List<Field> {
             val varItem = Variable(
                 typeName = type,
                 name = item.contentOf("name"),
-                platform = platform(language()),
+                platform = platform,
             )
             val field = Field(
                 isPublic = true,
@@ -114,7 +131,7 @@ private fun CompoundDef.fields(): List<Field> {
                 isStatic = isStatic,
                 variable = varItem,
                 className = contentOf(compoundname),
-                platform = platform(language()),
+                platform = platform,
             )
             resultList.add(field)
         }
@@ -139,7 +156,7 @@ private fun CompoundDef.methods(): List<Method> {
             if (item.contentOf("name") == "__deprecated_msg") continue
 
             val type = item.contentOf("type").pack()
-            val name = item.contentOf("name")
+            val name = item.contentOf("name").replace(":", "") // 去掉objc的':'
             val isStatic = item("static") == "yes"
             val isAbstract = item("abstract") == "yes"
             val method = Method(
@@ -148,7 +165,7 @@ private fun CompoundDef.methods(): List<Method> {
                 isStatic = isStatic,
                 isAbstract = isAbstract,
                 className = contentOf(compoundname),
-                platform = platform(language()),
+                platform = platform,
                 formalParams = item.parameters(),
                 isPublic = true,
                 doc = item.doc(), // 简单实现, 能细化的地方挺多
@@ -184,7 +201,7 @@ private fun CompoundDef.constructors(): List<Constructor> {
             val name = item.contentOf("name")
             val method = Constructor(
                 name = name,
-                platform = platform(language()),
+                platform = platform,
                 formalParams = item.parameters(),
                 isPublic = true,
             )
@@ -210,7 +227,7 @@ private fun MemberDef.parameters(): List<Parameter> {
     val result = mutableListOf<Parameter>()
 
     for (node in listBy("param")) {
-        val platform = platform("")
+        val platform = platform
         val item = Parameter(
             variable = Variable(
                 typeName = node.contentOf("type").pack(),
@@ -280,27 +297,10 @@ private operator fun Node.invoke(name: String): String {
 /**
  * 获取xml对应的内容
  */
-private fun CompoundDef.language() = this("language")
-
-/**
- * 获取xml对应的内容
- */
-private fun CompoundDef.typeName() = this[compoundname]?.textContent?.replace("::", ".") ?: ""
-
-/**
- * 根据语言获取对应的Object类型
- */
-private fun languageObjectType(language: String): String {
-    return if (language == java) "java.lang.Object" else if (language == objc) "NSObject" else ""
-}
-
-/**
- * 根据语言获取对应的Object类型
- */
-private fun platform(language: String): Platform {
-    return when (language) {
-        java -> Platform.Android
-        objc -> Platform.iOS
-        else -> Platform.Unknown
-    }
+private fun CompoundDef.typeName(): String {
+    return this[compoundname]
+        ?.textContent
+        ?.replace("::", ".") // java类名调整
+        ?.replace("-p", "") // objc不明原因多出-p后缀
+        ?: ""
 }
