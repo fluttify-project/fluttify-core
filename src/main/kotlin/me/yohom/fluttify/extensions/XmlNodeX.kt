@@ -59,9 +59,24 @@ fun CompoundDef.enums(): List<Type> {
             type.typeType = TypeType.Enum
             type.platform = platform
 
-            for (entry in item.listBy("enumvalue")) {
+            val valueList = item.listBy("enumvalue")
+            val firstValue = valueList.first()
+                .contentOf("initializer")
+                .replace("=", "")
+                .pack()
+                .toIntOrNull() ?: 0
+            for ((index, entry) in valueList.withIndex()) {
                 val name = entry["name"]!!.textContent
-                val value = entry.contentOf("initializer").replace("=", "").pack()
+                val value = entry.contentOf("initializer").run {
+                    // 如果枚举有值, 就直接拿值
+                    if (isNotBlank()) {
+                        replace("=", "").pack()
+                    }
+                    // 否则取第一个枚举的值+当前索引
+                    else {
+                        "${firstValue + index}"
+                    }
+                }
                 type.enumerators.add(Enumerator(name, value))
             }
 
