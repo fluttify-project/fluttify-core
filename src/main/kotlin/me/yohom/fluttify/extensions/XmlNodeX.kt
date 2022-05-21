@@ -13,25 +13,25 @@ private const val java = "Java"
 typealias MemberDef = Node
 typealias CompoundDef = Node
 
-fun Node.topLevelConstants(): List<Variable> {
-    // TODO
-    return listOf()
-}
-
 fun CompoundDef.types(): List<Type> {
     val resultList = mutableListOf<Type>()
 
-    for (item in elementListBy(compounddef)) {
+    for (item in listBy(compounddef)) {
         resultList.add(item.type())
     }
 
     return resultList
 }
 
+fun Node.topLevelConstants(): List<Variable> {
+    // TODO
+    return listOf()
+}
+
 /**
  * 从compounddef解析类型数据
  */
-fun CompoundDef.type(): Type {
+private fun CompoundDef.type(): Type {
     val result = Type()
 
     result.name = typeName()
@@ -39,7 +39,7 @@ fun CompoundDef.type(): Type {
 //    result.declaredGenericTypes = getString(compoundname) // TODO
 //    result.definedGenericTypes = getString(compoundname) // TODO
 
-    val kind = attrBy("kind")
+    val kind = this("kind")
     result.typeType = when (language()) {
         java -> when (kind) {
             "class" -> TypeType.Class
@@ -57,13 +57,13 @@ fun CompoundDef.type(): Type {
     }
 
     result.platform = platform(language())
-    result.isPublic = attrBy("prot") == "public"
-    result.isAbstract = attrBy("abstract") == "yes"
+    result.isPublic = this("prot") == "public"
+    result.isAbstract = this("abstract") == "yes"
 //    result.isInnerType = optString("abstract") == "yes" // TODO
 //    result.isStaticType = optString("abstract") == "yes" // TODO
 
     // 基类 包含父类和接口
-    val baseTypes = elementListBy("basecompoundref")
+    val baseTypes = listBy("basecompoundref")
     result.superClass = baseTypes
         .firstOrNull()
         ?.textContent
@@ -81,26 +81,31 @@ fun CompoundDef.type(): Type {
     result.methods.addAll(methods())
     // 构造器
     result.constructors.addAll(constructors())
+    // 是否过时
+    result.isDeprecated = isDeprecated()
 
     return result
 }
 
-fun CompoundDef.fields(): List<Field> {
+/**
+ * 属性
+ */
+private fun CompoundDef.fields(): List<Field> {
     val resultList = mutableListOf<Field>()
 
-    val variables = elementListBy("sectiondef")
-        .find { it.attrBy("kind").isOneOf("public-attrib", "property") }
-        ?.elementListBy("memberdef")
-        ?.filter { it.attrBy("kind").isOneOf("variable", "property") }
+    val variables = listBy("sectiondef")
+        .find { it("kind").isOneOf("public-attrib", "property") }
+        ?.listBy("memberdef")
+        ?.filter { it("kind").isOneOf("variable", "property") }
 
     variables?.let {
         for (item in it) {
-            val type = item.elementContentBy("type").pack()
+            val type = item.contentOf("type").pack()
             val isFinal = type.contains("final")
-            val isStatic = item.attrBy("static") == "yes"
+            val isStatic = item("static") == "yes"
             val varItem = Variable(
                 typeName = type,
-                name = item.elementContentBy("name"),
+                name = item.contentOf("name"),
                 platform = platform(language()),
             )
             val field = Field(
@@ -108,7 +113,7 @@ fun CompoundDef.fields(): List<Field> {
                 isFinal = isFinal,
                 isStatic = isStatic,
                 variable = varItem,
-                className = elementContentBy(compoundname),
+                className = contentOf(compoundname),
                 platform = platform(language()),
             )
             resultList.add(field)
@@ -121,28 +126,28 @@ fun CompoundDef.fields(): List<Field> {
 /**
  * 方法列表
  */
-fun CompoundDef.methods(): List<Method> {
+private fun CompoundDef.methods(): List<Method> {
     val resultList = mutableListOf<Method>()
 
-    val methods = elementListBy("sectiondef")
-        .find { it.attrBy("kind").isOneOf("public-func", "public-static-func") }
-        ?.elementListBy("memberdef")
-        ?.filter { it.attrBy("kind") == "function" }
+    val methods = listBy("sectiondef")
+        .find { it("kind").isOneOf("public-func", "public-static-func") }
+        ?.listBy("memberdef")
+        ?.filter { it("kind") == "function" }
 
     methods?.let {
         for (item in it) { // memberdef
-            if (item.elementContentBy("name") == "__deprecated_msg") continue
+            if (item.contentOf("name") == "__deprecated_msg") continue
 
-            val type = item.elementContentBy("type").pack()
-            val name = item.elementContentBy("name")
-            val isStatic = item.attrBy("static") == "yes"
-            val isAbstract = item.attrBy("abstract") == "yes"
+            val type = item.contentOf("type").pack()
+            val name = item.contentOf("name")
+            val isStatic = item("static") == "yes"
+            val isAbstract = item("abstract") == "yes"
             val method = Method(
                 returnType = type,
                 name = name,
                 isStatic = isStatic,
                 isAbstract = isAbstract,
-                className = elementContentBy(compoundname),
+                className = contentOf(compoundname),
                 platform = platform(language()),
                 formalParams = item.parameters(),
                 isPublic = true,
@@ -158,25 +163,25 @@ fun CompoundDef.methods(): List<Method> {
 /**
  * 构造器列表
  */
-fun CompoundDef.constructors(): List<Constructor> {
+private fun CompoundDef.constructors(): List<Constructor> {
     val resultList = mutableListOf<Constructor>()
 
     val typeName = typeName()
     val simpleTypeName = typeName.simpleName()
-    val constructors = elementListBy("sectiondef")
-        .find { it.attrBy("kind") == "public-func" }
-        ?.elementListBy("memberdef")
+    val constructors = listBy("sectiondef")
+        .find { it("kind") == "public-func" }
+        ?.listBy("memberdef")
         // 方法, 且名称和类名一致的是构造器
         ?.filter {
-            it.attrBy("kind") == "function" &&
-                    it.elementContentBy("qualifiedname") == "${typeName}.$simpleTypeName"
+            it("kind") == "function" &&
+                    it.contentOf("qualifiedname") == "${typeName}.$simpleTypeName"
         }
 
     constructors?.let {
         for (item in it) { // memberdef
-            if (item.elementContentBy("name") == "__deprecated_msg") continue
+            if (item.contentOf("name") == "__deprecated_msg") continue
 
-            val name = item.elementContentBy("name")
+            val name = item.contentOf("name")
             val method = Constructor(
                 name = name,
                 platform = platform(language()),
@@ -191,17 +196,25 @@ fun CompoundDef.constructors(): List<Constructor> {
 }
 
 /**
+ * 是否过时
+ */
+private fun MemberDef.isDeprecated(): Boolean {
+    return this["detaileddescription"]?.get("para")?.get("xrefsect")
+        ?.contentOf("xreftitle") == "Deprecated"
+}
+
+/**
  * 获取参数
  */
 private fun MemberDef.parameters(): List<Parameter> {
     val result = mutableListOf<Parameter>()
 
-    for (node in elementListBy("param")) {
+    for (node in listBy("param")) {
         val platform = platform("")
         val item = Parameter(
             variable = Variable(
-                typeName = node.elementContentBy("type").pack(),
-                name = node.elementContentBy("declname"),
+                typeName = node.contentOf("type").pack(),
+                name = node.contentOf("declname"),
                 platform = platform,
             ),
             named = "", // TODO
@@ -218,37 +231,37 @@ private fun MemberDef.parameters(): List<Parameter> {
  * 获取文档
  */
 private fun MemberDef.doc(): Doc {
-    val brief = elementContentBy("briefdescription")
-    val detail = elementContentBy("briefdescription")
+    val brief = contentOf("briefdescription")
+    val detail = contentOf("briefdescription")
     return Doc(brief, detail)
 }
 
 /**
  * 根据名称获取第一个元素
  */
-private fun Node.elementBy(name: String): Node {
+private operator fun Node.get(name: String): Node? {
     if (childNodes.length > 0) {
         for (i in 0 until childNodes.length) {
             val item = childNodes.item(i)
             if (item.nodeName == name) return item
         }
-        throw IllegalAccessException("未找到名为${name}的元素")
+        return null
     } else {
-        throw IllegalAccessException("当前子元素数量为0")
+        return null
     }
 }
 
 /**
- * 根据名称获取第一个元素
+ * 根据名称获取第一个元素内容
  */
-private fun Node.elementContentBy(name: String): String {
-    return elementBy(name).textContent
+private fun Node.contentOf(name: String): String {
+    return this[name]?.textContent ?: ""
 }
 
 /**
  * 根据名称获取元素列表
  */
-private fun Node.elementListBy(name: String): List<Node> {
+private fun Node.listBy(name: String): List<Node> {
     val result = mutableListOf<Node>()
     for (i in 0 until childNodes.length) {
         val item = childNodes.item(i)
@@ -257,30 +270,22 @@ private fun Node.elementListBy(name: String): List<Node> {
     return result
 }
 
-private fun NodeList.toList(): List<Node> {
-    val result = mutableListOf<Node>()
-    for (i in 0 until length) {
-        result.add(item(i))
-    }
-    return result
-}
-
 /**
- * 根据名称获取第一个属性
+ * 根据名称获取属性值
  */
-private fun Node.attrBy(name: String): String {
+private operator fun Node.invoke(name: String): String {
     return attributes.getNamedItem(name)?.nodeValue ?: ""
 }
 
 /**
  * 获取xml对应的内容
  */
-private fun CompoundDef.language() = attrBy("language")
+private fun CompoundDef.language() = this("language")
 
 /**
  * 获取xml对应的内容
  */
-private fun CompoundDef.typeName() = elementBy(compoundname).textContent.replace("::", ".")
+private fun CompoundDef.typeName() = this[compoundname]?.textContent?.replace("::", ".") ?: ""
 
 /**
  * 根据语言获取对应的Object类型
