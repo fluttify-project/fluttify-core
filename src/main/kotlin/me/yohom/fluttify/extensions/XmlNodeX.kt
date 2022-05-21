@@ -2,7 +2,6 @@ package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.model.*
 import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 
 private const val compounddef = "compounddef"
 private const val compoundname = "compoundname"
@@ -13,6 +12,69 @@ private const val java = "Java"
 typealias MemberDef = Node
 typealias CompoundDef = Node
 
+// 此次解析上下文
+var language: String = ""
+var objectType: String = ""
+var platform: Platform = Platform.Unknown
+
+/**
+ * 顶层常量
+ */
+fun Node.topLevelConstants(): List<Variable> {
+    // TODO
+    return listOf()
+}
+
+/**
+ * 枚举类型
+ */
+fun CompoundDef.enums(): List<Type> {
+    val resultList = mutableListOf<Type>()
+
+    val compound = this[compounddef]!!
+
+    // 上下文赋值
+    language = compound("language")
+    objectType = when (language) {
+        java -> "java.lang.Object"
+        objc, cpp -> "NSObject"
+        else -> ""
+    }
+    platform = when (language) {
+        java -> Platform.Android
+        objc, cpp -> Platform.iOS
+        else -> Platform.Unknown
+    }
+
+    val enums = compound
+        .listBy("sectiondef")
+        .find { it("kind") == "enum" }
+        ?.listBy("memberdef")
+        ?.filter { it("kind") == "enum" }
+
+    enums?.let {
+        for (item in it) { // memberdef
+            val type = Type()
+            type.name = item["name"]!!.textContent
+            type.typeType = TypeType.Enum
+            type.platform = platform
+
+            for (entry in item.listBy("enumvalue")) {
+                val name = entry["name"]!!.textContent
+                val value = entry.contentOf("initializer").replace("=", "").pack()
+                type.enumerators.add(Enumerator(name, value))
+            }
+
+            resultList.add(type)
+        }
+    }
+
+    return resultList
+}
+
+/**
+ * 普通类型
+ */
 fun CompoundDef.types(): List<Type> {
     val resultList = mutableListOf<Type>()
 
@@ -23,16 +85,6 @@ fun CompoundDef.types(): List<Type> {
     return resultList
 }
 
-fun Node.topLevelConstants(): List<Variable> {
-    // TODO
-    return listOf()
-}
-
-// 此次解析上下文
-var language: String = ""
-var objectType: String = ""
-var platform: Platform = Platform.Unknown
-
 /**
  * 从compounddef解析类型数据
  */
@@ -41,14 +93,12 @@ private fun CompoundDef.type(): Type {
     language = this("language")
     objectType = when (language) {
         java -> "java.lang.Object"
-        objc -> "NSObject"
-        cpp -> "NSObject" // TODO 这里两个分支合并为什么会有警告?
+        objc, cpp -> "NSObject"
         else -> ""
     }
     platform = when (language) {
         java -> Platform.Android
-        objc -> Platform.iOS
-        cpp -> Platform.iOS
+        objc, cpp -> Platform.iOS
         else -> Platform.Unknown
     }
 

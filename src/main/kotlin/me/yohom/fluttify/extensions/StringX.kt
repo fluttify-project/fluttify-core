@@ -747,9 +747,6 @@ fun File.parseSDK(): SDK {
         var errorCount = 0
         for (item in listFiles()!!) {
             if (item.extension != "xml") continue
-            val legalType = listOf("class", "interface", "protocol", "struct")
-            if (legalType.none { item.name.startsWith(it) }) continue
-
             try {
                 val sourceFile = SourceFile().also {
                     lib.sourceFiles.add(it)
@@ -761,7 +758,7 @@ fun File.parseSDK(): SDK {
                     .newDocumentBuilder()
                     .parse(item)
                 val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
-                sourceFile.types = doxygenRoot.types()
+                sourceFile.types = doxygenRoot.types().union(doxygenRoot.enums()).toList()
                 sourceFile.topLevelConstants = doxygenRoot.topLevelConstants()
 
 

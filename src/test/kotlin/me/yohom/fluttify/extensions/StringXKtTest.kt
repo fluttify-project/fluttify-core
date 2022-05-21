@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import javax.xml.parsers.DocumentBuilderFactory
 
 class StringXKtTest : FluttifyTest() {
     @Test
@@ -15,6 +16,20 @@ class StringXKtTest : FluttifyTest() {
             "/Users/yohom/Github/Me/All/fluttify/fluttify-core-2/xml/".file()
         val sdk = irDir.parseSDK()
         println("解析结果: $sdk")
+    }
+
+    @Test
+    fun parseXml() {
+//        val xmlFile =
+//            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/interface_b_m_k_map_manager.xml".file()
+        val xmlFile =
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/_b_m_k_types_8h.xml".file()
+        val doc = DocumentBuilderFactory.newInstance()
+            .newDocumentBuilder()
+            .parse(xmlFile)
+        val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
+        val result = doxygenRoot.enums()
+        println("解析结果: $result")
     }
 
 //    @Nested
