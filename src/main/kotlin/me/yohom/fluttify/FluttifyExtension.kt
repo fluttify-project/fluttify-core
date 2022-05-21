@@ -147,6 +147,14 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     var overrideElements: Map<String, String> = mapOf()
 
     /**
+     * 依赖仓库
+     *
+     * Android端即`maven { url 'https://download.flutter.io' }`;
+     * iOS端即`source 'https://github.com/artsy/Specs.git'`;
+     */
+    var repositories: List<String> = listOf()
+
+    /**
      * 远程依赖配置
      */
     val remote: Remote = objectFactory?.newInstance(Remote::class.java) ?: Remote()
@@ -256,7 +264,8 @@ open class Remote {
     /**
      * 远程依赖
      *
-     * Android端即`org:name:version`; iOS端即`'name', 'version'`
+     * Android端即`org:name:version`;
+     * iOS端即`'name', 'version'`;
      */
     var dependencies: List<String> = listOf()
 
