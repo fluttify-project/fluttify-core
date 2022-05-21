@@ -4,10 +4,10 @@ import me.yohom.fluttify.model.*
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 
-private const val doxygen = "doxygen"
 private const val compounddef = "compounddef"
 private const val compoundname = "compoundname"
 private const val objc = "Objective-C"
+private const val cpp = "C++"
 private const val java = "Java"
 
 typealias MemberDef = Node
@@ -37,15 +37,18 @@ var platform: Platform = Platform.Unknown
  * 从compounddef解析类型数据
  */
 private fun CompoundDef.type(): Type {
+    // 上下文赋值
     language = this("language")
     objectType = when (language) {
         java -> "java.lang.Object"
         objc -> "NSObject"
+        cpp -> "NSObject" // TODO 这里两个分支合并为什么会有警告?
         else -> ""
     }
     platform = when (language) {
         java -> Platform.Android
         objc -> Platform.iOS
+        cpp -> Platform.iOS
         else -> Platform.Unknown
     }
 
@@ -68,6 +71,7 @@ private fun CompoundDef.type(): Type {
             "interface" -> TypeType.Class
             "protocol" -> TypeType.Interface
             "enum" -> TypeType.Enum
+            "struct" -> TypeType.Struct
             else -> TypeType.Class
         }
         else -> TypeType.Class

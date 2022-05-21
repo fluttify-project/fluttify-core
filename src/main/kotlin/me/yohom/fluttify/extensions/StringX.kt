@@ -747,7 +747,8 @@ fun File.parseSDK(): SDK {
         var errorCount = 0
         for (item in listFiles()!!) {
             if (item.extension != "xml") continue
-            if (listOf("class", "interface", "protocol").none { item.name.startsWith(it) }) continue
+            val legalType = listOf("class", "interface", "protocol", "struct")
+            if (legalType.none { item.name.startsWith(it) }) continue
 
             try {
                 val sourceFile = SourceFile().also {
