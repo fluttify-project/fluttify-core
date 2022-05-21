@@ -34,7 +34,7 @@ fun CompoundDef.types(): List<Type> {
 fun CompoundDef.type(): Type {
     val result = Type()
 
-    result.name = elementBy(compoundname).textContent
+    result.name = typeName()
 //    result.aliasOf = getString(compoundname) // TODO
 //    result.declaredGenericTypes = getString(compoundname) // TODO
 //    result.definedGenericTypes = getString(compoundname) // TODO
@@ -79,6 +79,8 @@ fun CompoundDef.type(): Type {
     result.fields.addAll(fields())
     // 方法
     result.methods.addAll(methods())
+    // 构造器
+    result.constructors.addAll(constructors())
 
     return result
 }
@@ -116,11 +118,14 @@ fun CompoundDef.fields(): List<Field> {
     return resultList
 }
 
+/**
+ * 方法列表
+ */
 fun CompoundDef.methods(): List<Method> {
     val resultList = mutableListOf<Method>()
 
     val methods = elementListBy("sectiondef")
-        .find { it.attrBy("kind") == "public-func" }
+        .find { it.attrBy("kind").isOneOf("public-func", "public-static-func") }
         ?.elementListBy("memberdef")
         ?.filter { it.attrBy("kind") == "function" }
 
@@ -142,6 +147,41 @@ fun CompoundDef.methods(): List<Method> {
                 formalParams = item.parameters(),
                 isPublic = true,
                 doc = item.doc(), // 简单实现, 能细化的地方挺多
+            )
+            resultList.add(method)
+        }
+    }
+
+    return resultList
+}
+
+/**
+ * 构造器列表
+ */
+fun CompoundDef.constructors(): List<Constructor> {
+    val resultList = mutableListOf<Constructor>()
+
+    val typeName = typeName()
+    val simpleTypeName = typeName.simpleName()
+    val constructors = elementListBy("sectiondef")
+        .find { it.attrBy("kind") == "public-func" }
+        ?.elementListBy("memberdef")
+        // 方法, 且名称和类名一致的是构造器
+        ?.filter {
+            it.attrBy("kind") == "function" &&
+                    it.elementContentBy("qualifiedname") == "${typeName}.$simpleTypeName"
+        }
+
+    constructors?.let {
+        for (item in it) { // memberdef
+            if (item.elementContentBy("name") == "__deprecated_msg") continue
+
+            val name = item.elementContentBy("name")
+            val method = Constructor(
+                name = name,
+                platform = platform(language()),
+                formalParams = item.parameters(),
+                isPublic = true,
             )
             resultList.add(method)
         }
@@ -236,6 +276,11 @@ private fun Node.attrBy(name: String): String {
  * 获取xml对应的内容
  */
 private fun CompoundDef.language() = attrBy("language")
+
+/**
+ * 获取xml对应的内容
+ */
+private fun CompoundDef.typeName() = elementBy(compoundname).textContent.replace("::", ".")
 
 /**
  * 根据语言获取对应的Object类型

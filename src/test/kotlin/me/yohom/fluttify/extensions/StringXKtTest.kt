@@ -12,7 +12,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseSDK() {
         val irDir =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_utils_fluttify_doxygen/ir/ios/xml/".file()
+            "/Users/yohom/Github/Me/All/fluttify/fluttify-core-2/xml/".file()
         val sdk = irDir.parseSDK()
         println("解析结果: $sdk")
     }
