@@ -747,6 +747,8 @@ fun File.parseSDK(): SDK {
         var errorCount = 0
         for (item in listFiles()!!) {
             if (item.extension != "xml") continue
+            if (item.name == "Doxyfile.xml") continue
+            if (item.name == "index.xml") continue
             try {
                 val sourceFile = SourceFile().also {
                     lib.sourceFiles.add(it)
