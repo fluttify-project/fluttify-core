@@ -3,6 +3,7 @@ package me.yohom.fluttify.extensions
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.Podspec
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -13,15 +14,25 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseSDK() {
         val irDir =
-            "/Users/yohom/Github/Me/All/fluttify/fluttify-core-2/xml/".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/".file()
         val sdk = irDir.parseSDK()
         println("解析结果: $sdk")
     }
 
     @Test
     fun parseXml() {
-//        val xmlFile =
-//            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/interface_b_m_k_map_manager.xml".file()
+        val xmlFile =
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/interface_b_m_k_map_manager.xml".file()
+        val doc = DocumentBuilderFactory.newInstance()
+            .newDocumentBuilder()
+            .parse(xmlFile)
+        val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
+        val result = doxygenRoot.types()
+        println("解析结果: $result")
+    }
+
+    @Test
+    fun parseEnum() {
         val xmlFile =
             "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/_b_m_k_types_8h.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
@@ -30,6 +41,22 @@ class StringXKtTest : FluttifyTest() {
         val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
         val result = doxygenRoot.enums()
         println("解析结果: $result")
+    }
+
+    @Test
+    fun parseStruct() {
+        val xmlFile =
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/struct_b_m_k_map_point.xml".file()
+        val doc = DocumentBuilderFactory.newInstance()
+            .newDocumentBuilder()
+            .parse(xmlFile)
+        val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
+        val result = doxygenRoot.types()
+
+        for (type in result) {
+            // TODO 需要调试一下
+            println("解析方法结果: ${type.fields.map(::HandlerGetterTmpl)}")
+        }
     }
 
 //    @Nested

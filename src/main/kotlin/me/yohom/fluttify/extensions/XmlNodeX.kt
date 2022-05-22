@@ -124,15 +124,14 @@ private fun CompoundDef.type(): Type {
 //    result.declaredGenericTypes = getString(compoundname) // TODO
 //    result.definedGenericTypes = getString(compoundname) // TODO
 
-    val kind = this("kind")
     result.typeType = when (language) {
-        java -> when (kind) {
+        java -> when (this("kind")) {
             "class" -> TypeType.Class
             "interface" -> TypeType.Interface
             "enum" -> TypeType.Enum
             else -> TypeType.Class
         }
-        objc -> when (kind) {
+        objc, cpp -> when (this("kind")) {
             "interface" -> TypeType.Class
             "protocol" -> TypeType.Interface
             "enum" -> TypeType.Enum

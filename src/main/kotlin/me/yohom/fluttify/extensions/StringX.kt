@@ -737,10 +737,17 @@ fun File.parseSDK(): SDK {
     if (isFile) {
         return readText().parseSDK()
     } else if (isDirectory) {
-        val sdk = SDK()
+        val sdk = SDK().also {
+            it.platform = if (path.contains("ios")) {
+                Platform.iOS
+            } else if (path.contains("android")) {
+                Platform.Android
+            } else {
+                Platform.General
+            }
+        }
         val lib = Lib().also {
             sdk.libs.add(it)
-
             it.name = nameWithoutExtension
         }
         var successCount = 0
@@ -762,39 +769,6 @@ fun File.parseSDK(): SDK {
                 val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
                 sourceFile.types = doxygenRoot.types().union(doxygenRoot.enums()).toList()
                 sourceFile.topLevelConstants = doxygenRoot.topLevelConstants()
-
-
-////                val sectionList = type.getJSONArray("sectiondef")
-//
-////                val compound = json.fromJson<CompounddefType?>() ?: continue
-//
-//                val result = Type()
-////                if (item.name.startsWith("class")) {
-////                    result.typeType = TypeType.Class
-////                    result.name = compound.compoundname
-////                    result.isPublic = compound.prot == DoxProtectionKind.PUBLIC
-////                    result.isInnerType = compound.compoundname.contains("\$")
-////                    // 第一个是父类, 后续是接口
-////                    if (compound.basecompoundref.size > 0) {
-////                        result.superClass = compound.basecompoundref.first().value
-////                        result.interfaces = compound.basecompoundref
-////                            .apply { removeFirst() }
-////                            .map { it.value }
-////                            .toMutableList()
-////                    }
-////                    result.constructors = compound.sectiondef
-////                        .find { it.kind == DoxSectionKind.PUBLIC_FUNC }
-////                        ?.memberdef
-////                        ?.filter { it.qualifiedname == compound.compoundname }
-////                        ?.map(Constructor::fromMemberDefType)
-////                        ?.toMutableList() ?: mutableListOf()
-////                } else if (item.name.startsWith("enum")) {
-////                    continue
-////                } else if (item.name.startsWith("interface")) {
-////                    continue
-////                } else {
-////                    continue
-////                }
                 successCount++
             } catch (e: Exception) {
                 errorCount++
