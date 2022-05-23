@@ -143,7 +143,7 @@ private fun CompoundDef.type(): Type {
 
     result.platform = platform
     result.isPublic = this("prot") == "public"
-    result.isAbstract = this("abstract") == "yes"
+    result.isAbstract = this("abstract") == "yes" || result.typeType == TypeType.Interface
 //    result.isInnerType = optString("abstract") == "yes" // TODO
 //    result.isStaticType = optString("abstract") == "yes" // TODO
 

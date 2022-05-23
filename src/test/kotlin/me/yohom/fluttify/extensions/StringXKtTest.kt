@@ -85,6 +85,19 @@ class StringXKtTest : FluttifyTest() {
         println("解析结果: $result")
     }
 
+    @Test
+    fun parseProtocol() {
+        val xmlFile =
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/protocol_b_m_k_general_delegate-p.xml".file()
+        val doc = DocumentBuilderFactory.newInstance()
+            .newDocumentBuilder()
+            .parse(xmlFile)
+        val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
+        val result = doxygenRoot.types()
+
+        println("解析结果: $result")
+    }
+
 //    @Nested
 //    @DisplayName("Test for genericLevel")
 //    inner class GenericLevelTest : FluttifyTest() {
