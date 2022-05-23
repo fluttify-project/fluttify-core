@@ -185,9 +185,9 @@ private fun CompoundDef.fields(): List<Field> {
         ?.filter { it("kind").isOneOf("variable", "property") }
 
     variables?.let {
-        for (item in it) {
+        for (item in it) { // memberdef
             val type = item.contentOf("type").pack()
-            val isFinal = type.contains("final")
+            val isFinal = type.contains("final") || item("writable") == "no"
             val isStatic = item("static") == "yes"
             val varItem = Variable(
                 typeName = type,
