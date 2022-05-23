@@ -199,7 +199,9 @@ private fun CompoundDef.fields(): List<Field> {
                 isFinal = isFinal,
                 isStatic = isStatic,
                 variable = varItem,
-                className = contentOf(compoundname),
+                className = typeName(),
+                getterName = item.contentOf("read").ifBlank { varItem.name },
+                setterName = item.contentOf("write").ifBlank { varItem.name },
                 platform = platform,
             )
             resultList.add(field)
