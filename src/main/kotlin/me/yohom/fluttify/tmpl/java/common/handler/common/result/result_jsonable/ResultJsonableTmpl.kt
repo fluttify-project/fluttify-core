@@ -11,7 +11,7 @@ fun ResultJsonableTmpl(returnType: String): String {
         else -> returnType
     }
     val result = if (returnType.isStringArray()) {
-        "new ArrayList<${returnType.dearray()}>(java.util.Arrays.asList(__result__))"
+        "new ArrayList<${returnType.deSquareBracket()}>(java.util.Arrays.asList(__result__))"
     } else {
         "__result__"
     }

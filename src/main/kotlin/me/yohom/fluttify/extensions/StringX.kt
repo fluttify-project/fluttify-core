@@ -175,8 +175,15 @@ fun TYPE_NAME.stringArray2List(): TYPE_NAME {
 /**
  * 去掉[]
  */
-fun TYPE_NAME.dearray(): TYPE_NAME {
-    return removeSuffix("[]")
+fun TYPE_NAME.deSquareBracket(): TYPE_NAME {
+    return removePrefix("[").removeSuffix("]")
+}
+
+/**
+ * 去掉:
+ */
+fun TYPE_NAME.deColon(): TYPE_NAME {
+    return replace(":", "")
 }
 
 /**
@@ -265,8 +272,8 @@ fun TYPE_NAME.ifIsGenericTypeConvertToObject(): String {
  * 获取与当前类名关联的所有类型信息
  */
 fun TYPE_NAME.allTypes(): List<Type> {
-    val containerTypes = dearray().containerType().findType()
-    val genericTypes = dearray().genericTypes().map { it.findType() }
+    val containerTypes = deSquareBracket().containerType().findType()
+    val genericTypes = deSquareBracket().genericTypes().map { it.findType() }
     return genericTypes
         .union(listOf(containerTypes))
         .toList()
@@ -403,7 +410,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
-                Regex(".*\\[]").matches(this) -> dearray().enList() // 数组转列表
+                Regex(".*\\[]").matches(this) -> deSquareBracket().enList() // 数组转列表
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 Regex("java\\.lang\\.Void").matches(this) -> "void"
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(
@@ -483,6 +490,13 @@ fun TYPE_NAME.isStructPointer(): Boolean {
  */
 fun String.depointer(): String {
     return removePrefix("*").removeSuffix("*")
+}
+
+/**
+ * 去除OC中协议的`<>`号
+ */
+fun String.deAngleBracket(): String {
+    return removePrefix("<").removeSuffix(">")
 }
 
 /**

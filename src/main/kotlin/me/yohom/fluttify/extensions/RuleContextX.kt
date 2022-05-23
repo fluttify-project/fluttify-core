@@ -56,8 +56,8 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
                 ?.importDeclaration()
                 ?.find {
                     !typeName.jsonable() // 非jsonable类型
-                            && it.qualifiedName().text.length >= typeName.dearray().length // import的长度必须大于简称类名长度
-                            && it.qualifiedName().text.run { substringAfterLast(".") } == typeName.dearray() // 搜索全类名的时候需要去掉数组后缀
+                            && it.qualifiedName().text.length >= typeName.deSquareBracket().length // import的长度必须大于简称类名长度
+                            && it.qualifiedName().text.run { substringAfterLast(".") } == typeName.deSquareBracket() // 搜索全类名的时候需要去掉数组后缀
                 }
                 ?.qualifiedName()
                 ?.run {
@@ -80,9 +80,9 @@ fun RuleContext.typeFullName(typeSimpleName: String): String {
                     ?.map { it.IDENTIFIER().text }
                     ?.find { it == typeName }
                 // 如果不是import进来的说明这个类是当前文件的主类或者相同包下的类, 直接拼接package和类名
-                ?: ancestorOf(JavaParser.CompilationUnitContext::class)
+                ?: (ancestorOf(JavaParser.CompilationUnitContext::class)
                     ?.packageDeclaration()
-                    ?.qualifiedName()?.text + "." + typeName
+                    ?.qualifiedName()?.text + "." + typeName)
         }
     }
 

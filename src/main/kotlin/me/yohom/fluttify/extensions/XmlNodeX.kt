@@ -152,6 +152,7 @@ private fun CompoundDef.type(): Type {
     result.superClass = baseTypes
         .firstOrNull()
         ?.textContent
+        ?.deAngleBracket()
         ?: objectType
     if (baseTypes.size > 1) {
         result.interfaces = baseTypes
@@ -224,7 +225,7 @@ private fun CompoundDef.methods(): List<Method> {
             if (item.contentOf("name") == "__deprecated_msg") continue
 
             val type = item.contentOf("type").pack()
-            val name = item.contentOf("name").replace(":", "") // 去掉objc的':'
+            val name = item.contentOf("name").split(":").first()
             val isStatic = item("static") == "yes"
             val isAbstract = item("abstract") == "yes"
             val method = Method(
@@ -302,7 +303,7 @@ private fun MemberDef.parameters(): List<Parameter> {
                 name = node.contentOf("declname"),
                 platform = platform,
             ),
-            named = "", // TODO
+            named = node.contentOf("attributes").deSquareBracket(),
             platform = platform,
         )
 
