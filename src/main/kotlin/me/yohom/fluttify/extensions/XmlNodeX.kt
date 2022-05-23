@@ -239,14 +239,12 @@ private fun CompoundDef.methods(): List<Method> {
     val resultList = mutableListOf<Method>()
 
     val methods = listBy("sectiondef")
-        .find { it("kind").isOneOf("public-func", "public-static-func") }
-        ?.listBy("memberdef")
-        ?.filter { it("kind") == "function" }
+        .filter { it("kind").isOneOf("public-func", "public-static-func") }
+        .flatMap { it.listBy("memberdef") }
+        .filter { it("kind") == "function" }
 
-    methods?.let {
+    methods.let {
         for (item in it) { // memberdef
-            if (item.contentOf("name") == "__deprecated_msg") continue
-
             val type = item.contentOf("type").pack()
             val name = item.contentOf("name").split(":").first()
             val isStatic = item("static") == "yes"
@@ -256,7 +254,7 @@ private fun CompoundDef.methods(): List<Method> {
                 name = name,
                 isStatic = isStatic,
                 isAbstract = isAbstract,
-                className = contentOf(compoundname),
+                className = typeName(),
                 platform = platform,
                 formalParams = item.parameters(),
                 isPublic = true,
