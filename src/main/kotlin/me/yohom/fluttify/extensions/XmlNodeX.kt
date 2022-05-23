@@ -46,6 +46,27 @@ fun CompoundDef.enums(): List<Type> {
         else -> Platform.Unknown
     }
 
+    // 形如typedef enum { ... }
+    // 参考示例
+    // <memberdef kind="enum" id="_b_m_k_types_8h_1a1c0ca878c2fe5e5594b6cf781f6a88e1" prot="public" static="no" strong="no">
+    //   <type></type>
+    //   <name>BMKMapModule</name>
+    //   <enumvalue id="_b_m_k_types_8h_1a1c0ca878c2fe5e5594b6cf781f6a88e1a3824e71525102346965f54f4b7e78691" prot="public">
+    //     <name>BMKMapModuleTile</name>
+    //     <initializer>= 0</initializer>
+    //     <briefdescription></briefdescription>
+    //     <detaileddescription></detaileddescription>
+    //   </enumvalue>
+    //   <enumvalue id="_b_m_k_types_8h_1a1c0ca878c2fe5e5594b6cf781f6a88e1a92e64c2b6f07e53e0762889b4a6f9c17" prot="public">
+    //     <name>BMKMapModuleBasic</name>
+    //     <briefdescription></briefdescription>
+    //     <detaileddescription></detaileddescription>
+    //   </enumvalue>
+    //   <briefdescription></briefdescription>
+    //   <detaileddescription></detaileddescription>
+    //   <inbodydescription></inbodydescription>
+    //   <location file="sdk/ios/BaiduMapKit/BaiduMapKit/BaiduMapAPI_Base.framework/Headers/BMKTypes.h" line="16" column="1" bodyfile="sdk/ios/BaiduMapKit/BaiduMapKit/BaiduMapAPI_Base.framework/Headers/BMKTypes.h" bodystart="16" bodyend="19" />
+    // </memberdef>
     val enums = compound
         .listBy("sectiondef")
         .find { it("kind") == "enum" }
