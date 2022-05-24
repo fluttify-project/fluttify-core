@@ -240,7 +240,7 @@ open class IOSDartInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
-            .filterNot { it.typeType == TypeType.Extension }
+            .filterNot { it.isExtension}
             .filterNot { it.isAlias() }
             .filterNot { it.isCallback }
             .filterNot { it.isEnum }

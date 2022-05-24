@@ -7,6 +7,7 @@ import me.yohom.fluttify.model.Method
 //#__type_name__# ref;
 //[dataValue getValue:&ref];
 private val tmpl by lazy { getResource("/tmpl/objc/struct_ref.stmt.m.tmpl").readText() }
+
 fun StructRefTmpl(method: Method): String {
     return tmpl.replace("#__type_name__#", method.className)
 }

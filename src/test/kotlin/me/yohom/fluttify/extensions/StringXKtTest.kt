@@ -3,6 +3,7 @@ package me.yohom.fluttify.extensions
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.Podspec
+import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -127,12 +128,14 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseCategory() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_utils_fluttify_doxygen/ir/ios/xml/category_n_s_value_07_b_m_k_geometry_extension_08.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_utils_fluttify/ir/ios/xml/category_n_s_value_07_b_m_k_geometry_extension_08.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
         val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
         val result = doxygenRoot.types()
+
+        result.first().methods.map(::RefRefTmpl)
 
         println("解析结果: $result")
     }

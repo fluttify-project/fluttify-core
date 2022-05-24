@@ -13,6 +13,7 @@ import me.yohom.fluttify.model.Type
 //    methodResult(@(isTargetType));
 //},
 private val tmpl by lazy { getResource("/tmpl/objc/handler_type_check.stmt.m.tmpl").readText() }
+
 fun HandlerTypeCheckTmpl(type: Type): String {
     return tmpl
         .replace("#__type_name__#", type.name.toUnderscore())

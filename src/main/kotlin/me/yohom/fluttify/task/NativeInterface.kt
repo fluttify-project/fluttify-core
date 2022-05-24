@@ -94,6 +94,7 @@ open class AndroidJavaInterface : FluttifyTask() {
         val methodsBatch = filteredTypes
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
+            .filterNot { it.isExtension }
             .flatMap { it.methods }
             .filterMethod(batch = true)
             .map { HandlerMethodBatchTmpl(it) }
@@ -102,6 +103,7 @@ open class AndroidJavaInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
+            .filterNot { it.isExtension }
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface && !it.isEnum && !it.isStruct }
@@ -238,6 +240,7 @@ open class IOSObjcInterface : FluttifyTask() {
         val methodsBatch = filteredTypes
             // callback类型不需要生成原生的handler
             .filterNot { it.isCallback }
+            .filterNot { it.isExtension }
             // 含有泛型的类型不需要生成handler
             .filter { it.declaredGenericTypes.isEmpty() }
             .flatMap { it.methods }
@@ -248,6 +251,7 @@ open class IOSObjcInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
+            .filterNot { it.isExtension }
             .filterNot { it.isAlias() }
             .distinctBy { it.name }
             .filter { !it.isInterface && !it.isEnum && !it.isStruct }
