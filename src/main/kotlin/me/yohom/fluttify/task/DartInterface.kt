@@ -11,6 +11,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_cast.TypeCastTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.DependencyTypeCheckTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeExtensionTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
@@ -61,9 +62,9 @@ open class AndroidDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
+                    TypeType.Extension  -> TypeExtensionTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
-                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> ""
                     TypeType.Alias -> ""
@@ -187,9 +188,9 @@ open class IOSDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
+                    TypeType.Extension  -> TypeExtensionTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
-                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> "" // 函数要单独处理, 全部放到一个文件里去
                     TypeType.Alias -> ""

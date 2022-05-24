@@ -205,7 +205,9 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                         // 必须公开
                         isPublic
                         &&
-                        (interfaces.isEmpty() || interfaces.contains("NSObject") || interfaces.contains("java.io.Serializable"))
+                        (interfaces.isEmpty() || interfaces.contains("NSObject") || interfaces.contains(
+                            "java.io.Serializable"
+                        ))
                         &&
                         constructors.isEmpty()
                         &&
@@ -229,6 +231,9 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val isFunction: Boolean by lazy { typeType == TypeType.Function }
+
+    @delegate:Transient
+    val isExtension: Boolean by lazy { typeType == TypeType.Extension }
 
     @delegate:Transient
     val isKnownFunction: Boolean by lazy {
@@ -271,6 +276,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
         if (CONSTRUCTOR_LOG) println("构造器:${name}执行过滤开始")
         val result = mustNot("抽象类型") { isAbstract }
                 &&
+                mustNot("扩展类型") { typeType == TypeType.Extension }
+                &&
                 // 但凡有循环构造, 即当前构造器的参数类型的构造器参数包含了当前类 形如: class A { A(B b) {} }; class B { B(A a) {} }
                 // 这样的结构会造成死循环
                 mustNot("构造器循环构造") {
@@ -285,7 +292,9 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                 // class A { A(A a) {} }
                 mustNot("构造器含有自身类型的参数") {
                     constructors.isNotEmpty() &&
-                            constructors.all { it.formalParams.map { it.variable.trueType }.contains(this.name) }
+                            constructors.all {
+                                it.formalParams.map { it.variable.trueType }.contains(this.name)
+                            }
                 }
                 &&
                 must("是已知类型或jsonable类型") { isKnownType }
@@ -430,7 +439,9 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val isKnownType: Boolean by lazy {
-        platform != Platform.Unknown || jsonable || Regexes.ITERABLE.matches(name) || Regexes.MAP.matches(name)
+        platform != Platform.Unknown || jsonable || Regexes.ITERABLE.matches(name) || Regexes.MAP.matches(
+            name
+        )
     }
 
     @delegate:Transient
@@ -441,6 +452,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     /**
      * 从Category合并到Class里去
      */
+    @Deprecated("extension要单独领出来")
     fun mergeWithCategory(): Type {
         val categories = SDK.findExtensions(name)
         categories.forEach {

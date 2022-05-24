@@ -226,6 +226,7 @@ private fun CompoundDef.type(): Type {
             "protocol" -> TypeType.Interface
             "enum" -> TypeType.Enum
             "struct" -> TypeType.Struct
+            "category" -> TypeType.Extension
             else -> TypeType.Class
         }
         else -> TypeType.Class
@@ -238,18 +239,8 @@ private fun CompoundDef.type(): Type {
 //    result.isStaticType = optString("abstract") == "yes" // TODO
 
     // 基类 包含父类和接口
-    val baseTypes = listBy("basecompoundref")
-    result.superClass = baseTypes
-        .firstOrNull()
-        ?.textContent
-        ?.deAngleBracket()
-        ?: objectType
-    if (baseTypes.size > 1) {
-        result.interfaces = baseTypes
-            .drop(1)
-            .map { it.textContent }
-            .toMutableList()
-    }
+    result.superClass = superType()
+    result.interfaces.addAll(interfaces())
 
     // 属性
     result.fields.addAll(fields())
@@ -457,11 +448,47 @@ private operator fun Node.invoke(name: String): String {
  * 获取xml对应的内容
  */
 private fun CompoundDef.typeName(): String {
-    return this[compoundname]
-        ?.textContent
-        ?.replace("::", ".") // java类名调整
-        ?.replace("-p", "") // objc不明原因多出-p后缀
-        ?: ""
+    val typeText = this[compoundname]?.textContent ?: ""
+    return typeText
+        .replace("::", ".") // java类名调整
+        .replace("-p", "") // objc不明原因多出-p后缀
+        .run {
+            if (contains("(") && contains(")")) {
+                substring(typeText.indexOf("(") + 1, typeText.lastIndexOf(")"))
+            } else {
+                this
+            }
+        }
+}
+
+private fun CompoundDef.superType(): String {
+    val typeName = contentOf("compoundname")
+    // oc分类
+    return if (typeName.run { contains("(") && contains(")") }) {
+        typeName.substringBefore("(")
+    }
+    // 普通父类
+    else {
+        val baseTypes = listBy("basecompoundref")
+        baseTypes
+            .firstOrNull()
+            ?.textContent
+            ?.deAngleBracket()
+            ?: objectType
+    }
+
+}
+
+private fun CompoundDef.interfaces(): List<String> {
+    val baseTypes = listBy("basecompoundref")
+    return if (baseTypes.size > 1) {
+        baseTypes
+            .drop(1)
+            .map { it.textContent }
+            .toMutableList()
+    } else {
+        listOf()
+    }
 }
 
 /**

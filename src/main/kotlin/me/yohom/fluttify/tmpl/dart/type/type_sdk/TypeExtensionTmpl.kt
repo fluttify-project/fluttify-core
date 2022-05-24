@@ -14,25 +14,11 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
-//import 'dart:typed_data';
-//
-//#__platform_import__#
-//import 'package:flutter/foundation.dart';
-//import 'package:flutter/services.dart';
-//
-//#__foundation__#
-//
-//#__abstract__#class #__class_name__# extends #__super_class__# #__mixins__# {
+//extension #__extension_name__# on #__class_name__# {
 //  //region constants
 //  static const String name__ = '#__origin_class_name__#';
 //
-//  String tag__ = '#__tag__#';
-//
 //  #__constants__#
-//  //endregion
-//
-//  //region creators
-//  #__creators__#
 //  //endregion
 //
 //  //region getters
@@ -46,25 +32,15 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  //region methods
 //  #__methods__#
 //  //endregion
+//
+//  @override
+//  String toString() {
+//    return '#__class_name__#{refId: $refId, runtimeType: $runtimeType, tag__: $tag__}';
+//  }
 //}
-//
-//extension #__class_name__#_Batch on List<#__class_name__#> {
-//  //region getters
-//  #__getters_batch__#
-//  //endregion
-//
-//  //region setters
-//  #__setters_batch__#
-//  //endregion
-//
-//  //region methods
-//  #__methods_batch__#
-//  //endregion
-//}
-private val tmpl by lazy { getResource("/tmpl/dart/type_sdk.dart.tmpl").readText() }
-private val batchTmpl by lazy { getResource("/tmpl/dart/type_sdk_batch.dart.tmpl").readText() }
+private val tmpl by lazy { getResource("/tmpl/dart/type_extension.dart.tmpl").readText() }
 
-fun TypeSdkTmpl(type: Type): String {
+fun TypeExtensionTmpl(type: Type): String {
     val currentPackage = ext.projectName
     val className = if (type.declaredGenericTypes.isNotEmpty()) {
         "${type.name.toDartType()}<${type.declaredGenericTypes.joinToString()}>"
@@ -121,28 +97,9 @@ fun TypeSdkTmpl(type: Type): String {
         .filterMethod()
         .map { MethodTmpl(it) }
 
-    val gettersBatch = type.fields
-        .filterGetters()
-        .map { GetterBatchTmpl(it) }
-
-    val settersBatch = type.fields
-        .filterSetters(true)
-        .map { SetterBatchTmpl(it) }
-
-    val methodsBatch = type.methods
-        .filterMethod(true)
-        .map { MethodBatchTmpl(it) }
-
-    val typeSdkBatch = if (!type.isCallback && type.declaredGenericTypes.isEmpty()) {
-        batchTmpl.replace("#__class_name__#", className)
-            .replaceParagraph("#__getters_batch__#", gettersBatch.joinToString("\n"))
-            .replaceParagraph("#__setters_batch__#", settersBatch.joinToString("\n"))
-            .replaceParagraph("#__methods_batch__#", methodsBatch.joinToString("\n"))
-    } else {
-        ""
-    }
-
     return tmpl
+        .replace("#__extension_name__#", type.name)
+        .replace("#__class_name__#", type.superClass)
         .replace(
             "#__platform_import__#", when (type.platform) {
                 Platform.iOS -> "import 'package:$currentPackage/src/ios/ios.export.g.dart';"
@@ -165,5 +122,4 @@ fun TypeSdkTmpl(type: Type): String {
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))
         .replaceParagraph("#__methods__#", methods.joinToString("\n"))
-        .replaceParagraph("#__type_sdk_batch__#", typeSdkBatch)
 }
