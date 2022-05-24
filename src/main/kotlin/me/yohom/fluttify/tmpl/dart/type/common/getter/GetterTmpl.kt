@@ -12,7 +12,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 private val tmpl by lazy { getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText() }
 
 fun GetterTmpl(field: Field): String {
-    val dartType = field.variable.trueType.toDartType()
+    val dartType = field.variable.trueType.toDartType().enOptional()
     val name = if (field.isStatic == true) {
         "static_${field.variable.name.depointer()}"
     } else {

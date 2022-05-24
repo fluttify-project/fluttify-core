@@ -486,6 +486,13 @@ fun TYPE_NAME.isStructPointer(): Boolean {
 }
 
 /**
+ * 添加可空'?'
+ */
+fun TYPE_NAME.enOptional(): String {
+    return if (this != "void") "${this}?" else this
+}
+
+/**
  * 去除指针类型的`*`号
  */
 fun String.depointer(): String {

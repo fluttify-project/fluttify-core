@@ -22,7 +22,8 @@ private val tmpl by lazy { getResource("/tmpl/dart/method_batch.mtd.dart.tmpl").
  * 不接受有回调的方法
  */
 fun InterfaceMethodBatchTmpl(method: Method): String {
-    val returnType = method.returnType.toDartType().enList()
+    val resultType = method.returnType.toDartType().enOptional()
+    val returnType = resultType.enList()
 
     val methodName = "${method.signature}_batch"
 
@@ -42,7 +43,6 @@ fun InterfaceMethodBatchTmpl(method: Method): String {
     val checkParamSize = method.formalParams.checkParamSize()
     val invoke = InvokeBatchTmpl(method)
 
-    val resultType = method.returnType.toDartType()
     val returnStatement = "(resultBatch as List).map((__result__) => ${ReturnTmpl(method)}).cast<$resultType>().toList()"
 
     return tmpl

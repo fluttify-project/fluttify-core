@@ -10,7 +10,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.Interfac
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
-//
 //import 'dart:typed_data';
 //
 //#__platform_import__#
@@ -25,6 +24,9 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  #__constants__#
 //
 //  #__sub_instance__#
+//
+//  @override
+//  final String tag__ = '#__tag__#';
 //
 //  #__getters__#
 //

@@ -11,7 +11,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/constant.mtd.dart.tmpl").read
 
 fun TypeConstantTmpl(variable: Variable): String {
     return tmpl
-        .replace("#__type_name__#", variable.trueType.toDartType())
+        .replace("#__type_name__#", variable.trueType.toDartType().enOptional())
         .replace("#__name__#", variable.name)
         .replaceGlobal()
 }
