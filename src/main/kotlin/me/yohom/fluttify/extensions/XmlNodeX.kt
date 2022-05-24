@@ -486,6 +486,7 @@ private fun CompoundDef.interfaces(): List<String> {
         baseTypes
             .drop(1)
             .map { it.textContent.deAngleBracket() }
+            .reversed()
     } else {
         listOf()
     }
