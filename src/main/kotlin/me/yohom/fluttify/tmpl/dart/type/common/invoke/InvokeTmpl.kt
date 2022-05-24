@@ -13,7 +13,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readT
 fun InvokeTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
         val viewChannelName =
-            if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}"
+            if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}'"
             else "'${ext.methodChannelName}/${method.className.toUnderscore()}/\$refId'"
         val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
 

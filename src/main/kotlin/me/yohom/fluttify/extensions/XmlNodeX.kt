@@ -306,7 +306,7 @@ private fun CompoundDef.methods(): List<Method> {
 
     methods.let {
         for (item in it) { // memberdef
-            val type = item.contentOf("type").pack()
+            val type = item.contentOf("type").pack().removeObjcSpecifier()
             val name = item.contentOf("name").split(":").first()
             val isStatic = item("static") == "yes"
             val isAbstract = item("abstract") == "yes"

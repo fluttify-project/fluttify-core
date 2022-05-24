@@ -1,1 +1,1 @@
-(args['#__arg_name__#'] as List)?.map((it) => #__project_prefix__##__platform__#As<#__type_name__#>(it))?.toList()
+(args['#__arg_name__#'] as List? ?? []).map((it) => #__project_prefix__##__platform__#As<#__type_name__#>(it)).where((e) => e != null).cast<#__type_name__#>().toList()

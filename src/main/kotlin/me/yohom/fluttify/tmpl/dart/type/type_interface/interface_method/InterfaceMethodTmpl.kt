@@ -8,7 +8,7 @@ import me.yohom.fluttify.model.Method
 private val tmpl by lazy { getResource("/tmpl/dart/interface_method.mtd.dart.tmpl").readText() }
 
 fun InterfaceMethodTmpl(method: Method): String {
-    val returnType = method.returnType.toDartType()
+    val returnType = method.returnType.toDartType().enOptional()
     val name = method.signature
     val formalParams = method.formalParams.joinToString { it.variable.toDartString() }
 
