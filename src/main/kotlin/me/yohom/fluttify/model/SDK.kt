@@ -170,6 +170,7 @@ class Lib {
         get() = sourceFiles.filter { it.filter }
             .flatMap { it.topLevelConstants }
             .distinctBy { it.name }
+            .filter { it.isKnownType() }
             .filter { lib -> EXCLUDE_CONSTANTS.none { it.matches(lib.name) } }
 
     /**

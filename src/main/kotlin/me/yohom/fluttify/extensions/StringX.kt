@@ -591,12 +591,14 @@ fun String.escape(): TYPE_NAME {
 fun TYPE_NAME.removeObjcSpecifier(): TYPE_NAME {
     return replace("__nullable", "")
         .replace("__nonnull", "")
+        .replace("const", "")
         .replace("_Nullable", "")
         .replace("_Nonnull", "")
         .replace("nullable", "")
         .replace("nonnull", "")
         .replace("*__autoreleasing", "")
         .replace("__autoreleasing", "")
+        .replace("FOUNDATION_EXPORT", "")
 }
 
 /**

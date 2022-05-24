@@ -3,6 +3,7 @@ package me.yohom.fluttify.extensions
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.Podspec
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.common.ref.ref_ref.RefRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
 import org.junit.jupiter.api.Assertions.*
@@ -47,17 +48,14 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseStruct() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/struct_b_m_k_map_point.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_map_fluttify/ir/ios/xml/struct_b_m_navi_status.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
         val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
         val result = doxygenRoot.types()
 
-        for (type in result) {
-            // TODO 需要调试一下
-            println("解析方法结果: ${type.fields.map(::HandlerGetterTmpl)}")
-        }
+        println(TypeSdkTmpl(result.first()))
     }
 
     @Test

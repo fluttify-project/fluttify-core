@@ -33,7 +33,8 @@ fun CompoundDef.topLevelConstants(): List<Variable> {
 
     for (item in variables) { // memberdef
         val variable = Variable(
-            typeName = item["type"]?.get("ref")?.textContent ?: item.contentOf("type"),
+            typeName = item["type"]?.get("ref")?.textContent
+                ?: item.contentOf("type").removeObjcSpecifier(),
             name = item.contentOf("name"),
             platform = platform,
         )
@@ -67,7 +68,8 @@ fun CompoundDef.topLevelFunctions(): List<Type> {
             .ifBlank {
                 item.contentOf("type")
                     .split(" ")
-                    .filter { !it.startsWith("UIKIT") }
+                    .filterNot { it.startsWith("UIKIT") }
+                    .filterNot { it.startsWith("FOUNDATION_EXPORT") }
                     .joinToString("")
             }
         type.formalParams = item.parameters()
