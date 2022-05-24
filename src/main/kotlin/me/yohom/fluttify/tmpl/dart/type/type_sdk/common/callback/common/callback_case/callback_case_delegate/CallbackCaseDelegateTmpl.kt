@@ -23,7 +23,7 @@ fun CallbackCaseDelegateTmpl(callbackMethod: Method, callbackObject: String): St
     val callbackCase = "Callback::${callbackMethod.nameWithClass()}"
     val log =
         "debugPrint('fluttify-dart-callback: ${callbackMethodName}(${callbackMethod.formalParams.map { "\\'${it.variable.name}\\':\${args['${it.variable.name}']}" }})');"
-    val callbackHandler = "await ${callbackObject}?.${callbackMethodName}"
+    val callbackHandler = "await ${callbackObject}.${callbackMethodName}"
     val callbackArgs = callbackMethod.formalParams
         .joinToString {
             when {

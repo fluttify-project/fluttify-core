@@ -65,8 +65,6 @@ private val tmpl by lazy { getResource("/tmpl/dart/type_sdk.dart.tmpl").readText
 private val batchTmpl by lazy { getResource("/tmpl/dart/type_sdk_batch.dart.tmpl").readText() }
 
 fun TypeSdkTmpl(type: Type): String {
-    type.mergeWithCategory()
-
     val currentPackage = ext.projectName
     val className = if (type.declaredGenericTypes.isNotEmpty()) {
         "${type.name.toDartType()}<${type.declaredGenericTypes.joinToString()}>"

@@ -2,10 +2,9 @@ package me.yohom.fluttify.extensions
 
 import com.google.gson.Gson
 import me.yohom.fluttify.*
-import me.yohom.fluttify.model.Platform
-import me.yohom.fluttify.model.SDK
-import me.yohom.fluttify.model.Type
+import me.yohom.fluttify.model.*
 import java.io.File
+import javax.xml.parsers.DocumentBuilderFactory
 
 inline fun <reified T> String.fromJson(): T {
     return Gson().fromJson(this, T::class.java)
@@ -137,7 +136,9 @@ fun TYPE_NAME.isRefArray(): Boolean {
  * 是否是Map类型
  */
 fun TYPE_NAME.isMap(): Boolean {
-    return Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.*,.*\\u003e)?\\*?").matches(pack())
+    return Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.*,.*\\u003e)?\\*?").matches(
+        pack()
+    )
 }
 
 /**
@@ -174,8 +175,15 @@ fun TYPE_NAME.stringArray2List(): TYPE_NAME {
 /**
  * 去掉[]
  */
-fun TYPE_NAME.dearray(): TYPE_NAME {
-    return removeSuffix("[]")
+fun TYPE_NAME.deSquareBracket(): TYPE_NAME {
+    return removePrefix("[").removeSuffix("]")
+}
+
+/**
+ * 去掉:
+ */
+fun TYPE_NAME.deColon(): TYPE_NAME {
+    return replace(":", "")
 }
 
 /**
@@ -213,7 +221,8 @@ fun TYPE_NAME.findType(): Type {
             .filter { it.rawType in clonedContainerType.declaredGenericTypes }
             .forEach {
                 // 找出当前声明泛型在泛型列表中的位置
-                val genericTypePosition = clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
+                val genericTypePosition =
+                    clonedContainerType.declaredGenericTypes.indexOf(it.rawType)
                 // 按照这个位置再从定义泛型列表中拿到定义的泛型, 并重新设置给方法参数
                 if (genericTypePosition < definedGenericTypes.size) {
                     it.defineGenericType(definedGenericTypes[genericTypePosition])
@@ -263,8 +272,8 @@ fun TYPE_NAME.ifIsGenericTypeConvertToObject(): String {
  * 获取与当前类名关联的所有类型信息
  */
 fun TYPE_NAME.allTypes(): List<Type> {
-    val containerTypes = dearray().containerType().findType()
-    val genericTypes = dearray().genericTypes().map { it.findType() }
+    val containerTypes = deSquareBracket().containerType().findType()
+    val genericTypes = deSquareBracket().genericTypes().map { it.findType() }
     return genericTypes
         .union(listOf(containerTypes))
         .toList()
@@ -387,18 +396,26 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("[Bb]oolean").matches(this) -> "bool"
                 Regex("(unsigned)?([Bb]yte|[Ii]nt|Integer|[Ll]ong)").matches(this) -> "int"
                 Regex("[Dd]ouble|[Ff]loat").matches(this) -> "double"
-                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Byte|Integer|Long)\\u003e").matches(this) -> "List<int>"
-                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Float|Double)\\u003e").matches(this) -> "List<double>"
-                Regex("java\\.util\\.(Collection|(Array)?List)\\u003cString\\u003e|String\\[]").matches(this) -> "List<String>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Byte|Integer|Long)\\u003e").matches(
+                    this
+                ) -> "List<int>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003c(Float|Double)\\u003e").matches(
+                    this
+                ) -> "List<double>"
+                Regex("java\\.util\\.(Collection|(Array)?List)\\u003cString\\u003e|String\\[]").matches(
+                    this
+                ) -> "List<String>"
                 Regex("[Bb]yte\\[]").matches(this) -> "Uint8List"
                 Regex("(int|Integer)\\[]").matches(this) -> "Int32List"
                 Regex("[Ll]ong\\[]").matches(this) -> "Int64List"
                 Regex("([Dd]ouble|[Ff]loat)\\[]").matches(this) -> "Float64List"
                 Regex("java\\.util\\.(Hash)?Map").matches(this) -> "Map"
-                Regex(".*\\[]").matches(this) -> dearray().enList() // 数组转列表
+                Regex(".*\\[]").matches(this) -> deSquareBracket().enList() // 数组转列表
                 Regex("java\\.lang\\.Object").matches(this) -> "Object" // 这里为什么要转为dart的Object在36行有说明
                 Regex("java\\.lang\\.Void").matches(this) -> "void"
-                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(this) -> "List<dynamic>"
+                Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)(<java\\.lang\\.Object>)?").matches(
+                    this
+                ) -> "List<dynamic>"
                 // 若是某种java的List, 那么去掉前缀, 然后转换泛型类型
                 Regex("java\\.(\\w|\\.)*(List|Iterable|Collection)\\u003c.*\\u003e").matches(this) -> {
                     val genericType = genericTypes()[0]
@@ -429,7 +446,9 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
                 Regex("BOOL").matches(this) -> "bool"
                 Regex("CGFloat").matches(this) -> "double"
                 Regex("NS(Mutable)?Dictionary\\*").matches(this) -> "Map"
-                Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(this) -> {
+                Regex("(java\\.util\\.(Hash)?Map|NS(Mutable)?Dictionary)(\\u003c.+,.+\\u003e)(\\*)?").matches(
+                    this
+                ) -> {
                     val keyType = substringAfter("\u003c").substringBefore(",").toDartType()
                     val valueType = substringAfter(",").substringBefore("\u003e").toDartType()
                     "Map<$keyType,$valueType>"
@@ -467,10 +486,24 @@ fun TYPE_NAME.isStructPointer(): Boolean {
 }
 
 /**
+ * 添加可空'?'
+ */
+fun TYPE_NAME.enOptional(): String {
+    return if (isOneOf("void", "dynamic")) this else "${this}?"
+}
+
+/**
  * 去除指针类型的`*`号
  */
 fun String.depointer(): String {
     return removePrefix("*").removeSuffix("*")
+}
+
+/**
+ * 去除OC中协议的`<>`号
+ */
+fun String.deAngleBracket(): String {
+    return removePrefix("<").removeSuffix(">")
 }
 
 /**
@@ -484,7 +517,8 @@ fun String.deprotocol(): String {
  * 是否是排除类
  */
 fun String.isExcludedType(): Boolean {
-    return ext.android.exclude.classes.union(ext.ios.exclude.classes).any { Regex(it).matches(this) }
+    return ext.android.exclude.classes.union(ext.ios.exclude.classes)
+        .any { Regex(it).matches(this) }
 }
 
 /**
@@ -713,6 +747,67 @@ fun String.parseSDK(): SDK {
     return result.removeObjcSpecifier().fromJson()
 }
 
+class RootObject {
+    var doxygen: DoxygenType? = null
+}
+
+/**
+ * 从文件(夹)解析SDK
+ */
+fun File.parseSDK(): SDK {
+    if (isFile) {
+        return readText().parseSDK()
+    } else if (isDirectory) {
+        val sdk = SDK().also {
+            it.platform = if (path.contains("ios")) {
+                Platform.iOS
+            } else if (path.contains("android")) {
+                Platform.Android
+            } else {
+                Platform.General
+            }
+        }
+        val lib = Lib().also {
+            sdk.libs.add(it)
+            it.name = nameWithoutExtension
+        }
+        var successCount = 0
+        var errorCount = 0
+        for (item in listFiles()!!) {
+            if (item.extension != "xml") continue
+            if (item.name == "Doxyfile.xml") continue
+            if (item.name == "index.xml") continue
+            try {
+                val sourceFile = SourceFile().also {
+                    lib.sourceFiles.add(it)
+
+                    it.fileName = item.nameWithoutExtension
+                }
+
+                val doc = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder()
+                    .parse(item)
+                val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
+                sourceFile.types = doxygenRoot.types()
+                    .union(doxygenRoot.enums())
+                    .union(doxygenRoot.topLevelFunctions())
+                    .union(doxygenRoot.typedefs())
+                    .toList()
+                sourceFile.topLevelConstants = doxygenRoot.topLevelConstants()
+                successCount++
+            } catch (e: Exception) {
+                errorCount++
+                println("解析过程出现错误: $item, $e, ${e.stackTraceToString()}")
+                continue
+            }
+        }
+        println("成功数: $successCount, 失败数: $errorCount")
+        return sdk
+    } else {
+        throw Exception("文件类型错误")
+    }
+}
+
 /**
  * 变量名为id的情况
  */
@@ -727,6 +822,13 @@ fun String.replaceGlobal(platform: Platform? = null): String {
         .replace("#__channel_name__#", ext.methodChannelName)
         .replace("#__current_package__#", ext.projectName)
         .run {
-            if (platform != null) replace("#__platform__#", platform.toString().capitalize()) else this
+            if (platform != null) replace(
+                "#__platform__#",
+                platform.toString().capitalize()
+            ) else this
         }
+}
+
+fun String.isOneOf(vararg candidates: String): Boolean {
+    return candidates.contains(this)
 }

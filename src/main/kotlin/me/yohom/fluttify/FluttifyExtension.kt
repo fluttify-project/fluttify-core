@@ -97,6 +97,15 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     val methodChannelName: String
         get() = "$org/$projectName"
 
+    // 暂时没有用处, 需要找方法判断出有没有哪个平台没有配置
+    val availablePlatform: List<String>
+        get() {
+            val result = mutableListOf<String>()
+            if (ios != null) result.add("ios")
+            if (android != null) result.add("android")
+            return result
+        }
+
     override fun toString(): String {
         return "Extension(projectName='$projectName', org='$org', desc='$desc', author='$author', email='$email', homepage='$homepage', foundationVersion='$foundationVersion', pluginDependencies='$pluginDependencies', android=$android, ios=$ios)"
     }
@@ -136,6 +145,14 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
      * 元素替换
      */
     var overrideElements: Map<String, String> = mapOf()
+
+    /**
+     * 依赖仓库
+     *
+     * Android端即`maven { url 'https://download.flutter.io' }`;
+     * iOS端即`source 'https://github.com/artsy/Specs.git'`;
+     */
+    var repositories: List<String> = listOf()
 
     /**
      * 远程依赖配置
@@ -247,7 +264,8 @@ open class Remote {
     /**
      * 远程依赖
      *
-     * Android端即`org:name:version`; iOS端即`'name', 'version'`
+     * Android端即`org:name:version`;
+     * iOS端即`'name', 'version'`;
      */
     var dependencies: List<String> = listOf()
 

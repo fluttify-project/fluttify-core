@@ -37,6 +37,10 @@ open class TweakDefaultProject : FluttifyTask() {
                             .map { "compileOnly rootProject.findProject(\":${it.key}\")" }
                             .joinToString("\n")
                     )
+                    .replaceParagraph(
+                        "#__repositories__#",
+                        ext.android.repositories.joinToString("\n")
+                    )
             )
 
         "${outputProjectPath}/example/ios/Runner/Info.plist"
@@ -62,7 +66,9 @@ open class TweakDefaultProject : FluttifyTask() {
                         ext.pluginDependencies.map { "s.dependency '${it.key}'" }.joinToString("\n")
                     )
                     .replace("#__deployment_target__#", ext.ios.iosDeploymentTarget)
-                    .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
+                    .replace(
+                        "#__frameworks__#",
+                        ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
                     .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString { "\"$it\"" })
                     .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
             )
@@ -95,5 +101,7 @@ open class TweakDefaultProject : FluttifyTask() {
         "${outputProjectPath}/analysis_options.yaml"
             .file()
             .writeText(analysisTmpl)
+
+        // TODO 是否需要实现podfile指定自定义源?
     }
 }

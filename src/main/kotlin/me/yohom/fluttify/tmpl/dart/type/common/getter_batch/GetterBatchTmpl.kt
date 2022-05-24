@@ -7,12 +7,12 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 
 //Future<List<#__type__#>> get_#__name__#_batch(#__view_channel__#) async {
 //  final resultBatch = await #__channel__#.invokeMethod("#__getter_method__#_batch", [for (final __item__ in this) {'__this__': __item__}]);
-//  return (resultBatch as List).cast<#__type__#>().map((__result__) => #__result__#).toList();
+//  return (resultBatch as List).map((__result__) => #__result__#).cast<#__type__#>().toList();
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/getter_batch.mtd.dart.tmpl").readText() }
 
 fun GetterBatchTmpl(field: Field): String {
-    val dartType = field.variable.trueType.toDartType()
+    val dartType = field.variable.trueType.toDartType().enOptional()
     val name =
         if (field.isStatic == true) "static_${field.variable.name.depointer()}" else field.variable.name.depointer()
     val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
@@ -20,7 +20,7 @@ fun GetterBatchTmpl(field: Field): String {
     val channel = if (field.className.findType().isView) {
         val viewChannelName =
             if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}"
-            else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId''"
+            else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId'"
         val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
     } else {

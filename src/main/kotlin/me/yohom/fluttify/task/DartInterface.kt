@@ -11,6 +11,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_cast.TypeCastTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.DependencyTypeCheckTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeExtensionTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.TypeSdkTmpl
 import me.yohom.fluttify.tmpl.dart.view.android_view.AndroidViewTmpl
 import me.yohom.fluttify.tmpl.dart.view.uikit_view.UiKitViewTmpl
@@ -34,8 +35,11 @@ open class CommonObjects : FluttifyTask() {
 open class AndroidDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
-        val sdk = jrFile.readText().parseSDK()
+        // 旧版json解析
+//        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
+//        val sdk = jrFile.readText().parseSDK()
+        val irDir = "${project.projectDir}/ir/android/xml/".file()
+        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/".file().deleteRecursively()
@@ -58,9 +62,9 @@ open class AndroidDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
+                    TypeType.Extension  -> TypeExtensionTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
-                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> ""
                     TypeType.Alias -> ""
@@ -150,7 +154,6 @@ open class AndroidDartInterface : FluttifyTask() {
                     .writeText(this)
             }
     }
-
 }
 
 /**
@@ -159,8 +162,11 @@ open class AndroidDartInterface : FluttifyTask() {
 open class IOSDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
-        val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
-        val sdk = jrFile.readText().parseSDK()
+// 旧版json解析
+//        val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
+//        val sdk = jrFile.readText().parseSDK()
+        val irDir = "${project.projectDir}/ir/ios/xml/".file()
+        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/".file().deleteRecursively()
@@ -182,9 +188,9 @@ open class IOSDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
+                    TypeType.Extension  -> TypeExtensionTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
-                    TypeType.Extension -> ""
                     TypeType.Lambda -> ""
                     TypeType.Function -> "" // 函数要单独处理, 全部放到一个文件里去
                     TypeType.Alias -> ""
@@ -225,7 +231,7 @@ open class IOSDartInterface : FluttifyTask() {
                 functionsFile.file().writeText(TypeFunctionsTmpl(this))
             }
 
-        val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl").readText()
+        val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl")!!.readText()
         val targetTypes = sdk.directLibs
             .flatMap { it.types }
             .union(SYSTEM_TYPE.filter { it.platform == Platform.iOS }) // 造型需要把系统类加上
@@ -234,7 +240,7 @@ open class IOSDartInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
-            .filterNot { it.typeType == TypeType.Extension }
+            .filterNot { it.isExtension}
             .filterNot { it.isAlias() }
             .filterNot { it.isCallback }
             .filterNot { it.isEnum }
@@ -270,4 +276,5 @@ open class IOSDartInterface : FluttifyTask() {
                     .writeText(this)
             }
     }
+
 }

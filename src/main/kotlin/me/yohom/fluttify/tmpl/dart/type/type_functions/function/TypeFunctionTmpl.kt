@@ -19,12 +19,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.callback_method
 //  // handle native call
 //  #__callback__#
 //
-//  // convert native result to dart side object
-//  if (__result__ == null) {
-//    return null;
-//  } else {
-//    return #__return_statement__#;
-//  }
+//  return #__return_statement__#;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/function.mtd.dart.tmpl").readText() }
 
@@ -53,7 +48,7 @@ fun TypeFunctionTmpl(functionType: Type): String {
     val returnStatement = ReturnTmpl(functionType.asMethod())
 
     return tmpl
-        .replace("#__return_type__#", returnType)
+        .replace("#__return_type__#", returnType.enOptional())
         .replace("#__function_name__#", name)
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__log__#", log)

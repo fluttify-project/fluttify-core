@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.ext
@@ -21,6 +22,27 @@ data class Constructor(
     override var platform: Platform,
     override var id: Int = NEXT_ID
 ) : IPlatform, IScope, IElement {
+
+    companion object {
+        fun fromMemberDefType(type: MemberdefType): Constructor {
+            return Constructor(
+                type.name.toString(),
+                type.param.map {
+                    Parameter(
+                        variable = Variable(
+                            it.type.content.first().toString(),
+                            it.declname.toString(),
+                            Platform.Android,
+                        ),
+                        platform = Platform.Android,
+                    )
+                },
+                type.prot == DoxProtectionKind.PUBLIC,
+                Platform.Android,
+            )
+        }
+    }
+
     /**
      * 一个类中可能有多个构造器, 这个过滤是过滤出可以使用的构造器.
      * 区分于Type类的constructable方法, 这个方法是判断一个类是否含有可以使用的构造器.
@@ -69,5 +91,9 @@ data class Constructor(
                 it.variable.trueType.toUnderscore().replace("[]", "Array")
             }
         }"
+    }
+
+    override fun toString(): String {
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }

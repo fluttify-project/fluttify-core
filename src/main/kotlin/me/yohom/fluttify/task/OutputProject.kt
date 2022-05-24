@@ -12,9 +12,16 @@ open class OutputProject : FluttifyTask() {
     fun process() {
         val outputProjectPath = "${project.projectDir}/output-project/${ext.projectName}"
 
-        val process = Runtime
-            .getRuntime()
-            .exec("flutter create --no-pub -a java -i objc --verbose --platforms=android,ios --template=plugin --org ${ext.org} $outputProjectPath")
+        val cmdBuilder = StringBuilder("flutter create")
+        cmdBuilder.append("--no-pub")
+        cmdBuilder.append("-a java -i objc")
+        cmdBuilder.append("--verbose")
+        cmdBuilder.append("--platforms=${ext.availablePlatform.joinToString(",")}")
+        cmdBuilder.append("--template=plugin")
+        cmdBuilder.append("--org ${ext.org}")
+        cmdBuilder.append(outputProjectPath)
+
+        val process = Runtime.getRuntime().exec(cmdBuilder.toString())
         val br = BufferedReader(InputStreamReader(process.inputStream))
         br.lines().forEach(::println)
     }

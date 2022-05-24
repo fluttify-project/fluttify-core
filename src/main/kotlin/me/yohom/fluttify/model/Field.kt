@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
 
@@ -181,5 +182,9 @@ data class Field(
             isDeprecated = isDeprecated,
             id = NEXT_ID
         )
+    }
+
+    override fun toString(): String {
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }

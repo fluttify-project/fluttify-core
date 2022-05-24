@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.ext
@@ -176,5 +177,9 @@ data class Variable(
         } else {
             trueType.findType().formalParams.all { it.variable.isKnownType() }
         }
+    }
+
+    override fun toString(): String {
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }

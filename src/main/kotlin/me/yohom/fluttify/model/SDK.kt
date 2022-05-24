@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.EXCLUDE_CONSTANTS
 import me.yohom.fluttify.EXCLUDE_LIBS
 import me.yohom.fluttify.SYSTEM_TYPE
@@ -34,7 +35,8 @@ class SDK : IPlatform {
      * 非间接依赖的库
      */
     val directLibs: List<Lib>
-        get() = libs.filterNot { it.isDependency }.filter { lib -> EXCLUDE_LIBS.none { it.matches(lib.name) } }
+        get() = libs.filterNot { it.isDependency }
+            .filter { lib -> EXCLUDE_LIBS.none { it.matches(lib.name) } }
 
     /**
      * 所有通过过滤的方法
@@ -57,7 +59,8 @@ class SDK : IPlatform {
      */
     @delegate:Transient
     val allProperties: List<Field> by lazy {
-        directLibs.flatMap { it.types }.flatMap { it.fields }.filter { it.filterGetters || it.filterSetter }
+        directLibs.flatMap { it.types }.flatMap { it.fields }
+            .filter { it.filterGetters || it.filterSetter }
     }
 
     /**
@@ -77,7 +80,7 @@ class SDK : IPlatform {
     }
 
     override fun toString(): String {
-        return "SDK(version='$version', platform=$platform, libs=$libs)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 
     companion object {
@@ -90,9 +93,9 @@ class SDK : IPlatform {
             get() = sdks.firstOrNull { it.platform == Platform.iOS }
 
         fun findType(fullName: String): Type {
-            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf())
+            val allTypes = (androidSDK?.libs ?: mutableListOf())
+                .union(iOSSDK?.libs ?: listOf())
                 .flatMap { it.types }
-                .filter { it.typeType != TypeType.Extension } // extension会跟宿主class重复, 这里要去掉
             val finalTypeName = (SYSTEM_TYPEDEF[fullName] ?: fullName)
             return when {
                 // 如果是空字符串那么返回NO_TYPE
@@ -101,7 +104,8 @@ class SDK : IPlatform {
                 allTypes.map { it.name.depointer() }
                     .contains(finalTypeName) -> allTypes.first { it.name.depointer() == finalTypeName }
                 // 已支持的系统类 由于会有泛型类的情况, 比如`android.util.Pair<*, *>`, 所以需要通过正则表达式来处理
-                SYSTEM_TYPE.map { Regex(it.name) }.any { it.matches(finalTypeName) } -> SYSTEM_TYPE.first {
+                SYSTEM_TYPE.map { Regex(it.name) }
+                    .any { it.matches(finalTypeName) } -> SYSTEM_TYPE.first {
                     Regex(it.name).matches(finalTypeName)
                 }
                 // 是objc的id指针
@@ -135,7 +139,8 @@ class SDK : IPlatform {
         }
 
         fun findExtensions(fullName: String): List<Type> {
-            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf()).flatMap { it.types }
+            val allTypes = (androidSDK?.libs ?: mutableListOf()).union(iOSSDK?.libs ?: listOf())
+                .flatMap { it.types }
             return allTypes.filter { it.typeType == TypeType.Extension && it.name == fullName }
         }
     }
@@ -173,7 +178,7 @@ class Lib {
     var isDependency: Boolean = false
 
     override fun toString(): String {
-        return "Lib(name='$name', types=$types, topLevelConstants=$topLevelConstants, isDependency=$isDependency)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }
 

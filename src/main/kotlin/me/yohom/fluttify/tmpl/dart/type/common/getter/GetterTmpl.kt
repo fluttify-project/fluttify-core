@@ -12,7 +12,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.result.*
 private val tmpl by lazy { getResource("/tmpl/dart/getter.mtd.dart.tmpl").readText() }
 
 fun GetterTmpl(field: Field): String {
-    val dartType = field.variable.trueType.toDartType()
+    val dartType = field.variable.trueType.toDartType().enOptional()
     val name = if (field.isStatic == true) {
         "static_${field.variable.name.depointer()}"
     } else {
@@ -23,7 +23,7 @@ fun GetterTmpl(field: Field): String {
     val channel = if (field.className.findType().isView) {
         val viewChannelName =
             if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}"
-            else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId''"
+            else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId'"
         val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
 
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"

@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.*
 import me.yohom.fluttify.extensions.*
 
@@ -47,6 +48,10 @@ data class Method(
      * 是否是泛型方法
      */
     var isGenericMethod: Boolean = false,
+    /**
+     * 文档注释
+     */
+    var doc: Doc = Doc(),
     override var id: Int = NEXT_ID
 ) : IPlatform, IScope, IElement {
 
@@ -145,7 +150,15 @@ data class Method(
                     } // TODO 这里只判断了容器类是否是混淆类, 需要处理如果泛型类型是混淆类的情况
                     &&
                     // 参数不能中含有排除的类
-                    mustNot("形参含有排除的类") { formalParams.any { param -> EXCLUDE_TYPES.any { it.matches(param.variable.trueType.depointer()) } } }
+                    mustNot("形参含有排除的类") {
+                        formalParams.any { param ->
+                            EXCLUDE_TYPES.any {
+                                it.matches(
+                                    param.variable.trueType.depointer()
+                                )
+                            }
+                        }
+                    }
             if (METHOD_LOG) println("方法:\"${toString()}\"执行过滤结束 ${if (result) "通过过滤" else "未通过过滤"}")
             if (METHOD_LOG) println("↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑方法↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n")
             return result
@@ -192,6 +205,6 @@ data class Method(
     }
 
     override fun toString(): String {
-        return "Method(returnType='$returnType', name='$name', formalParams=$formalParams, isStatic=$isStatic, isAbstract=$isAbstract, isPublic=$isPublic, className='$className', platform=$platform, isDeprecated=$isDeprecated)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }

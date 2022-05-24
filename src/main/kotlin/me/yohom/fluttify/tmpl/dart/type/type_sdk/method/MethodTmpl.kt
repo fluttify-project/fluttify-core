@@ -52,7 +52,7 @@ fun MethodTmpl(method: Method): String {
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
         .replace("#__static__#", static)
-        .replace("#__return_type__#", returnType)
+        .replace("#__return_type__#", returnType.enOptional())
         .replace("#__method_name__#", methodName)
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__log__#", log)
