@@ -12,7 +12,7 @@ fun InvokeBatchTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
         val viewChannelName =
             if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}"
-            else "'${ext.methodChannelName}/${method.className.toUnderscore()}/\$refId''"
+            else "'${ext.methodChannelName}/${method.className.toUnderscore()}/\$refId'"
         val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
 
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
