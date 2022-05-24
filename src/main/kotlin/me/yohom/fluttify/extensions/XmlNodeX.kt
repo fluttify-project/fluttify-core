@@ -141,6 +141,7 @@ fun CompoundDef.enums(): List<Type> {
         .find { it("kind") == "enum" }
         ?.listBy("memberdef")
         ?.filter { it("kind") == "enum" }
+        ?.filterNot { it.contentOf("name").startsWith("@") }
 
     enums?.let {
         for (item in it) { // memberdef
@@ -484,8 +485,7 @@ private fun CompoundDef.interfaces(): List<String> {
     return if (baseTypes.size > 1) {
         baseTypes
             .drop(1)
-            .map { it.textContent }
-            .toMutableList()
+            .map { it.textContent.deAngleBracket() }
     } else {
         listOf()
     }
