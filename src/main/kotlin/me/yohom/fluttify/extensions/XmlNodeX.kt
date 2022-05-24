@@ -45,19 +45,64 @@ fun CompoundDef.topLevelConstants(): List<Variable> {
 }
 
 /**
- * 顶层函数 TODO
+ * 顶层函数
  */
-fun CompoundDef.topLevelFunctions(): List<Variable> {
-    // TODO
-    return listOf()
+fun CompoundDef.topLevelFunctions(): List<Type> {
+    val compound = this[compounddef]!!
+    compound.setupEnv()
+
+    val resultList = mutableListOf<Type>()
+
+    val functions = compound
+        .listBy("sectiondef")
+        .filter { it("kind") == "func" }
+        .flatMap { it.listBy("memberdef") }
+
+    for (item in functions) { // memberdef
+        val type = Type()
+        type.platform = platform
+        type.typeType = TypeType.Function
+        type.name = item.contentOf("name")
+        type.returnType = item["type"]!!.contentOf("ref")
+            .ifBlank {
+                item.contentOf("type")
+                    .split(" ")
+                    .filter { !it.startsWith("UIKIT") }
+                    .joinToString("")
+            }
+        type.formalParams = item.parameters()
+
+        resultList.add(type)
+    }
+
+    return resultList
 }
 
 /**
- * typedef TODO
+ * typedef
  */
-fun CompoundDef.typedefs(): List<Variable> {
-    // TODO
-    return listOf()
+fun CompoundDef.typedefs(): List<Type> {
+    val compound = this[compounddef]!!
+    compound.setupEnv()
+
+    val resultList = mutableListOf<Type>()
+
+    val functions = compound
+        .listBy("sectiondef")
+        .filter { it("kind") == "typedef" }
+        .flatMap { it.listBy("memberdef") }
+
+    for (item in functions) { // memberdef
+        val type = Type()
+        type.platform = platform
+        type.typeType = TypeType.Alias
+        type.name = item.contentOf("name")
+        type.aliasOf = item.contentOf("type")
+
+        resultList.add(type)
+    }
+
+    return resultList
 }
 
 /**
@@ -340,14 +385,14 @@ private fun MemberDef.isDeprecated(): Boolean {
 private fun MemberDef.parameters(): List<Parameter> {
     val result = mutableListOf<Parameter>()
 
-    for (node in listBy("param")) {
-        val platform = platform
+    for (node in listBy("param")) { // param
+        val type = node.contentOf("type").pack()
+        val name = node.contentOf("declname")
+
+        if (type == "void") continue
+
         val item = Parameter(
-            variable = Variable(
-                typeName = node.contentOf("type").pack(),
-                name = node.contentOf("declname"),
-                platform = platform,
-            ),
+            variable = Variable(typeName = type, name = name, platform = platform),
             named = node.contentOf("attributes").deSquareBracket(),
             platform = platform,
         )
