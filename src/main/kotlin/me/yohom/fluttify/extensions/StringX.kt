@@ -781,7 +781,9 @@ fun File.parseSDK(): SDK {
                     .newDocumentBuilder()
                     .parse(item)
                 val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
-                sourceFile.types = doxygenRoot.types().union(doxygenRoot.enums()).toList()
+                sourceFile.types = doxygenRoot.types()
+                    .union(doxygenRoot.enums())
+                    .toList()
                 sourceFile.topLevelConstants = doxygenRoot.topLevelConstants()
                 successCount++
             } catch (e: Exception) {

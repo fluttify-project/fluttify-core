@@ -20,7 +20,42 @@ var platform: Platform = Platform.Unknown
 /**
  * 顶层常量
  */
-fun Node.topLevelConstants(): List<Variable> {
+fun CompoundDef.topLevelConstants(): List<Variable> {
+    val compound = this[compounddef]!!
+    compound.setupEnv()
+
+    val resultList = mutableListOf<Variable>()
+
+    val variables = compound
+        .listBy("sectiondef")
+        .filter { it("kind") == "var" }
+        .flatMap { it.listBy("memberdef") }
+
+    for (item in variables) { // memberdef
+        val variable = Variable(
+            typeName = item["type"]?.get("ref")?.textContent ?: item.contentOf("type"),
+            name = item.contentOf("name"),
+            platform = platform,
+        )
+
+        resultList.add(variable)
+    }
+
+    return resultList
+}
+
+/**
+ * 顶层函数 TODO
+ */
+fun CompoundDef.topLevelFunctions(): List<Variable> {
+    // TODO
+    return listOf()
+}
+
+/**
+ * typedef TODO
+ */
+fun CompoundDef.typedefs(): List<Variable> {
     // TODO
     return listOf()
 }
@@ -33,18 +68,7 @@ fun CompoundDef.enums(): List<Type> {
 
     val compound = this[compounddef]!!
 
-    // 上下文赋值
-    language = compound("language")
-    objectType = when (language) {
-        java -> "java.lang.Object"
-        objc, cpp -> "NSObject"
-        else -> ""
-    }
-    platform = when (language) {
-        java -> Platform.Android
-        objc, cpp -> Platform.iOS
-        else -> Platform.Unknown
-    }
+    compound.setupEnv()
 
     // 形如typedef enum { ... }
     // 参考示例
@@ -393,4 +417,22 @@ private fun CompoundDef.typeName(): String {
         ?.replace("::", ".") // java类名调整
         ?.replace("-p", "") // objc不明原因多出-p后缀
         ?: ""
+}
+
+/**
+ * 上下文赋值
+ */
+private fun CompoundDef.setupEnv() {
+    // 上下文赋值
+    language = this("language")
+    objectType = when (language) {
+        java -> "java.lang.Object"
+        objc, cpp -> "NSObject"
+        else -> ""
+    }
+    platform = when (language) {
+        java -> Platform.Android
+        objc, cpp -> Platform.iOS
+        else -> Platform.Unknown
+    }
 }
