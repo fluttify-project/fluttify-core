@@ -48,41 +48,41 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
     };
 
     // hybrid composition version.
-    if (widget.hybridComposition) {
-      return PlatformViewLink(
-        viewType: '#__org__#/#__view_type__#',
-        surfaceFactory: (
-          BuildContext context,
-          PlatformViewController controller,
-        ) {
-          return AndroidViewSurface(
-            controller: controller,
-            gestureRecognizers: gestureRecognizers,
-            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-          );
-        },
-        onCreatePlatformView: (PlatformViewCreationParams params) {
-          return PlatformViewsService.initSurfaceAndroidView(
-            id: params.id,
-            viewType: '#__org__#/#__view_type__#',
-            layoutDirection: TextDirection.ltr,
-            creationParams: widget.params,
-            creationParamsCodec: k#__project_prefix__#MessageCodec,
-          )
-            ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-            ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
-            ..create();
-        },
-      );
-    } else {
-      return AndroidView(
-        viewType: '#__org__#/#__view_type__#',
-        gestureRecognizers: gestureRecognizers,
-        onPlatformViewCreated: _onViewCreated,
-        creationParamsCodec: k#__project_prefix__#MessageCodec,
-        creationParams: widget.params,
-      );
-    }
+    // if (widget.hybridComposition) {
+    //   return PlatformViewLink(
+    //     viewType: '#__org__#/#__view_type__#',
+    //     surfaceFactory: (
+    //       BuildContext context,
+    //       PlatformViewController controller,
+    //     ) {
+    //       return AndroidViewSurface(
+    //         controller: controller,
+    //         gestureRecognizers: gestureRecognizers,
+    //         hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+    //       );
+    //     },
+    //     onCreatePlatformView: (PlatformViewCreationParams params) {
+    //       return PlatformViewsService.initSurfaceAndroidView(
+    //         id: params.id,
+    //         viewType: '#__org__#/#__view_type__#',
+    //         layoutDirection: TextDirection.ltr,
+    //         creationParams: widget.params,
+    //         creationParamsCodec: k#__project_prefix__#MessageCodec,
+    //       )
+    //         ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+    //         ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
+    //         ..create();
+    //     },
+    //   );
+    // } else {
+    return AndroidView(
+      viewType: '#__org__#/#__view_type__#',
+      gestureRecognizers: gestureRecognizers,
+      onPlatformViewCreated: _onViewCreated,
+      creationParamsCodec: k#__project_prefix__#MessageCodec,
+      creationParams: widget.params,
+    );
+    // }
   }
 
   void _onViewCreated(int id) async {
