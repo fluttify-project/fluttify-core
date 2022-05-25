@@ -592,15 +592,13 @@ fun File.iterate(
 }
 
 fun String.replaceMacro(): String {
-    return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
-        .replace(
-            "#import\"",
-            "#import \""
-        ) // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
+    return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#else|#endif)"), "$1\n$4")
+        // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
+        .replace("#import\"", "#import \"")
         .run {
             if (ext.ios.exclude.macros.isNotEmpty()) {
                 val regex = ext.ios.exclude.macros.joinToString("|", "(", ")")
-                replace(Regex("(#(el)?if.*${regex})[\\s\\S]*?(#endif)"), "$1\n$4")
+                replace(Regex("(#(el)?if.*${regex})[\\s\\S]*?(#else|#endif)"), "$1\n$4")
             } else {
                 this
             }

@@ -164,6 +164,18 @@ class StringXKtTest : FluttifyTest() {
         println("解析结果: $result")
     }
 
+    @Test
+    fun replaceMacro() {
+        val string="""
+            #if TARGET_OS_OSX
+- (void)setupVideoWidget:(NSView *)view insertIndex:(unsigned int)idx;
+#else
+- (void)setupVideoWidget:(UIView *)view insertIndex:(unsigned int)idx;
+#endif
+"""
+        println("解析结果: ${string.replaceMacro()}")
+    }
+
 //    @Nested
 //    @DisplayName("Test for genericLevel")
 //    inner class GenericLevelTest : FluttifyTest() {
