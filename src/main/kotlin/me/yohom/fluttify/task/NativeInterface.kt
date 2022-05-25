@@ -50,8 +50,8 @@ open class AndroidJavaInterface : FluttifyTask() {
         val subHandlerCustomOutputFile = "$subHandlerOutputDir/custom/SubHandlerCustom.java"
 
         // 旧版json解析
-//        val sdk = jrFile.parseSDK()
-        val sdk = irDir.parseSDK()
+        val sdk = jrFile.parseSDK()
+//        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {
@@ -185,8 +185,8 @@ open class IOSObjcInterface : FluttifyTask() {
         val subHandlerCustomOutputMFile = "$subHandlerOutputDir/Custom/SubHandlerCustom.m"
 
         // 旧版json解析
-//        val sdk = jrFile.readText().parseSDK()
-        val sdk = irDir.parseSDK()
+        val sdk = jrFile.readText().parseSDK()
+//        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {

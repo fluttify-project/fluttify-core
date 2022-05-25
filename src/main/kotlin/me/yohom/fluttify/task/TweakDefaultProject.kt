@@ -103,5 +103,10 @@ open class TweakDefaultProject : FluttifyTask() {
             .writeText(analysisTmpl)
 
         // TODO 是否需要实现podfile指定自定义源?
+
+        // 删除不需要的文件
+        "$outputProjectPath/lib/${ext.projectName}_method_channel.dart".file().delete()
+        "$outputProjectPath/lib/${ext.projectName}_platform_interface.dart".file().delete()
+        "$outputProjectPath/test/".file().deleteRecursively()
     }
 }

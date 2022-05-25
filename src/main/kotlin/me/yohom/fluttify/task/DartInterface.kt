@@ -36,10 +36,10 @@ open class AndroidDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
         // 旧版json解析
-//        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
-//        val sdk = jrFile.readText().parseSDK()
-        val irDir = "${project.projectDir}/ir/android/xml/".file()
-        val sdk = irDir.parseSDK()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.android.json".file()
+        val sdk = jrFile.readText().parseSDK()
+//        val irDir = "${project.projectDir}/ir/android/xml/".file()
+//        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/".file().deleteRecursively()
@@ -163,10 +163,10 @@ open class IOSDartInterface : FluttifyTask() {
     @TaskAction
     fun process() {
 // 旧版json解析
-//        val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
-//        val sdk = jrFile.readText().parseSDK()
-        val irDir = "${project.projectDir}/ir/ios/xml/".file()
-        val sdk = irDir.parseSDK()
+        val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
+        val sdk = jrFile.readText().parseSDK()
+//        val irDir = "${project.projectDir}/ir/ios/xml/".file()
+//        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
         "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/".file().deleteRecursively()
