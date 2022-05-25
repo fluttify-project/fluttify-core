@@ -439,9 +439,10 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
 
     @delegate:Transient
     val isKnownType: Boolean by lazy {
-        platform != Platform.Unknown || jsonable || Regexes.ITERABLE.matches(name) || Regexes.MAP.matches(
-            name
-        )
+        platform != Platform.Unknown
+                || jsonable
+                || Regexes.ITERABLE.matches(name)
+                || Regexes.MAP.matches(name)
     }
 
     @delegate:Transient
