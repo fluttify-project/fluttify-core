@@ -13,6 +13,7 @@ private const val java = "Java"
 
 typealias MemberDef = Node
 typealias CompoundDef = Node
+typealias TypeDef = Node
 
 // 此次解析上下文
 var language: String = ""
@@ -356,12 +357,12 @@ private fun CompoundDef.methods(): List<Method> {
 
     methods.let {
         for (item in it) { // memberdef
-            val type = item.contentOf("type").pack().removeObjcSpecifier()
+            val returnType = item.refTypeName()
             val name = item.contentOf("name").split(":").first()
             val isStatic = item("static") == "yes"
             val isAbstract = item("abstract") == "yes"
             val method = Method(
-                returnType = type,
+                returnType = returnType,
                 name = name,
                 isStatic = isStatic,
                 isAbstract = isAbstract,
@@ -428,7 +429,7 @@ private fun MemberDef.parameters(): List<Parameter> {
     val result = mutableListOf<Parameter>()
 
     for (node in listBy("param")) { // param
-        val type = node.contentOf("type").pack()
+        val type = node.refTypeName()
         val name = node.contentOf("declname")
 
         if (type == "void") continue
@@ -558,4 +559,27 @@ private fun CompoundDef.setupEnv() {
         objc, cpp -> Platform.iOS
         else -> Platform.Unknown
     }
+}
+
+/**
+ * 引用类型名称
+ */
+private fun TypeDef.refTypeName(): String {
+    return if (platform == Platform.Android) {
+        val refId = this["type"]?.get("ref")?.invoke("refid")
+        if (refId == null) {
+            this.contentOf("type")
+        } else {
+            val fragments = refId.split("_1_1")
+            val packageName = fragments.dropLast(1)
+                .joinToString(".")
+                .removePrefix("class")
+                .removePrefix("interface")
+            val className = fragments.last().underscore2Camel()
+
+            "$packageName.$className"
+        }
+    } else {
+        this.contentOf("type")
+    }.pack().removeObjcSpecifier().removePrefix("final")
 }
