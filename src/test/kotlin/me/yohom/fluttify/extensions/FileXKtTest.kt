@@ -39,6 +39,14 @@ class FileXKtTest : FluttifyTest() {
     }
 
     @Test
+    fun isView() {
+        val file="/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val sdk=file.parseSDK()
+        val type=SDK.findType("com.tencent.rtmp.ui.TXCloudVideoView")
+        println("isView: ${type.isView}, type: $type")
+    }
+
+    @Test
     fun functionSig() {
         val text =
             """

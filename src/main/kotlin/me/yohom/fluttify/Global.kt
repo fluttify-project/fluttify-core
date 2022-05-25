@@ -10,13 +10,13 @@ const val SUCCESS_LOG = true
 const val CONSTRUCTOR_LOG = false
 const val VARIABLE_LOG = false
 const val FIELD_LOG = false
-const val TYPE_LOG = false
+const val TYPE_LOG = true
 const val FILE_LOG = false
 const val METHOD_LOG = false
 const val CACHE_LOG = false
 
-//const val ENABLE_CACHE = false
-const val ENABLE_CACHE = true
+const val ENABLE_CACHE = false
+//const val ENABLE_CACHE = true
 
 private var idSequence = 0
 val NEXT_ID
