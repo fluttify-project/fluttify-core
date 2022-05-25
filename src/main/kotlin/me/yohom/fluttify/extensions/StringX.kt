@@ -473,6 +473,7 @@ fun TYPE_NAME.toDartType(): TYPE_NAME {
 
         .replace("$", ".")
         .replace(".", "_")
+        .removePrefix("struct") // 不明原因结构体可能会出现struct前缀
         .depointer()
         .deprotocol()
 }

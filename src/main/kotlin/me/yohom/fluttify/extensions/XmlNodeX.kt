@@ -197,18 +197,7 @@ fun CompoundDef.types(): List<Type> {
  * 从compounddef解析类型数据
  */
 private fun CompoundDef.type(): Type {
-    // 上下文赋值
-    language = this("language")
-    objectType = when (language) {
-        java -> "java.lang.Object"
-        objc, cpp -> "NSObject"
-        else -> ""
-    }
-    platform = when (language) {
-        java -> Platform.Android
-        objc, cpp -> Platform.iOS
-        else -> Platform.Unknown
-    }
+    setupEnv()
 
     val result = Type()
 
