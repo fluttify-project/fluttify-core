@@ -30,13 +30,13 @@ open class FluttifyCorePlugin : Plugin<Project> {
         val androidAddDependency = project.tasks.create("androidAddDependency", AndroidAddDependency::class.java)
         val iOSAddDependency = project.tasks.create("iOSAddDependency", IOSAddDependency::class.java)
 
-//        val androidJsonRepresentation =
-//            project.tasks.create("androidJsonRepresentation", AndroidJsonRepresentation::class.java)
-//        val iOSJsonRepresentation = project.tasks.create("iOSJsonRepresentation", IOSJsonRepresentation::class.java)
-
-        val androidXmlRepresentation =
-            project.tasks.create("androidXmlRepresentation", AndroidXmlRepresentation::class.java)
-        val iOSXmlRepresentation = project.tasks.create("iOSXmlRepresentation", IOSXmlRepresentation::class.java)
+        val androidJsonRepresentation =
+            project.tasks.create("androidJsonRepresentation", AndroidJsonRepresentation::class.java)
+        val iOSJsonRepresentation = project.tasks.create("iOSJsonRepresentation", IOSJsonRepresentation::class.java)
+//
+//        val androidXmlRepresentation =
+//            project.tasks.create("androidXmlRepresentation", AndroidXmlRepresentation::class.java)
+//        val iOSXmlRepresentation = project.tasks.create("iOSXmlRepresentation", IOSXmlRepresentation::class.java)
 
         val androidDartInterface = project.tasks.create("androidDartInterface", AndroidDartInterface::class.java)
         val iOSDartInterface = project.tasks.create("iOSDartInterface", IOSDartInterface::class.java)
@@ -61,15 +61,15 @@ open class FluttifyCorePlugin : Plugin<Project> {
         // dart接口
         commonObjects.dependsOn(iOSDartInterface)
         iOSDartInterface.dependsOn(androidDartInterface)
-        androidDartInterface.dependsOn(iOSXmlRepresentation)
+        androidDartInterface.dependsOn(iOSJsonRepresentation)
 
         // json表示
-//        iOSJsonRepresentation.dependsOn(androidJsonRepresentation)
-//        androidJsonRepresentation.dependsOn(iOSAddDependency)
-
+        iOSJsonRepresentation.dependsOn(androidJsonRepresentation)
+        androidJsonRepresentation.dependsOn(iOSAddDependency)
+//
         // xml表示
-        iOSXmlRepresentation.dependsOn(androidXmlRepresentation)
-        androidXmlRepresentation.dependsOn(iOSAddDependency)
+//        iOSXmlRepresentation.dependsOn(androidXmlRepresentation)
+//        androidXmlRepresentation.dependsOn(iOSAddDependency)
 
         // 添加依赖
         iOSAddDependency.dependsOn(androidAddDependency)
