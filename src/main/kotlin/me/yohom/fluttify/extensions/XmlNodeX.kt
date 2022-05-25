@@ -2,6 +2,8 @@ package me.yohom.fluttify.extensions
 
 import me.yohom.fluttify.model.*
 import org.w3c.dom.Node
+import parser.objc.ObjectiveCParser
+import parser.objc.ObjectiveCParserBaseListener
 
 private const val compounddef = "compounddef"
 private const val compoundname = "compoundname"
@@ -89,17 +91,74 @@ fun CompoundDef.typedefs(): List<Type> {
 
     val resultList = mutableListOf<Type>()
 
-    val functions = compound
+    val typedef = compound
         .listBy("sectiondef")
         .filter { it("kind") == "typedef" }
         .flatMap { it.listBy("memberdef") }
 
-    for (item in functions) { // memberdef
+    for (item in typedef) { // memberdef
+        val aliasOf = item.contentOf("type")
         val type = Type()
-        type.platform = platform
-        type.typeType = TypeType.Alias
-        type.name = item.contentOf("name")
-        type.aliasOf = item.contentOf("type")
+        // block别名无法被doxygen识别, 只能通过antlr辅助解析一下
+        if (aliasOf.contains("(^")) {
+            val definition = "${item.contentOf("definition")};"
+            // 代码参考了antlr版本解析的逻辑
+            definition.walkTree(object : ObjectiveCParserBaseListener() {
+                override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
+                    val returnType = ctx
+                        .declarationSpecifiers()
+                        ?.typeSpecifier()
+                        ?.get(0)
+                        ?.text
+                    val typeName = ctx
+                        .typeDeclaratorList()
+                        ?.typeDeclarator()
+                        ?.get(0)
+                        ?.directDeclarator()
+                        ?.identifier()
+                        ?.text
+                    val formalParams = ctx
+                        .typeDeclaratorList()
+                        ?.typeDeclarator()
+                        ?.get(0)
+                        ?.directDeclarator()
+                        ?.blockParameters()
+                        ?.typeVariableDeclaratorOrName()
+                        ?.filter { it.typeName()?.text != "void" } // void类型, 不占用参数
+                        ?.mapNotNull { it.typeVariableDeclarator() }
+                        ?.mapIndexed { index, it ->
+                            val argName = it.declarator().text
+                                .depointer()
+                                .removeObjcSpecifier()
+                                .run { ifEmpty { "__arg${index}__" } }
+                            val argType = it.declarationSpecifiers()
+                                .text
+                                .run { if (it.declarator().text.startsWith("*")) enpointer() else this }
+                                .objcSpecifierExpand()
+                            Parameter(
+                                variable = Variable(argType, argName, Platform.iOS),
+                                platform = Platform.iOS
+                            )
+                        }
+
+                    if (returnType != null && typeName != null) {
+                        type.typeType = TypeType.Lambda
+                        type.isPublic = true
+                        type.isAbstract = false
+                        type.name = typeName
+                        type.isStaticType = true
+                        type.returnType = returnType
+                        type.formalParams = formalParams ?: listOf()
+                        type.platform = Platform.iOS
+                    }
+                }
+            })
+        } else {
+            type.platform = platform
+            type.typeType = TypeType.Alias
+            type.name = item.contentOf("name")
+            type.aliasOf = aliasOf
+        }
 
         resultList.add(type)
     }

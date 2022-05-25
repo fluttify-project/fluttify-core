@@ -16,7 +16,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseSDK() {
         val irDir =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/".file()
         val sdk = irDir.parseSDK()
         println("解析结果: $sdk")
     }
@@ -24,7 +24,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseXml() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/interface_b_m_k_map_manager.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/interface_b_m_k_map_manager.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
@@ -36,7 +36,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseEnum() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/_b_m_k_types_8h.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/_b_m_k_types_8h.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
@@ -61,7 +61,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseNamedArg() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/interface_b_m_k_base_log.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/interface_b_m_k_base_log.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
@@ -74,7 +74,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseFinalProperty() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/interface_b_m_k_build_info.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/interface_b_m_k_build_info.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
@@ -87,7 +87,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseProtocol() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/protocol_b_m_k_general_delegate-p.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/protocol_b_m_k_general_delegate-p.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
@@ -100,7 +100,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseClassMethod() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/interface_b_m_k_map_manager.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/interface_b_m_k_map_manager.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
@@ -113,7 +113,7 @@ class StringXKtTest : FluttifyTest() {
     @Test
     fun parseFunctions() {
         val xmlFile =
-            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify_doxygen/ir/ios/xml/_b_m_k_types_8h.xml".file()
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_core_fluttify/ir/ios/xml/_b_m_k_types_8h.xml".file()
         val doc = DocumentBuilderFactory.newInstance()
             .newDocumentBuilder()
             .parse(xmlFile)
@@ -134,6 +134,19 @@ class StringXKtTest : FluttifyTest() {
         val result = doxygenRoot.types()
 
         result.first().methods.map(::RefRefTmpl)
+
+        println("解析结果: $result")
+    }
+
+    @Test
+    fun parseTypedef() {
+        val xmlFile =
+            "/Users/yohom/Github/Me/All/fluttify/bmap/bmap_map_fluttify/ir/ios/xml/_b_m_k_location_manager_8h.xml".file()
+        val doc = DocumentBuilderFactory.newInstance()
+            .newDocumentBuilder()
+            .parse(xmlFile)
+        val doxygenRoot = doc.getElementsByTagName("doxygen").item(0)
+        val result = doxygenRoot.typedefs()
 
         println("解析结果: $result")
     }
