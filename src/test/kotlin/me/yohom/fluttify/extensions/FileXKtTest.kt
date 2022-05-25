@@ -40,10 +40,20 @@ class FileXKtTest : FluttifyTest() {
 
     @Test
     fun isView() {
-        val file="/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
-        val sdk=file.parseSDK()
-        val type=SDK.findType("com.tencent.rtmp.ui.TXCloudVideoView")
+        val file =
+            "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val sdk = file.parseSDK()
+        val type = SDK.findType("com.tencent.rtmp.ui.TXCloudVideoView")
         println("isView: ${type.isView}, type: $type")
+    }
+
+    @Test
+    fun testConstructor() {
+        val file =
+            "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val sdk=file.parseSDK()
+        val type=sdk.allTypes.find { it.name=="com.tencent.rtmp.TXVodPlayer" }
+        println("type: $type")
     }
 
     @Test
@@ -75,7 +85,8 @@ class FileXKtTest : FluttifyTest() {
                     ?.map {
                         Parameter(
                             variable = Variable(
-                                typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
+                                typeName = (it.declarationSpecifiers()?.text
+                                    ?: it.VOID().text).run {
                                     if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
                                 },
                                 platform = Platform.iOS,
@@ -1017,7 +1028,7 @@ typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
                         val argName = it.declarator().text
                             .depointer()
                             .removeObjcSpecifier()
-                            .run { if(isEmpty()) "__arg${index}__" else this }
+                            .run { if (isEmpty()) "__arg${index}__" else this }
                         val argType = it.declarationSpecifiers()
                             .text
                             .run { if (argName.startsWith("*")) enpointer() else this }
@@ -1033,7 +1044,9 @@ typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
 
     @Test
     fun methodSig_startScreenCapture() {
-        val source = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Professional.framework/Headers/TRTCCloud.h".file().readText()
+        val source =
+            "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Professional.framework/Headers/TRTCCloud.h".file()
+                .readText()
 //        val source = "- (int)stopScreenCapture;"
         source.walkTree(object : ObjectiveCParserBaseListener() {
 //            override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {

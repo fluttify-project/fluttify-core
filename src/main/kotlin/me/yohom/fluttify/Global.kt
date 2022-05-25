@@ -7,7 +7,7 @@ import java.io.File
 
 const val SUCCESS_LOG = true
 
-const val CONSTRUCTOR_LOG = false
+const val CONSTRUCTOR_LOG = true
 const val VARIABLE_LOG = false
 const val FIELD_LOG = false
 const val TYPE_LOG = true
