@@ -5,12 +5,12 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.callback_case_lambda.CallbackCaseLambdaTmpl
 
 //static Future<#__class_name__#> anonymous__(#__formal_params__#) async {
-//  final __result__ = await k#__project_prefix__#Channel.invokeMethod('#__class_name__#::createAnonymous');
+//  final __result__ = await k#__project_prefix__#Channel.invokeMethod('#__class_name__#::createAnonymous__');
 //
-//  final __object__ = #__project_prefix__##__platform__#As<#__class_name__#>(__result__);
+//  final __object__ = #__project_prefix__##__platform__#As<#__class_name__#>(__result__)!;
 //
 //  // handle callback
-//  MethodChannel('#__class_name__#::createAnonymous_callback_${__object__.refId}', k#__project_name__#MethodCodec)
+//  MethodChannel('#__class_name__#::createAnonymous::Callback::${__object__.refId}', k#__project_prefix__#MethodCodec)
 //      .setMethodCallHandler((methodCall) async {
 //        try {
 //          final args = methodCall.arguments as Map;
@@ -43,6 +43,7 @@ fun AnonymousTmpl(type: Type): String {
         .joinToStringX("\n")
     return tmpl
         .replace("#__class_name__#", type.name.toDartType())
+        .replace("#__channel_prefix__#", type.name.replace("$", "."))
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__cases__#", callbackCases)
         .replaceGlobal(platform = type.platform)

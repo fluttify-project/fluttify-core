@@ -4,7 +4,7 @@ static Future<#__class_name__#> anonymous__(#__formal_params__#) async {
   final __object__ = #__project_prefix__##__platform__#As<#__class_name__#>(__result__)!;
 
   // handle callback
-  MethodChannel('#__class_name__#::createAnonymous_callback_${__object__.refId}', k#__project_prefix__#MethodCodec)
+  MethodChannel('#__channel_prefix__#::Callback@${__object__.refId}', k#__project_prefix__#MethodCodec)
       .setMethodCallHandler((methodCall) async {
         try {
           final args = methodCall.arguments as Map;

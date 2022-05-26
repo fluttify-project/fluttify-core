@@ -43,7 +43,7 @@ fun MethodTmpl(method: Method): String {
         }
     val log = LogTmpl(method)
     val callback = method.formalParams
-        .filter { it.variable.isCallback() || it.variable.isLambda() }
+        .filter { it.variable.isLambda() }
         .map { it.variable }
         .map { CallbackMethodTmpl(method, it.trueType.findType(), it.name) }
     val invoke = InvokeTmpl(method)

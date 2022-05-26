@@ -1,7 +1,6 @@
 package me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback
 
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.CallbackMethodTmpl
 
@@ -15,20 +14,15 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //}
 private val tmpl by lazy { getResource("/tmpl/java/callback.stmt.java.tmpl").readText() }
 
-fun CallbackTmpl(callerMethod: Method, callbackType: Type): String {
-    val containerType = callbackType.name.replace("$", ".")
-    val genericTypes = callbackType.definedGenericTypes
+fun CallbackTmpl(type: Type): String {
+    val containerType = type.name.replace("$", ".")
+    val genericTypes = type.definedGenericTypes
         .map { it.ifIsGenericTypeConvertToObject() }
         .joinToStringX(prefix = "<", suffix = ">")
     val className = "${containerType}${genericTypes}"
-    val callbackChannel = if(callerMethod.isStatic){
-        "\"${callerMethod.nameWithClass()}::Callback\""
-    } else {
-        "\"${callerMethod.nameWithClass()}::Callback@\" + __this__.getClass().getName() + \":\" + System.identityHashCode(__this__)"
-    }
-    // 回调类自身+父类接口
-    val callbackMethods = callbackType.methods
-        .union(callbackType.ancestorTypes.flatMap { it.findType().methods })
+    val callbackChannel = "\"${type.name}::Callback@\" + System.identityHashCode(this)"    // 回调类自身+父类接口
+    val callbackMethods = type.methods
+        .union(type.ancestorTypes.flatMap { it.findType().methods })
         .joinToString("\n") { CallbackMethodTmpl(it) }
     return tmpl
         .replace("#__callback_class_name__#", className)

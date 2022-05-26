@@ -3,6 +3,7 @@ package me.yohom.fluttify.task
 import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.SDK
+import me.yohom.fluttify.tmpl.java.common.handler.handler_anonymous.HandlerAnonymousTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter_batch.HandlerGetterBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
@@ -99,6 +100,10 @@ open class AndroidJavaInterface : FluttifyTask() {
             .filterMethod(batch = true)
             .map { HandlerMethodBatchTmpl(it) }
 
+        val anonymous = filteredTypes
+            .filter { it.isCallback } // 只有回调类(其实只要不是final类都可以, 但是暂时只生成回调类的)需要生成匿名类
+            .map { HandlerAnonymousTmpl(it) }
+
         val typeChecks = filteredTypes
             .asSequence()
             .filterNot { it.isLambda }
@@ -122,6 +127,7 @@ open class AndroidJavaInterface : FluttifyTask() {
             .union(settersBatch)
             .union(methods)
             .union(methodsBatch)
+            .union(anonymous)
             .union(typeChecks)
             .union(objectCreators)
             .union(objectCreatorsBatch)

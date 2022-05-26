@@ -34,14 +34,12 @@ private val tmpl by lazy { getResource("/tmpl/java/handler_method.stmt.java.tmpl
 fun HandlerMethodTmpl(method: Method): String {
     val methodName = method.nameWithClass()
     val resultType = method.returnType.replace("$", ".").boxedType()
-    val args = method.formalParams
-        .filter { !it.variable.trueType.findType().isCallback }
-        .joinToString("\n") {
-            when {
-                it.variable.isEnum() -> ArgEnumTmpl(it.variable)
-                else -> ArgRefTmpl(it.variable)
-            }
+    val args = method.formalParams.joinToString("\n") {
+        when {
+            it.variable.isEnum() -> ArgEnumTmpl(it.variable)
+            else -> ArgRefTmpl(it.variable)
         }
+    }
     val log = if (method.isStatic) {
         LogStaticTmpl(method)
     } else {

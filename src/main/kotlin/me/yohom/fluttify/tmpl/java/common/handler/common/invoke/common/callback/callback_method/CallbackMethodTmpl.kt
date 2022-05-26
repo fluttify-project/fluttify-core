@@ -33,7 +33,7 @@ private val tmpl by lazy { getResource("/tmpl/java/callback_method.mtd.java.tmpl
 
 fun CallbackMethodTmpl(method: Method): String {
     val callbackMethod = method.name
-    val callbackMethodName = method.nameWithClass()
+    val callbackMethodName = "${method.name}::${method.name}" // 这里由于要跟CallbackCaseLambdaTmpl对齐, 所以先这样命名method name了
     val formalParams = method
         .formalParams
         .map { it.variable }

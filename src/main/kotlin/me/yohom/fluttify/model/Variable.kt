@@ -3,9 +3,7 @@ package me.yohom.fluttify.model
 import com.google.gson.Gson
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
-import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.CallbackTmpl
 
 /**
  * 表示一个变量(字段, 方法参数, 局部变量)
@@ -145,21 +143,13 @@ data class Variable(
         return "List<${trueType.toDartType()}> $name"
     }
 
-    fun var2Args(hostMethod: Method? = null): String {
-        return if (trueType.findType().isCallback && hostMethod != null) {
-            when {
-                isIterable -> "new ArrayList() /* 暂不支持列表回调 */"
-                containerType().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
-                else -> CallbackTmpl(hostMethod, trueType.findType())
-            }
-        } else {
-            when (trueType) {
-                "float", "Float" -> "${name}.floatValue()"
-                "double", "Double" -> "${name}.doubleValue()"
-                "int", "Integer" -> "${name}.intValue()"
-                "long", "Long" -> "${name}.longValue()"
-                else -> name
-            }
+    fun var2Args(): String {
+        return when (trueType) {
+            "float", "Float" -> "${name}.floatValue()"
+            "double", "Double" -> "${name}.doubleValue()"
+            "int", "Integer" -> "${name}.intValue()"
+            "long", "Long" -> "${name}.longValue()"
+            else -> name
         }
     }
 
