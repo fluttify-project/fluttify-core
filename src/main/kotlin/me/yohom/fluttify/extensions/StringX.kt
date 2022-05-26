@@ -489,7 +489,8 @@ fun TYPE_NAME.isStructPointer(): Boolean {
 /**
  * 添加可空'?'
  */
-fun TYPE_NAME.enOptional(): String {
+fun TYPE_NAME.enOptional(optional: Boolean = true): String {
+    if (!optional) return this
     return if (isOneOf("void", "dynamic")) this else "${this}?"
 }
 

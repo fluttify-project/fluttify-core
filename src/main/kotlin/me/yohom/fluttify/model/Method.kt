@@ -207,4 +207,12 @@ data class Method(
     override fun toString(): String {
         return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
+
+    fun asType(): Type {
+        return Type().also {
+            it.name = name
+            it.formalParams = formalParams
+            it.returnType = returnType
+        }
+    }
 }

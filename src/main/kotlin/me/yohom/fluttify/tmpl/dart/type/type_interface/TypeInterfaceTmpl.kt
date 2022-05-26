@@ -6,6 +6,7 @@ import me.yohom.fluttify.model.Platform
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.common.getter.GetterTmpl
 import me.yohom.fluttify.tmpl.dart.type.common.setter.SetterTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_interface.anonymous.AnonymousTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.interface_method.InterfaceMethodTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
@@ -41,9 +42,12 @@ private val batchTmpl by lazy { getResource("/tmpl/dart/type_interface_batch.dar
 
 fun TypeInterfaceTmpl(type: Type): String {
     val currentPackage = ext.projectName
-    val typeName = "${type.name.toDartType()}${type.declaredGenericTypes.joinToStringX(",", "<", ">")}"
+    val typeName =
+        "${type.name.toDartType()}${type.declaredGenericTypes.joinToStringX(",", "<", ">")}"
 
     val constants = type.fields.filterConstants()
+
+    val anonymous = if (type.platform == Platform.Android) AnonymousTmpl(type) else ""
 
     val allSuperType = type.ancestorTypes
         .reversed()
@@ -130,6 +134,7 @@ fun TypeInterfaceTmpl(type: Type): String {
             ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
         .replace("#__sub_class__#", subclass)
         .replace("#__sub_instance__#", subInstance)
+        .replaceParagraph("#__anonymous__#", anonymous)
         .replace("#__interface_type__#", typeName)
         .replace("#__sub_super_mixins__#", subSuperMixins)
         .replace("#__super_mixins__#", superMixins)

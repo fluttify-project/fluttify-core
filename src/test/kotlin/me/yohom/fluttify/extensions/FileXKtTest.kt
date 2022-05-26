@@ -3,6 +3,7 @@ package me.yohom.fluttify.extensions
 import me.yohom.fluttify.EaseMob
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.model.*
+import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
@@ -45,6 +46,16 @@ class FileXKtTest : FluttifyTest() {
         val sdk = file.parseSDK()
         val type = SDK.findType("com.tencent.rtmp.ui.TXCloudVideoView")
         println("isView: ${type.isView}, type: $type")
+    }
+
+    @Test
+    fun parseAnonymous() {
+        val file = "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val sdk = file.parseSDK()
+        val type = SDK.findType("com.tencent.rtmp.ITXLivePlayListener")
+
+        val result = TypeInterfaceTmpl(type)
+        println(result)
     }
 
     @Test

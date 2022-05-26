@@ -77,7 +77,8 @@ data class Variable(
     }
 
     fun isCallback(): Boolean {
-        return trueType.containerType().findType().isCallback || trueType.deprotocol().findType().isCallback
+        return trueType.containerType().findType().isCallback || trueType.deprotocol()
+            .findType().isCallback
     }
 
     fun isInterface(): Boolean {
@@ -131,12 +132,12 @@ data class Variable(
         return trueType.iterableLevel()
     }
 
-    fun toDartString(): String {
+    fun toDartString(optional: Boolean = false): String {
         return if (trueType.findType().isLambda) {
             val type = trueType.findType()
             "${type.returnType.toDartType()} Function(${type.formalParams.joinToString { it.variable.toDartString() }}) $name"
         } else {
-            "${trueType.toDartType()} ${name.removeObjcSpecifier()}"
+            "${trueType.toDartType().enOptional(optional)} ${name.removeObjcSpecifier()}"
         }
     }
 
