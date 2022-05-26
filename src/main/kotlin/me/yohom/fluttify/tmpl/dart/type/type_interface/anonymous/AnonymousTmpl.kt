@@ -10,7 +10,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //  final __object__ = #__project_prefix__##__platform__#As<#__class_name__#>(__result__)!;
 //
 //  // handle callback
-//  MethodChannel('#__class_name__#::createAnonymous::Callback::${__object__.refId}', k#__project_prefix__#MethodCodec)
+//  MethodChannel('#__channel_prefix__#::Callback@${__object__.refId}', k#__project_prefix__#MethodCodec)
 //      .setMethodCallHandler((methodCall) async {
 //        try {
 //          final args = methodCall.arguments as Map;

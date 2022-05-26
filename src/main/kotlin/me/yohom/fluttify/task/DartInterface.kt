@@ -117,7 +117,6 @@ open class AndroidDartInterface : FluttifyTask() {
             .filterNot { it.isFunction }
             .filterNot { it.typeType == TypeType.Extension }
             .filterNot { it.isAlias() }
-            .filterNot { it.isCallback }
             .filterNot { it.isEnum }
             .filterNot { ext.android.exclude.classes.contains(it.name) }
             .filterNot { it.name == "android.view.SurfaceHolder.Callback" }

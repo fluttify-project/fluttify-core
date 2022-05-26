@@ -61,15 +61,28 @@ fun TypeInterfaceTmpl(type: Type): String {
         .map {
             // 如果当前类有声明泛型, 那么祖宗类里的泛型就用当前类型的声明泛型
             if (type.declaredGenericTypes.isNotEmpty()) {
-                "${it.containerType()}${it.findType().declaredGenericTypes.joinToStringX(",", "<", ">")}"
+                "${it.containerType()}${
+                    it.findType().declaredGenericTypes.joinToStringX(
+                        ",",
+                        "<",
+                        ">"
+                    )
+                }"
             }
             // 否则使用祖宗类自己的定义泛型
             else {
-                "${it.containerType()}${it.findType().definedGenericTypes.joinToStringX(",", "<", ">")}"
+                "${it.containerType()}${
+                    it.findType().definedGenericTypes.joinToStringX(
+                        ",",
+                        "<",
+                        ">"
+                    )
+                }"
             }
         }
         .toList()
-    val subSuperMixins = if (allSuperType.isEmpty()) "" else "${allSuperType.joinToString().toDartType()}, "
+    val subSuperMixins =
+        if (allSuperType.isEmpty()) "" else "${allSuperType.joinToString().toDartType()}, "
     val superMixins = if (allSuperType.isEmpty()) {
         type.platform.objectType()
     } else {
@@ -77,19 +90,13 @@ fun TypeInterfaceTmpl(type: Type): String {
     }
 
     val containerType = typeName.containerType()
-    val subclass = if (!type.isCallback) {
-        val genericType = type.declaredGenericTypes.joinToStringX(",", "<", ">")
+    val genericType = type.declaredGenericTypes.joinToStringX(",", "<", ">")
+    val subclass =
         "class _${containerType}_SUB$genericType extends ${type.platform.objectType()} with $subSuperMixins$typeName {}"
-    } else {
-        ""
-    }
+
     // 给接口类型提供一个可供实例化的子类, mixin需要继承各平台Object类型, 并实现接口类
-    val subInstance = if (!type.isCallback) {
-        val genericType = type.declaredGenericTypes.joinToStringX(",", "<", ">")
+    val subInstance =
         "static $containerType$genericType subInstance$genericType() => _${containerType}_SUB$genericType();"
-    } else {
-        ""
-    }
 
     val methods = type.methods
         .filterMethod()
