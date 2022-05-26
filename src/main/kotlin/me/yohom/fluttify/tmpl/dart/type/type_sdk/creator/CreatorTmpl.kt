@@ -19,7 +19,7 @@ fun CreatorTmpl(type: Type): List<String> {
             .filterConstructor()
             .map {
                 tmpl
-                    .replace("#__class_name__#", type.name.toUnderscore().enOptional())
+                    .replace("#__class_name__#", type.name.toUnderscore())
                     .replace(
                         "#__signature__#",
                         it.formalParams.joinToString("__") {
