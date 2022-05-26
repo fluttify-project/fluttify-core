@@ -147,6 +147,11 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     var overrideElements: Map<String, String> = mapOf()
 
     /**
+     * 全局宏展开, 作用在源代码文件上, 接收正则表达式
+     */
+    var predefineMacro: Map<String, String> = mapOf()
+
+    /**
      * 依赖仓库
      *
      * Android端即`maven { url 'https://download.flutter.io' }`;

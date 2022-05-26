@@ -19,7 +19,10 @@ import java.util.*
  * Java源码解析
  */
 fun JAVA_FILE.javaType(): SourceFile {
-    val source = readText()
+    var source = readText()
+    for (entry in ext.android.predefineMacro.entries) {
+        source = source.replace(Regex(entry.key), entry.value)
+    }
 
     var packageName = ""
     var declaredGenericTypes = listOf<TYPE_NAME>()
@@ -218,7 +221,10 @@ fun JAVA_FILE.javaType(): SourceFile {
  * Objc源码解析
  */
 fun OBJC_FILE.objcType(): SourceFile {
-    val source = readText()
+    var source = readText()
+    for (entry in ext.ios.predefineMacro.entries) {
+        source = source.replace(Regex(entry.key), entry.value)
+    }
 
     val topLevelConstant = mutableListOf<Variable>()
     val types = mutableListOf<Type>()
