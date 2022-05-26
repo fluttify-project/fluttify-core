@@ -20,7 +20,8 @@ private val tmpl by lazy { getResource("/tmpl/dart/callback_case.stmt.dart.tmpl"
 
 fun CallbackCaseLambdaTmpl(lambdaType: Type, lambdaName: String): String {
     val callbackCase = "Callback::${lambdaType.name.replace("$", ".")}::${lambdaType.name}"
-    val log = ""
+    val log =
+        "debugPrint('fluttify-dart-callback: ${lambdaName}(${lambdaType.formalParams.map { "\\'${it.variable.name}\\':\${args['${it.variable.name}']}" }})');"
     val callbackArgs = lambdaType
         .formalParams
         .joinToString {
