@@ -9,11 +9,10 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatfor
 import java.io.File
 
 //#import <Flutter/Flutter.h>
-//#__imports__#
 //
 //typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, id, FlutterResult);
 //
-//@interface #__plugin_name__#Plugin : NSObject<#__protocols__#>
+//@interface #__plugin_name__#Plugin : NSObject<FlutterPlugin>
 //
 //- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar;
 //
