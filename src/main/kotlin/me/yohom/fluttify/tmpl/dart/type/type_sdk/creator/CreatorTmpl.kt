@@ -9,7 +9,7 @@ import me.yohom.fluttify.model.Type
 //    'ObjectFactory::create#__creator_name__#',
 //    #__args__#
 //  );
-//  return #__project_prefix__##__platform__#As<#__class_name__#>(__result__);
+//  return #__project_prefix__##__platform__#As<#__class_name__#>(__result__)!;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/creator.mtd.dart.tmpl").readText() }
 
@@ -37,7 +37,7 @@ fun CreatorTmpl(type: Type): List<String> {
             }
         Platform.iOS -> listOf(
             tmpl
-                .replace("#__class_name__#", type.name.toUnderscore().enOptional())
+                .replace("#__class_name__#", type.name.toUnderscore())
                 .replace("#__signature__#", "")
                 .replace("#__creator_name__#", type.name.toUnderscore())
                 .replace("#__formal_params__#", "{ bool init = true /* ios only */ }")
