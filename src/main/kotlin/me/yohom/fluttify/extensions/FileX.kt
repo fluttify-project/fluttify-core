@@ -206,7 +206,7 @@ fun JAVA_FILE.javaType(): SourceFile {
             type.definedGenericTypes.addAll(definedGenericTypes)
             type.constructors = constructors
             type.interfaces = interfaces
-            type.name = "$packageName.$simpleName"
+            type.name = "$packageName.${simpleName}"
             type.superClass = superClass
             type.fields.addAll(fields)
             type.methods.addAll(methods)

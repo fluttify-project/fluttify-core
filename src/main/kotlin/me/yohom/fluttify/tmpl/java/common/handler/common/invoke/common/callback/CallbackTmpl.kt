@@ -20,7 +20,7 @@ fun CallbackTmpl(type: Type): String {
         .map { it.ifIsGenericTypeConvertToObject() }
         .joinToStringX(prefix = "<", suffix = ">")
     val className = "${containerType}${genericTypes}"
-    val callbackChannel = "\"${type.name}::Callback@\" + getClass().getName() + \":\" + System.identityHashCode(this)"
+    val callbackChannel = "\"${type.name.replace("$", ".")}::Callback@\" + getClass().getName() + \":\" + System.identityHashCode(this)"
     val callbackMethods = type.methods
         .union(type.ancestorTypes.flatMap { it.findType().methods })
         .joinToString("\n") { CallbackMethodTmpl(it) }
