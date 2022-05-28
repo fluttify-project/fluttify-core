@@ -3,7 +3,7 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callbac
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Parameter
 
-//#__project_prefix__##__platform__#As(args['#__arg_name__#'])
+//#__project_prefix__##__platform__#As<#__arg_type__#>(args['#__arg_name__#'])
 private val tmpl by lazy { getResource("/tmpl/dart/callback_case_arg_ref.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseArgRefTmpl(param: Parameter): String {
@@ -12,6 +12,7 @@ fun CallbackCaseArgRefTmpl(param: Parameter): String {
     } else {
         tmpl
             .replace("#__arg_name__#", param.variable.name.depointer())
+            .replace("#__arg_type__#", param.variable.trueType.toDartType())
             .replaceGlobal(param.platform)
     }
 }
