@@ -176,7 +176,7 @@ fun TYPE_NAME.stringArray2List(): TYPE_NAME {
  * 去掉[]
  */
 fun TYPE_NAME.deSquareBracket(): TYPE_NAME {
-    return removePrefix("[").removeSuffix("]")
+    return removeSuffix("[]")
 }
 
 /**
