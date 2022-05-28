@@ -16,6 +16,7 @@ import me.yohom.fluttify.model.Type
 //  int toValue() {
 //    switch (this) {
 //      #__to_int_cases__#
+//      default: return 0;
 //    }
 //  }
 //}
@@ -24,7 +25,7 @@ import me.yohom.fluttify.model.Type
 //  #__enum_name__# to#__enum_name__#() {
 //    switch (this) {
 //      #__to_enum_cases__#
-//      default: #__enum_name__#.values[this + #__offset__#];
+//      default: return #__enum_name__#.values[this + #__offset__#];
 //    }
 //  }
 //}

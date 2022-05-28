@@ -577,7 +577,10 @@ fun TYPE_NAME.containerType(): TYPE_NAME {
  * 去除数字后面的标识 (L/F/D等)
  */
 fun String.removeNumberSuffix(): TYPE_NAME {
-    return removeSuffix("L").removeSuffix("F").removeSuffix("D")
+    return removeSuffix("L")
+        .removeSuffix("F")
+        .removeSuffix("D")
+        .removeSuffix("U")
 }
 
 /**
