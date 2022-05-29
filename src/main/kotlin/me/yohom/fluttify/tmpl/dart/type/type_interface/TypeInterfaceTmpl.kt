@@ -47,7 +47,7 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     val constants = type.fields.filterConstants()
 
-    val anonymous = if (type.platform == Platform.Android) AnonymousTmpl(type) else ""
+    val anonymous = AnonymousTmpl(type)
 
     val allSuperType = type.ancestorTypes
         .reversed()
@@ -61,23 +61,11 @@ fun TypeInterfaceTmpl(type: Type): String {
         .map {
             // 如果当前类有声明泛型, 那么祖宗类里的泛型就用当前类型的声明泛型
             if (type.declaredGenericTypes.isNotEmpty()) {
-                "${it.containerType()}${
-                    it.findType().declaredGenericTypes.joinToStringX(
-                        ",",
-                        "<",
-                        ">"
-                    )
-                }"
+                "${it.containerType()}${it.findType().declaredGenericTypes.joinToStringX(",", "<", ">")}"
             }
             // 否则使用祖宗类自己的定义泛型
             else {
-                "${it.containerType()}${
-                    it.findType().definedGenericTypes.joinToStringX(
-                        ",",
-                        "<",
-                        ">"
-                    )
-                }"
+                "${it.containerType()}${it.findType().definedGenericTypes.joinToStringX(",", "<", ">")}"
             }
         }
         .toList()
