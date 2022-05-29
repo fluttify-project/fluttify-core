@@ -13,6 +13,7 @@ open class TweakDefaultProject : FluttifyTask() {
 
     private val buildGradleTmpl = getResource("/tmpl/project/build.gradle.java.tmpl").readText()
     private val infoPlistTmpl = getResource("/tmpl/project/Info.plist.tmpl").readText()
+    private val podfileTmpl = getResource("/tmpl/project/Podfile.tmpl").readText()
     private val podSpecTmpl = getResource("/tmpl/project/projectName.podspec.tmpl").readText()
     private val pubSpecTmpl = getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
     private val analysisTmpl = getResource("/tmpl/project/analysis_options.yaml.tmpl").readText()
@@ -21,6 +22,7 @@ open class TweakDefaultProject : FluttifyTask() {
     fun process() {
         val outputProjectPath = "${project.projectDir}/output-project/${ext.projectName}"
 
+        // build.gradle
         "${outputProjectPath}/android/build.gradle"
             .file()
             .writeText(
@@ -43,10 +45,12 @@ open class TweakDefaultProject : FluttifyTask() {
                     )
             )
 
+        // Info.plist
         "${outputProjectPath}/example/ios/Runner/Info.plist"
             .file()
             .writeText(infoPlistTmpl.replace("#__project_name__#", ext.projectName))
 
+        // podspec
         "${outputProjectPath}/ios/${ext.projectName}.podspec"
             .file()
             .writeText(
@@ -73,6 +77,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
             )
 
+        // pubspec.yaml
         "${outputProjectPath}/pubspec.yaml"
             .file()
             .writeText(
@@ -98,11 +103,15 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__plugin_class__#", "${ext.projectName.underscore2Camel()}Plugin")
             )
 
+        // analysis_options.yaml
         "${outputProjectPath}/analysis_options.yaml"
             .file()
             .writeText(analysisTmpl)
 
-        // TODO 是否需要实现podfile指定自定义源?
+        // Podfile
+        "${outputProjectPath}/example/ios/Podfile"
+            .file()
+            .writeText(podfileTmpl)
 
         // 删除不需要的文件
         "$outputProjectPath/lib/${ext.projectName}_method_channel.dart".file().delete()
