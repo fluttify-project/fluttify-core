@@ -20,7 +20,7 @@ import java.util.*
  */
 fun JAVA_FILE.javaType(): SourceFile {
     var source = readText()
-    for (entry in ext.android.predefineMacro.entries) {
+    for (entry in ext.android.allMacros.entries) {
         source = source.replace(Regex(entry.key), entry.value)
     }
 
@@ -222,7 +222,7 @@ fun JAVA_FILE.javaType(): SourceFile {
  */
 fun OBJC_FILE.objcType(): SourceFile {
     var source = readText()
-    for (entry in ext.ios.predefineMacro.entries) {
+    for (entry in ext.ios.allMacros.entries) {
         source = source.replace(Regex(entry.key), entry.value)
     }
 

@@ -4,6 +4,7 @@ import me.yohom.fluttify.extensions.file
 import me.yohom.fluttify.extensions.iterate
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
+import java.util.function.Predicate
 import javax.inject.Inject
 
 open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) {
@@ -60,7 +61,8 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     /**
      * android端配置
      */
-    var android: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
+    var android: PlatformSpec =
+        objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
     fun android(action: Action<PlatformSpec?>) {
         action.execute(android)
@@ -69,7 +71,8 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     /**
      * ios端配置
      */
-    var ios: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
+    var ios: PlatformSpec =
+        objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
     fun ios(action: Action<PlatformSpec?>) {
         action.execute(ios)
@@ -150,6 +153,12 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
      * 全局宏展开, 作用在源代码文件上, 接收正则表达式
      */
     var predefineMacro: Map<String, String> = mapOf()
+
+    /**
+     * 用户定义的宏+内置的宏
+     */
+    val allMacros: Map<String, String>
+        get() = predefineMacro + mapOf("__attribute__\\(.*\\)" to "")
 
     /**
      * 依赖仓库
