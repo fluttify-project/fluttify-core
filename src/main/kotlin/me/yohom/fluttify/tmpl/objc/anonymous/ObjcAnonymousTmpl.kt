@@ -1,8 +1,9 @@
-package me.yohom.fluttify.tmpl.objc.plugin
+package me.yohom.fluttify.tmpl.objc.anonymous
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
+import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.nonview_callback_method.NonViewCallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_handler.RegisterHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
@@ -74,65 +75,29 @@ import java.io.File
 //#__delegate_methods__#
 //
 //@end
-private val hTmpl by lazy { getResource("/tmpl/objc/plugin.h.tmpl").readText() }
-private val mTmpl by lazy { getResource("/tmpl/objc/plugin.m.tmpl").readText() }
+private val hTmpl by lazy { getResource("/tmpl/objc/anonymous.h.tmpl").readText() }
+private val mTmpl by lazy { getResource("/tmpl/objc/anonymous.m.tmpl").readText() }
 
-fun ObjcPluginTmpl(libs: List<Lib>, subHandlerOutputDir: String): List<String> {
-    // 插件名称
-    val pluginClassName = ext.projectName.underscore2Camel(true)
-
-    // method channel
-    val methodChannel = "${ext.org}/${ext.projectName}"
-
-    // PlatformView的头文件
-    val platformViewHeader = mutableListOf<String>()
-    // 注册PlatformView
-    val registerPlatformViews = libs
-        .flatMap { it.types }
-        .filter { it.isView }
-        .onEach { platformViewHeader.add("#import \"${it.name}Factory.h\"") }
-        .joinToString("\n") {
-            RegisterPlatformViewTmpl(it)
-        }
-
+fun ObjcAnonymousTmpl(type: Type): List<String> {
     // 导入头文件
     // 如果没有手动指定的话则拼接出一个
-    val importLibrary = ext.ios.iosLibraryHeaders.union(platformViewHeader).joinToString("\n")
+    val importLibrary = ext.ios.iosLibraryHeaders.joinToString("\n")
 
-    val protocols = libs
-        .flatMap { it.types }
-        .filter { it.filter }
-        .filter { it.isCallback }
-        .joinToStringX(", ", "<", ">") { it.name }
-
-    val subHandlerDir = File(subHandlerOutputDir)
-    val registerHandler = if (subHandlerDir.exists()) {
-        subHandlerDir
-            .list { _, name -> name?.endsWith(".h") == true && !name.contains("Custom") }
-            ?.mapIndexed { index, _ -> RegisterHandlerTmpl(index) }
-            ?.joinToString("\n") ?: ""
-    } else {
-        ""
-    }
-    val importSubHandler = if (subHandlerDir.exists()) {
-        subHandlerDir
-            .list { _, name -> name?.endsWith(".h") == true && !name.contains("SubHandlerCustom.h") }
-            ?.mapIndexed { index, _ -> "#import \"SubHandler/SubHandler$index.h\"" }
-            ?.joinToString("\n") ?: ""
-    } else {
-        ""
-    }
+    val callbackMethods = type
+        .methods
+        .filterMethod() // 过滤一下方法 Java不能过滤, objc这边没事
+        .distinctBy { it.exactName }
+        .filter { it.mustNot("参数中含有lambda") { formalParams.any { it.variable.isLambda() } } }
+        .filter { it.mustNot("过时方法") { isDeprecated } } // objc这边去掉过时回调方法, dart那边保留也无妨
+        .map { NonViewCallbackMethodTmpl(it) }
 
     return listOf(
         hTmpl
-            .replace("#__plugin_name__#", pluginClassName),
-        mTmpl
-            .replace("#__import_sub_handlers__#", importSubHandler)
+            .replace("#__interface_name__#", type.name)
             .replace("#__import_library__#", importLibrary)
-            .replace("#__protocols__#", protocols)
-            .replace("#__plugin_name__#", pluginClassName)
-            .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__register_platform_views__#", registerPlatformViews)
-            .replaceParagraph("#__register_handler__#", registerHandler)
+        ,
+        mTmpl
+            .replace("#__interface_name__#", type.name)
+            .replaceParagraph("#__delegate_methods__#", callbackMethods.joinToString("\n"))
     )
 }

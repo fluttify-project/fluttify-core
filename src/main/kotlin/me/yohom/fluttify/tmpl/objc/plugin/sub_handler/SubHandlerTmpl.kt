@@ -2,6 +2,8 @@ package me.yohom.fluttify.tmpl.objc.plugin.sub_handler
 
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
+import me.yohom.fluttify.model.Platform
+import me.yohom.fluttify.model.SDK
 
 //#import "#__plugin_name__#Plugin.h"
 //
@@ -39,7 +41,13 @@ fun SubHandlerTmpl(number: Int, handlers: List<String>): List<String> {
     val numberString = number.toString()
     val subHandler = handlers.joinToString("\n")
     val pluginName = ext.projectName.underscore2Camel(true)
-    val importLibrary = ext.ios.iosLibraryHeaders.joinToString("\n")
+    // 所有的匿名类
+    val allInterfaceTypes = SDK.sdks
+        .find { it.platform == Platform.iOS }!!
+        .allTypes
+        .filter { it.isInterface }
+        .map { "#import \"${it.name}_Anonymous.h\"" }
+    val importLibrary = ext.ios.iosLibraryHeaders.union(allInterfaceTypes).joinToString("\n")
 
     return listOf(
         hTmpl

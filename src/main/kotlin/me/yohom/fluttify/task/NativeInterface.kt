@@ -1,9 +1,6 @@
 package me.yohom.fluttify.task
 
-import me.yohom.fluttify.EXCLUDE_TYPES
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.model.SDK
-import me.yohom.fluttify.tmpl.java.common.handler.handler_anonymous.HandlerAnonymousTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter.HandlerGetterTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_getter_batch.HandlerGetterBatchTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
@@ -14,6 +11,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_setter.HandlerSetterTm
 import me.yohom.fluttify.tmpl.java.common.handler.handler_setter_batch.HandlerSetterBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_top_constant.HandlerTopConstantTmpl
 import me.yohom.fluttify.tmpl.java.plugin.JavaPluginTmpl
+import me.yohom.fluttify.tmpl.objc.anonymous.ObjcAnonymousTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref.HandlerObjectFactoryRefTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_ref_batch.HandlerObjectFactoryRefBatchTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_object_creator.handler_object_creator_struct.HandlerObjectFactoryStructTmpl
@@ -23,8 +21,10 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_type_check.HandlerType
 import me.yohom.fluttify.tmpl.objc.plugin.ObjcPluginTmpl
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import me.yohom.fluttify.tmpl.java.common.handler.handler_anonymous.HandlerAnonymousTmpl as DartHandlerAnonymousTmpl
 import me.yohom.fluttify.tmpl.java.platform_view_factory.PlatformViewFactoryTmpl as JavaPlatformViewFactory
 import me.yohom.fluttify.tmpl.java.plugin.sub_handler.SubHandlerTmpl as JavaSubHandlerTmpl
+import me.yohom.fluttify.tmpl.objc.common.handler.handler_anonymous.HandlerAnonymousTmpl as ObjcHandlerAnonymousTmpl
 import me.yohom.fluttify.tmpl.objc.platform_view_factory.PlatformViewFactoryTmpl as ObjcPlatformViewFactory
 import me.yohom.fluttify.tmpl.objc.plugin.sub_handler.SubHandlerTmpl as ObjcSubHandlerTmpl
 
@@ -42,7 +42,7 @@ open class AndroidJavaInterface : FluttifyTask() {
         val projectName = ext.projectName
         val packageSubDir = ext.org.replace(".", "/")
 
-        val irDir = "${project.projectDir}/ir/android/xml/".file()
+//        val irDir = "${project.projectDir}/ir/android/xml/".file()
         val jrFile = "$projectDir/jr/$projectName.android.json".file()
         val packageDir = "$projectDir/output-project/$projectName/android/src/main/java/$packageSubDir/$projectName"
         val pluginOutputFile = "$packageDir/${ext.projectName.underscore2Camel()}Plugin.java"
@@ -102,7 +102,7 @@ open class AndroidJavaInterface : FluttifyTask() {
 
         val anonymous = filteredTypes
             .filter { it.isCallback } // 只有回调类(其实只要不是final类都可以, 但是暂时只生成回调类的)需要生成匿名类
-            .map { HandlerAnonymousTmpl(it) }
+            .map { DartHandlerAnonymousTmpl(it) }
 
         val typeChecks = filteredTypes
             .asSequence()
@@ -178,12 +178,12 @@ open class IOSObjcInterface : FluttifyTask() {
 
     @TaskAction
     fun process() {
-        val irDir = "${project.projectDir}/ir/ios/xml/".file()
+//        val irDir = "${project.projectDir}/ir/ios/xml/".file()
         val jrFile = "${project.projectDir}/jr/${ext.projectName}.ios.json".file()
-        val projectRootDir = "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/"
-        val pluginHFile = "$projectRootDir/${ext.projectName.underscore2Camel()}Plugin.h"
-        val pluginMFile = "$projectRootDir/${ext.projectName.underscore2Camel()}Plugin.m"
-        val subHandlerOutputDir = "$projectRootDir/SubHandler/"
+        val classRootDir = "${project.projectDir}/output-project/${ext.projectName}/ios/Classes/"
+        val pluginHFile = "$classRootDir/${ext.projectName.underscore2Camel()}Plugin.h"
+        val pluginMFile = "$classRootDir/${ext.projectName.underscore2Camel()}Plugin.m"
+        val subHandlerOutputDir = "$classRootDir/SubHandler/"
         val subHandlerOutputHFile = "$subHandlerOutputDir/SubHandler#__number__#.h"
         val subHandlerOutputMFile = "$subHandlerOutputDir/SubHandler#__number__#.m"
 
@@ -197,7 +197,7 @@ open class IOSObjcInterface : FluttifyTask() {
         // 生成前先删除之前的文件
         if (sdk.directLibs.isNotEmpty()) {
             // 删除除了custom之外的文件
-            projectRootDir.file().iterate("h", "m") { if (!it.path.contains("SubHandler/Custom")) it.delete() }
+            classRootDir.file().iterate("h", "m") { if (!it.path.contains("SubHandler/Custom")) it.delete() }
         }
 
         val types = sdk.directLibs.flatMap { it.types }
@@ -262,7 +262,7 @@ open class IOSObjcInterface : FluttifyTask() {
             .distinctBy { it.name }
             .filter { !it.isInterface && !it.isEnum && !it.isStruct }
             .filterNot { ext.ios.exclude.classes.contains(it.name) }
-            .map { ObjcHandlerTypeCheckTmpl(it) }
+            .map(::ObjcHandlerTypeCheckTmpl)
             .toList()
 
         val objectCreators = constructableTypes
@@ -285,6 +285,10 @@ open class IOSObjcInterface : FluttifyTask() {
                 }
             }
 
+        val anonymous = filteredTypes
+            .filter { it.isInterface }
+            .map(::ObjcHandlerAnonymousTmpl)
+
         methods
             .union(methodsBatch)
             .union(topConstants)
@@ -295,6 +299,7 @@ open class IOSObjcInterface : FluttifyTask() {
             .union(typeChecks)
             .union(objectCreators)
             .union(objectCreatorsBatch)
+            .union(anonymous)
             .union(functions)
             .toObservable()
             .buffer(200)
@@ -331,13 +336,31 @@ open class IOSObjcInterface : FluttifyTask() {
                 lib.types
                     .filter { it.isView }
                     .forEach {
-                        val factoryHFile = "$projectRootDir/${it.name.simpleName()}Factory.h".file()
-                        val factoryMFile = "$projectRootDir/${it.name.simpleName()}Factory.m".file()
+                        val factoryHFile = "$classRootDir/${it.name.simpleName()}Factory.h".file()
+                        val factoryMFile = "$classRootDir/${it.name.simpleName()}Factory.m".file()
 
                         ObjcPlatformViewFactory(it, lib)
                             .run {
                                 factoryHFile.writeText(this[0])
                                 factoryMFile.writeText(this[1])
+                            }
+                    }
+            }
+
+
+        // 生成匿名类文件
+        sdk.directLibs
+            .forEach { lib ->
+                lib.types
+                    .filter { it.isInterface }
+                    .forEach {
+                        val anonymousHFile = "$classRootDir/Anonymous/${it.name.simpleName()}_Anonymous.h".file()
+                        val anonymousMFile = "$classRootDir/Anonymous/${it.name.simpleName()}_Anonymous.m".file()
+
+                        ObjcAnonymousTmpl(it)
+                            .run {
+                                anonymousHFile.writeText(this[0])
+                                anonymousMFile.writeText(this[1])
                             }
                     }
             }
