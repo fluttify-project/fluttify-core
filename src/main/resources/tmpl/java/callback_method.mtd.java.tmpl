@@ -10,7 +10,7 @@ public #__return_type__# #__callback_method__#(#__formal_params__#) {
         @Override
         public void run() {
             callbackChannel.invokeMethod(
-                "Callback::#__callback_method__#",
+                "#__callback_method__#",
                 new HashMap<String, Object>() {{
                     #__callback_args__#
                 }}

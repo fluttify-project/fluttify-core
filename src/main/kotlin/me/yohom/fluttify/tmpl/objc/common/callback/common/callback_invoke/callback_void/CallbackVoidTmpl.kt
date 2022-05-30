@@ -11,7 +11,7 @@ import me.yohom.fluttify.model.Method
 private val tmpl by lazy { getResource("/tmpl/objc/callback_void.stmt.m.tmpl").readText() }
 
 fun CallbackVoidTmpl(method: Method): String {
-    val callbackMethod = "Callback::${method.exactName}"
+    val callbackMethod = method.exactName
 
     val callbackArgs = method
         .formalParams

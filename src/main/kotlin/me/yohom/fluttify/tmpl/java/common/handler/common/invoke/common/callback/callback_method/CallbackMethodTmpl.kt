@@ -18,7 +18,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 //        @Override
 //        public void run() {
 //            callbackChannel.invokeMethod(
-//                "Callback::#__callback_method_name__#",
+//                "#__callback_method__#",
 //                new HashMap<String, Object>() {{
 //                    #__callback_args__#
 //                }}

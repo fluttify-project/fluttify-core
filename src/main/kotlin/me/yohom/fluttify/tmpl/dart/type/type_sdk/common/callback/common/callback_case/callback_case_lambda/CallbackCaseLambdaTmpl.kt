@@ -20,7 +20,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 private val tmpl by lazy { getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseLambdaTmpl(lambdaType: Method, lambdaName: String): String {
-    val callbackCase = "Callback::${lambdaType.exactName}"
+    val callbackCase = lambdaType.exactName
     val log =
         "debugPrint('fluttify-dart-callback: ${lambdaName}(${lambdaType.formalParams.map { "\\'${it.variable.name}\\':\${args['${it.variable.name}']}" }})');"
     val callbackArgs = lambdaType
