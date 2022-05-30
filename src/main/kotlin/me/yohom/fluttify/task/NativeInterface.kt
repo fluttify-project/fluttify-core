@@ -329,11 +329,10 @@ open class IOSObjcInterface : FluttifyTask() {
                 pluginMFile.file().writeText(this[1])
             }
 
-
         // 生成PlatformViewFactory文件
         sdk.directLibs
             .forEach { lib ->
-                lib.types
+                filteredTypes
                     .filter { it.isView }
                     .forEach {
                         val factoryHFile = "$classRootDir/${it.name.simpleName()}Factory.h".file()
@@ -347,21 +346,17 @@ open class IOSObjcInterface : FluttifyTask() {
                     }
             }
 
-
         // 生成匿名类文件
-        sdk.directLibs
-            .forEach { lib ->
-                lib.types
-                    .filter { it.isInterface }
-                    .forEach {
-                        val anonymousHFile = "$classRootDir/Anonymous/${it.name.simpleName()}_Anonymous.h".file()
-                        val anonymousMFile = "$classRootDir/Anonymous/${it.name.simpleName()}_Anonymous.m".file()
+        filteredTypes
+            .filter { it.isCallback }
+            .forEach {
+                val anonymousHFile = "$classRootDir/Anonymous/${it.name.simpleName()}_Anonymous.h".file()
+                val anonymousMFile = "$classRootDir/Anonymous/${it.name.simpleName()}_Anonymous.m".file()
 
-                        ObjcAnonymousTmpl(it)
-                            .run {
-                                anonymousHFile.writeText(this[0])
-                                anonymousMFile.writeText(this[1])
-                            }
+                ObjcAnonymousTmpl(it)
+                    .run {
+                        anonymousHFile.writeText(this[0])
+                        anonymousMFile.writeText(this[1])
                     }
             }
     }
