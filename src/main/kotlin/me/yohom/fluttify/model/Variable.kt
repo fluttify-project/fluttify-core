@@ -1,10 +1,9 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.NEXT_ID
 import me.yohom.fluttify.TYPE_NAME
-import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
-import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.CallbackTmpl
 
 /**
  * 表示一个变量(字段, 方法参数, 局部变量)
@@ -12,23 +11,18 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 data class Variable(
     private var typeName: TYPE_NAME,
     val name: String,
-    override var platform: Platform,
+    override var platform: Platform, // TODO platform参数是否能用静态属性代替?
     override var id: Int = NEXT_ID
 ) : IPlatform, IElement {
 
     val isIterable: Boolean
         get() = typeName.isIterable()
 
-    /**
-     * 如果类型由被手动override的话, 这里需要使用override之后的类
-     */
     val trueType: String
         get() {
             val origin = typeName.findType().name
             val alias = typeName.findType().aliasOf
-            return ext.ios.overrideElements[id]?.fromJson<Variable>()?.typeName
-                ?: ext.android.overrideElements[id]?.fromJson<Variable>()?.typeName
-                ?: alias?.run { typeName.replace(origin, this) }
+            return alias?.run { typeName.replace(origin, this) }
                 ?: typeName.objcSpecifierExpand()
         }
 
@@ -81,7 +75,8 @@ data class Variable(
     }
 
     fun isCallback(): Boolean {
-        return trueType.containerType().findType().isCallback || trueType.deprotocol().findType().isCallback
+        return trueType.containerType().findType().isCallback || trueType.deprotocol()
+            .findType().isCallback
     }
 
     fun isInterface(): Boolean {
@@ -135,12 +130,12 @@ data class Variable(
         return trueType.iterableLevel()
     }
 
-    fun toDartString(): String {
+    fun toDartString(optional: Boolean = false): String {
         return if (trueType.findType().isLambda) {
             val type = trueType.findType()
-            "${type.returnType.toDartType()} ${name}(${type.formalParams.joinToString { it.variable.toDartString() }})"
+            "${type.returnType.toDartType()} Function(${type.formalParams.joinToString { it.variable.toDartString(true) }}) $name"
         } else {
-            "${trueType.toDartType()} ${name.removeObjcSpecifier()}"
+            "${trueType.toDartType().enOptional(optional)} ${name.removeObjcSpecifier()}"
         }
     }
 
@@ -148,21 +143,13 @@ data class Variable(
         return "List<${trueType.toDartType()}> $name"
     }
 
-    fun var2Args(hostMethod: Method? = null): String {
-        return if (trueType.findType().isCallback && hostMethod != null) {
-            when {
-                isIterable -> "new ArrayList() /* 暂不支持列表回调 */"
-                containerType().methods.any { it.isGenericMethod } -> "null /* 暂不支持含有泛型方法的类 */"
-                else -> CallbackTmpl(hostMethod, trueType.findType())
-            }
-        } else {
-            when (trueType) {
-                "float", "Float" -> "${name}.floatValue()"
-                "double", "Double" -> "${name}.doubleValue()"
-                "int", "Integer" -> "${name}.intValue()"
-                "long", "Long" -> "${name}.longValue()"
-                else -> name
-            }
+    fun var2Args(): String {
+        return when (trueType) {
+            "float", "Float" -> "${name}.floatValue()"
+            "double", "Double" -> "${name}.doubleValue()"
+            "int", "Integer" -> "${name}.intValue()"
+            "long", "Long" -> "${name}.longValue()"
+            else -> name
         }
     }
 
@@ -181,5 +168,9 @@ data class Variable(
         } else {
             trueType.findType().formalParams.all { it.variable.isKnownType() }
         }
+    }
+
+    override fun toString(): String {
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }

@@ -29,7 +29,7 @@ Future<bool> #__plugin_name__##__platform__#Is<T>(dynamic __this__) async {
 // type cast
 // 给一个可选的泛型, 如果没有指定泛型就返回dynamic
 @optionalTypeArgs
-T #__plugin_name__##__platform__#As<T>(dynamic __this__) {
+T? #__plugin_name__##__platform__#As<T>(dynamic __this__) {
   final typeName = T.toString();
 
   if (__this__ == null) {
@@ -40,6 +40,6 @@ T #__plugin_name__##__platform__#As<T>(dynamic __this__) {
   #__type_cast__#
   #__dependency_type_cast__#
   else {
-    return null;
+    return __this__;
   }
 }

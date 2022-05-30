@@ -3,6 +3,7 @@ package me.yohom.fluttify.extensions
 import me.yohom.fluttify.EaseMob
 import me.yohom.fluttify.FluttifyTest
 import me.yohom.fluttify.model.*
+import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
@@ -39,73 +40,31 @@ class FileXKtTest : FluttifyTest() {
     }
 
     @Test
-    fun downloadIOSSDK() {
-        val testCoordinates = "'AMapLocation', '2.6.3'"
-
-        var iosArchiveSpec: File? = null
-
-        val specDir = "${System.getProperty("user.home")}/.cocoapods/repos/master/Specs/".file()
-        val archiveName = testCoordinates.split(",").map { it.stripQuotes().trim() }[0]
-        val archiveVersion = try {
-            testCoordinates.split(",").map { it.stripQuotes().trim() }[1]
-        } catch (e: Exception) {
-            ""
-        }.removePrefix("~>").trim()
-        // 找出目标pod所在的文件
-        val l0Files = specDir.listFiles()
-        out@ for (i in 0..0xf) {
-            val l0 = l0Files?.get(i)
-            val l1Files = l0?.listFiles()
-            for (j in 0..0xf) {
-                val l1 = l1Files?.get(j)
-                val l2Files = l1?.listFiles()
-                for (k in 0..0xf) {
-                    val l2 = l2Files?.get(k)
-                    for (l3 in l2?.listFiles() ?: arrayOf()) {
-                        if (l3.name == archiveName) {
-                            iosArchiveSpec = l3
-                            break@out
-                        }
-                    }
-                }
-            }
-        }
-
-        println("iosArchiveSpec: $iosArchiveSpec")
-
-        val targetVersion: File? = iosArchiveSpec?.listFiles()?.firstOrNull { it.name.contains(archiveVersion) }
-        println("targetVersion: $targetVersion")
-        targetVersion?.run {
-            val podspecJson = File("$this/$archiveName.podspec.json").readText().fromJson<Map<String, Any>>()
-            val source: Map<String, String> = podspecJson["source"] as Map<String, String>
-            val archiveFile =
-                "/Users/yohom/Github/Me/All/fluttify/amap/amap_location_fluttify/sdk/ios/ARCHIVE.zip".file()
-            source["http"]?.run { archiveFile.downloadFrom(this) }
-            // 下载完成后解压
-            ZipUtil.unpack(archiveFile, archiveFile.parentFile)
-            // 删除压缩文件
-            archiveFile.delete()
-        }
+    fun isView() {
+        val file =
+            "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val sdk = file.parseSDK()
+        val type = SDK.findType("com.tencent.rtmp.ui.TXCloudVideoView")
+        println("isView: ${type.isView}, type: $type")
     }
 
     @Test
-    fun downloadAndroidSDK() {
-        val androidArchiveDir = "/Users/yohom/Github/Me/All/fluttify/amap/amap_map_fluttify/sdk/android/".file()
-        androidArchiveDir.run {
-            if (list()?.isEmpty() != false) {
-                val coord = "com.amap.api:3dmap:6.9.2".split(":")
-                val org = coord[0].replace(".", "/")
-                val repo = coord[1]
-                val version = coord[2]
-                try {
-                    "$androidArchiveDir/$repo-$version.jar".file()
-                        .downloadFrom("https://jcenter.bintray.com/$org/$repo/$version/$repo-$version.jar")
-                } catch (e: Exception) {
-                    "$androidArchiveDir/$repo-$version.aar".file()
-                        .downloadFrom("https://jcenter.bintray.com/$org/$repo/$version/$repo-$version.aar")
-                }
-            }
-        }
+    fun parseAnonymous() {
+        val file = "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val sdk = file.parseSDK()
+        val type = SDK.findType("com.tencent.rtmp.ITXLivePlayListener")
+
+        val result = TypeInterfaceTmpl(type)
+        println(result)
+    }
+
+    @Test
+    fun testConstructor() {
+        val file =
+            "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val sdk=file.parseSDK()
+        val type=sdk.allTypes.find { it.name=="com.tencent.rtmp.TXVodPlayer" }
+        println("type: $type")
     }
 
     @Test
@@ -137,7 +96,8 @@ class FileXKtTest : FluttifyTest() {
                     ?.map {
                         Parameter(
                             variable = Variable(
-                                typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
+                                typeName = (it.declarationSpecifiers()?.text
+                                    ?: it.VOID().text).run {
                                     if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
                                 },
                                 platform = Platform.iOS,
@@ -1079,7 +1039,7 @@ typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
                         val argName = it.declarator().text
                             .depointer()
                             .removeObjcSpecifier()
-                            .run { if(isEmpty()) "__arg${index}__" else this }
+                            .run { if (isEmpty()) "__arg${index}__" else this }
                         val argType = it.declarationSpecifiers()
                             .text
                             .run { if (argName.startsWith("*")) enpointer() else this }
@@ -1095,7 +1055,9 @@ typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
 
     @Test
     fun methodSig_startScreenCapture() {
-        val source = "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Professional.framework/Headers/TRTCCloud.h".file().readText()
+        val source =
+            "/Users/yohom/Github/Me/All/fluttify/3rd_party/tencent_live/sdk/ios/TXLiteAVSDK_Professional.framework/Headers/TRTCCloud.h".file()
+                .readText()
 //        val source = "- (int)stopScreenCapture;"
         source.walkTree(object : ObjectiveCParserBaseListener() {
 //            override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {

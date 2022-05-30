@@ -17,7 +17,7 @@ fun ResultEnumTmpl(returnType: TYPE_NAME): String {
             .replace("#__type_name__#", returnType.toDartType())
     }
     return if (returnType.isIterable()) {
-        "(__result__ as List).cast<int>().map((__it__) => $enumResult).toList()"
+        "(__result__ as List?).cast<int>()?.map((__it__) => $enumResult)?.toList()"
     } else {
         enumResult
     }

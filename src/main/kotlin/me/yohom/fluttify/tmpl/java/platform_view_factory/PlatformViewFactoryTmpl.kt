@@ -8,49 +8,33 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgEnumTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.common.arg.ArgRefTmpl
 import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTmpl
 
-//package #__package_name__#;
-//
-//import android.content.Context;
-//import android.view.View;
-//import android.util.Log;
-//
-//import java.util.Map;
-//import java.util.HashMap;
-//
-//import io.flutter.plugin.common.MethodChannel;
-//import io.flutter.plugin.common.PluginRegistry.Registrar;
-//import io.flutter.plugin.common.StandardMessageCodec;
-//import io.flutter.plugin.platform.PlatformView;
-//import io.flutter.plugin.platform.PlatformViewFactory;
-//
-//import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getHEAP;
-//import static me.yohom.foundation_fluttify.FoundationFluttifyPluginKt.getEnableLog;
-//
 //@SuppressWarnings("ALL")
 //class #__factory_name__#Factory extends PlatformViewFactory {
 //
-//    #__factory_name__#Factory(Registrar registrar) {
+//    #__factory_name__#Factory(BinaryMessenger messenger, Activity activity) {
 //        super(StandardMessageCodec.INSTANCE);
 //
-//        this.registrar = registrar;
+//        this.messenger = messenger;
+//        this.activity = activity;
 //
-//        new MethodChannel(registrar.messenger(), "#__method_channel__#", new StandardMethodCodec(new FluttifyMessageCodec())).setMethodCallHandler((methodCall, methodResult) -> {
-//                    Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
-//                    #__plugin_class__#.Handler handler = handlerMap.get(methodCall.method);
-//                    if (handler != null) {
-//                        try {
-//                            handler.call(args, methodResult);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                            methodResult.error(e.getMessage(), null, null);
-//                        }
-//                    } else {
-//                        methodResult.notImplemented();
-//                    }
-//                });
+//        new MethodChannel(messenger, "#__method_channel__#", new StandardMethodCodec(new FluttifyMessageCodec())).setMethodCallHandler((methodCall, methodResult) -> {
+//            Map<String, Object> args = (Map<String, Object>) methodCall.arguments;
+//            #__plugin_class__#.Handler handler = handlerMap.get(methodCall.method);
+//            if (handler != null) {
+//                try {
+//                    handler.call(args, methodResult);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    methodResult.error(e.getMessage(), null, null);
+//                }
+//            } else {
+//                methodResult.notImplemented();
+//            }
+//        });
 //    }
 //
-//    private Registrar registrar;
+//    private BinaryMessenger messenger;
+//    private Activity activity;
 //
 //    private final Map<String, #__plugin_class__#.Handler> handlerMap = new HashMap<String, #__plugin_class__#.Handler>() {{
 //        #__handlers__#
@@ -58,11 +42,17 @@ import me.yohom.fluttify.tmpl.java.common.handler.handler_method.HandlerMethodTm
 //
 //    @Override
 //    public PlatformView create(Context context, int id, Object params) {
-//        Map<String, Object> args = (Map<String, Object>) params;
-//        #__args__#
+//        Map<String, Object> __args__ = (Map<String, Object>) params;
 //
-//        #__native_view__# view = new #__native_view__#(registrar.activity()#__creation_args__#);
-//        getHEAP().put(id, view);
+//        ////////////////////////////////初始化AndroidView////////////////////////////////////////
+//
+//        ////////////////////////////////初始化AndroidView////////////////////////////////////////
+//
+//        #__native_view__# view = new #__native_view__#(activity);
+//
+//        // 同时存放viewId和refId的对象, 供后续viewId转refId使用
+//        getHEAP().put(String.valueOf(Integer.MAX_VALUE - id), view);
+//        getHEAP().put("#__native_view__#:" + String.valueOf(System.identityHashCode(view)), view);
 //        return new PlatformView() {
 //
 //            // add to HEAP

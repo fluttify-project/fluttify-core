@@ -38,7 +38,6 @@ fun HandlerSetterTmpl(field: Field): String {
             isIterable -> ArgListRefTmpl(field.variable)
             isEnum() -> ArgEnumTmpl(field.variable)
             isStructPointer() -> ArgListStructTmpl(field.variable)
-            isCallback() -> ""
             isStruct() -> ArgStructTmpl(field.variable)
             else -> ArgRefTmpl(field.variable)
         }
@@ -55,7 +54,6 @@ fun HandlerSetterTmpl(field: Field): String {
     // 如果setter的是一个delegate, 那么就认定是当前类作为delegate处理
     val fieldValue = field.variable.run {
         when {
-            trueType.findType().isCallback -> "weakSelf"
             trueType.isPrimitivePointerType() -> "[${fieldName.depointer()} pointerValue]"
             else -> fieldName.depointer()
         }

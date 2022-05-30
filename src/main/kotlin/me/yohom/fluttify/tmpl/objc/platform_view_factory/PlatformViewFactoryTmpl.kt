@@ -16,7 +16,7 @@ import me.yohom.fluttify.tmpl.objc.common.handler.handler_setter.HandlerSetterTm
 //// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
 //extern NSMutableDictionary<NSString*, NSObject*>* STACK;
 //// Dart端随机存取对象的容器
-//extern NSMutableDictionary<NSNumber*, NSObject*>* HEAP;
+//extern NSMutableDictionary<NSString*, NSObject*>* HEAP;
 //// 日志打印开关
 //extern BOOL enableLog;
 //
@@ -93,9 +93,6 @@ private val hTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.h.tmpl
 private val mTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText() }
 
 fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
-    // 使用前先合并Category
-    viewType.mergeWithCategory()
-
     // 导入头文件
     // 如果没有手动指定的话则拼接出一个
     val imports = (if (ext.ios.iosImportHeader.isNotEmpty()) ext.ios.iosImportHeader else ext.ios.libDir
@@ -146,7 +143,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
 
-    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
+    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}/${viewType.name.toUnderscore()}:_viewId"
 
     val delegateMethods = lib
         .types

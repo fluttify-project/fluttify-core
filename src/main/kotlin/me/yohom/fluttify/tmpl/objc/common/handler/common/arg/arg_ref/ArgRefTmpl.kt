@@ -8,7 +8,12 @@ import me.yohom.fluttify.model.Variable
 private val tmpl by lazy { getResource("/tmpl/objc/arg_ref.stmt.m.tmpl").readText() }
 
 fun ArgRefTmpl(variable: Variable): String {
-    val typeName = if (variable.trueType.isPrimitivePointerType()) "NSValue*" else variable.trueType
+    val typeName = when {
+        variable.trueType.isPrimitivePointerType() -> "NSValue*"
+        // 多级指针缩减为一级指针, 然后在变量上加&
+        variable.trueType.isMultiPointer() -> variable.trueType.replace("**", "*")
+        else -> variable.trueType
+    }
     val argName = variable.name
     return tmpl
         .replace("#__type_name__#", typeName)

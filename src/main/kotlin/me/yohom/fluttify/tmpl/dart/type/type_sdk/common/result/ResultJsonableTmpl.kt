@@ -16,11 +16,11 @@ fun ResultJsonableTmpl(returnType: TYPE_NAME, platform: Platform): String {
                 // 说明List有指定泛型, 拿出泛型类
                 returnType.iterableLevel() != 0 -> returnType.genericTypes()[0]
                 // 数组类型
-                returnType.isRefArray() -> returnType.dearray()
+                returnType.isRefArray() -> returnType.deSquareBracket()
                 // List没有指定泛型, 使用dynamic
                 else -> "dynamic"
             }
-            "(__result__ as List).cast<${type.toDartType()}>()"
+            "(__result__ as List?)?.cast<${type.toDartType()}>()"
         }
         else -> "__result__"
     }

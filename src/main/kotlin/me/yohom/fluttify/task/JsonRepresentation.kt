@@ -67,7 +67,7 @@ open class IOSJsonRepresentation : FluttifyTask() {
         sdk.platform = Platform.iOS
 
         // 远程依赖解析
-        if (ext.ios.remote.iosConfigured) {
+        if (ext.ios.remote.configured) {
             println("远程依赖解析")
             frameworkDir.listFiles()
                 ?.filter { it.isDirectory && !it.name.startsWith(".") }

@@ -36,6 +36,16 @@ class TypeTest : FluttifyTest() {
     }
 
     @Test
+    fun BMKMapPoint_Test() {
+        Bmap.androidMapSDK
+            .libs[3]
+            .types
+            .forEach {
+                println("${it.name} constructable: ${it.constructable}")
+            }
+    }
+
+    @Test
     fun constructable_amap_AMapNaviDriveManager() {
         Amap.iosMapSDK
             .allTypes

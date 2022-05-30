@@ -1,7 +1,10 @@
 package me.yohom.fluttify
 
+import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.iterate
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
+import java.util.function.Predicate
 import javax.inject.Inject
 
 open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) {
@@ -58,7 +61,8 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     /**
      * android端配置
      */
-    var android: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
+    var android: PlatformSpec =
+        objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
     fun android(action: Action<PlatformSpec?>) {
         action.execute(android)
@@ -67,7 +71,8 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
     /**
      * ios端配置
      */
-    var ios: PlatformSpec = objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
+    var ios: PlatformSpec =
+        objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
 
     fun ios(action: Action<PlatformSpec?>) {
         action.execute(ios)
@@ -94,6 +99,15 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
 
     val methodChannelName: String
         get() = "$org/$projectName"
+
+    // 暂时没有用处, 需要找方法判断出有没有哪个平台没有配置
+    val availablePlatform: List<String>
+        get() {
+            val result = mutableListOf<String>()
+            if (ios != null) result.add("ios")
+            if (android != null) result.add("android")
+            return result
+        }
 
     override fun toString(): String {
         return "Extension(projectName='$projectName', org='$org', desc='$desc', author='$author', email='$email', homepage='$homepage', foundationVersion='$foundationVersion', pluginDependencies='$pluginDependencies', android=$android, ios=$ios)"
@@ -126,9 +140,33 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     var iosImportHeader: List<String> = listOf()
 
     /**
+     * ios sdk版本
+     */
+    var iosDeploymentTarget: String = "8.0"
+
+    /**
      * 元素替换
      */
-    var overrideElements: Map<Int, String> = mapOf()
+    var overrideElements: Map<String, String> = mapOf()
+
+    /**
+     * 全局宏展开, 作用在源代码文件上, 接收正则表达式
+     */
+    var predefineMacro: Map<String, String> = mapOf()
+
+    /**
+     * 用户定义的宏+内置的宏
+     */
+    val allMacros: Map<String, String>
+        get() = predefineMacro + mapOf("__attribute__\\(.*\\)" to "")
+
+    /**
+     * 依赖仓库
+     *
+     * Android端即`maven { url 'https://download.flutter.io' }`;
+     * iOS端即`source 'https://github.com/artsy/Specs.git'`;
+     */
+    var repositories: List<String> = listOf()
 
     /**
      * 远程依赖配置
@@ -156,6 +194,37 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     fun exclude(action: Action<Exclude>) {
         action.execute(exclude)
     }
+
+    /**
+     * ios端的library头文件导入列表
+     */
+    val iosLibraryHeaders: List<String>
+        get() {
+            // 导入头文件
+            // 如果没有手动指定的话则拼接出一个
+            return iosImportHeader.ifEmpty {
+                libDir
+                    .file()
+                    .run {
+                        // 所有的Framework
+                        val frameworkHeaders = listFiles { _, name -> name.endsWith(".framework") }
+                            ?.map { "#import <${it.nameWithoutExtension}/${it.nameWithoutExtension}.h>" }
+                            ?: listOf()
+                        // 如果没有framework, 那么就遍历出所有的.h文件
+                        val directHeaders = mutableListOf<String>()
+                        if (list()?.none { it.endsWith(".framework") } == true) {
+                            // 所有的.h
+                            iterate("h") {
+                                // 不导入隐藏文件
+                                if (!it.name.startsWith(".")) {
+                                    directHeaders.add("#import <${it.parentFile.name}/${it.name}>")
+                                }
+                            }
+                        }
+                        frameworkHeaders.union(directHeaders).toList()
+                    }
+            }
+        }
 
     override fun toString(): String {
         return "PlatformSpec(libDir='$libDir', remote=$remote, local=$local, exclude=$exclude)"
@@ -207,19 +276,12 @@ open class Exclude {
 
 open class Remote {
     /**
-     * 组织名 ios可不填
+     * 远程依赖
+     *
+     * Android端即`org:name:version`;
+     * iOS端即`'name', 'version'`;
      */
-    var org: List<String> = listOf()
-
-    /**
-     * 依赖名称
-     */
-    var name: List<String> = listOf()
-
-    /**
-     * 依赖版本
-     */
-    var version: List<String> = listOf()
+    var dependencies: List<String> = listOf()
 
     /**
      * 间接远程依赖
@@ -227,27 +289,20 @@ open class Remote {
     var transitiveDependencies: List<String> = listOf()
 
     /**
-     * android maven 坐标
-     */
-    val androidCoordinate get() = org.indices.map { "${org[it]}:${name[it]}:${version[it]}" }
-
-    /**
      * android是否已配置
      */
-    val androidConfigured get() = org.isNotEmpty() && name.isNotEmpty() && version.isNotEmpty()
+    val configured get() = dependencies.isNotEmpty()
 
     /**
-     * ios pod 坐标
+     * 依赖名称
      */
-    val iosCoordinate get() = name.indices.map { "'${name[it]}', '${version[it]}'" }
-
-    /**
-     * ios是否已配置
-     */
-    val iosConfigured get() = name.isNotEmpty() && version.isNotEmpty()
+    val nameList: Boolean
+        get() {
+            return dependencies.isNotEmpty()
+        }
 
     override fun toString(): String {
-        return "Remote(org='$org', name='$name', version='$version')"
+        return "Remote(dependencies=$dependencies, transitiveDependencies=$transitiveDependencies)"
     }
 }
 

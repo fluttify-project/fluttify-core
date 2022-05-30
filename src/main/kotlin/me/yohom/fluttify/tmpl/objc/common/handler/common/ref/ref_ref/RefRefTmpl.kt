@@ -13,13 +13,19 @@ import me.yohom.fluttify.model.Method
 private val tmpl by lazy { getResource("/tmpl/objc/ref_ref.stmt.m.tmpl").readText() }
 
 fun RefRefTmpl(method: Method): String {
+    val classType = method.className.findType()
     val empty = ""
     val protocol = "id<${method.className}>"
     val `class` = method.className.enpointer()
+    val extensionClass = classType.superClass.enpointer()
+
+    if(classType.name=="BMKGeometryExtension")
+    println("classType: $classType")
 
     return when {
         method.isStatic -> empty
-        method.className.findType().isInterface -> tmpl.replace("#__type_name__#", protocol)
+        classType.isInterface -> tmpl.replace("#__type_name__#", protocol)
+        classType.isExtension -> tmpl.replace("#__type_name__#", extensionClass)
         else -> tmpl.replace("#__type_name__#", `class`)
     }
 }

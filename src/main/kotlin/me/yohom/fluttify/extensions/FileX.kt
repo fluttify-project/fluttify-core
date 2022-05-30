@@ -5,8 +5,6 @@ import me.yohom.fluttify.OBJC_FILE
 import me.yohom.fluttify.TYPE_NAME
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.model.*
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.IOFileFilter
 import org.apache.commons.io.filefilter.TrueFileFilter
@@ -15,24 +13,16 @@ import parser.java.JavaParserBaseListener
 import parser.objc.ObjectiveCParser
 import parser.objc.ObjectiveCParserBaseListener
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
-import java.security.cert.CertificateException
-import java.security.cert.X509Certificate
 import java.util.*
-import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 /**
  * Java源码解析
  */
 fun JAVA_FILE.javaType(): SourceFile {
-    val source = readText()
+    var source = readText()
+    for (entry in ext.android.allMacros.entries) {
+        source = source.replace(Regex(entry.key), entry.value)
+    }
 
     var packageName = ""
     var declaredGenericTypes = listOf<TYPE_NAME>()
@@ -216,7 +206,7 @@ fun JAVA_FILE.javaType(): SourceFile {
             type.definedGenericTypes.addAll(definedGenericTypes)
             type.constructors = constructors
             type.interfaces = interfaces
-            type.name = "$packageName.$simpleName"
+            type.name = "$packageName.${simpleName}"
             type.superClass = superClass
             type.fields.addAll(fields)
             type.methods.addAll(methods)
@@ -231,7 +221,10 @@ fun JAVA_FILE.javaType(): SourceFile {
  * Objc源码解析
  */
 fun OBJC_FILE.objcType(): SourceFile {
-    val source = readText()
+    var source = readText()
+    for (entry in ext.ios.allMacros.entries) {
+        source = source.replace(Regex(entry.key), entry.value)
+    }
 
     val topLevelConstant = mutableListOf<Variable>()
     val types = mutableListOf<Type>()
@@ -270,7 +263,13 @@ fun OBJC_FILE.objcType(): SourceFile {
                         ?.text
 
                     if (isExternString == true && constantName != null) {
-                        topLevelConstant.add(Variable("NSString*", constantName.depointer(), Platform.iOS))
+                        topLevelConstant.add(
+                            Variable(
+                                "NSString*",
+                                constantName.depointer(),
+                                Platform.iOS
+                            )
+                        )
                     }
                 }
             }
@@ -282,7 +281,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.typeType = TypeType.Class
                     it.name = ctx.className.text
                     it.superClass = ctx.superclassName.text
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.interfaces.addAll(
+                        ctx.protocolList()?.protocolName()?.map { it.identifier().text }
+                            ?: listOf())
                     it.isAbstract = false
                 })
             }
@@ -299,7 +300,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.typeType = TypeType.Interface
                     it.name = ctx.protocolName().text
                     it.superClass = ""
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.interfaces.addAll(
+                        ctx.protocolList()?.protocolName()?.map { it.identifier().text }
+                            ?: listOf())
                     it.isAbstract = true
                 })
             }
@@ -354,7 +357,9 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.platform = Platform.iOS
                     it.typeType = TypeType.Extension
                     it.name = ctx.categoryName.text
-                    it.interfaces.addAll(ctx.protocolList()?.protocolName()?.map { it.identifier().text } ?: listOf())
+                    it.interfaces.addAll(
+                        ctx.protocolList()?.protocolName()?.map { it.identifier().text }
+                            ?: listOf())
                     it.isAbstract = false
                 })
             }
@@ -373,7 +378,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.typeType = TypeType.Struct
                     // 结构体名字, 从结构体定时时获取, 如果没有则向上找typedef, 获取typedef后的名称
                     it.name = ctx.identifier()?.text
-                        ?: ctx.ancestorOf(ObjectiveCParser.TypedefDeclarationContext::class)?.typeName()
+                        ?: ctx.ancestorOf(ObjectiveCParser.TypedefDeclarationContext::class)
+                            ?.typeName()
                                 ?: ""
                 })
             }
@@ -386,17 +392,20 @@ fun OBJC_FILE.objcType(): SourceFile {
             override fun enterTypedefDeclaration(ctx: ObjectiveCParser.TypedefDeclarationContext) {
                 val returnType = ctx
                     .declarationSpecifiers()
-                    .typeSpecifier()[0]
+                    ?.typeSpecifier()
+                    ?.get(0)
                     ?.text
                 val typeName = ctx
                     .typeDeclaratorList()
-                    .typeDeclarator()[0]
+                    ?.typeDeclarator()
+                    ?.get(0)
                     ?.directDeclarator()
                     ?.identifier()
                     ?.text
                 val formalParams = ctx
                     .typeDeclaratorList()
-                    .typeDeclarator()[0]
+                    ?.typeDeclarator()
+                    ?.get(0)
                     ?.directDeclarator()
                     ?.blockParameters()
                     ?.typeVariableDeclaratorOrName()
@@ -481,6 +490,11 @@ fun OBJC_FILE.objcType(): SourceFile {
                         ctx.name().depointer().removeObjcSpecifier(), // 统一把*号加到类名上去
                         Platform.iOS
                     )
+
+                    // 如果是已有的字段就跳过
+                    // 为了处理有些条件编译, 但是字段名称相同的情况
+                    if (fields.map { it.variable.name }.contains(variable.name)) return
+
                     // property肯定是public的, 且肯定是非static的, 因为如果需要static的话, 用方法就行了
                     fields.add(
                         Field(
@@ -493,7 +507,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                             ctx.getterName().removeObjcSpecifier(),
                             ctx.setterName().removeObjcSpecifier(),
                             Platform.iOS,
-                            ctx.macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+                            ctx.macro()?.primaryExpression()
+                                ?.any { it.text.contains("deprecated") } == true
                         )
                     )
                 }
@@ -534,7 +549,8 @@ fun OBJC_FILE.objcType(): SourceFile {
                     ?.map {
                         Parameter(
                             variable = Variable(
-                                typeName = (it.declarationSpecifiers()?.text ?: it.VOID().text).run {
+                                typeName = (it.declarationSpecifiers()?.text
+                                    ?: it.VOID().text).run {
                                     if (it.declarator()?.text?.startsWith("*") == true) enpointer() else this
                                 },
                                 platform = Platform.iOS,
@@ -581,90 +597,14 @@ fun File.iterate(
         .forEach { if (fileFilter.accept(it)) forEach(it) }
 }
 
-@Throws(Exception::class)
-@Deprecated("已不需要")
-fun File.downloadFrom(url: String) {
-    println("开始从 $url 下载")
-    // 忽略HTTPS效验
-    var sslContext: SSLContext? = null
-    val manager = object : X509TrustManager {
-        @Throws(CertificateException::class)
-        override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
-        }
-
-        @Throws(CertificateException::class)
-        override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
-        }
-
-        override fun getAcceptedIssuers(): Array<X509Certificate?> {
-            return arrayOfNulls(0)
-        }
-    }
-    val trustAllCerts: Array<TrustManager> = arrayOf(manager)
-    try {
-        sslContext = SSLContext.getInstance("SSL")
-        sslContext!!.init(null, trustAllCerts, java.security.SecureRandom())
-    } catch (e: NoSuchAlgorithmException) {
-        e.printStackTrace()
-    } catch (e: KeyManagementException) {
-        e.printStackTrace()
-    }
-
-    val httpClient: OkHttpClient = OkHttpClient.Builder()
-        // 忽略HTTPS效验
-        .sslSocketFactory(sslContext!!.socketFactory, manager)
-        .callTimeout(20, TimeUnit.MINUTES)
-        .readTimeout(20, TimeUnit.MINUTES)
-        .retryOnConnectionFailure(true)
-        .hostnameVerifier { _, _ -> true }
-        .build()
-
-    val request: Request = Request.Builder()
-        .url(url)
-        .build()
-
-    val response = httpClient.newCall(request).execute()
-
-    var inStream: InputStream? = null
-    val buffer = ByteArray(2048)
-    var length: Int
-    var outStream: FileOutputStream? = null
-
-    try {
-        val total = response.body()?.contentLength()
-        if (total != (-1).toLong()) {
-            var current: Long = 0
-            inStream = response.body()?.byteStream()
-            outStream = FileOutputStream(this)
-            do {
-                length = inStream?.read(buffer) ?: -1
-                if (length != -1) {
-                    current += length.toLong()
-                    outStream.write(buffer, 0, length)
-                }
-            } while (length != -1)
-            outStream.flush()
-        }
-    } catch (e: IOException) {
-        e.printStackTrace()
-        throw e
-    } finally {
-        try {
-            inStream?.close()
-            outStream?.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-}
-
 fun String.replaceMacro(): String {
-    return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#endif)"), "$1\n$4")
-        .replace("#import\"", "#import \"") // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
+    return replace(Regex("(#(el)?if.*TARGET_OS_(MAC|OSX))[\\s\\S]*?(#else|#endif)"), "$1\n$4")
+        // 出现过百度地图中#import和冒号(")连在一起的情况, antlr无法解析, 但是能通过编译, 这里手动给它空个空格出来
+        .replace("#import\"", "#import \"")
         .run {
             if (ext.ios.exclude.macros.isNotEmpty()) {
                 val regex = ext.ios.exclude.macros.joinToString("|", "(", ")")
-                replace(Regex("(#(el)?if.*${regex})[\\s\\S]*?(#endif)"), "$1\n$4")
+                replace(Regex("(#(el)?if.*${regex})[\\s\\S]*?(#else|#endif)"), "$1\n$4")
             } else {
                 this
             }

@@ -1,9 +1,11 @@
-package parser.objc;
-// Generated from src/main/java/parser/objc/ObjectiveCParser.g4 by ANTLR 4.8
+// Generated from ObjectiveCParser.g4 by ANTLR 4.10.1
 
+package parser.objc;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import parser.objc.ObjectiveCParser;
 
 /**
  * This class provides an empty implementation of {@link ObjectiveCParserListener},

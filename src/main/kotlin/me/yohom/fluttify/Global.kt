@@ -5,15 +5,18 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-var SUCCESS_LOG = true
+const val SUCCESS_LOG = true
 
-var CONSTRUCTOR_LOG = false
-var VARIABLE_LOG = false
-var FIELD_LOG = false
-var TYPE_LOG = false
-var FILE_LOG = false
-var METHOD_LOG = false
-var CACHE_LOG = false
+const val CONSTRUCTOR_LOG = false
+const val VARIABLE_LOG = false
+const val FIELD_LOG = false
+const val TYPE_LOG = false
+const val FILE_LOG = false
+const val METHOD_LOG = false
+const val CACHE_LOG = false
+
+const val ENABLE_CACHE = false
+//const val ENABLE_CACHE = true
 
 private var idSequence = 0
 val NEXT_ID
@@ -119,6 +122,8 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "android.os.Binder"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.View"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply { name = "android.view.SurfaceView"; typeType = TypeType.Class; platform = Platform.Android },
+    Type().apply { name = "android.view.SurfaceHolder"; typeType = TypeType.Interface; platform = Platform.Android },
+    Type().apply { name = "android.opengl.GLSurfaceView"; typeType = TypeType.Class; platform = Platform.Android },
     Type().apply {
         name = "android.view.SurfaceHolder.Callback"; typeType = TypeType.Interface; platform = Platform.Android
     },
@@ -173,9 +178,11 @@ val SYSTEM_TYPE = listOf(
     Type().apply { name = "UIViewController"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIControl"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIImage"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "UIImageView"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSObject"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIColor"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSData"; typeType = TypeType.Class; platform = Platform.iOS },
+    Type().apply { name = "NSDate"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "NSOperation"; typeType = TypeType.Class; platform = Platform.iOS },
     Type().apply { name = "UIBarStyle"; typeType = TypeType.Enum; platform = Platform.iOS },
     Type().apply { name = "UIStatusBarStyle"; typeType = TypeType.Enum; platform = Platform.iOS },

@@ -20,24 +20,26 @@ typedef _OnAndroidViewDispose = Future<void> Function();
 
 class #__view__#_Android extends StatefulWidget {
   const #__view__#_Android({
-    Key key,
+    Key? key,
     this.onViewCreated,
     this.onDispose,
     this.params = const <String, dynamic>{},
     this.gestureRecognizers,
+    this.hybridComposition = false,
   }) : super(key: key);
 
-  final #__view_simple_name__#CreatedCallback onViewCreated;
-  final _OnAndroidViewDispose onDispose;
+  final #__view_simple_name__#CreatedCallback? onViewCreated;
+  final _OnAndroidViewDispose? onDispose;
   final Map<String, dynamic> params;
-  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
+  final bool hybridComposition;
 
   @override
   _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
 }
 
 class _#__view__#_AndroidState extends State<#__view__#_Android> {
-  #__view__# _controller;
+  #__view__#? _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -46,31 +48,33 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
     };
 
     // hybrid composition version.
-    // PlatformViewLink(
-    //   viewType: '#__org__#/#__view_type__#',
-    //   surfaceFactory: (
-    //     BuildContext context,
-    //     PlatformViewController controller,
-    //   ) {
-    //     return AndroidViewSurface(
-    //       controller: controller,
-    //       gestureRecognizers: gestureRecognizers,
-    //       hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-    //     );
-    //   },
-    //   onCreatePlatformView: (PlatformViewCreationParams params) {
-    //     return PlatformViewsService.initSurfaceAndroidView(
-    //       id: params.id,
-    //       viewType: '#__org__#/#__view_type__#',
-    //       layoutDirection: TextDirection.ltr,
-    //       creationParams: widget.params,
-    //       creationParamsCodec: k#__project_prefix__#MessageCodec,
-    //     )
-    //       ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-    //       ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
-    //       ..create();
-    //   },
-    // );
+    // if (widget.hybridComposition) {
+    //   return PlatformViewLink(
+    //     viewType: '#__org__#/#__view_type__#',
+    //     surfaceFactory: (
+    //       BuildContext context,
+    //       PlatformViewController controller,
+    //     ) {
+    //       return AndroidViewSurface(
+    //         controller: controller,
+    //         gestureRecognizers: gestureRecognizers,
+    //         hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+    //       );
+    //     },
+    //     onCreatePlatformView: (PlatformViewCreationParams params) {
+    //       return PlatformViewsService.initSurfaceAndroidView(
+    //         id: params.id,
+    //         viewType: '#__org__#/#__view_type__#',
+    //         layoutDirection: TextDirection.ltr,
+    //         creationParams: widget.params,
+    //         creationParamsCodec: k#__project_prefix__#MessageCodec,
+    //       )
+    //         ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+    //         ..addOnPlatformViewCreatedListener((id) => _onViewCreated(id))
+    //         ..create();
+    //     },
+    //   );
+    // } else {
     return AndroidView(
       viewType: '#__org__#/#__view_type__#',
       gestureRecognizers: gestureRecognizers,
@@ -78,6 +82,7 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
       creationParamsCodec: k#__project_prefix__#MessageCodec,
       creationParams: widget.params,
     );
+    // }
   }
 
   void _onViewCreated(int id) async {
@@ -86,16 +91,16 @@ class _#__view__#_AndroidState extends State<#__view__#_Android> {
     final refId = await viewId2RefId((2147483647 - id).toString());
     _controller = #__view__#()..refId = '#__view_type__#:$refId';
     if (widget.onViewCreated != null) {
-      widget.onViewCreated(_controller);
+      widget.onViewCreated!(_controller!);
     }
   }
 
   @override
   void dispose() {
     if (widget.onDispose != null) {
-      widget.onDispose().whenComplete(() => _controller.release__());
+      widget.onDispose!().whenComplete(() => _controller?.release__());
     } else {
-      _controller.release__();
+      _controller?.release__();
     }
     super.dispose();
   }

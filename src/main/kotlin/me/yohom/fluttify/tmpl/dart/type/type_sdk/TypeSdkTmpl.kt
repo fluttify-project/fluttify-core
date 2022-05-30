@@ -65,8 +65,6 @@ private val tmpl by lazy { getResource("/tmpl/dart/type_sdk.dart.tmpl").readText
 private val batchTmpl by lazy { getResource("/tmpl/dart/type_sdk_batch.dart.tmpl").readText() }
 
 fun TypeSdkTmpl(type: Type): String {
-    type.mergeWithCategory()
-
     val currentPackage = ext.projectName
     val className = if (type.declaredGenericTypes.isNotEmpty()) {
         "${type.name.toDartType()}<${type.declaredGenericTypes.joinToString()}>"
@@ -100,7 +98,9 @@ fun TypeSdkTmpl(type: Type): String {
     // 常量
     val constants = type.fields
         .filterConstants()
-        .joinToString("\n") { "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix()};" }
+        .joinToString("\n") {
+            "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix().escape()};"
+        }
 
     // 构造器
     val creators = if (type.constructable) {

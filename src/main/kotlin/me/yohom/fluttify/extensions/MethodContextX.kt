@@ -191,7 +191,7 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
         .typeName()
         .text
         .run {
-            if (this == "instancetype") {
+            if (contains("instancetype")) {
                 val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
                     ?: ancestorOf(ObjectiveCParser.ProtocolDeclarationContext::class)?.protocolName()?.text
                 if (instancetype != null) {
@@ -263,13 +263,11 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
 
 fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
     return macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
-            || attributeSpecifier()?.text?.contains("deprecated") == true
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
     return macro()?.text?.contains("unavailable", true) == true
             || macro()?.primaryExpression()?.any { it.text.contains("unavailable", true) } == true
-            || attributeSpecifier()?.text?.contains("unavailable", true) == true
 }
 
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {

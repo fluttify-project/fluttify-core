@@ -21,6 +21,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 //    });
 private val tmpl by lazy { getResource("/tmpl/dart/callback.stmt.dart.tmpl").readText() }
 
+@Deprecated("已不需要")
 fun CallbackSetterTmpl(field: Field): String {
     if (!field.variable.trueType.findType().isCallback)
         return ""

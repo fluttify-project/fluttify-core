@@ -1,4 +1,9 @@
-extension #__class_name__#_Batch on List<#__class_name__#> {
+extension #__class_name__#_Batch on List<#__class_name__#?> {
+  String? get refId {
+    if (isEmpty) return null;
+    return first?.refId;
+  }
+
   //region getters
   #__getters_batch__#
   //endregion

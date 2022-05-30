@@ -1,5 +1,6 @@
 package me.yohom.fluttify.model
 
+import com.google.gson.Gson
 import me.yohom.fluttify.EXCLUDE_FILES
 import me.yohom.fluttify.EXCLUDE_LIBS
 import me.yohom.fluttify.FILE_LOG
@@ -26,6 +27,6 @@ class SourceFile {
     }
 
     override fun toString(): String {
-        return "SourceFile(fileName='$fileName', types=$types, topLevelConstants=$topLevelConstants)"
+        return Gson().newBuilder().setPrettyPrinting().create().toJson(this)
     }
 }

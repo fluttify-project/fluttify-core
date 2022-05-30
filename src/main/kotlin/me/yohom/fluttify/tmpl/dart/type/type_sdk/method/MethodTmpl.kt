@@ -43,7 +43,7 @@ fun MethodTmpl(method: Method): String {
         }
     val log = LogTmpl(method)
     val callback = method.formalParams
-        .filter { it.variable.isCallback() || it.variable.isLambda() }
+        .filter { it.variable.isLambda() }
         .map { it.variable }
         .map { CallbackMethodTmpl(method, it.trueType.findType(), it.name) }
     val invoke = InvokeTmpl(method)
@@ -52,7 +52,7 @@ fun MethodTmpl(method: Method): String {
     return tmpl
         .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
         .replace("#__static__#", static)
-        .replace("#__return_type__#", returnType)
+        .replace("#__return_type__#", returnType.enOptional())
         .replace("#__method_name__#", methodName)
         .replace("#__formal_params__#", formalParams)
         .replaceParagraph("#__log__#", log)

@@ -12,8 +12,11 @@ private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readT
 
 fun InvokeTmpl(method: Method): String {
     val channel = if (method.className.findType().isView) {
-        val channelName =
-            "viewChannel ? '${ext.methodChannelName}/${method.className.toUnderscore()}' : '${ext.methodChannelName}'"
+        val viewChannelName =
+            if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}'"
+            else "'${ext.methodChannelName}/${method.className.toUnderscore()}'"
+        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
+
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
     } else {
         "k${ext.projectName.underscore2Camel()}Channel"

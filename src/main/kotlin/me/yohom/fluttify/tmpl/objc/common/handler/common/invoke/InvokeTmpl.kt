@@ -15,8 +15,9 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
     fun objcInvoke(): String {
         val invokeGetter = field?.run {
             val typeName = variable.run {
-                when (trueType) {
-                    "id" -> "NSObject*"
+                when {
+                    trueType == "id" -> "NSObject*"
+                    trueType.findType().isInterface -> trueType.enprotocol()
                     else -> trueType
                 }
             }
@@ -35,6 +36,12 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
         }
 
         val invokeMethod = method?.run {
+            val returnTypeName = when {
+                returnType == "id" -> "NSObject*"
+                returnType.findType().isInterface -> returnType.enprotocol()
+                else -> returnType
+            }
+
             // 在引用上调用方法 先分是否是静态方法, 再分返回类型是否是void
             if (method.isStatic) {
                 // 函数
@@ -47,19 +54,21 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 }
                 // 协议静态方法
                 else {
-                    "[[NSObject<${method.className}> class] ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}]"
+                    val args = method.formalParams.joinToString(" ") { param2arg(it) }
+                    "[[NSObject<${method.className}> class] ${method.name}${args}]"
                 }
 
-                if (method.returnType == "void") {
+                if (returnTypeName == "void") {
                     "$call;"
                 } else {
-                    "${method.returnType} result = $call;"
+                    "$returnTypeName result = $call;"
                 }
             } else {
-                if (method.returnType == "void") {
+                if (returnTypeName == "void") {
                     "[ref ${method.name} ${method.formalParams.joinToString(" ") { param2arg(it) }}];"
                 } else {
-                    "${method.returnType} result = [ref ${method.name}${method.formalParams.joinToString(" ") { param2arg(it) }}];"
+                    val args = method.formalParams.joinToString(" ") { param2arg(it) }
+                    "$returnTypeName result = [ref ${method.name}${args}];"
                 }
             }
         }
@@ -75,6 +84,7 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                     // 回调类, 同时支持作为对象传入, 因为碰到既需要作为对象传递又需要作为回调的情况. 如果参数为null则认为是回调, 否则就认为是普通对象
                     it.variable.isCallback() -> "${it.variable.name} != nil ? ${it.variable.name} : weakSelf"
                     it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.trueType.isMultiPointer() -> "&${it.variable.name}"
                     else -> it.variable.name
                 }
             }
@@ -83,9 +93,8 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 "${it.named}: ${CallbackLambdaTmpl(method, it.variable.trueType.findType())}"
             } else {
                 "${it.named}: ${when {
-                    // 回调类, 同时支持作为对象传入, 因为碰到既需要作为对象传递又需要作为回调的情况. 如果参数为null则认为是回调, 否则就认为是普通对象
-                    it.variable.isCallback() -> "${it.variable.name} != nil ? ${it.variable.name} : weakSelf"
                     it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
+                    it.variable.trueType.isMultiPointer() -> "&${it.variable.name}"
                     else -> it.variable.name
                 }}"
             }

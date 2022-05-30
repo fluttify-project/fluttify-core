@@ -1,6 +1,7 @@
 package me.yohom.fluttify.task
 
 import me.yohom.fluttify.extensions.file
+import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.extensions.replaceParagraph
 import me.yohom.fluttify.extensions.underscore2Camel
 import org.gradle.api.tasks.TaskAction
@@ -10,29 +11,27 @@ import org.gradle.api.tasks.TaskAction
  */
 open class TweakDefaultProject : FluttifyTask() {
 
-    private val buildGradleTmpl = this::class.java.getResource("/tmpl/project/build.gradle.java.tmpl").readText()
-    private val infoPlistTmpl = this::class.java.getResource("/tmpl/project/Info.plist.tmpl").readText()
-    private val podSpecTmpl = this::class.java.getResource("/tmpl/project/projectName.podspec.tmpl").readText()
-    private val pubSpecTmpl = this::class.java.getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
-    private val analysisTmpl = this::class.java.getResource("/tmpl/project/analysis_options.yaml.tmpl").readText()
+    private val buildGradleTmpl = getResource("/tmpl/project/build.gradle.java.tmpl").readText()
+    private val infoPlistTmpl = getResource("/tmpl/project/Info.plist.tmpl").readText()
+    private val podfileTmpl = getResource("/tmpl/project/Podfile.tmpl").readText()
+    private val podSpecTmpl = getResource("/tmpl/project/projectName.podspec.tmpl").readText()
+    private val pubSpecTmpl = getResource("/tmpl/project/pubspec.yaml.tmpl").readText()
+    private val analysisTmpl = getResource("/tmpl/project/analysis_options.yaml.tmpl").readText()
 
     @TaskAction
     fun process() {
         val outputProjectPath = "${project.projectDir}/output-project/${ext.projectName}"
 
+        // build.gradle
         "${outputProjectPath}/android/build.gradle"
             .file()
             .writeText(
                 buildGradleTmpl
                     .replace("#__project_id__#", "${ext.org}.${ext.projectName}")
                     .replaceParagraph("#__sdk_dependency__#", ext.android.remote.run {
-                        if (androidConfigured) {
-                            androidCoordinate
-                                .union(transitiveDependencies)
-                                .joinToString("\n") { "api '$it'" }
-                        } else {
-                            ""
-                        }
+                        dependencies
+                            .union(transitiveDependencies)
+                            .joinToString("\n") { "api '$it'" }
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
@@ -40,12 +39,18 @@ open class TweakDefaultProject : FluttifyTask() {
                             .map { "compileOnly rootProject.findProject(\":${it.key}\")" }
                             .joinToString("\n")
                     )
+                    .replaceParagraph(
+                        "#__repositories__#",
+                        ext.android.repositories.joinToString("\n")
+                    )
             )
 
+        // Info.plist
         "${outputProjectPath}/example/ios/Runner/Info.plist"
             .file()
             .writeText(infoPlistTmpl.replace("#__project_name__#", ext.projectName))
 
+        // podspec
         "${outputProjectPath}/ios/${ext.projectName}.podspec"
             .file()
             .writeText(
@@ -56,23 +61,23 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__email__#", ext.email)
                     .replace("#__homepage__#", ext.homepage)
                     .replaceParagraph("#__sdk_dependency__#", ext.ios.remote.run {
-                        if (iosConfigured) {
-                            iosCoordinate
-                                .union(transitiveDependencies)
-                                .joinToString("\n") { "s.dependency $it" }
-                        } else {
-                            ""
-                        }
+                        dependencies
+                            .union(transitiveDependencies)
+                            .joinToString("\n") { "s.dependency $it" }
                     })
                     .replaceParagraph(
                         "#__plugin_dependency__#",
                         ext.pluginDependencies.map { "s.dependency '${it.key}'" }.joinToString("\n")
                     )
-                    .replace("#__frameworks__#", ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
+                    .replace("#__deployment_target__#", ext.ios.iosDeploymentTarget)
+                    .replace(
+                        "#__frameworks__#",
+                        ext.iOSTransitiveFramework.joinToString { "\"$it\"" })
                     .replace("#__libraries__#", ext.iOSTransitiveTbd.joinToString { "\"$it\"" })
                     .replace("#__resources__#", ext.iOSResource.joinToString { "\"$it\"" })
             )
 
+        // pubspec.yaml
         "${outputProjectPath}/pubspec.yaml"
             .file()
             .writeText(
@@ -98,8 +103,19 @@ open class TweakDefaultProject : FluttifyTask() {
                     .replace("#__plugin_class__#", "${ext.projectName.underscore2Camel()}Plugin")
             )
 
+        // analysis_options.yaml
         "${outputProjectPath}/analysis_options.yaml"
             .file()
             .writeText(analysisTmpl)
+
+        // Podfile
+        "${outputProjectPath}/example/ios/Podfile"
+            .file()
+            .writeText(podfileTmpl)
+
+        // 删除不需要的文件
+        "$outputProjectPath/lib/${ext.projectName}_method_channel.dart".file().delete()
+        "$outputProjectPath/lib/${ext.projectName}_platform_interface.dart".file().delete()
+        "$outputProjectPath/test/".file().deleteRecursively()
     }
 }

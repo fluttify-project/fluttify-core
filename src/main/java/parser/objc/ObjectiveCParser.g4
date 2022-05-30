@@ -167,7 +167,7 @@ instanceMethodDeclaration
     ;
 
 methodDeclaration
-    : methodType? methodSelector attributeSpecifier? macro? ';'
+    : methodType? methodSelector macro? ';'
     ;
 
 implementationDefinitionList
@@ -231,6 +231,7 @@ genericsSpecifier
 
 typeSpecifierWithPrefixes
     : typePrefix* typeSpecifier
+    | typeName
     ;
 
 dictionaryExpression
@@ -426,7 +427,7 @@ structOrUnionSpecifier
     ;
 
 fieldDeclaration
-    : specifierQualifierList fieldDeclaratorList attributeSpecifier? macro? ';'
+    : specifierQualifierList fieldDeclaratorList macro? ';'
     ;
 
 specifierQualifierList
@@ -530,11 +531,11 @@ enumeratorList
     ;
 
 enumerator
-    : enumeratorIdentifier macro? ('=' expression)? // 新增(macro?) 枚举中可能会出现NS_SWIFT_NAME()这个宏
+    : enumeratorIdentifier ('=' expression)?
     ;
 
 enumeratorIdentifier
-    : identifier (attributeSpecifier)? // 解决枚举中无法识别__attribute__的bug
+    : identifier
     | 'default'
     ;
 
@@ -556,7 +557,7 @@ pointer
     ;
 
 macro
-    : identifier (LP primaryExpression (',' primaryExpression)* RP)? // 解决方法中无法识别__attribute__的bug
+    : identifier (LP primaryExpression (',' primaryExpression)* RP)?
     ;
 
 arrayInitializer
@@ -745,7 +746,7 @@ unaryOperator
 
 postfixExpression
     : primaryExpression postfix*
-    | postfixExpression (DOT | STRUCTACCESS) identifier postfix*
+    | postfixExpression (DOT | STRUCTACCESS) identifier postfix*  // TODO: get rid of property and postfix expression.
     ;
 
 postfix
@@ -787,7 +788,7 @@ constant
     | ('+' | '-')? FLOATING_POINT_LITERAL
     | CHARACTER_LITERAL
     | NIL
-    | NULL
+    | NULL_
     | YES
     | NO
     | TRUE

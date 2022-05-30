@@ -38,8 +38,8 @@ open class Export : FluttifyTask() {
             iosResult.appendln("export 'package:$name/$name.dart';")
         }
 
-        androidResult.appendln("export '../facade/objects.g.dart';")
-        iosResult.appendln("export '../facade/objects.g.dart';")
+        androidResult.appendln("export '../facade/shared.g.dart';")
+        iosResult.appendln("export '../facade/shared.g.dart';")
 
         androidExportFile.writeText(androidResult.toString())
         iosExportFile.writeText(iosResult.toString())

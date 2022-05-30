@@ -22,5 +22,5 @@ fun InvokeReturnTmpl(method: Method): String {
         .replace("#__return_type__#", method.returnType.replace("$", "."))
         .replace("#__invoke_target__#", if (method.isStatic) method.className.replace("$", ".") else "__this__")
         .replace("#__method_name__#", method.name)
-        .replace("#__actual_params__#", method.formalParams.joinToString { it.variable.var2Args(method) })
+        .replace("#__actual_params__#", method.formalParams.joinToString { it.variable.var2Args() })
 }

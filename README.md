@@ -9,7 +9,7 @@ Fluttify形态上是一个gradle插件, 利用了gradle提供的基础设施, �
 第一个阶段, Fluttify会把原生SDK解析为一个json表示; 第二个阶段, 使用这个json表示生成最终的插件代码.
 
 ### build.gradle
-以高德定位SDK为例, 为了生成高德定位的Flutter插件, 需要编写对应的build.gradle文件. 如下:
+以高德定位SDK为例, 为了生成高德定位的Flutter插件, 需要新建并编辑如下的build.gradle文件:
 ```groovy
 // 应用fluttify插件
 // 这个是已经上传到gradle官方插件仓库的版本
@@ -35,7 +35,7 @@ plugins {
 fluttify {
     projectName = "amap_location_fluttify" // 输出工程名称
     org = "me.yohom" // 输出工程组织名称
-    desc = desc = "An `Amap` Location Component, Powered By `Fluttify`, A Compiler Generating Dart Bindings For Native SDK." // 输出工程描述
+    desc = "An `Amap` Location Component, Powered By `Fluttify`, A Compiler Generating Dart Bindings For Native SDK." // 输出工程描述
     author = "yohom" // 作者
     email = "yohombao@qq.com" // 作者邮箱
     homepage = "https://github.com/fluttify-project/amap_location_fluttify" // 项目主页
@@ -69,7 +69,7 @@ fluttify {
 其他具体的配置项, 可以参考`FluttifyExtension`类.
 
 ### run!
-在命令行输入一下命令, 即可生成高德地图插件!
+在`build.gradle`所在目录, 命令行输入一下命令, 即可生成高德地图插件!
 ```shell script
 gradle fluttify
 ```
@@ -106,3 +106,6 @@ foundation_fluttify封装了Android和iOS两端的系统类和一些公共方法
 - [如何利用Fluttify开发一个新的Flutter插件](https://juejin.im/post/5e06faa651882512416a7630)
 - [Fluttify输出Flutter插件工程详解](https://juejin.im/post/5e19306c6fb9a02ff67d3780)
 - [Fluttify编译器原理介绍](https://juejin.im/post/5e67321751882549717d8de7)
+
+## Showcase
+请参考 https://github.com/fluttify-project?type=source 下的项目

@@ -32,7 +32,7 @@ fun NonViewCallbackMethodTmpl(method: Method): String {
     val returnType = method.returnType
     val methodName = method.name
     val log = method.nameWithClass()
-    val methodChannel = "@\"${method.className.deprotocol().replace("$", ".")}::Callback\""
+    val methodChannel = "[NSString stringWithFormat:@\"${method.className.deprotocol().replace("$", ".")}::Callback@%@:%@\", NSStringFromClass([self class]), @(self.hash)]"
     val formalParams =
         " ${method.formalParams.joinToString(" ") { "${it.named}: (${it.variable.objcType()})${it.variable.name.objcSpecifierExpand()}" }}"
     val localArgs = if (method.formalParams.none { it.variable.trueType.isMultiPointer() }) {

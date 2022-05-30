@@ -1,0 +1,1 @@
+[-] ios端的自定义delegate实现, 跟android端的匿名内部类一样的机制
