@@ -286,7 +286,7 @@ open class IOSObjcInterface : FluttifyTask() {
             }
 
         val anonymous = filteredTypes
-            .filter { it.isInterface }
+            .filter { it.isCallback }
             .map(::ObjcHandlerAnonymousTmpl)
 
         methods
