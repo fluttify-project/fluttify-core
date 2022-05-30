@@ -45,7 +45,8 @@ fun SubHandlerTmpl(number: Int, handlers: List<String>): List<String> {
     val allInterfaceTypes = SDK.sdks
         .find { it.platform == Platform.iOS }!!
         .allTypes
-        .filter { it.isInterface }
+        .filterType()
+        .filter { it.isCallback }
         .map { "#import \"${it.name}_Anonymous.h\"" }
     val importLibrary = ext.ios.iosLibraryHeaders.union(allInterfaceTypes).joinToString("\n")
 

@@ -9,69 +9,45 @@ import me.yohom.fluttify.tmpl.objc.plugin.register_handler.RegisterHandlerTmpl
 import me.yohom.fluttify.tmpl.objc.plugin.register_platform_view.RegisterPlatformViewTmpl
 import java.io.File
 
-//#import <Flutter/Flutter.h>
+//#import <Foundation/Foundation.h>
+//#__import_library__#
 //
-//typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, id, FlutterResult);
+//@protocol FlutterPluginRegistrar;
 //
-//@interface #__plugin_name__#Plugin : NSObject<FlutterPlugin>
+//NS_ASSUME_NONNULL_BEGIN
+//
+//@interface #__interface_name__#_Anonymous : NSObject<#__interface_name__#>
 //
 //- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar;
 //
 //@property(nonatomic) NSObject<FlutterPluginRegistrar>* registrar;
 //
 //@end
-
-//#import "#__plugin_name__#Plugin.h"
 //
-//typedef void (^Handler)(NSObject <FlutterPluginRegistrar> *, NSDictionary<NSString *, NSObject *> *, FlutterResult);
+//NS_ASSUME_NONNULL_END
+//
+//#import "#__interface_name__#_Anonymous.h"
+//#import <Flutter/Flutter.h>
+//#import <FluttifyMessageCodec.h>
 //
 //// Dart端一次方法调用所存在的栈, 只有当MethodChannel传递参数受限时, 再启用这个容器
 //extern NSMutableDictionary<NSString*, NSObject*>* STACK;
 //// Dart端随机存取对象的容器
 //extern NSMutableDictionary<NSString*, NSObject*>* HEAP;
+//// 日志打印开关
+//extern BOOL enableLog;
 //
-//@implementation #__plugin_name__#Plugin {
-//  NSObject <FlutterPluginRegistrar> * _registrar;
-//  NSDictionary<NSString *, Handler> *_handlerMap;
-//}
+//@implementation #__interface_name__#_Anonymous
 //
 //- (instancetype) initWithFlutterPluginRegistrar: (NSObject <FlutterPluginRegistrar> *) registrar {
 //  self = [super init];
 //  if (self) {
 //    _registrar = registrar;
-//    // 处理方法们
-//    _handlerMap = @{
-//      #__handlers__#
-//    };
 //  }
 //
 //  return self;
 //}
 //
-//+ (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-//  FlutterMethodChannel *channel = [FlutterMethodChannel
-//      methodChannelWithName:@"#__method_channel__#"
-//            binaryMessenger:[registrar messenger]];
-//
-//  [registrar addMethodCallDelegate:[[#__plugin_name__#Plugin alloc] initWithFlutterPluginRegistrar:registrar]
-//                           channel:channel];
-//
-//  // 注册View
-//  #__register_platform_views__#
-//}
-//
-//// Method Handlers
-//- (void)handleMethodCall:(FlutterMethodCall *)methodCall result:(FlutterResult)methodResult {
-//  NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
-//
-//  if (_handlerMap[methodCall.method] != nil) {
-//    _handlerMap[methodCall.method](_registrar, args, methodResult);
-//  } else {
-//    methodResult(FlutterMethodNotImplemented);
-//  }
-//}
-//
-//// 委托方法们
 //#__delegate_methods__#
 //
 //@end
