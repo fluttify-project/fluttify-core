@@ -39,7 +39,7 @@ fun AnonymousTmpl(type: Type): String {
         }
         .joinToStringX(", ", "{", "}")
     val callbackCases = type.methods
-        .map { CallbackCaseLambdaTmpl(it.asType(), "${it.name}?.call") }
+        .map { CallbackCaseLambdaTmpl(it, "${it.name}?.call") }
         .joinToStringX("\n")
     return tmpl
         .replace("#__class_name__#", type.name.toDartType())

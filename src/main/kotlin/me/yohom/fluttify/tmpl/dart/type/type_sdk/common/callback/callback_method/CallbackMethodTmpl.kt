@@ -45,7 +45,7 @@ fun CallbackMethodTmpl(callerMethod: Method, callbackType: Type, callbackObject:
     }
 
     val callbackCases = if (callbackType.isLambda) {
-        CallbackCaseLambdaTmpl(callbackType, callbackObject)
+        CallbackCaseLambdaTmpl(callbackType.asMethod(), callbackObject)
     } else {
         callbackType
             .methods

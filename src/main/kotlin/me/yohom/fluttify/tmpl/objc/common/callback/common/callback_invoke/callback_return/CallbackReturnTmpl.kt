@@ -17,8 +17,7 @@ import me.yohom.fluttify.model.Method
 private val tmpl by lazy { getResource("/tmpl/objc/callback_return.stmt.m.tmpl").readText() }
 
 fun CallbackReturnTmpl(method: Method): String {
-    val callbackMethod = "Callback::${method.nameWithClass()}"
-    val methodChannel = "@\"${method.className.deprotocol().replace("$", ".")}::Callback\""
+    val callbackMethod = "Callback::${method.exactName}"
 
     val callbackArgs = method
         .formalParams
@@ -39,7 +38,6 @@ fun CallbackReturnTmpl(method: Method): String {
 
     return tmpl
         .replace("#__callback_method__#", callbackMethod)
-        .replace("#__method_channel__#", methodChannel)
         .replace("#__callback_args__#", callbackArgs)
         .replaceParagraph("__stub_return__", stubReturn)
 }

@@ -32,8 +32,7 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 private val tmpl by lazy { getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText() }
 
 fun CallbackMethodTmpl(method: Method): String {
-    val callbackMethod = method.name
-    val callbackMethodName = "${method.name}::${method.name}" // 这里由于要跟CallbackCaseLambdaTmpl对齐, 所以先这样命名method name了
+    val callbackMethod = method.exactName
     val formalParams = method
         .formalParams
         .map { it.variable }
@@ -59,7 +58,6 @@ fun CallbackMethodTmpl(method: Method): String {
 
     return tmpl
         .replace("#__callback_method__#", callbackMethod)
-        .replace("#__callback_method_name__#", callbackMethodName)
         .replace("#__formal_params__#", formalParams)
         .replace("#__return_type__#", returnType)
         .replaceParagraph("#__callback_args__#", callbackArgs)
