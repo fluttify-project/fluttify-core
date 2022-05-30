@@ -50,6 +50,9 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
 
     /**
      * 插件依赖
+     *
+     * 这里其实应该是使用fluttify生成的插件列表, 因为要在原生端引用对应的原生SDK, 其他的比如url_launcher这样的插件应该放到packageDependencies
+     * 因为并不需要在原生端依赖其原生代码
      */
     var pluginDependencies: Map<String, String> = mapOf()
 
