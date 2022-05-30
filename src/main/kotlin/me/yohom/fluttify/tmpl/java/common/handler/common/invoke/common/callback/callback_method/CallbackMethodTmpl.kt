@@ -7,7 +7,7 @@ import me.yohom.fluttify.model.Method
 import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.callback_method.callback_return.CallbackReturnTmpl
 
 //@Override
-//public #__return_type__# #__callback_method__#(#__formal_params__#) {
+//public #__return_type__# #__method__#(#__formal_params__#) {
 //    // print log
 //    if (getEnableLog()) {
 //        #__log__#
@@ -32,7 +32,6 @@ import me.yohom.fluttify.tmpl.java.common.handler.common.invoke.common.callback.
 private val tmpl by lazy { getResource("/tmpl/java/callback_method.mtd.java.tmpl").readText() }
 
 fun CallbackMethodTmpl(method: Method): String {
-    val callbackMethod = method.exactName
     val formalParams = method
         .formalParams
         .map { it.variable }
@@ -57,7 +56,8 @@ fun CallbackMethodTmpl(method: Method): String {
     val returnStmt = CallbackReturnTmpl(method)
 
     return tmpl
-        .replace("#__callback_method__#", callbackMethod)
+        .replace("#__method__#", method.name)
+        .replace("#__callback_method__#", method.exactName)
         .replace("#__formal_params__#", formalParams)
         .replace("#__return_type__#", returnType)
         .replaceParagraph("#__callback_args__#", callbackArgs)
