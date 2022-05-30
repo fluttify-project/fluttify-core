@@ -241,7 +241,6 @@ open class IOSDartInterface : FluttifyTask() {
             .filterNot { it.isFunction }
             .filterNot { it.isExtension}
             .filterNot { it.isAlias() }
-            .filterNot { it.isCallback }
             .filterNot { it.isEnum }
             .filterNot { ext.ios.exclude.classes.contains(it.name) }
             .filterNot { it.name == "NSObject" }

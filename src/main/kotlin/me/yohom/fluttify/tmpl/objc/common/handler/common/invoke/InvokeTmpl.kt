@@ -93,8 +93,6 @@ class InvokeTmpl private constructor(private val field: Field?, private val meth
                 "${it.named}: ${CallbackLambdaTmpl(method, it.variable.trueType.findType())}"
             } else {
                 "${it.named}: ${when {
-                    // 回调类, 同时支持作为对象传入, 因为碰到既需要作为对象传递又需要作为回调的情况. 如果参数为null则认为是回调, 否则就认为是普通对象
-                    it.variable.isCallback() -> "${it.variable.name} != nil ? ${it.variable.name} : weakSelf"
                     it.variable.trueType.isPrimitivePointerType() -> "[${it.variable.name} pointerValue]"
                     it.variable.trueType.isMultiPointer() -> "&${it.variable.name}"
                     else -> it.variable.name
