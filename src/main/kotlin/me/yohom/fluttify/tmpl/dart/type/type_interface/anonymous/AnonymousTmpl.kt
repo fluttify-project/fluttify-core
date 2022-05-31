@@ -35,11 +35,12 @@ fun AnonymousTmpl(type: Type): String {
         .map {
             val returnType = it.returnType.toDartType()
             val formalParams = it.formalParams.joinToString(", ") { it.variable.toDartString(true) }
-            "$returnType Function(${formalParams})? ${it.name}"
+            "$returnType Function(${formalParams})? ${it.exactName}"
         }
         .joinToStringX(", ", "{", "}")
     val callbackCases = type.methods
-        .map { CallbackCaseLambdaTmpl(it, "${it.name}?.call") }
+        .filterNot { it.formalParams.any { it.variable.isLambda() } }
+        .map { CallbackCaseLambdaTmpl(it, "${it.exactName}?.call") }
         .joinToStringX("\n")
     return tmpl
         .replace("#__class_name__#", type.name.toDartType())

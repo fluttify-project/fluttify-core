@@ -161,7 +161,10 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
      * 用户定义的宏+内置的宏
      */
     val allMacros: Map<String, String>
-        get() = predefineMacro + mapOf("__attribute__\\(.*\\)" to "")
+        get() = predefineMacro + mapOf(
+            "__attribute__\\(.*\\)" to "",
+            "API_AVAILABLE\\(.*\\)" to "",
+        )
 
     /**
      * 依赖仓库
