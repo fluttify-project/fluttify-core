@@ -167,7 +167,7 @@ instanceMethodDeclaration
     ;
 
 methodDeclaration
-    : methodType? methodSelector macro? ';'
+    : methodType? methodSelector (macro | attributeSpecifier)* ';'
     ;
 
 implementationDefinitionList
@@ -427,7 +427,7 @@ structOrUnionSpecifier
     ;
 
 fieldDeclaration
-    : specifierQualifierList fieldDeclaratorList macro? ';'
+    : specifierQualifierList fieldDeclaratorList (macro | attributeSpecifier)* ';'
     ;
 
 specifierQualifierList

@@ -50,7 +50,8 @@ class FileXKtTest : FluttifyTest() {
 
     @Test
     fun parseAnonymous() {
-        val file = "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
+        val file =
+            "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
         val sdk = file.parseSDK()
         val type = SDK.findType("com.tencent.rtmp.ITXLivePlayListener")
 
@@ -62,8 +63,8 @@ class FileXKtTest : FluttifyTest() {
     fun testConstructor() {
         val file =
             "/Users/yohom/Github/Me/All/fluttify/tencent_player/jr/tencent_player_fluttify.android.json".file()
-        val sdk=file.parseSDK()
-        val type=sdk.allTypes.find { it.name=="com.tencent.rtmp.TXVodPlayer" }
+        val sdk = file.parseSDK()
+        val type = sdk.allTypes.find { it.name == "com.tencent.rtmp.TXVodPlayer" }
         println("type: $type")
     }
 
@@ -997,6 +998,14 @@ class FileXKtTest : FluttifyTest() {
     }
 
     @Test
+    fun parseSDK() {
+        val sdk =
+            "/Users/yohom/Github/Me/All/fluttify/amap/amap_search_fluttify/jr/amap_search_fluttify.ios.json".file()
+                .readText().parseSDK()
+        println(sdk)
+    }
+
+    @Test
     fun isPublic() {
         val source = """
             
@@ -1007,7 +1016,34 @@ class FileXKtTest : FluttifyTest() {
             - (instancetype)init NS_UNAVAILABLE;
             @end
         """.trimIndent()
-        source.walkTree(object : ObjectiveCParserBaseListener() {
+        val source2 = """
+          ///附近搜索管理类，同时只能有一个实例开启，否则可能会出现错误。
+@interface AMapNearbySearchManager : NSObject
+
+///上传最小间隔，默认15s，最小7s。自动上传的过程中设置无效。
+@property (nonatomic, assign) NSTimeInterval uploadTimeInterval;
+
+///代理对象。
+@property (nonatomic, weak) id<AMapNearbySearchManagerDelegate> delegate;
+
+///是否正在自动上传状态中。
+@property (nonatomic, readonly) BOOL isAutoUploading;
+
++ (instancetype)sharedInstance;
+
+- (instancetype)init __attribute__((unavailable));
+
+- (void)startAutoUploadNearbyInfo;
+
+- (void)stopAutoUploadNearbyInfo;
+
+- (BOOL)uploadNearbyInfo:(AMapNearbyUploadInfo *)info __attribute((deprecated("已废弃 since 7.4.0，该功能不再支持")));
+
+- (BOOL)clearUserInfoWithID:(NSString *)userID __attribute((deprecated("已废弃 since 7.4.0，该功能不再支持")));
+
+@end
+        """.trimIndent()
+        source2.walkTree(object : ObjectiveCParserBaseListener() {
             override fun enterMethodDeclaration(ctx: ObjectiveCParser.MethodDeclarationContext) {
                 ctx.returnType()
                 ctx.name()

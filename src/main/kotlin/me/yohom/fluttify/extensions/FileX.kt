@@ -507,8 +507,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                             ctx.getterName().removeObjcSpecifier(),
                             ctx.setterName().removeObjcSpecifier(),
                             Platform.iOS,
-                            ctx.macro()?.primaryExpression()
-                                ?.any { it.text.contains("deprecated") } == true
+                            ctx.macro()?.any { it.text.contains("deprecated") } == true
                         )
                     )
                 }

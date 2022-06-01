@@ -150,6 +150,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * 元素替换
      */
+    @Deprecated("使用predefineMacro代替")
     var overrideElements: Map<String, String> = mapOf()
 
     /**
@@ -162,7 +163,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
      */
     val allMacros: Map<String, String>
         get() = predefineMacro + mapOf(
-            "__attribute__\\(.*\\)" to "",
+//            "__attribute\\(.*\\)" to "",
             "API_AVAILABLE\\(.*\\)" to "",
             "NS_AVAILABLE_IOS\\(.*\\)" to "",
         )

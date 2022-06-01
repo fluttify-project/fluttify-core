@@ -77,7 +77,8 @@ fun JavaParser.MethodDeclarationContext.formalParams(): List<Parameter> {
     val parameters = formalParameters()?.formalParameterList() ?: return listOf()
 
     // 所在类声明的泛型类型
-    val typeDeclareGenericTypes = ancestorOf(JavaParser.ClassDeclarationContext::class)?.genericTypes() ?: listOf()
+    val typeDeclareGenericTypes =
+        ancestorOf(JavaParser.ClassDeclarationContext::class)?.genericTypes() ?: listOf()
     // 除最后一个参数之外的参数
     parameters
         .formalParameter()
@@ -133,7 +134,8 @@ fun JavaParser.InterfaceMethodDeclarationContext.formalParams(): List<Parameter>
     val parameters = formalParameters()?.formalParameterList() ?: return listOf()
 
     // 所在类声明的泛型类型
-    val typeDeclareGenericTypes = ancestorOf(JavaParser.InterfaceDeclarationContext::class)?.genericTypes() ?: listOf()
+    val typeDeclareGenericTypes =
+        ancestorOf(JavaParser.InterfaceDeclarationContext::class)?.genericTypes() ?: listOf()
 
     // 除最后一个参数之外的参数
     parameters
@@ -192,8 +194,9 @@ fun ObjectiveCParser.MethodDeclarationContext.returnType(): String {
         .text
         .run {
             if (contains("instancetype")) {
-                val instancetype = ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
-                    ?: ancestorOf(ObjectiveCParser.ProtocolDeclarationContext::class)?.protocolName()?.text
+                val instancetype =
+                    ancestorOf(ObjectiveCParser.ClassInterfaceContext::class)?.className?.text
+                        ?: ancestorOf(ObjectiveCParser.ProtocolDeclarationContext::class)?.protocolName()?.text
                 if (instancetype != null) {
                     "$instancetype*"
                 } else {
@@ -262,12 +265,11 @@ fun ObjectiveCParser.MethodDeclarationContext.formalParams(): List<Parameter> {
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
-    return macro()?.primaryExpression()?.any { it.text.contains("deprecated") } == true
+    return attributeSpecifier()?.any { it.text.contains("deprecated") } == true
 }
 
 fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
-    return macro()?.text?.contains("unavailable", true) == true
-            || macro()?.primaryExpression()?.any { it.text.contains("unavailable", true) } == true
+    return attributeSpecifier()?.any { it.text.contains("unavailable", true) } == true
 }
 
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {
@@ -283,7 +285,8 @@ fun ObjectiveCParser.BlockTypeContext.parameters(): String {
             // lambda参数, 可以是只有类名, 所以这里的name有可能是空, 类名也可以是空, 如果类名是空的话就直接使用
             // it.typeName().text
             val name =
-                it.second?.typeVariableDeclarator()?.declarator()?.text?.objcSpecifierExpand() ?: "__arg_${it.first}__"
+                it.second?.typeVariableDeclarator()?.declarator()?.text?.objcSpecifierExpand()
+                    ?: "__arg_${it.first}__"
             val type = it.second?.typeVariableDeclarator()
                 ?.declarationSpecifiers()
                 ?.text
