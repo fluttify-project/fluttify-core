@@ -164,6 +164,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
         get() = predefineMacro + mapOf(
             "__attribute__\\(.*\\)" to "",
             "API_AVAILABLE\\(.*\\)" to "",
+            "NS_AVAILABLE_IOS\\(.*\\)" to "",
         )
 
     /**
