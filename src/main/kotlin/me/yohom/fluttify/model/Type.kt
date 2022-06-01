@@ -453,6 +453,7 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     /**
      * 从Category合并到Class里去
      */
+    @Deprecated("extension要单独领出来")
     fun mergeWithCategory(): Type {
         val categories = SDK.findExtensions(name)
         categories.forEach {
