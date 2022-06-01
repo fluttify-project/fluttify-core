@@ -143,7 +143,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
 
-    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}/${viewType.name.toUnderscore()}:_viewId"
+    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
     val delegateMethods = lib
         .types
