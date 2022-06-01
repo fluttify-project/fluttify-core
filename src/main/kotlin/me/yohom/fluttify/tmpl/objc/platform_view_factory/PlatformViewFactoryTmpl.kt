@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.platform_view_factory
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
+import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.view_callback_method.ViewCallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
@@ -117,6 +118,7 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
         })
         .joinToString("\n")
 
+    val extensions= SDK.findExtensions(viewType.name)
     val nativeView = viewType.name
     val protocols = lib
         .types
@@ -130,16 +132,22 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
 
     val methodHandlers = viewType
         .methods
+        .union(extensions.flatMap { it.methods })
+        .toList()
         .filterMethod()
         .map { HandlerMethodTmpl(it) }
 
     val getters = viewType
         .fields
+        .union(extensions.flatMap { it.fields })
+        .toList()
         .filterGetters()
         .map { HandlerGetterTmpl(it) }
 
     val setters = viewType
         .fields
+        .union(extensions.flatMap { it.fields })
+        .toList()
         .filterSetters()
         .map { HandlerSetterTmpl(it) }
 
