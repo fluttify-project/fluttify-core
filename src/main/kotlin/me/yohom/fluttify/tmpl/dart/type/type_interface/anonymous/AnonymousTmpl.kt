@@ -32,6 +32,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/anonymous.mtd.dart.tmpl").rea
 
 fun AnonymousTmpl(type: Type): String {
     val callbackCases = type.methods
+        .filterMethod()
         .filterNot { it.formalParams.any { it.variable.isLambda() } }
         .map { CallbackCaseLambdaTmpl(it, "__object__.${it.signature}?.call") }
         .joinToStringX("\n")
