@@ -58,6 +58,11 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
     var superClass: String = ""
 
     /**
+     * 扩展名称
+     */
+    var extensionName: String = ""
+
+    /**
      * 实现的接口全名
      */
     var interfaces: MutableList<String> = mutableListOf()

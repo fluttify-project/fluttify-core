@@ -357,6 +357,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                     it.platform = Platform.iOS
                     it.typeType = TypeType.Extension
                     it.name = ctx.categoryName.text
+                    it.extensionName = ctx.className.text
                     it.interfaces.addAll(
                         ctx.protocolList()?.protocolName()?.map { it.identifier().text }
                             ?: listOf())

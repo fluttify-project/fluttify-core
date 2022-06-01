@@ -24,8 +24,10 @@ open class CommonObjects : FluttifyTask() {
     fun process() {
         val content = tmpl.replaceGlobal()
         // 删除旧版本的文件
-        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file().delete()
-        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/shared.g.dart".file().writeText(content)
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/objects.g.dart".file()
+            .delete()
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/facade/shared.g.dart".file()
+            .writeText(content)
     }
 }
 
@@ -42,7 +44,8 @@ open class AndroidDartInterface : FluttifyTask() {
 //        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
-        "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/".file().deleteRecursively()
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/".file()
+            .deleteRecursively()
 
         // 处理View, 生成AndroidView
         sdk.allTypes
@@ -62,7 +65,7 @@ open class AndroidDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
-                    TypeType.Extension  -> TypeExtensionTmpl(it)
+                    TypeType.Extension -> TypeExtensionTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
                     TypeType.Lambda -> ""
@@ -72,7 +75,8 @@ open class AndroidDartInterface : FluttifyTask() {
                 }
 
                 if (resultDart.isNotBlank()) {
-                    val fileName = it.name.replace("$", ".").replace(".", "/")
+                    val fileName =
+                        "${it.name.replace("$", ".").replace(".", "/")}${it.extensionName}"
                     val resultFile =
                         "${project.projectDir}/output-project/${ext.projectName}/lib/src/android/${fileName}.g.dart"
 
@@ -136,7 +140,10 @@ open class AndroidDartInterface : FluttifyTask() {
         // 类型造型
         val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
-            .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/android/android.export.g.dart';")
+            .replace(
+                "#__platform_import__#",
+                "import 'package:${ext.projectName}/src/android/android.export.g.dart';"
+            )
             .replaceParagraph(
                 "#__foundation__#",
                 ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })
@@ -168,7 +175,8 @@ open class IOSDartInterface : FluttifyTask() {
 //        val sdk = irDir.parseSDK()
 
         // 生成前先删除之前的文件
-        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/".file().deleteRecursively()
+        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/".file()
+            .deleteRecursively()
 
         // 处理View, 生成UiKitView
         sdk.allTypes
@@ -187,7 +195,7 @@ open class IOSDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
-                    TypeType.Extension  -> TypeExtensionTmpl(it)
+                    TypeType.Extension -> TypeExtensionTmpl(it)
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
                     TypeType.Lambda -> ""
@@ -197,8 +205,10 @@ open class IOSDartInterface : FluttifyTask() {
                 }
 
                 if (resultDart.isNotBlank()) {
+                    val extensionName = it.extensionName.run { if (isNotEmpty()) "+$this" else "" }
+                    val fileName = "${it.name.replace("$", ".").replace(".", "/")}$extensionName"
                     val resultFile =
-                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/${it.name.replace(".", "/")}.g.dart"
+                        "${project.projectDir}/output-project/${ext.projectName}/lib/src/ios/$fileName.g.dart"
                     resultFile.file().writeText(resultDart)
                 }
             }
@@ -239,14 +249,18 @@ open class IOSDartInterface : FluttifyTask() {
             .asSequence()
             .filterNot { it.isLambda }
             .filterNot { it.isFunction }
-            .filterNot { it.isExtension}
+            .filterNot { it.isExtension }
             .filterNot { it.isAlias() }
             .filterNot { it.isEnum }
             .filterNot { ext.ios.exclude.classes.contains(it.name) }
             .filterNot { it.name == "NSObject" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
-            .filter { if (ext.foundationVersion.keys.contains("core_location_fluttify")) true else !it.name.startsWith("CL") }
+            .filter {
+                if (ext.foundationVersion.keys.contains("core_location_fluttify")) true else !it.name.startsWith(
+                    "CL"
+                )
+            }
         // 类型检查
         val typeChecks = targetTypes.joinToString(" ") { TypeCheckTmpl(it) }
         // 插件依赖类型检查
@@ -257,7 +271,10 @@ open class IOSDartInterface : FluttifyTask() {
         // 类型造型
         val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
         typeOpTmpl
-            .replace("#__platform_import__#", "import 'package:${ext.projectName}/src/ios/ios.export.g.dart';")
+            .replace(
+                "#__platform_import__#",
+                "import 'package:${ext.projectName}/src/ios/ios.export.g.dart';"
+            )
             .replaceParagraph(
                 "#__foundation__#",
                 ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" })

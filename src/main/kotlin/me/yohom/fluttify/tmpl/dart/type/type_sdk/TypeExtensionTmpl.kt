@@ -14,13 +14,15 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.creator.CreatorTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodBatchTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 
+//import 'dart:typed_data';
+//
+//#__platform_import__#
+//import 'package:flutter/foundation.dart';
+//import 'package:flutter/services.dart';
+//
+//#__foundation__#
+//
 //extension #__extension_name__# on #__class_name__# {
-//  //region constants
-//  static const String name__ = '#__origin_class_name__#';
-//
-//  #__constants__#
-//  //endregion
-//
 //  //region getters
 //  #__getters__#
 //  //endregion
@@ -32,11 +34,6 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.method.MethodTmpl
 //  //region methods
 //  #__methods__#
 //  //endregion
-//
-//  @override
-//  String toString() {
-//    return '#__class_name__#{refId: $refId, runtimeType: $runtimeType, tag__: $tag__}';
-//  }
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/type_extension.dart.tmpl").readText() }
 
@@ -46,43 +43,6 @@ fun TypeExtensionTmpl(type: Type): String {
         "${type.name.toDartType()}<${type.declaredGenericTypes.joinToString()}>"
     } else {
         type.name.toDartType()
-    }
-    val originClassName = type.name.replace("$", ".")
-    // 如果父类是混淆类或非公开类, 那么直接继承Object类
-    val superClass = if (type.superClass.run {
-            isEmpty()
-                    ||
-                    isObfuscated()
-                    ||
-                    EXCLUDE_TYPES.any { it.matches(this) }
-                    ||
-                    findType().isUnknownType
-                    ||
-                    !findType().isPublic }) {
-        type.platform.objectType()
-    } else {
-        type.superClass.toDartType()
-    }
-
-    // 如果含有非混淆类的接口, 再以mixin的方式集成
-    val mixins = if (type.ancestorInterfaces(false).isNotEmpty()) {
-        "with ${type.ancestorInterfaces(false).reversed().joinToString { it.toDartType() }}"
-    } else {
-        ""
-    }
-
-    // 常量
-    val constants = type.fields
-        .filterConstants()
-        .joinToString("\n") {
-            "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix().escape()};"
-        }
-
-    // 构造器
-    val creators = if (type.constructable) {
-        CreatorTmpl(type).union(CreatorBatchTmpl(type)).toList()
-    } else {
-        listOf()
     }
 
     val getters = type.fields
@@ -98,8 +58,8 @@ fun TypeExtensionTmpl(type: Type): String {
         .map { MethodTmpl(it) }
 
     return tmpl
-        .replace("#__extension_name__#", type.name)
-        .replace("#__class_name__#", type.superClass)
+        .replace("#__extension_name__#", type.extensionName)
+        .replace("#__class_name__#", type.name)
         .replace(
             "#__platform_import__#", when (type.platform) {
                 Platform.iOS -> "import 'package:$currentPackage/src/ios/ios.export.g.dart';"
@@ -111,14 +71,8 @@ fun TypeExtensionTmpl(type: Type): String {
             "#__foundation__#",
             ext.foundationVersion.keys.joinToString("\n") { "import 'package:$it/$it.dart';" }
         )
-        .replace("#__abstract__#", if (type.isAbstract) "/* abstract */ " else "")
         .replace("#__class_name__#", className)
-        .replace("#__origin_class_name__#", originClassName)
-        .replace("#__super_class__#", superClass)
-        .replace("#__mixins__#", mixins)
         .replace("#__tag__#", ext.projectName)
-        .replaceParagraph("#__constants__#", constants)
-        .replaceParagraph("#__creators__#", creators.joinToString("\n"))
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
         .replaceParagraph("#__setters__#", setters.joinToString("\n"))
         .replaceParagraph("#__methods__#", methods.joinToString("\n"))

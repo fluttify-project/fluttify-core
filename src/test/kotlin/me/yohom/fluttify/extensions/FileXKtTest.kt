@@ -1056,6 +1056,26 @@ class FileXKtTest : FluttifyTest() {
     }
 
     @Test
+    fun categoryTest() {
+        val source = """
+
+@interface MAMapView (Annotation)
+
+///所有添加的标注, 注意从5.3.0开始返回数组内不再包含定位蓝点userLocation
+@property (nonatomic, readonly) NSArray *annotations;
+
+- (void)addAnnotation:(id <MAAnnotation>)annotation;
+
+@end
+        """.trimIndent()
+        source.walkTree(object : ObjectiveCParserBaseListener() {
+            override fun enterCategoryInterface(ctx: ObjectiveCParser.CategoryInterfaceContext) {
+                ctx.categoryName.text
+            }
+        })
+    }
+
+    @Test
     fun noArgName() {
         val source = """
 typedef void (^GMSReverseGeocodeCallback)(GMSReverseGeocodeResponse *_Nullable,
