@@ -11,16 +11,7 @@ import me.yohom.fluttify.tmpl.dart.type.common.invoke.arg_enum_list.ArgEnumListT
 private val tmpl by lazy { getResource("/tmpl/dart/invoke.stmt.dart.tmpl").readText() }
 
 fun InvokeTmpl(method: Method): String {
-    val channel = if (method.className.findType().isView) {
-        val viewChannelName =
-            if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}'"
-            else "'${ext.methodChannelName}/${method.className.toUnderscore()}'"
-        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
-
-        "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
-    } else {
-        "k${ext.projectName.underscore2Camel()}Channel"
-    }
+    val channel = "k${ext.projectName.underscore2Camel()}Channel"
     val methodName = method.nameWithClass()
     val args = method.formalParams
         .filterFormalParams()

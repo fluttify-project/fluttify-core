@@ -117,55 +117,15 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
             frameworkHeaders.union(directHeaders)
         })
         .joinToString("\n")
-
-    val extensions= SDK.findExtensions(viewType.name)
-    val nativeView = viewType.name
-    val protocols = lib
-        .types
-        .filter { it.isCallback }
-        .filter { it.filter }
-        .map { it.name }
-        .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
-        .joinToString(", ")
-
     val plugin = ext.projectName.underscore2Camel()
-
-    val methodHandlers = viewType
-        .methods
-        .union(extensions.flatMap { it.methods })
-        .toList()
-        .filterMethod()
-        .map { HandlerMethodTmpl(it) }
-
-    val getters = viewType
-        .fields
-        .union(extensions.flatMap { it.fields })
-        .toList()
-        .filterGetters()
-        .map { HandlerGetterTmpl(it) }
-
-    val setters = viewType
-        .fields
-        .union(extensions.flatMap { it.fields })
-        .toList()
-        .filterSetters()
-        .map { HandlerSetterTmpl(it) }
-
-    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
     return listOf(
         hTmpl
             .replace("#__import__#", imports)
-            .replace("#__native_view__#", nativeView)
-            .replace("#__protocols__#", protocols)
+            .replace("#__native_view__#", viewType.name)
         ,
         mTmpl
-            .replace("#__native_view__#", nativeView)
+            .replace("#__native_view__#", viewType.name)
             .replace("#__plugin__#", plugin)
-            .replaceParagraph(
-                "#__handlers__#",
-                methodHandlers.union(getters).union(setters).joinToString("\n")
-            )
-            .replace("#__method_channel__#", methodChannel)
     )
 }

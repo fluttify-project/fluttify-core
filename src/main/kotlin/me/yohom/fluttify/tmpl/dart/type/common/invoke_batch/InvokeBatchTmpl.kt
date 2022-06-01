@@ -9,17 +9,7 @@ import me.yohom.fluttify.model.Parameter
 private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText() }
 
 fun InvokeBatchTmpl(method: Method): String {
-    val channel = if (method.className.findType().isView) {
-        val viewChannelName =
-            if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}'"
-            else "'${ext.methodChannelName}/${method.className.toUnderscore()}/\$refId'"
-        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
-
-        "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
-    } else {
-        "k${ext.projectName.underscore2Camel()}Channel"
-    }
-
+    val channel = "k${ext.projectName.underscore2Camel()}Channel"
     val methodName = "${method.nameWithClass()}_batch"
     val loopHeader = if (method.isStatic && method.formalParams.isNotEmpty()) {
         "[for (int __i__ = 0; __i__ < ${method.formalParams[0].variable.name}.length; __i__++) {"

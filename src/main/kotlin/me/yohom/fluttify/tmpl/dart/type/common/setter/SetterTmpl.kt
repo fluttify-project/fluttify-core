@@ -15,17 +15,7 @@ fun SetterTmpl(field: Field): String {
     return field.variable.run {
         val typeName = field.variable.trueType.toDartType()
 
-        val channel = if (field.className.findType().isView) {
-            val viewChannelName =
-                if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}"
-                else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId'"
-            val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
-
-            "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
-        } else {
-            "k${ext.projectName.underscore2Camel()}Channel"
-        }
-
+        val channel = "k${ext.projectName.underscore2Camel()}Channel"
         val argValue = field.variable.trueType.run {
             when {
                 isEnum() -> ArgEnumTmpl(field.variable)
@@ -33,7 +23,6 @@ fun SetterTmpl(field: Field): String {
             }
         }
         val setterMethodName = field.setterMethodName
-        val viewChannel = if (field.className.findType().isView) ", {bool viewChannel = true}" else ""
 
         tmpl
             .replace("#__type__#", typeName)
@@ -41,7 +30,6 @@ fun SetterTmpl(field: Field): String {
             .replace("#__args__#", "\"$name\": $argValue")
             .replace("#__channel__#", channel)
             .replace("#__setter_method__#", setterMethodName)
-            .replace("#__view_channel__#", viewChannel)
             .replace("#__tag__#", ext.projectName)
     }
 }
