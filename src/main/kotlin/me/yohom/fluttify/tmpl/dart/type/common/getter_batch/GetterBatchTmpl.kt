@@ -19,7 +19,7 @@ fun GetterBatchTmpl(field: Field): String {
 
     val channel = if (field.className.findType().isView) {
         val viewChannelName =
-            if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}"
+            if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}'"
             else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId'"
         val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
         "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
