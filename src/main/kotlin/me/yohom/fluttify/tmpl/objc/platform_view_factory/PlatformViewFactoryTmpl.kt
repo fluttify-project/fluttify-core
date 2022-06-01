@@ -93,6 +93,9 @@ private val hTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.h.tmpl
 private val mTmpl by lazy { getResource("/tmpl/objc/platform_view_factory.m.tmpl").readText() }
 
 fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
+    // 使用前先合并Category
+    viewType.mergeWithCategory()
+
     // 导入头文件
     // 如果没有手动指定的话则拼接出一个
     val imports = (if (ext.ios.iosImportHeader.isNotEmpty()) ext.ios.iosImportHeader else ext.ios.libDir

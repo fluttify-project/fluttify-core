@@ -62,7 +62,8 @@ open class AndroidDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
-                    TypeType.Extension  -> TypeExtensionTmpl(it)
+//                    TypeType.Extension  -> TypeExtensionTmpl(it)
+                    TypeType.Extension  -> ""
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
                     TypeType.Lambda -> ""
@@ -187,7 +188,8 @@ open class IOSDartInterface : FluttifyTask() {
             .forEach {
                 val resultDart = when (it.typeType) {
                     TypeType.Class, TypeType.Struct -> TypeSdkTmpl(it)
-                    TypeType.Extension  -> TypeExtensionTmpl(it)
+//                    TypeType.Extension  -> TypeExtensionTmpl(it) // 暂时先使用原先的合并扩展的方案
+                    TypeType.Extension -> ""
                     TypeType.Enum -> TypeEnumTmpl(it)
                     TypeType.Interface -> TypeInterfaceTmpl(it)
                     TypeType.Lambda -> ""
