@@ -20,10 +20,7 @@ fun InvokeBatchTmpl(method: Method): String {
         .filterFormalParams()
         .run {
             if (!method.isStatic) addParameter(
-                Parameter.simpleParameter(
-                    method.className,
-                    "this"
-                )
+                Parameter.simpleParameter(method.className, "this")
             ) else this
         }
         .map { it.variable }
@@ -34,16 +31,16 @@ fun InvokeBatchTmpl(method: Method): String {
                 type.isEnum -> {
                     // 枚举列表
                     if (it.isIterable) {
-                        "${it.name}[__i__].map((it) => it.toValue()).toList()"
+                        "${it.name}[__i__]?.map((it) => it?.toValue()).toList() ?? []"
                     } else {
-                        "${it.name}[__i__].toValue()"
+                        "${it.name}[__i__]?.toValue()"
                     }
                 }
                 it.isIterable
                         && typeName.genericTypes().isNotEmpty()
                         && typeName.genericTypes()[0].findType().isEnum -> {
                     // 枚举列表
-                    "${it.name}[__i__].map((__it__) => __it__.toValue()).toList()"
+                    "${it.name}[__i__]?.map((__it__) => __it__?.toValue()).toList() ?? []"
                 }
                 else -> "${it.name}[__i__]"
             }

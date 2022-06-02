@@ -9,7 +9,7 @@ private val tmpl by lazy { getResource("/tmpl/dart/interface_method.mtd.dart.tmp
 fun InterfaceMethodTmpl(method: Method): String {
     val returnType = method.returnType.toDartType().enOptional()
     val name = method.signature
-    val formalParams = method.formalParams.joinToString { it.variable.toDartString(true) }
+    val formalParams = method.formalParams.joinToString { it.variable.toDartString() }
 
     return tmpl
         .replace("#__return_type__#", returnType)

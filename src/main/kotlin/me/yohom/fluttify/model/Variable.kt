@@ -130,17 +130,17 @@ data class Variable(
         return trueType.iterableLevel()
     }
 
-    fun toDartString(optional: Boolean = false): String {
+    fun toDartString(): String {
         return if (trueType.findType().isLambda) {
             val type = trueType.findType()
-            "${type.returnType.toDartType()} Function(${type.formalParams.joinToString { it.variable.toDartString(true) }}) $name"
+            "${type.returnType.toDartType()} Function(${type.formalParams.joinToString { it.variable.toDartString() }}) $name"
         } else {
-            "${trueType.toDartType().enOptional(optional)} ${name.removeObjcSpecifier()}"
+            "${trueType.toDartType().enOptional()} ${name.removeObjcSpecifier()}"
         }
     }
 
     fun toDartStringBatch(): String {
-        return "List<${trueType.toDartType()}> $name"
+        return "List<${trueType.toDartType().enOptional()}> $name"
     }
 
     fun var2Args(): String {
