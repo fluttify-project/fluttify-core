@@ -177,6 +177,13 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     var repositories: List<String> = listOf()
 
     /**
+     * 最低系统版本
+     *
+     * 默认11.0
+     */
+    var minTarget: String = "11.0"
+
+    /**
      * 远程依赖配置
      */
     val remote: Remote = objectFactory?.newInstance(Remote::class.java) ?: Remote()

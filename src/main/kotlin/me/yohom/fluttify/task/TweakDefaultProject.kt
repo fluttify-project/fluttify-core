@@ -116,6 +116,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     "#__repositories__#",
                     ext.ios.repositories.joinToString("\n") { "source '$it'" }
                 )
+                .replace("#__min_target__#", ext.ios.minTarget)
             )
 
         // 删除不需要的文件
