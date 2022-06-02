@@ -145,7 +145,7 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * ios sdk版本
      */
-    var iosDeploymentTarget: String = "8.0"
+    var iosDeploymentTarget: String = "11.0"
 
     /**
      * 元素替换
