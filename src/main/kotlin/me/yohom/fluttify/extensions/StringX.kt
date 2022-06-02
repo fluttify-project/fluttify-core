@@ -353,7 +353,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
     val genericTypes = genericTypes()
         .map { it.replace("$", ".").substringAfterLast(".") }
     val containerType = containerType().replace("$", ".").substringAfterLast(".")
-    val regex = Regex("[a-z|\\d]{0,2}")
+    val regex = Regex("[a-z|\\d]{0,3}")
     // objc的id类型不作为混淆类型, 如果java有个类叫id也没关系, 因为肯定会有包名在前面
     return this !in ext.obfuscatedWhiteList
             &&
@@ -369,7 +369,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  */
 fun String.isObfuscatedFile(): Boolean {
     val parts = split("$")
-    val regex = Regex("[a-zA-Z|\\d]{0,2}")
+    val regex = Regex("[a-zA-Z|\\d]{0,3}")
     return parts.any { regex.matches(it) || it in JAVA_RESERVED }
 }
 
