@@ -72,10 +72,7 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
     val packageName = "${ext.org}.${ext.projectName}"
     val factoryName = viewType.name.simpleName()
     val pluginClass = "${ext.projectName.underscore2Camel()}Plugin"
-    val handlers =
-        viewType.methods.filterMethod().joinToString("\n") { HandlerMethodTmpl(it) }
     val nativeView = viewType.name
-    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}"
 
     // 找出是否存在非Context, AttributeSet和int类型参数的构造器
     // 如果存在, 那么以这个构造器进行初始化
@@ -124,7 +121,5 @@ fun PlatformViewFactoryTmpl(viewType: Type): String {
     }.replace("#__package_name__#", packageName)
         .replace("#__factory_name__#", factoryName)
         .replace("#__plugin_class__#", pluginClass)
-        .replaceParagraph("#__handlers__#", handlers)
         .replace("#__native_view__#", nativeView)
-        .replace("#__method_channel__#", methodChannel)
 }
