@@ -12,13 +12,11 @@ open class DownloadAndroidSDK : FluttifyTask() {
     fun process() {
         if (ext.android.remote.configured) {
             project.repositories.run {
-                maven { it.url = URI("https://maven.aliyun.com/nexus/content/groups/public/") }
-                maven { it.url = URI("https://oss.sonatype.org/content/groups/public") }
-                maven { it.url = URI("https://dl.bintray.com/aweme-open-sdk-team/public") }
-                maven { it.url = URI("https://developer.huawei.com/repo") }
-                maven { it.url = URI("https://repo.baichuan-android.taobao.com/content/groups/BaichuanRepositories/") }
                 google()
                 mavenCentral()
+                for (item in ext.android.repositories) {
+                    maven { it.url = URI(item) }
+                }
             }
             val config = project.configurations.create("implementation")
             val deps = ext.android.remote.dependencies.map { project.dependencies.create(it) }

@@ -171,8 +171,8 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * 依赖仓库
      *
-     * Android端即`maven { url 'https://download.flutter.io' }`;
-     * iOS端即`source 'https://github.com/artsy/Specs.git'`;
+     * Android端即`https://download.flutter.io`;
+     * iOS端即`https://github.com/artsy/Specs.git`;
      */
     var repositories: List<String> = listOf()
 
