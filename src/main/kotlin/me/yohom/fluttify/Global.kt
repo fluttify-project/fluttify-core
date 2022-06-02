@@ -5,7 +5,7 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-const val SUCCESS_LOG = true
+const val SUCCESS_LOG = false
 
 const val CONSTRUCTOR_LOG = false
 const val VARIABLE_LOG = false

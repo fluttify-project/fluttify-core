@@ -498,7 +498,8 @@ fun TYPE_NAME.enOptional(optional: Boolean = true): String {
  * 去除指针类型的`*`号
  */
 fun String.depointer(): String {
-    return removePrefix("*").removeSuffix("*")
+    return removePrefix("*")
+        .removeSuffix("*").removeSuffix("*") // 有可能多级指针
 }
 
 /**
