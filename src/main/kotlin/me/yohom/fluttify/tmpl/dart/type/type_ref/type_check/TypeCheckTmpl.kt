@@ -9,8 +9,9 @@ import me.yohom.fluttify.model.Type
 //  final result = await k#__project_prefix__#Channel.invokeMethod('RefClass::isKindOf#__type_name__#', {'__this__': this});
 //  return result;
 //}
-//else if (#__dependency_prefix__##__platform__#As(__this__) != null) {
-//  return #__dependency_prefix__##__platform__#As(__this__);
+//final #__dependency_prefix__#Object = #__dependency_prefix__##__platform__#As<T>(__this__);
+//if (#__dependency_prefix__#Object != null) {
+//  return #__dependency_prefix__#Object;
 //}
 private val tmpl by lazy { getResource("/tmpl/dart/type_check.stmt.dart.tmpl").readText() }
 private val dependencyTmpl by lazy { getResource("/tmpl/dart/dependency_type_check.stmt.dart.tmpl").readText() }

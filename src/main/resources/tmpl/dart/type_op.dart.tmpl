@@ -38,6 +38,13 @@ T? #__plugin_name__##__platform__#As<T>(dynamic __this__) {
     return __this__ as T;
   }
   #__type_cast__#
+
+  // foundation_fluttify类型判断
+  final foundationFluttifyObject = foundationFluttify#__platform__#As(__this__);
+  if (foundationFluttifyObject != null) {
+    return foundationFluttifyObject;
+  }
+
   #__dependency_type_cast__#
   else {
     return __this__;
