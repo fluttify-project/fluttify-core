@@ -369,7 +369,7 @@ fun TYPE_NAME.isObfuscated(): Boolean {
  */
 fun String.isObfuscatedFile(): Boolean {
     val parts = split("$")
-    val regex = Regex("[a-zA-Z|\\d]{0,3}")
+    val regex = Regex("^[a-z|\\d]{0,3}")
     return parts.any { regex.matches(it) || it in JAVA_RESERVED }
 }
 
