@@ -50,7 +50,7 @@ val EXCLUDE_TYPES
         "android.app.Fragment",
         "android.support.v4.app.Fragment",
         "java.io.Closeable",
-        ".*\\.R",
+        ".*\\.R((\\.|\\$)(dimen|drawable|layout|string|style|styleable|xml))?",
     ).union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
         .map { Regex(it) }
