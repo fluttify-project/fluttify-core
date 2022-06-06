@@ -8,6 +8,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_constants.TypeConstantsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_enum.TypeEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_functions.TypeFunctionsTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_interface.TypeInterfaceTmpl
+import me.yohom.fluttify.tmpl.dart.type.type_ref.type_cast.DependencyTypeCastTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_cast.TypeCastTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.DependencyTypeCheckTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_ref.type_check.TypeCheckTmpl
@@ -133,11 +134,17 @@ open class AndroidDartInterface : FluttifyTask() {
         val typeChecks = targetTypes.joinToString(" ") { TypeCheckTmpl(it) }
         // 插件依赖类型检查
         val dependencyTypeChecks = ext.pluginDependencies
+            .plus(ext.foundationVersion)
             .keys
             .filter { it.endsWith("fluttify") }
-            .joinToString(" ") { DependencyTypeCheckTmpl(it, sdk.platform) }
+            .joinToString("\n") { DependencyTypeCheckTmpl(it, sdk.platform) }
         // 类型造型
         val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
+        // 插件依赖类型造型 不需要造型系统类 TODO
+        val dependencyTypeCasts = ext.pluginDependencies
+            .keys
+            .filter { it.endsWith("fluttify") }
+            .joinToString("\n") { DependencyTypeCastTmpl(it, sdk.platform) }
         typeOpTmpl
             .replace(
                 "#__platform_import__#",
@@ -242,7 +249,6 @@ open class IOSDartInterface : FluttifyTask() {
         val typeOpTmpl = this::class.java.getResource("/tmpl/dart/type_op.dart.tmpl")!!.readText()
         val targetTypes = sdk.directLibs
             .flatMap { it.types }
-            .union(SYSTEM_TYPE.filter { it.platform == Platform.iOS }) // 造型需要把系统类加上
             .toList()
             .filterType()
             .asSequence()
@@ -255,20 +261,21 @@ open class IOSDartInterface : FluttifyTask() {
             .filterNot { it.name == "NSObject" }
             .filterNot { it.name.isVoid() }
             .distinctBy { it.name }
-            .filter {
-                if (ext.foundationVersion.keys.contains("core_location_fluttify")) true else !it.name.startsWith(
-                    "CL"
-                )
-            }
         // 类型检查
         val typeChecks = targetTypes.joinToString(" ") { TypeCheckTmpl(it) }
         // 插件依赖类型检查
         val dependencyTypeChecks = ext.pluginDependencies
+            .plus(ext.foundationVersion)
             .keys
             .filter { it.endsWith("fluttify") }
-            .joinToString(" ") { DependencyTypeCheckTmpl(it, sdk.platform) }
+            .joinToString("\n") { DependencyTypeCheckTmpl(it, sdk.platform) }
         // 类型造型
         val typeCasts = targetTypes.joinToString(" ") { TypeCastTmpl(it) }
+        // 插件依赖类型造型 不需要造型系统类 TODO
+        val dependencyTypeCasts = ext.pluginDependencies
+            .keys
+            .filter { it.endsWith("fluttify") }
+            .joinToString("\n") { DependencyTypeCastTmpl(it, sdk.platform) }
         typeOpTmpl
             .replace(
                 "#__platform_import__#",
