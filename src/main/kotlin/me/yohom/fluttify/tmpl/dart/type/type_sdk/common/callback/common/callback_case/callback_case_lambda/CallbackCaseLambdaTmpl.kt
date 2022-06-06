@@ -2,7 +2,6 @@ package me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callbac
 
 import me.yohom.fluttify.extensions.getResource
 import me.yohom.fluttify.model.Method
-import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_enum.CallbackCaseArgEnumTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_jsonable.CallbackCaseArgJsonableTmpl
 import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback_case.common.callback_case_arg.callback_case_arg_list.CallbackCaseArgListTmpl
@@ -20,7 +19,7 @@ import me.yohom.fluttify.tmpl.dart.type.type_sdk.common.callback.common.callback
 private val tmpl by lazy { getResource("/tmpl/dart/callback_case.stmt.dart.tmpl").readText() }
 
 fun CallbackCaseLambdaTmpl(lambdaType: Method, lambdaName: String): String {
-    val callbackCase = lambdaType.exactName
+    val callbackName = lambdaType.exactName
     val log =
         "debugPrint('fluttify-dart-callback: ${lambdaName}(${lambdaType.formalParams.map { "\\'${it.variable.name}\\':\${args['${it.variable.name}']}" }})');"
     val callbackArgs = lambdaType
@@ -35,7 +34,7 @@ fun CallbackCaseLambdaTmpl(lambdaType: Method, lambdaName: String): String {
         }
 
     return tmpl
-        .replace("#__callback_case__#", callbackCase)
+        .replace("#__callback_case__#", callbackName)
         .replace("#__log__#", log)
         .replace("#__callback_handler__#", lambdaName)
         .replace("#__callback_args__#", callbackArgs)

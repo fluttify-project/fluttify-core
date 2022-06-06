@@ -41,7 +41,7 @@ open class TweakDefaultProject : FluttifyTask() {
                     )
                     .replaceParagraph(
                         "#__repositories__#",
-                        ext.android.repositories.joinToString("\n")
+                        ext.android.repositories.joinToString("\n") { "maven { url '$it' }" }
                     )
             )
 
@@ -111,7 +111,13 @@ open class TweakDefaultProject : FluttifyTask() {
         // Podfile
         "${outputProjectPath}/example/ios/Podfile"
             .file()
-            .writeText(podfileTmpl)
+            .writeText(podfileTmpl
+                .replace(
+                    "#__repositories__#",
+                    ext.ios.repositories.joinToString("\n") { "source '$it'" }
+                )
+                .replace("#__min_target__#", ext.ios.minTarget)
+            )
 
         // 删除不需要的文件
         "$outputProjectPath/lib/${ext.projectName}_method_channel.dart".file().delete()

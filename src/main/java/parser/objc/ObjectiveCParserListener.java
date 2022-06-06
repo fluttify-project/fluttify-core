@@ -1,9 +1,6 @@
 // Generated from ObjectiveCParser.g4 by ANTLR 4.10.1
-
 package parser.objc;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
-
-import parser.objc.ObjectiveCParser;
 
 /**
  * This interface defines a complete listener for a parse tree produced by

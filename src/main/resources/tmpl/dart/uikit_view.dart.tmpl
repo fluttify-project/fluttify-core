@@ -18,8 +18,8 @@ import 'package:flutter/services.dart';
 typedef #__view_simple_name__#CreatedCallback = void Function(#__view__# controller);
 typedef _OnUiKitViewDispose = Future<void> Function();
 
-class #__view__#_iOS extends StatefulWidget {
-  const #__view__#_iOS({
+class #__view__#_UiKitView extends StatefulWidget {
+  const #__view__#_UiKitView({
     Key? key,
     this.onViewCreated,
     this.onDispose,
@@ -33,10 +33,10 @@ class #__view__#_iOS extends StatefulWidget {
   final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
 
   @override
-  _#__view__#_iOSState createState() => _#__view__#_iOSState();
+  _#__view__#_UiKitViewState createState() => _#__view__#_UiKitViewState();
 }
 
-class _#__view__#_iOSState extends State<#__view__#_iOS> {
+class _#__view__#_UiKitViewState extends State<#__view__#_UiKitView> {
   #__view__#? _controller;
 
   @override

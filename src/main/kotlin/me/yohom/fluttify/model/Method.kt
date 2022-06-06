@@ -55,7 +55,7 @@ data class Method(
     override var id: Int = NEXT_ID
 ) : IPlatform, IScope, IElement {
 
-    val exactName: String = "$name${formalParams.joinToString(":") { it.named }}"
+    val exactName: String = "$name${formalParams.joinToString("_") { it.named }}"
 
     val filter: Boolean
         get() {

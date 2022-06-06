@@ -72,41 +72,7 @@ extern BOOL enableLog;
     HEAP[[NSString stringWithFormat:@"%@", @(2147483647 - _viewId)]] = _view;
     HEAP[[NSString stringWithFormat:@"%@:%@", @"#__native_view__#", @(_view.hash)]] = _view;
   }
-
-  //region method call handler
-  FlutterMethodChannel *channel = [FlutterMethodChannel
-        methodChannelWithName:[NSString stringWithFormat:@"#__method_channel__#/#__native_view__#:%@", @(_view.hash)]
-              binaryMessenger:[_registrar messenger]
-                        codec:[FlutterStandardMethodCodec codecWithReaderWriter:[[FluttifyReaderWriter alloc] init]]];
-
-  [channel setMethodCallHandler:^(FlutterMethodCall *methodCall, FlutterResult methodResult) {
-    NSDictionary<NSString *, id> *args = (NSDictionary<NSString *, id> *) [methodCall arguments];
-
-    __strong __typeof(weakSelf) strongSelf = weakSelf;
-    if (strongSelf != nil) {
-      if (strongSelf->_handlerMap[methodCall.method] != nil) {
-        strongSelf->_handlerMap[methodCall.method](strongSelf->_registrar, args, methodResult);
-      } else {
-        methodResult(FlutterMethodNotImplemented);
-      }
-    } else {
-      methodResult([FlutterError errorWithCode:@"当前PlatformView为nil"
-                                       message: @"当前PlatformView为nil"
-                                       details:[NSString stringWithFormat:@"请不要在 %@ 释放后继续调用其对象的方法", NSStringFromClass([#__native_view__# class])]]);
-    }
-  }];
-  //endregion
-
-  //region handlers
-  _handlerMap = @{
-      #__handlers__#
-  };
-  //endregion
   return _view;
 }
-
-//region delegate
-#__delegate_methods__#
-//endregion
 
 @end

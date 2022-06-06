@@ -12,6 +12,7 @@ data class Variable(
     private var typeName: TYPE_NAME,
     val name: String,
     override var platform: Platform, // TODO platform参数是否能用静态属性代替?
+    val nullable: Boolean = true, // TODO 实现对原生代码的可空性判断
     override var id: Int = NEXT_ID
 ) : IPlatform, IElement {
 
@@ -130,17 +131,17 @@ data class Variable(
         return trueType.iterableLevel()
     }
 
-    fun toDartString(optional: Boolean = false): String {
+    fun toDartString(): String {
         return if (trueType.findType().isLambda) {
             val type = trueType.findType()
-            "${type.returnType.toDartType()} Function(${type.formalParams.joinToString { it.variable.toDartString(true) }}) $name"
+            "${type.returnType.toDartType()} Function(${type.formalParams.joinToString { it.variable.toDartString() }}) $name"
         } else {
-            "${trueType.toDartType().enOptional(optional)} ${name.removeObjcSpecifier()}"
+            "${trueType.toDartType().enOptional()} ${name.removeObjcSpecifier()}"
         }
     }
 
     fun toDartStringBatch(): String {
-        return "List<${trueType.toDartType()}> $name"
+        return "List<${trueType.toDartType().enOptional()}> $name"
     }
 
     fun var2Args(): String {

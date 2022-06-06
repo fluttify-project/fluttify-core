@@ -47,7 +47,7 @@ fun TypeInterfaceTmpl(type: Type): String {
 
     val constants = type.fields.filterConstants()
 
-    val anonymous = AnonymousTmpl(type)
+    val anonymous = if (type.isCallback) AnonymousTmpl(type) else ""
 
     val allSuperType = type.ancestorTypes
         .reversed()

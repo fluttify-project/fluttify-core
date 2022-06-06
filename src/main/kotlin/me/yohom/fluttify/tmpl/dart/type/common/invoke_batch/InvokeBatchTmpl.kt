@@ -9,17 +9,7 @@ import me.yohom.fluttify.model.Parameter
 private val tmpl by lazy { getResource("/tmpl/dart/invoke_batch.stmt.dart.tmpl").readText() }
 
 fun InvokeBatchTmpl(method: Method): String {
-    val channel = if (method.className.findType().isView) {
-        val viewChannelName =
-            if (method.isStatic) "'${ext.methodChannelName}/${method.className.toUnderscore()}'"
-            else "'${ext.methodChannelName}/${method.className.toUnderscore()}/\$refId'"
-        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
-
-        "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
-    } else {
-        "k${ext.projectName.underscore2Camel()}Channel"
-    }
-
+    val channel = "k${ext.projectName.underscore2Camel()}Channel"
     val methodName = "${method.nameWithClass()}_batch"
     val loopHeader = if (method.isStatic && method.formalParams.isNotEmpty()) {
         "[for (int __i__ = 0; __i__ < ${method.formalParams[0].variable.name}.length; __i__++) {"
@@ -30,10 +20,7 @@ fun InvokeBatchTmpl(method: Method): String {
         .filterFormalParams()
         .run {
             if (!method.isStatic) addParameter(
-                Parameter.simpleParameter(
-                    method.className,
-                    "this"
-                )
+                Parameter.simpleParameter(method.className, "this")
             ) else this
         }
         .map { it.variable }
@@ -44,16 +31,16 @@ fun InvokeBatchTmpl(method: Method): String {
                 type.isEnum -> {
                     // 枚举列表
                     if (it.isIterable) {
-                        "${it.name}[__i__].map((it) => it.toValue()).toList()"
+                        "${it.name}[__i__]?.map((it) => it?.toValue()).toList() ?? []"
                     } else {
-                        "${it.name}[__i__].toValue()"
+                        "${it.name}[__i__]?.toValue()"
                     }
                 }
                 it.isIterable
                         && typeName.genericTypes().isNotEmpty()
                         && typeName.genericTypes()[0].findType().isEnum -> {
                     // 枚举列表
-                    "${it.name}[__i__].map((__it__) => __it__.toValue()).toList()"
+                    "${it.name}[__i__]?.map((__it__) => __it__?.toValue()).toList() ?? []"
                 }
                 else -> "${it.name}[__i__]"
             }

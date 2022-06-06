@@ -18,19 +18,8 @@ fun GetterTmpl(field: Field): String {
     } else {
         field.variable.name.depointer()
     }
-    val viewChannel = if (field.className.findType().isView) "{bool viewChannel = true}" else ""
 
-    val channel = if (field.className.findType().isView) {
-        val viewChannelName =
-            if (field.isStatic == true) "'${ext.methodChannelName}/${field.className.toUnderscore()}"
-            else "'${ext.methodChannelName}/${field.className.toUnderscore()}/\$refId'"
-        val channelName = "viewChannel ? $viewChannelName : '${ext.methodChannelName}'"
-
-        "MethodChannel($channelName, k${ext.projectName.underscore2Camel()}MethodCodec)"
-    } else {
-        "k${ext.projectName.underscore2Camel()}Channel"
-    }
-
+    val channel = "k${ext.projectName.underscore2Camel()}Channel"
     val getter = field.getterMethodName
     val result = field.variable.run {
         when {
@@ -50,7 +39,6 @@ fun GetterTmpl(field: Field): String {
             .replace("#__type__#", dartType)
             .replace("#__static__#", if (field.isStatic == true) "static " else "")
             .replace("#__name__#", name)
-            .replace("#__view_channel__#", viewChannel)
             .replace("#__channel__#", channel)
             .replace("#__getter_method__#", getter)
             .replace("#__ref_id__#", if (field.isStatic == true) "" else "{'__this__': this}")

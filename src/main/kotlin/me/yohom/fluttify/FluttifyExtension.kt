@@ -50,6 +50,9 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
 
     /**
      * 插件依赖
+     *
+     * 这里其实应该是使用fluttify生成的插件列表, 因为要在原生端引用对应的原生SDK, 其他的比如url_launcher这样的插件应该放到packageDependencies
+     * 因为并不需要在原生端依赖其原生代码
      */
     var pluginDependencies: Map<String, String> = mapOf()
 
@@ -142,11 +145,12 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
     /**
      * ios sdk版本
      */
-    var iosDeploymentTarget: String = "8.0"
+    var iosDeploymentTarget: String = "11.0"
 
     /**
      * 元素替换
      */
+    @Deprecated("使用predefineMacro代替")
     var overrideElements: Map<String, String> = mapOf()
 
     /**
@@ -158,15 +162,26 @@ open class PlatformSpec @Inject constructor(objectFactory: ObjectFactory?) {
      * 用户定义的宏+内置的宏
      */
     val allMacros: Map<String, String>
-        get() = predefineMacro + mapOf("__attribute__\\(.*\\)" to "")
+        get() = predefineMacro + mapOf(
+//            "__attribute\\(.*\\)" to "",
+            "API_AVAILABLE\\(.*\\)" to "",
+            "NS_AVAILABLE_IOS\\(.*\\)" to "",
+        )
 
     /**
      * 依赖仓库
      *
-     * Android端即`maven { url 'https://download.flutter.io' }`;
-     * iOS端即`source 'https://github.com/artsy/Specs.git'`;
+     * Android端即`https://download.flutter.io`;
+     * iOS端即`https://github.com/artsy/Specs.git`;
      */
     var repositories: List<String> = listOf()
+
+    /**
+     * 最低系统版本
+     *
+     * 默认11.0
+     */
+    var minTarget: String = "11.0"
 
     /**
      * 远程依赖配置

@@ -18,8 +18,8 @@ import 'package:flutter/services.dart';
 typedef #__view_simple_name__#CreatedCallback = void Function(#__view__# controller);
 typedef _OnAndroidViewDispose = Future<void> Function();
 
-class #__view__#_Android extends StatefulWidget {
-  const #__view__#_Android({
+class #__view__#_AndroidView extends StatefulWidget {
+  const #__view__#_AndroidView({
     Key? key,
     this.onViewCreated,
     this.onDispose,
@@ -35,10 +35,10 @@ class #__view__#_Android extends StatefulWidget {
   final bool hybridComposition;
 
   @override
-  _#__view__#_AndroidState createState() => _#__view__#_AndroidState();
+  _#__view__#_AndroidViewState createState() => _#__view__#_AndroidViewState();
 }
 
-class _#__view__#_AndroidState extends State<#__view__#_Android> {
+class _#__view__#_AndroidViewState extends State<#__view__#_AndroidView> {
   #__view__#? _controller;
 
   @override

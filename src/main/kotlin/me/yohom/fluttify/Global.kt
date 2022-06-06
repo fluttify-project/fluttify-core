@@ -5,7 +5,7 @@ import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.model.TypeType
 import java.io.File
 
-const val SUCCESS_LOG = true
+const val SUCCESS_LOG = false
 
 const val CONSTRUCTOR_LOG = false
 const val VARIABLE_LOG = false
@@ -49,7 +49,8 @@ val EXCLUDE_TYPES
     get() = listOf(
         "android.app.Fragment",
         "android.support.v4.app.Fragment",
-        "java.io.Closeable"
+        "java.io.Closeable",
+        ".*\\.R((\\.|\\$)(attr|dimen|drawable|layout|string|style|styleable|xml))?",
     ).union(ext.ios.exclude.classes)
         .union(ext.android.exclude.classes)
         .map { Regex(it) }

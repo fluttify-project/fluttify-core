@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 #__foundation__#
 #__dependency__#
 
-// ignore_for_file: non_constant_identifier_names, camel_case_types, missing_return, unused_import
 // type check
 @optionalTypeArgs
 Future<bool> #__plugin_name__##__platform__#Is<T>(dynamic __this__) async {
@@ -38,8 +37,10 @@ T? #__plugin_name__##__platform__#As<T>(dynamic __this__) {
     return __this__ as T;
   }
   #__type_cast__#
+
   #__dependency_type_cast__#
-  else {
-    return __this__;
-  }
+
+  // 匹配不到目标类型, 直接返回原对象
+  debugPrint('匹配不到目标类型, 直接返回原对象');
+  return __this__;
 }

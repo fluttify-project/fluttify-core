@@ -34,14 +34,6 @@ fun MethodBatchTmpl(method: Method): String {
     val formalParams = method
         .formalParams
         .joinToString { it.variable.toDartStringBatch() }
-        .run {
-            // 如果是View的话, 那么就加一个可选参数, 供选择调用的channel
-            if (method.className.findType().isView) {
-                if (this.isNotEmpty()) "$this, {bool viewChannel = true}" else "{bool viewChannel = true}"
-            } else {
-                this
-            }
-        }
 
     val checkParamSize = method.formalParams.checkParamSize()
     val invoke = InvokeBatchTmpl(method)

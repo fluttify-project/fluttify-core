@@ -1,5 +1,5 @@
-// Generated from ObjectiveCLexer.g4 by ANTLR 4.10.1
 package parser.objc;
+// Generated from ObjectiveCLexer.g4 by ANTLR 4.10.1
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;

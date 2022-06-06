@@ -3,6 +3,7 @@ package me.yohom.fluttify.tmpl.objc.platform_view_factory
 import me.yohom.fluttify.ext
 import me.yohom.fluttify.extensions.*
 import me.yohom.fluttify.model.Lib
+import me.yohom.fluttify.model.SDK
 import me.yohom.fluttify.model.Type
 import me.yohom.fluttify.tmpl.objc.common.callback.callback_method.view_callback_method.ViewCallbackMethodTmpl
 import me.yohom.fluttify.tmpl.objc.common.handler.handler_getter.HandlerGetterTmpl
@@ -116,59 +117,15 @@ fun PlatformViewFactoryTmpl(viewType: Type, lib: Lib): List<String> {
             frameworkHeaders.union(directHeaders)
         })
         .joinToString("\n")
-
-    val nativeView = viewType.name
-    val protocols = lib
-        .types
-        .filter { it.isCallback }
-        .filter { it.filter }
-        .map { it.name }
-        .union(listOf("FlutterPlatformView")) // 补上FlutterPlatformView协议
-        .joinToString(", ")
-
     val plugin = ext.projectName.underscore2Camel()
-
-    val methodHandlers = viewType
-        .methods
-        .filterMethod()
-        .map { HandlerMethodTmpl(it) }
-
-    val getters = viewType
-        .fields
-        .filterGetters()
-        .map { HandlerGetterTmpl(it) }
-
-    val setters = viewType
-        .fields
-        .filterSetters()
-        .map { HandlerSetterTmpl(it) }
-
-    val methodChannel = "${ext.methodChannelName}/${viewType.name.toUnderscore()}/${viewType.name.toUnderscore()}:_viewId"
-
-    val delegateMethods = lib
-        .types
-        .filter { it.isCallback }
-        .flatMap { it.methods }
-        .filterMethod() // 过滤一下方法 Java不能过滤, objc这边没事
-        .distinctBy { it.exactName }
-        .filter { it.mustNot("参数中含有lambda") { formalParams.any { it.variable.isLambda() } } }
-        .filter { it.mustNot("过时方法") { isDeprecated } } // objc这边去掉过时回调方法, dart那边保留也无妨
-        .joinToString("\n") { ViewCallbackMethodTmpl(it) }
 
     return listOf(
         hTmpl
             .replace("#__import__#", imports)
-            .replace("#__native_view__#", nativeView)
-            .replace("#__protocols__#", protocols)
+            .replace("#__native_view__#", viewType.name)
         ,
         mTmpl
-            .replace("#__native_view__#", nativeView)
+            .replace("#__native_view__#", viewType.name)
             .replace("#__plugin__#", plugin)
-            .replaceParagraph(
-                "#__handlers__#",
-                methodHandlers.union(getters).union(setters).joinToString("\n")
-            )
-            .replace("#__method_channel__#", methodChannel)
-            .replaceParagraph("#__delegate_methods__#", delegateMethods)
     )
 }

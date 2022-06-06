@@ -17,10 +17,7 @@ fun RefRefTmpl(method: Method): String {
     val empty = ""
     val protocol = "id<${method.className}>"
     val `class` = method.className.enpointer()
-    val extensionClass = classType.superClass.enpointer()
-
-    if(classType.name=="BMKGeometryExtension")
-    println("classType: $classType")
+    val extensionClass = classType.name.enpointer()
 
     return when {
         method.isStatic -> empty
