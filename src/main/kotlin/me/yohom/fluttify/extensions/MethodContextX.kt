@@ -268,6 +268,7 @@ fun ObjectiveCParser.MethodDeclarationContext.isDeprecated(): Boolean {
 
 fun ObjectiveCParser.MethodDeclarationContext.isUnavailable(): Boolean {
     return attributeSpecifier()?.any { it.text.contains("unavailable", true) } == true
+            || macro()?.any { it.text.contains("NS_UNAVAILABLE") } == true
 }
 
 fun ObjectiveCParser.BlockTypeContext.returnType(): String {

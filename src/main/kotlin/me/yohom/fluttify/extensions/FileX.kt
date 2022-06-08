@@ -416,7 +416,7 @@ fun OBJC_FILE.objcType(): SourceFile {
                         val argName = it.declarator().text
                             .depointer()
                             .removeObjcSpecifier()
-                            .run { if (isEmpty()) "__arg${index}__" else this }
+                            .run { ifEmpty { "__arg${index}__" } }
                         val argType = it.declarationSpecifiers()
                             .text
                             .run { if (it.declarator().text.startsWith("*")) enpointer() else this }
