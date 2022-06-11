@@ -22,6 +22,8 @@ open class DownloadAndroidSDK : FluttifyTask() {
             val deps = ext.android.remote.dependencies.map { project.dependencies.create(it) }
             config.dependencies.addAll(deps)
             if (config.files.isNotEmpty()) {
+                // 清除原先的内容
+                ext.android.libDir.file().listFiles()?.forEach { it.deleteRecursively() }
                 config.files.forEach {
                     FileUtils.copyFile(it, "${ext.android.libDir}/${it.name}".file())
                 }
