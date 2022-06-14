@@ -17,6 +17,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
         ext = project.extensions.create("fluttify", FluttifyExtension::class.java, project.objects)
         ext.android.libDir = "${project.projectDir}/sdk/android/"
         ext.ios.libDir = "${project.projectDir}/sdk/ios/"
+        ext.web.libDir = "${project.projectDir}/sdk/web/"
 
         // 必需任务 顺序已经排列好
         val outputProject = project.tasks.create("outputProject", OutputProject::class.java)
@@ -24,6 +25,7 @@ open class FluttifyCorePlugin : Plugin<Project> {
 
         val downloadIOSSDK = project.tasks.create("downloadIOSSDK", DownloadIOSSDK::class.java)
         val downloadAndroidSDK = project.tasks.create("downloadAndroidSDK", DownloadAndroidSDK::class.java)
+        val downloadWebSDK = project.tasks.create("downloadWebSDK", DownloadWebSDK::class.java)
         val unzip = project.tasks.create("unzipArchive", UnzipArchive::class.java)
         val decompileClass = project.tasks.create("decompileClass", DecompileClass::class.java)
 
@@ -79,7 +81,8 @@ open class FluttifyCorePlugin : Plugin<Project> {
         decompileClass.dependsOn(unzip)
 
         // 下载SDK
-        unzip.dependsOn(downloadAndroidSDK)
+        unzip.dependsOn(downloadWebSDK)
+        downloadWebSDK.dependsOn(downloadAndroidSDK)
         downloadAndroidSDK.dependsOn(downloadIOSSDK)
         downloadIOSSDK.dependsOn(tweakDefaultProject)
 

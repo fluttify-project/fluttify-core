@@ -1,4 +1,5 @@
 // Generated from JavaScriptParser.g4 by ANTLR 4.10.1
+package parser.javascript;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;

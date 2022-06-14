@@ -81,6 +81,16 @@ open class FluttifyExtension @Inject constructor(objectFactory: ObjectFactory?) 
         action.execute(ios)
     }
 
+    /**
+     * web端配置
+     */
+    var web: PlatformSpec =
+        objectFactory?.newInstance(PlatformSpec::class.java) ?: PlatformSpec(objectFactory)
+
+    fun web(action: Action<PlatformSpec?>) {
+        action.execute(web)
+    }
+
     val iOSTransitiveFramework: List<String>
         get() {
             return ios.local.transitiveDependencies

@@ -4,8 +4,10 @@ import me.yohom.fluttify.extensions.file
 import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.TaskAction
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import java.net.URI
+import java.net.URL
 
 open class DownloadAndroidSDK : FluttifyTask() {
     @TaskAction
@@ -60,6 +62,18 @@ open class DownloadIOSSDK : FluttifyTask() {
                         FileUtils.copyDirectoryToDirectory("${it}/".file(), ext.ios.libDir.file())
                     }
             }
+        }
+    }
+}
+
+open class DownloadWebSDK : FluttifyTask() {
+    @TaskAction
+    fun process() {
+        for (item in ext.web.remote.dependencies) {
+            FileUtils.copyURLToFile(
+                URL(item),
+                (ext.web.libDir + item.substringAfterLast("/")).file()
+            )
         }
     }
 }
