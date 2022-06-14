@@ -3,10 +3,10 @@
  Copyright (c) 2019 Wener
  All rights reserved.
 
- Redistribution and use in resource and binary forms, with or without
+ Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
  are met:
- 1. Redistributions of resource code must retain the above copyright
+ 1. Redistributions of source code must retain the above copyright
     notice, this list of conditions and the following disclaimer.
  2. Redistributions in binary form must reproduce the above copyright
     notice, this list of conditions and the following disclaimer in the
@@ -33,12 +33,6 @@ AB: 13-Apr-19; Replaced `type` with `dtype` to fix golang code gen.
 grammar Dart2;
 
 compilationUnit: libraryDefinition | partDeclaration;
-
-STATIC:              'static';
-FINAL:               'final';
-CONST:               'const';
-VAR:                 'var';
-VOID:                'void';
 
 WHITESPACE
 //  : ('\t' | ' ' | NEWLINE)+   -> skip
@@ -190,9 +184,9 @@ staticFinalDeclaration
 
 // 10.1.1 Operators
 operatorSignature
-  : returnType? 'operator' operator formalParameterList
+  : returnType? 'operator' operator_ formalParameterList
   ;
-operator
+operator_
   : '~' | binaryOperator | '[]' | '[]='
   ;
 
@@ -400,13 +394,13 @@ NEWLINE
 // 16.5.1 String Interpolation
 stringInterpolation
 //  : '$' IDENTIFIER_NO_DOLLAR
-  : '$' identifier
+  : '$' identifier// FIXME
   | '${' expression '}'
   ;
 
 // 16.6 Symbols
 symbolLiteral
-  : '#' (operator | (identifier (',' identifier)*))
+  : '#' (operator_ | (identifier (',' identifier)*))
   ;
 // 16.7 Lists
 listLiteral

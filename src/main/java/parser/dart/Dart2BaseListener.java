@@ -1,5 +1,5 @@
+// Generated from Dart2.g4 by ANTLR 4.10.1
 package parser.dart;
-// Generated from src/main/java/parser/dart/Dart2.g4 by ANTLR 4.8
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -400,13 +400,13 @@ public class Dart2BaseListener implements Dart2Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOperator(Dart2Parser.OperatorContext ctx) { }
+	@Override public void enterOperator_(Dart2Parser.Operator_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOperator(Dart2Parser.OperatorContext ctx) { }
+	@Override public void exitOperator_(Dart2Parser.Operator_Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

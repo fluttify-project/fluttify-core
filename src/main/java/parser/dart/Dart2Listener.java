@@ -328,15 +328,15 @@ public interface Dart2Listener extends ParseTreeListener {
 	 */
 	void exitOperatorSignature(Dart2Parser.OperatorSignatureContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link Dart2Parser#operator}.
+	 * Enter a parse tree produced by {@link Dart2Parser#operator_}.
 	 * @param ctx the parse tree
 	 */
-	void enterOperator(Dart2Parser.OperatorContext ctx);
+	void enterOperator_(Dart2Parser.Operator_Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link Dart2Parser#operator}.
+	 * Exit a parse tree produced by {@link Dart2Parser#operator_}.
 	 * @param ctx the parse tree
 	 */
-	void exitOperator(Dart2Parser.OperatorContext ctx);
+	void exitOperator_(Dart2Parser.Operator_Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link Dart2Parser#binaryOperator}.
 	 * @param ctx the parse tree

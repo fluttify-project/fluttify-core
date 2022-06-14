@@ -215,6 +215,7 @@ typealias PATH = String
 
 typealias JAVA_FILE = File
 typealias OBJC_FILE = File
+typealias JS_FILE = File
 
 val dartReserved = listOf(
     "abstract", "dynamic", "implements", "show", "as", "else",
