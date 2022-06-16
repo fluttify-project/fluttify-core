@@ -170,6 +170,8 @@ open class Type(override var id: Int = NEXT_ID) : IPlatform, IScope, IElement {
                     result
                 }
                 &&
+                mustNot("祖宗类是忽略类") { ancestorTypes.any { type -> EXCLUDE_TYPES.any { excludeType -> excludeType.matches(type) } } }
+                &&
                 must("类名不能为空") { name.isNotBlank() }
                 &&
                 mustNot("混淆类型") { isObfuscated }
