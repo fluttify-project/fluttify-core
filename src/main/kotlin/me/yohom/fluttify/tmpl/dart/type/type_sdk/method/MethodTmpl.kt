@@ -42,7 +42,7 @@ fun MethodTmpl(method: Method): String {
     val returnStatement = ReturnTmpl(method)
 
     return tmpl
-        .replace("#__deprecated__#", if (method.isDeprecated) "@deprecated" else "")
+        .replace("#__deprecated__#", if (method.isDeprecated) "@Deprecated('过时')" else "")
         .replace("#__static__#", static)
         .replace("#__return_type__#", returnType.enOptional())
         .replace("#__method_name__#", methodName)
