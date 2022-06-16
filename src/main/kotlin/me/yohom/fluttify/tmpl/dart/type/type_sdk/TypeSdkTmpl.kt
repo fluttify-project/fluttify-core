@@ -99,7 +99,7 @@ fun TypeSdkTmpl(type: Type): String {
     val constants = type.fields
         .filterConstants()
         .joinToString("\n") {
-            "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix().escape()};"
+            "static const ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value.removeNumberSuffix().escape()};"
         }
 
     // 构造器

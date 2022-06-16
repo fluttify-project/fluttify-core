@@ -136,7 +136,7 @@ fun TypeInterfaceTmpl(type: Type): String {
         .replace("#__tag__#", ext.projectName)
         .replaceParagraph(
             "#__constants__#",
-            constants.joinToString("\n") { "static final ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value};" }
+            constants.joinToString("\n") { "static const ${it.variable.trueType.toDartType()} ${it.variable.name} = ${it.value};" }
         )
         .replaceParagraph("#__interface_methods__#", methods.joinToString("\n"))
         .replaceParagraph("#__getters__#", getters.joinToString("\n"))
